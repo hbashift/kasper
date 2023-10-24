@@ -80,7 +80,7 @@ func (r *studentRepository) getStudentCommonInformation(ctx context.Context, cli
 			table.Supervisors.FullName.AS("supervisor_name"),
 			table.Students.EnrollmentOrder.AS("enrollment_order_number"),
 			table.Students.StartDate.AS("studying_start_date"),
-			table.Students.ActualSemester.AS("semester"),
+			table.Students.ActualSemester.AS("semester_number"),
 			table.Dissertation.Feedback.AS("feedback"),
 			table.Dissertation.Status.AS("dissertation_status"),
 			table.Students.TitlePagePath.AS("title_page_url"),

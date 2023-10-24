@@ -21,7 +21,7 @@ type StudentCommonInformation struct {
 	StudyingStartDate     time.Time `db:"studying_start_date" json:"dateOfOrderOfStatement"`
 	Semester              int32     `db:"semester_number" json:"actualSemestr,omitempty"`
 	Feedback              *string   `db:"feedback" json:"feedback,omitempty"`
-	DissertationStatus    int32     `db:"dissertation_status" json:"jobStatus,omitempty"`
+	DissertationStatus    *string   `db:"dissertation_status" json:"jobStatus,omitempty"`
 	TitlePageURL          string    `db:"title_page_url" json:"titlePageURL,omitempty"`
 	ExplanatoryNoteURL    string    `db:"explanatory_note_url" json:"explanatoryNoteURL,omitempty"`
 }
