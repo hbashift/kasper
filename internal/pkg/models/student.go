@@ -5,25 +5,25 @@ import (
 )
 
 type StudentDissertationPlan struct {
-	Name   string `db:"name"`
-	First  bool   `db:"first"`
-	Second bool   `db:"second"`
-	Third  bool   `db:"third"`
-	Forth  bool   `db:"forth"`
-	Fifth  bool   `db:"fifth"`
-	Sixth  bool   `db:"sixth"`
+	Name   string `db:"name" json:"name,omitempty"`
+	First  bool   `db:"first" json:"id1,omitempty"`
+	Second bool   `db:"second" json:"id2,omitempty"`
+	Third  bool   `db:"third" json:"id3,omitempty"`
+	Forth  bool   `db:"forth" json:"id4,omitempty"`
+	Fifth  bool   `db:"fifth" json:"id5,omitempty"`
+	Sixth  bool   `db:"sixth" json:"id6,omitempty"`
 }
 
 type StudentCommonInformation struct {
-	DissertationTitle     string    `db:"dissertation_title"`
-	SupervisorName        string    `db:"supervisor_name"`
-	EnrollmentOrderNumber string    `db:"enrollment_order_number"`
-	StudyingStartDate     time.Time `db:"studying_start_date"`
-	Semester              int32     `db:"semester_number"`
-	Feedback              *string   `db:"feedback"`
-	DissertationStatus    int32     `db:"dissertation_status"`
-	TitlePageURL          string    `db:"title_page_url"`
-	ExplanatoryNoteURL    string    `db:"explanatory_note_url"`
+	DissertationTitle     string    `db:"dissertation_title" json:"theme,omitempty"`
+	SupervisorName        string    `db:"supervisor_name" json:"teacherFullName,omitempty"`
+	EnrollmentOrderNumber string    `db:"enrollment_order_number" json:"numberOfOrderOfStatement,omitempty"`
+	StudyingStartDate     time.Time `db:"studying_start_date" json:"dateOfOrderOfStatement"`
+	Semester              int32     `db:"semester_number" json:"actualSemestr,omitempty"`
+	Feedback              *string   `db:"feedback" json:"feedback,omitempty"`
+	DissertationStatus    int32     `db:"dissertation_status" json:"jobStatus,omitempty"`
+	TitlePageURL          string    `db:"title_page_url" json:"titlePageURL,omitempty"`
+	ExplanatoryNoteURL    string    `db:"explanatory_note_url" json:"explanatoryNoteURL,omitempty"`
 }
 
 type DissertationPage struct {

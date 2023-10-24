@@ -51,3 +51,5 @@ func getUUID(ctx *gin.Context) (*uuid.UUID, error) {
 
 	return &id, nil
 }
+
+// localhost:8080/students/dissertation/:id
