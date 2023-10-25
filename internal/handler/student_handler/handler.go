@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"uir_draft/internal/generated/kasper/uir_draft/public/model"
-	"uir_draft/internal/pkg/models"
+	"uir_draft/internal/pkg/service/student"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -14,7 +14,7 @@ import (
 )
 
 type StudentService interface {
-	GetDissertationPage(ctx context.Context, token string) (*models.DissertationPage, error)
+	GetDissertationPage(ctx context.Context, token string) (*student.DissertationPage, error)
 	UpsertSemesterPlan(ctx context.Context, progress []*model.SemesterProgress) error
 }
 

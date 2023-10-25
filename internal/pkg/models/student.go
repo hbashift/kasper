@@ -25,8 +25,3 @@ type StudentCommonInformation struct {
 	TitlePageURL          string    `db:"title_page_url" json:"titlePageURL,omitempty"`
 	ExplanatoryNoteURL    string    `db:"explanatory_note_url" json:"explanatoryNoteURL,omitempty"`
 }
-
-type DissertationPage struct {
-	DissertationPlan map[string]*StudentDissertationPlan `json:"dissertationPlan"`
-	CommonInfo       StudentCommonInformation            `json:"commonInfo"`
-}

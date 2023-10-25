@@ -11,7 +11,21 @@ import (
 
 var ErrNonValidToken = errors.New("token is expired")
 
-func (s *Service) GetDissertationPage(ctx context.Context, token string) (*models.DissertationPage, error) {
+type StudentDissertationPlan struct {
+	First  bool `json:"id1,omitempty"`
+	Second bool `json:"id2,omitempty"`
+	Third  bool `json:"id3,omitempty"`
+	Forth  bool `json:"id4,omitempty"`
+	Fifth  bool `json:"id5,omitempty"`
+	Sixth  bool `json:"id6,omitempty"`
+}
+
+type DissertationPage struct {
+	DissertationPlan map[string]*StudentDissertationPlan `json:"dissertationPlan"`
+	CommonInfo       models.StudentCommonInformation     `json:"commonInfo"`
+}
+
+func (s *Service) GetDissertationPage(ctx context.Context, token string) (*DissertationPage, error) {
 	session, err := s.tokenRepo.Authenticate(ctx, token)
 	if err != nil {
 		return nil, errors.Wrap(err, "authentication error")
@@ -34,13 +48,21 @@ func (s *Service) GetDissertationPage(ctx context.Context, token string) (*model
 		return nil, errors.Wrap(err, "GetSemesterProgress()")
 	}
 
-	planMap := make(map[string]*models.StudentDissertationPlan, len(plan))
+	planMap := make(map[string]*StudentDissertationPlan, len(plan))
 
 	for _, chapter := range plan {
-		planMap[chapter.Name] = chapter
+		ch := &StudentDissertationPlan{
+			First:  chapter.First,
+			Second: chapter.Second,
+			Third:  chapter.Third,
+			Forth:  chapter.Forth,
+			Fifth:  chapter.Fifth,
+			Sixth:  chapter.Sixth,
+		}
+		planMap[chapter.Name] = ch
 	}
 
-	return &models.DissertationPage{
+	return &DissertationPage{
 		DissertationPlan: planMap,
 		CommonInfo:       *commonInfo,
 	}, nil
