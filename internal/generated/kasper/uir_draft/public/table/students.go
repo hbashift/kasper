@@ -28,6 +28,8 @@ type studentsTable struct {
 	ActualSemester     postgres.ColumnInteger
 	SupervisorID       postgres.ColumnString
 	StartDate          postgres.ColumnDate
+	AcademicLeave      postgres.ColumnBool
+	DissertationTitle  postgres.ColumnString
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -79,8 +81,10 @@ func newStudentsTableImpl(schemaName, tableName, alias string) studentsTable {
 		ActualSemesterColumn     = postgres.IntegerColumn("actual_semester")
 		SupervisorIDColumn       = postgres.StringColumn("supervisor_id")
 		StartDateColumn          = postgres.DateColumn("start_date")
-		allColumns               = postgres.ColumnList{ClientIDColumn, StudentIDColumn, FullNameColumn, DepartmentColumn, EnrollmentOrderColumn, TitlePagePathColumn, ExplanatoryNoteURLColumn, SpecializationColumn, ActualSemesterColumn, SupervisorIDColumn, StartDateColumn}
-		mutableColumns           = postgres.ColumnList{ClientIDColumn, FullNameColumn, DepartmentColumn, EnrollmentOrderColumn, TitlePagePathColumn, ExplanatoryNoteURLColumn, SpecializationColumn, ActualSemesterColumn, SupervisorIDColumn, StartDateColumn}
+		AcademicLeaveColumn      = postgres.BoolColumn("academic_leave")
+		DissertationTitleColumn  = postgres.StringColumn("dissertation_title")
+		allColumns               = postgres.ColumnList{ClientIDColumn, StudentIDColumn, FullNameColumn, DepartmentColumn, EnrollmentOrderColumn, TitlePagePathColumn, ExplanatoryNoteURLColumn, SpecializationColumn, ActualSemesterColumn, SupervisorIDColumn, StartDateColumn, AcademicLeaveColumn, DissertationTitleColumn}
+		mutableColumns           = postgres.ColumnList{ClientIDColumn, FullNameColumn, DepartmentColumn, EnrollmentOrderColumn, TitlePagePathColumn, ExplanatoryNoteURLColumn, SpecializationColumn, ActualSemesterColumn, SupervisorIDColumn, StartDateColumn, AcademicLeaveColumn, DissertationTitleColumn}
 	)
 
 	return studentsTable{
@@ -98,6 +102,8 @@ func newStudentsTableImpl(schemaName, tableName, alias string) studentsTable {
 		ActualSemester:     ActualSemesterColumn,
 		SupervisorID:       SupervisorIDColumn,
 		StartDate:          StartDateColumn,
+		AcademicLeave:      AcademicLeaveColumn,
+		DissertationTitle:  DissertationTitleColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,

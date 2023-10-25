@@ -14,6 +14,7 @@ func UseSchema(schema string) {
 	ClientUser = ClientUser.FromSchema(schema)
 	Dissertation = Dissertation.FromSchema(schema)
 	SemesterProgress = SemesterProgress.FromSchema(schema)
+	StudentSupervisor = StudentSupervisor.FromSchema(schema)
 	Students = Students.FromSchema(schema)
 	Supervisors = Supervisors.FromSchema(schema)
 }

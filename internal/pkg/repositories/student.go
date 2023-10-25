@@ -3,6 +3,7 @@ package repositories
 import (
 	"context"
 
+	"uir_draft/internal/generated/kasper/uir_draft/public/model"
 	"uir_draft/internal/generated/kasper/uir_draft/public/table"
 	"uir_draft/internal/pkg/models"
 
@@ -13,70 +14,88 @@ import (
 	"github.com/pkg/errors"
 )
 
-type studentRepository struct {
+type StudentRepository struct {
 	postgres *pgxpool.Pool
 }
 
-func NewStudentRepository(postgres *pgxpool.Pool) *studentRepository {
-	return &studentRepository{postgres: postgres}
+func NewStudentRepository(postgres *pgxpool.Pool) *StudentRepository {
+	return &StudentRepository{postgres: postgres}
 }
 
-func (r *studentRepository) GetDissertation(ctx context.Context, clientID uuid.UUID) (*models.DissertationPage, error) {
-	plan, err := r.getStudentDissertationPlan(ctx, clientID)
+func (r *StudentRepository) GetStudentCommonInfo(ctx context.Context, tx pgx.Tx, clientID uuid.UUID) (*models.StudentCommonInformation, error) {
+	commonInfo, err := r.getStudentCommonInformation(ctx, tx, clientID)
 	if err != nil {
-		return nil, errors.Wrap(err, "GetDissertation():")
+		return nil, errors.Wrap(err, "GetSemesterProgress():")
 	}
 
-	commonInfo, err := r.getStudentCommonInformation(ctx, clientID)
-	if err != nil {
-		return nil, errors.Wrap(err, "GetDissertation():")
-	}
-
-	return &models.DissertationPage{
-		DissertationPlan: plan,
-		CommonInfo:       *commonInfo,
-	}, nil
+	return commonInfo, nil
 }
 
-func (r *studentRepository) getStudentDissertationPlan(ctx context.Context, clientID uuid.UUID) ([]*models.StudentDissertationPlan, error) {
-	stmt, args := table.SemesterProgress.
-		SELECT(
-			table.SemesterProgress.ProgressName.AS("name"),
-			table.SemesterProgress.First,
-			table.SemesterProgress.Second,
-			table.SemesterProgress.Third,
-			table.SemesterProgress.Forth,
-			table.SemesterProgress.Fifth,
-			table.SemesterProgress.Sixth,
+func (r *StudentRepository) InsertStudentCommonInfo(ctx context.Context, tx pgx.Tx, student model.Students) error {
+	if err := r.insertStudentCommonInfoTx(ctx, tx, student); err != nil {
+		return errors.Wrap(err, "InsertStudentCommonInfo(): error during transaction")
+	}
+
+	return nil
+}
+
+func (r *StudentRepository) UpdateStudentCommonInfo(ctx context.Context, tx pgx.Tx, student model.Students) error {
+	if err := r.insertStudentCommonInfoTx(ctx, tx, student); err != nil {
+		return errors.Wrap(err, "UpdateStudentCommonInfo(): error during transaction")
+	}
+
+	return nil
+}
+
+func (r *StudentRepository) updateStudentCommonInfoTx(ctx context.Context, tx pgx.Tx, student model.Students) error {
+	stmt, args := table.Students.
+		UPDATE(
+			table.Students.FullName,
+			table.Students.Specialization,
+			table.Students.AcademicLeave,
+			table.Students.DissertationTitle,
 		).
-		WHERE(table.SemesterProgress.ClientID.EQ(postgres.UUID(clientID))).Sql()
+		MODEL(student).
+		WHERE(table.Students.StudentID.EQ(postgres.UUID(student.StudentID))).Sql()
 
-	studentPlan := make([]*models.StudentDissertationPlan, 0)
-
-	rows, err := r.postgres.Query(ctx, stmt, args...)
-	defer rows.Close()
-
-	if err != nil {
-		return nil, errors.Wrap(err, "selecting students dissertation plan")
-	}
-
-	for rows.Next() {
-		var plan = &models.StudentDissertationPlan{}
-		if err := scanDissertationPlan(rows, plan); err != nil {
-			return nil, errors.Wrap(err, "mapping dissertation plan rows")
+	if err := tx.BeginFunc(ctx, func(tx pgx.Tx) error {
+		if _, err := tx.Exec(ctx, stmt, args...); err != nil {
+			return err
 		}
-		studentPlan = append(studentPlan, plan)
+
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "update student common info")
 	}
 
-	return studentPlan, nil
+	return nil
 }
 
-func (r *studentRepository) getStudentCommonInformation(ctx context.Context, clientID uuid.UUID) (*models.StudentCommonInformation, error) {
+func (r *StudentRepository) insertStudentCommonInfoTx(ctx context.Context, tx pgx.Tx, student model.Students) error {
+	// TODO ограничение по столбцам
+	stmt, args := table.Students.
+		INSERT(table.Students.AllColumns).
+		MODEL(student).Sql()
+
+	if err := tx.BeginFunc(ctx, func(tx pgx.Tx) error {
+		if _, err := tx.Exec(ctx, stmt, args...); err != nil {
+			return err
+		}
+
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "insert student common info")
+	}
+
+	return nil
+}
+
+func (r *StudentRepository) getStudentCommonInformation(ctx context.Context, tx pgx.Tx, clientID uuid.UUID) (*models.StudentCommonInformation, error) {
 	stmt, args := table.Students.
 		INNER_JOIN(table.Dissertation, table.Students.StudentID.EQ(table.Dissertation.StudentID)).
 		INNER_JOIN(table.Supervisors, table.Students.SupervisorID.EQ(table.Supervisors.SupervisorID)).
 		SELECT(
-			table.Dissertation.Title.AS("dissertation_title"),
+			table.Students.DissertationTitle.AS("dissertation_title"),
 			table.Supervisors.FullName.AS("supervisor_name"),
 			table.Students.EnrollmentOrder.AS("enrollment_order_number"),
 			table.Students.StartDate.AS("studying_start_date"),
@@ -90,7 +109,7 @@ func (r *studentRepository) getStudentCommonInformation(ctx context.Context, cli
 
 	var studentCommonInfo models.StudentCommonInformation
 
-	row := r.postgres.QueryRow(ctx, stmt, args...)
+	row := tx.QueryRow(ctx, stmt, args...)
 
 	if err := scanStudentCommonInfo(row, &studentCommonInfo); err != nil {
 		return nil, errors.Wrap(err, "mapping student common info")

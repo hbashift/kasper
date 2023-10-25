@@ -19,10 +19,10 @@ type dissertationTable struct {
 	// Columns
 	StudentID      postgres.ColumnString
 	Status         postgres.ColumnString
-	Title          postgres.ColumnString
 	CreatedAt      postgres.ColumnDate
 	UpdatedAt      postgres.ColumnDate
 	DissertationID postgres.ColumnString
+	Semester       postgres.ColumnInteger
 	Feedback       postgres.ColumnString
 
 	AllColumns     postgres.ColumnList
@@ -66,13 +66,13 @@ func newDissertationTableImpl(schemaName, tableName, alias string) dissertationT
 	var (
 		StudentIDColumn      = postgres.StringColumn("student_id")
 		StatusColumn         = postgres.StringColumn("status")
-		TitleColumn          = postgres.StringColumn("title")
 		CreatedAtColumn      = postgres.DateColumn("created_at")
 		UpdatedAtColumn      = postgres.DateColumn("updated_at")
 		DissertationIDColumn = postgres.StringColumn("dissertation_id")
+		SemesterColumn       = postgres.IntegerColumn("semester")
 		FeedbackColumn       = postgres.StringColumn("feedback")
-		allColumns           = postgres.ColumnList{StudentIDColumn, StatusColumn, TitleColumn, CreatedAtColumn, UpdatedAtColumn, DissertationIDColumn, FeedbackColumn}
-		mutableColumns       = postgres.ColumnList{StudentIDColumn, StatusColumn, TitleColumn, CreatedAtColumn, UpdatedAtColumn, FeedbackColumn}
+		allColumns           = postgres.ColumnList{StudentIDColumn, StatusColumn, CreatedAtColumn, UpdatedAtColumn, DissertationIDColumn, SemesterColumn, FeedbackColumn}
+		mutableColumns       = postgres.ColumnList{StudentIDColumn, StatusColumn, CreatedAtColumn, UpdatedAtColumn, SemesterColumn, FeedbackColumn}
 	)
 
 	return dissertationTable{
@@ -81,10 +81,10 @@ func newDissertationTableImpl(schemaName, tableName, alias string) dissertationT
 		//Columns
 		StudentID:      StudentIDColumn,
 		Status:         StatusColumn,
-		Title:          TitleColumn,
 		CreatedAt:      CreatedAtColumn,
 		UpdatedAt:      UpdatedAtColumn,
 		DissertationID: DissertationIDColumn,
+		Semester:       SemesterColumn,
 		Feedback:       FeedbackColumn,
 
 		AllColumns:     allColumns,

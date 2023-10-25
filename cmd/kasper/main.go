@@ -30,8 +30,9 @@ func main() {
 
 	studRepo := repositories.NewStudentRepository(db)
 	tokenRepo := repositories.NewTokenRepository(db)
+	dRepo := repositories.NewDissertationRepository(db)
 
-	studService := student.NewService(studRepo, tokenRepo)
+	studService := student.NewService(studRepo, tokenRepo, dRepo)
 	studHandler := student_handler.NewStudentHandler(studService)
 	server := kasper.InitRoutes(studHandler)
 

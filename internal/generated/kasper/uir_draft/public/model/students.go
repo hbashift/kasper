@@ -24,4 +24,6 @@ type Students struct {
 	ActualSemester     int32
 	SupervisorID       uuid.UUID
 	StartDate          *time.Time
+	AcademicLeave      bool
+	DissertationTitle  string
 }
