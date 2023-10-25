@@ -7,22 +7,21 @@ import (
 	"uir_draft/internal/pkg/models"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 type StudentRepository interface {
-	GetStudentCommonInfo(ctx context.Context, tx pgx.Tx, clientID uuid.UUID) (*models.StudentCommonInformation, error)
-	InsertStudentCommonInfo(ctx context.Context, tx pgx.Tx, student model.Students) error
-	UpdateStudentCommonInfo(ctx context.Context, tx pgx.Tx, student model.Students) error
+	GetStudentCommonInfo(ctx context.Context, tx *pgxpool.Pool, clientID uuid.UUID) (*models.StudentCommonInformation, error)
+	InsertStudentCommonInfo(ctx context.Context, tx *pgxpool.Pool, student model.Students) error
+	UpdateStudentCommonInfo(ctx context.Context, tx *pgxpool.Pool, student model.Students) error
 }
 
 type DissertationRepository interface {
 }
 
 type SemesterRepository interface {
-	UpsertSemesterPlan(ctx context.Context, tx pgx.Tx, progress []model.SemesterProgress) error
-	GetSemesterProgress(ctx context.Context, tx pgx.Tx, clientID uuid.UUID) ([]*models.StudentDissertationPlan, error)
+	UpsertSemesterPlan(ctx context.Context, tx *pgxpool.Pool, progress []*model.SemesterProgress) error
+	GetSemesterProgress(ctx context.Context, tx *pgxpool.Pool, clientID uuid.UUID) ([]*models.StudentDissertationPlan, error)
 }
 
 type TokenRepository interface {
@@ -35,9 +34,9 @@ type Service struct {
 	tokenRepo    TokenRepository
 	dRepo        DissertationRepository
 	semesterRepo SemesterRepository
-	db           *pgxpool.Conn
+	db           *pgxpool.Pool
 }
 
-func NewService(studRepo StudentRepository, tokenRepo TokenRepository, dRepo DissertationRepository) *Service {
-	return &Service{studRepo: studRepo, tokenRepo: tokenRepo, dRepo: dRepo}
+func NewService(studRepo StudentRepository, tokenRepo TokenRepository, dRepo DissertationRepository, semesterRepo SemesterRepository, db *pgxpool.Pool) *Service {
+	return &Service{studRepo: studRepo, tokenRepo: tokenRepo, dRepo: dRepo, semesterRepo: semesterRepo, db: db}
 }

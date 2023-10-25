@@ -15,10 +15,14 @@ import (
 )
 
 type SemesterRepository struct {
-	postgres *pgxpool.Conn
+	postgres *pgxpool.Pool
 }
 
-func (r *SemesterRepository) GetSemesterProgress(ctx context.Context, tx pgx.Tx, clientID uuid.UUID) ([]*models.StudentDissertationPlan, error) {
+func NewSemesterRepository(postgres *pgxpool.Pool) *SemesterRepository {
+	return &SemesterRepository{postgres: postgres}
+}
+
+func (r *SemesterRepository) GetSemesterProgress(ctx context.Context, tx *pgxpool.Pool, clientID uuid.UUID) ([]*models.StudentDissertationPlan, error) {
 	plan, err := r.getStudentDissertationPlan(ctx, tx, clientID)
 	if err != nil {
 		return nil, errors.Wrap(err, "GetSemesterProgress():")
@@ -27,7 +31,7 @@ func (r *SemesterRepository) GetSemesterProgress(ctx context.Context, tx pgx.Tx,
 	return plan, nil
 }
 
-func (r *SemesterRepository) UpsertSemesterPlan(ctx context.Context, tx pgx.Tx, progress []model.SemesterProgress) error {
+func (r *SemesterRepository) UpsertSemesterPlan(ctx context.Context, tx *pgxpool.Pool, progress []*model.SemesterProgress) error {
 	if err := r.upsertSemesterPlanTx(ctx, tx, progress); err != nil {
 		return errors.Wrap(err, "UpsertSemesterPlan(): error during transaction")
 	}
@@ -35,7 +39,7 @@ func (r *SemesterRepository) UpsertSemesterPlan(ctx context.Context, tx pgx.Tx, 
 	return nil
 }
 
-func (r *SemesterRepository) getStudentDissertationPlan(ctx context.Context, tx pgx.Tx, clientID uuid.UUID) ([]*models.StudentDissertationPlan, error) {
+func (r *SemesterRepository) getStudentDissertationPlan(ctx context.Context, tx *pgxpool.Pool, clientID uuid.UUID) ([]*models.StudentDissertationPlan, error) {
 	stmt, args := table.SemesterProgress.
 		SELECT(
 			table.SemesterProgress.ProgressName.AS("name"),
@@ -68,8 +72,7 @@ func (r *SemesterRepository) getStudentDissertationPlan(ctx context.Context, tx 
 	return studentPlan, nil
 }
 
-func (r *SemesterRepository) upsertSemesterPlanTx(ctx context.Context, tx pgx.Tx, progress []model.SemesterProgress) error {
-
+func (r *SemesterRepository) upsertSemesterPlanTx(ctx context.Context, tx *pgxpool.Pool, progress []*model.SemesterProgress) error {
 	if err := tx.BeginFunc(ctx, func(tx pgx.Tx) error {
 		for _, semester := range progress {
 			stmt, args := table.SemesterProgress.
@@ -82,18 +85,19 @@ func (r *SemesterRepository) upsertSemesterPlanTx(ctx context.Context, tx pgx.Tx
 						table.SemesterProgress.Second.SET(postgres.Bool(semester.Second)),
 						table.SemesterProgress.Third.SET(postgres.Bool(semester.Third)),
 						table.SemesterProgress.Forth.SET(postgres.Bool(semester.Forth)),
-						table.SemesterProgress.Fifth.SET(postgres.Bool(*semester.Fifth)),
-						table.SemesterProgress.Sixth.SET(postgres.Bool(*semester.Sixth)),
+						//table.SemesterProgress.Fifth.SET(postgres.Bool(*semester.Fifth)),
+						//table.SemesterProgress.Sixth.SET(postgres.Bool(*semester.Sixth)),
 						table.SemesterProgress.LastUpdated.SET(postgres.TimestampzT(*semester.LastUpdated)),
-					).
-					WHERE(
-						table.SemesterProgress.StudentID.EQ(postgres.UUID(semester.StudentID)).
-							AND(table.SemesterProgress.ProgressName.EQ(postgres.String(semester.ProgressName.String()))),
 					),
+				//WHERE(
+				//	table.SemesterProgress.StudentID.EQ(postgres.UUID(semester.StudentID)).
+				//		AND(table.SemesterProgress.ProgressName.EQ(postgres.String(semester.ProgressName.String()))),
+				//),
 				).
 				Sql()
 
-			if _, err := tx.Exec(ctx, stmt, args...); err != nil {
+			_, err := tx.Exec(ctx, stmt, args...)
+			if err != nil {
 				return err
 			}
 		}

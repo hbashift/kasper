@@ -22,7 +22,7 @@ func NewStudentRepository(postgres *pgxpool.Pool) *StudentRepository {
 	return &StudentRepository{postgres: postgres}
 }
 
-func (r *StudentRepository) GetStudentCommonInfo(ctx context.Context, tx pgx.Tx, clientID uuid.UUID) (*models.StudentCommonInformation, error) {
+func (r *StudentRepository) GetStudentCommonInfo(ctx context.Context, tx *pgxpool.Pool, clientID uuid.UUID) (*models.StudentCommonInformation, error) {
 	commonInfo, err := r.getStudentCommonInformation(ctx, tx, clientID)
 	if err != nil {
 		return nil, errors.Wrap(err, "GetSemesterProgress():")
@@ -31,7 +31,7 @@ func (r *StudentRepository) GetStudentCommonInfo(ctx context.Context, tx pgx.Tx,
 	return commonInfo, nil
 }
 
-func (r *StudentRepository) InsertStudentCommonInfo(ctx context.Context, tx pgx.Tx, student model.Students) error {
+func (r *StudentRepository) InsertStudentCommonInfo(ctx context.Context, tx *pgxpool.Pool, student model.Students) error {
 	if err := r.insertStudentCommonInfoTx(ctx, tx, student); err != nil {
 		return errors.Wrap(err, "InsertStudentCommonInfo(): error during transaction")
 	}
@@ -39,7 +39,7 @@ func (r *StudentRepository) InsertStudentCommonInfo(ctx context.Context, tx pgx.
 	return nil
 }
 
-func (r *StudentRepository) UpdateStudentCommonInfo(ctx context.Context, tx pgx.Tx, student model.Students) error {
+func (r *StudentRepository) UpdateStudentCommonInfo(ctx context.Context, tx *pgxpool.Pool, student model.Students) error {
 	if err := r.insertStudentCommonInfoTx(ctx, tx, student); err != nil {
 		return errors.Wrap(err, "UpdateStudentCommonInfo(): error during transaction")
 	}
@@ -47,7 +47,7 @@ func (r *StudentRepository) UpdateStudentCommonInfo(ctx context.Context, tx pgx.
 	return nil
 }
 
-func (r *StudentRepository) updateStudentCommonInfoTx(ctx context.Context, tx pgx.Tx, student model.Students) error {
+func (r *StudentRepository) updateStudentCommonInfoTx(ctx context.Context, tx *pgxpool.Pool, student model.Students) error {
 	stmt, args := table.Students.
 		UPDATE(
 			table.Students.FullName,
@@ -71,7 +71,7 @@ func (r *StudentRepository) updateStudentCommonInfoTx(ctx context.Context, tx pg
 	return nil
 }
 
-func (r *StudentRepository) insertStudentCommonInfoTx(ctx context.Context, tx pgx.Tx, student model.Students) error {
+func (r *StudentRepository) insertStudentCommonInfoTx(ctx context.Context, tx *pgxpool.Pool, student model.Students) error {
 	// TODO ограничение по столбцам
 	stmt, args := table.Students.
 		INSERT(table.Students.AllColumns).
@@ -90,7 +90,7 @@ func (r *StudentRepository) insertStudentCommonInfoTx(ctx context.Context, tx pg
 	return nil
 }
 
-func (r *StudentRepository) getStudentCommonInformation(ctx context.Context, tx pgx.Tx, clientID uuid.UUID) (*models.StudentCommonInformation, error) {
+func (r *StudentRepository) getStudentCommonInformation(ctx context.Context, tx *pgxpool.Pool, clientID uuid.UUID) (*models.StudentCommonInformation, error) {
 	stmt, args := table.Students.
 		INNER_JOIN(table.Dissertation, table.Students.StudentID.EQ(table.Dissertation.StudentID)).
 		INNER_JOIN(table.Supervisors, table.Students.SupervisorID.EQ(table.Supervisors.SupervisorID)).

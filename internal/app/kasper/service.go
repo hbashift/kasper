@@ -9,6 +9,7 @@ import (
 
 type StudentHandler interface {
 	GetDissertation(ctx *gin.Context)
+	UpsertSemesterProgress(ctx *gin.Context)
 }
 
 func InitRoutes(student StudentHandler) *gin.Engine {
@@ -24,6 +25,7 @@ func InitRoutes(student StudentHandler) *gin.Engine {
 	}))
 
 	router.GET("/students/dissertation/:id", student.GetDissertation)
+	router.POST("/students/dissertation/progress", student.UpsertSemesterProgress)
 
 	return router
 }

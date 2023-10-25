@@ -20,17 +20,16 @@ func (s *Service) GetDissertationPage(ctx context.Context, token string) (*model
 	if session.TokenStatus != model.TokenStatus_Active {
 		return nil, ErrNonValidToken
 	}
-	tx, err := s.db.Begin(ctx)
 	if err != nil {
 		return nil, errors.Wrap(err, "transaction initialization")
 	}
 
-	commonInfo, err := s.studRepo.GetStudentCommonInfo(ctx, tx, session.ClientID)
+	commonInfo, err := s.studRepo.GetStudentCommonInfo(ctx, s.db, session.ClientID)
 	if err != nil {
 		return nil, errors.Wrap(err, "GetStudentCommonInfo()")
 	}
 
-	plan, err := s.semesterRepo.GetSemesterProgress(ctx, tx, session.ClientID)
+	plan, err := s.semesterRepo.GetSemesterProgress(ctx, s.db, session.ClientID)
 	if err != nil {
 		return nil, errors.Wrap(err, "GetSemesterProgress()")
 	}
