@@ -34,8 +34,14 @@ func (s *Service) GetDissertationPage(ctx context.Context, token string) (*model
 		return nil, errors.Wrap(err, "GetSemesterProgress()")
 	}
 
+	planMap := make(map[string]*models.StudentDissertationPlan, len(plan))
+
+	for _, chapter := range plan {
+		planMap[chapter.Name] = chapter
+	}
+
 	return &models.DissertationPage{
-		DissertationPlan: plan,
+		DissertationPlan: planMap,
 		CommonInfo:       *commonInfo,
 	}, nil
 }

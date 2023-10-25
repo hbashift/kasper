@@ -27,6 +27,6 @@ type StudentCommonInformation struct {
 }
 
 type DissertationPage struct {
-	DissertationPlan []*StudentDissertationPlan `json:"dissertationPlan"`
-	CommonInfo       StudentCommonInformation   `json:"commonInfo"`
+	DissertationPlan map[string]*StudentDissertationPlan `json:"dissertationPlan"`
+	CommonInfo       StudentCommonInformation            `json:"commonInfo"`
 }
