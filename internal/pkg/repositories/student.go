@@ -25,7 +25,7 @@ func NewStudentRepository(postgres *pgxpool.Pool) *StudentRepository {
 func (r *StudentRepository) GetStudentCommonInfo(ctx context.Context, tx *pgxpool.Pool, clientID uuid.UUID) (*models.StudentCommonInformation, error) {
 	commonInfo, err := r.getStudentCommonInformation(ctx, tx, clientID)
 	if err != nil {
-		return nil, errors.Wrap(err, "GetSemesterProgress():")
+		return nil, errors.Wrap(err, "GetStudentDissertationPlan():")
 	}
 
 	return commonInfo, nil
@@ -40,7 +40,7 @@ func (r *StudentRepository) InsertStudentCommonInfo(ctx context.Context, tx *pgx
 }
 
 func (r *StudentRepository) UpdateStudentCommonInfo(ctx context.Context, tx *pgxpool.Pool, student model.Students) error {
-	if err := r.insertStudentCommonInfoTx(ctx, tx, student); err != nil {
+	if err := r.updateStudentCommonInfoTx(ctx, tx, student); err != nil {
 		return errors.Wrap(err, "UpdateStudentCommonInfo(): error during transaction")
 	}
 

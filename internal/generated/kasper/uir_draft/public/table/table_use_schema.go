@@ -13,6 +13,7 @@ func UseSchema(schema string) {
 	AuthorizationToken = AuthorizationToken.FromSchema(schema)
 	ClientUser = ClientUser.FromSchema(schema)
 	Dissertation = Dissertation.FromSchema(schema)
+	ScientificWork = ScientificWork.FromSchema(schema)
 	SemesterProgress = SemesterProgress.FromSchema(schema)
 	StudentSupervisor = StudentSupervisor.FromSchema(schema)
 	Students = Students.FromSchema(schema)

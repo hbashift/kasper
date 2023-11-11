@@ -22,10 +22,10 @@ func NewSemesterRepository(postgres *pgxpool.Pool) *SemesterRepository {
 	return &SemesterRepository{postgres: postgres}
 }
 
-func (r *SemesterRepository) GetSemesterProgress(ctx context.Context, tx *pgxpool.Pool, clientID uuid.UUID) ([]*models.StudentDissertationPlan, error) {
-	plan, err := r.getStudentDissertationPlan(ctx, tx, clientID)
+func (r *SemesterRepository) GetStudentDissertationPlan(ctx context.Context, tx *pgxpool.Pool, clientID uuid.UUID) ([]*models.StudentDissertationPlan, error) {
+	plan, err := r.getStudentDissertationPlanTx(ctx, tx, clientID)
 	if err != nil {
-		return nil, errors.Wrap(err, "GetSemesterProgress():")
+		return nil, errors.Wrap(err, "GetStudentDissertationPlan():")
 	}
 
 	return plan, nil
@@ -39,7 +39,7 @@ func (r *SemesterRepository) UpsertSemesterPlan(ctx context.Context, tx *pgxpool
 	return nil
 }
 
-func (r *SemesterRepository) getStudentDissertationPlan(ctx context.Context, tx *pgxpool.Pool, clientID uuid.UUID) ([]*models.StudentDissertationPlan, error) {
+func (r *SemesterRepository) getStudentDissertationPlanTx(ctx context.Context, tx *pgxpool.Pool, clientID uuid.UUID) ([]*models.StudentDissertationPlan, error) {
 	stmt, args := table.SemesterProgress.
 		SELECT(
 			table.SemesterProgress.ProgressName.AS("name"),
@@ -85,14 +85,10 @@ func (r *SemesterRepository) upsertSemesterPlanTx(ctx context.Context, tx *pgxpo
 						table.SemesterProgress.Second.SET(postgres.Bool(semester.Second)),
 						table.SemesterProgress.Third.SET(postgres.Bool(semester.Third)),
 						table.SemesterProgress.Forth.SET(postgres.Bool(semester.Forth)),
-						//table.SemesterProgress.Fifth.SET(postgres.Bool(*semester.Fifth)),
-						//table.SemesterProgress.Sixth.SET(postgres.Bool(*semester.Sixth)),
+						table.SemesterProgress.Fifth.SET(postgres.Bool(*semester.Fifth)),
+						table.SemesterProgress.Sixth.SET(postgres.Bool(*semester.Sixth)),
 						table.SemesterProgress.LastUpdated.SET(postgres.TimestampzT(*semester.LastUpdated)),
 					),
-				//WHERE(
-				//	table.SemesterProgress.StudentID.EQ(postgres.UUID(semester.StudentID)).
-				//		AND(table.SemesterProgress.ProgressName.EQ(postgres.String(semester.ProgressName.String()))),
-				//),
 				).
 				Sql()
 

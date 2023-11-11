@@ -43,9 +43,9 @@ func (s *Service) GetDissertationPage(ctx context.Context, token string) (*Disse
 		return nil, errors.Wrap(err, "GetStudentCommonInfo()")
 	}
 
-	plan, err := s.semesterRepo.GetSemesterProgress(ctx, s.db, session.ClientID)
+	plan, err := s.semesterRepo.GetStudentDissertationPlan(ctx, s.db, session.ClientID)
 	if err != nil {
-		return nil, errors.Wrap(err, "GetSemesterProgress()")
+		return nil, errors.Wrap(err, "GetStudentDissertationPlan()")
 	}
 
 	planMap := make(map[string]*StudentDissertationPlan, len(plan))
