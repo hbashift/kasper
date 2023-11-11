@@ -76,7 +76,7 @@ func (r *SemesterRepository) upsertSemesterPlanTx(ctx context.Context, tx *pgxpo
 	if err := tx.BeginFunc(ctx, func(tx pgx.Tx) error {
 		for _, semester := range progress {
 			stmt, args := table.SemesterProgress.
-				INSERT(table.SemesterProgress.AllColumns).
+				INSERT(table.SemesterProgress.MutableColumns).
 				MODEL(semester).
 				ON_CONFLICT(table.SemesterProgress.StudentID, table.SemesterProgress.ProgressName).
 				DO_UPDATE(postgres.

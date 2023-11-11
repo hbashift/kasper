@@ -15,7 +15,10 @@ import (
 
 type StudentService interface {
 	GetDissertationPage(ctx context.Context, token string) (*student.DissertationPage, error)
-	UpsertSemesterPlan(ctx context.Context, progress []*model.SemesterProgress) error
+	UpsertSemesterPlan(ctx context.Context, token string, progress []*model.SemesterProgress) error
+	GetScientificWorks(ctx context.Context, token string) ([]*model.ScientificWork, error)
+	InsertScientificWorks(ctx context.Context, token string, works []*model.ScientificWork) error
+	UpdateScientificWorks(ctx context.Context, token string, works []*model.ScientificWork) error
 }
 
 type studentHandler struct {
@@ -45,8 +48,14 @@ func NewStudentHandler(service StudentService) *studentHandler {
 }
 
 func (h *studentHandler) UpsertSemesterProgress(ctx *gin.Context) {
+	id, err := getUUID(ctx)
+	if err != nil {
+		ctx.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
 	res := &Progress{}
-	err := ctx.ShouldBind(res)
+	err = ctx.ShouldBind(res)
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
@@ -72,7 +81,7 @@ func (h *studentHandler) UpsertSemesterProgress(ctx *gin.Context) {
 		domainProgress = append(domainProgress, p)
 	}
 
-	if err := h.service.UpsertSemesterPlan(ctx, domainProgress); err != nil {
+	if err := h.service.UpsertSemesterPlan(ctx, id.String(), domainProgress); err != nil {
 		ctx.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
@@ -82,7 +91,6 @@ func (h *studentHandler) UpsertSemesterProgress(ctx *gin.Context) {
 
 func (h *studentHandler) GetDissertation(ctx *gin.Context) {
 	id, err := getUUID(ctx)
-
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return

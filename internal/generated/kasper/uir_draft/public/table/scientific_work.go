@@ -17,15 +17,15 @@ type scientificWorkTable struct {
 	postgres.Table
 
 	// Columns
-	WorkID                  postgres.ColumnInteger
-	StudentID               postgres.ColumnString
-	Semester                postgres.ColumnInteger
-	Name                    postgres.ColumnString
-	State                   postgres.ColumnString
-	Impact                  postgres.ColumnFloat
-	OutputData              postgres.ColumnString
-	CoAuthors               postgres.ColumnString
-	ConferenceParticipation postgres.ColumnString
+	WorkID     postgres.ColumnString
+	StudentID  postgres.ColumnString
+	Semester   postgres.ColumnInteger
+	Name       postgres.ColumnString
+	State      postgres.ColumnString
+	Impact     postgres.ColumnFloat
+	OutputData postgres.ColumnString
+	CoAuthors  postgres.ColumnString
+	WorkType   postgres.ColumnString
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -66,32 +66,32 @@ func newScientificWorkTable(schemaName, tableName, alias string) *ScientificWork
 
 func newScientificWorkTableImpl(schemaName, tableName, alias string) scientificWorkTable {
 	var (
-		WorkIDColumn                  = postgres.IntegerColumn("work_id")
-		StudentIDColumn               = postgres.StringColumn("student_id")
-		SemesterColumn                = postgres.IntegerColumn("semester")
-		NameColumn                    = postgres.StringColumn("name")
-		StateColumn                   = postgres.StringColumn("state")
-		ImpactColumn                  = postgres.FloatColumn("impact")
-		OutputDataColumn              = postgres.StringColumn("output_data")
-		CoAuthorsColumn               = postgres.StringColumn("co_authors")
-		ConferenceParticipationColumn = postgres.StringColumn("conference_participation")
-		allColumns                    = postgres.ColumnList{WorkIDColumn, StudentIDColumn, SemesterColumn, NameColumn, StateColumn, ImpactColumn, OutputDataColumn, CoAuthorsColumn, ConferenceParticipationColumn}
-		mutableColumns                = postgres.ColumnList{StudentIDColumn, SemesterColumn, NameColumn, StateColumn, ImpactColumn, OutputDataColumn, CoAuthorsColumn, ConferenceParticipationColumn}
+		WorkIDColumn     = postgres.StringColumn("work_id")
+		StudentIDColumn  = postgres.StringColumn("student_id")
+		SemesterColumn   = postgres.IntegerColumn("semester")
+		NameColumn       = postgres.StringColumn("name")
+		StateColumn      = postgres.StringColumn("state")
+		ImpactColumn     = postgres.FloatColumn("impact")
+		OutputDataColumn = postgres.StringColumn("output_data")
+		CoAuthorsColumn  = postgres.StringColumn("co_authors")
+		WorkTypeColumn   = postgres.StringColumn("work_type")
+		allColumns       = postgres.ColumnList{WorkIDColumn, StudentIDColumn, SemesterColumn, NameColumn, StateColumn, ImpactColumn, OutputDataColumn, CoAuthorsColumn, WorkTypeColumn}
+		mutableColumns   = postgres.ColumnList{StudentIDColumn, SemesterColumn, NameColumn, StateColumn, ImpactColumn, OutputDataColumn, CoAuthorsColumn, WorkTypeColumn}
 	)
 
 	return scientificWorkTable{
 		Table: postgres.NewTable(schemaName, tableName, alias, allColumns...),
 
 		//Columns
-		WorkID:                  WorkIDColumn,
-		StudentID:               StudentIDColumn,
-		Semester:                SemesterColumn,
-		Name:                    NameColumn,
-		State:                   StateColumn,
-		Impact:                  ImpactColumn,
-		OutputData:              OutputDataColumn,
-		CoAuthors:               CoAuthorsColumn,
-		ConferenceParticipation: ConferenceParticipationColumn,
+		WorkID:     WorkIDColumn,
+		StudentID:  StudentIDColumn,
+		Semester:   SemesterColumn,
+		Name:       NameColumn,
+		State:      StateColumn,
+		Impact:     ImpactColumn,
+		OutputData: OutputDataColumn,
+		CoAuthors:  CoAuthorsColumn,
+		WorkType:   WorkTypeColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,

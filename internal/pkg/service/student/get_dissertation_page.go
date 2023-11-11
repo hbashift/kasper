@@ -34,9 +34,6 @@ func (s *Service) GetDissertationPage(ctx context.Context, token string) (*Disse
 	if session.TokenStatus != model.TokenStatus_Active {
 		return nil, ErrNonValidToken
 	}
-	if err != nil {
-		return nil, errors.Wrap(err, "transaction initialization")
-	}
 
 	commonInfo, err := s.studRepo.GetStudentCommonInfo(ctx, s.db, session.ClientID)
 	if err != nil {

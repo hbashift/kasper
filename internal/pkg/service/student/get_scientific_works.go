@@ -8,17 +8,22 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (s *Service) UpsertSemesterPlan(ctx context.Context, token string, progress []*model.SemesterProgress) error {
+func (s *Service) GetScientificWorks(ctx context.Context, token string) ([]*model.ScientificWork, error) {
 	session, err := s.tokenRepo.Authenticate(ctx, token)
 	if err != nil {
-		return errors.Wrap(err, "[Student]")
+		return nil, errors.Wrap(err, "[Student]")
 	}
 
 	if session.TokenStatus != model.TokenStatus_Active {
-		return ErrNonValidToken
+		return nil, ErrNonValidToken
 	}
 
 	//TODO маппинг в доменную модель (должен приходить json)
 
-	return s.semesterRepo.UpsertSemesterPlan(ctx, s.db, progress)
+	works, err := s.scienceRepo.GetScientificWorks(ctx, s.db, session.KasperID)
+	if err != nil {
+		return nil, errors.Wrap(err, "[Student]")
+	}
+
+	return works, nil
 }

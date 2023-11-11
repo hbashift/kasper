@@ -16,6 +16,12 @@ type StudentRepository interface {
 	UpdateStudentCommonInfo(ctx context.Context, tx *pgxpool.Pool, student model.Students) error
 }
 
+type ScientificWorkRepository interface {
+	UpdateStudentScientificWorks(ctx context.Context, tx *pgxpool.Pool, works []*model.ScientificWork) error
+	InsertStudentScientificWorks(ctx context.Context, tx *pgxpool.Pool, works []*model.ScientificWork) error
+	GetScientificWorks(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) ([]*model.ScientificWork, error)
+}
+
 type DissertationRepository interface {
 }
 
@@ -34,6 +40,7 @@ type Service struct {
 	tokenRepo    TokenRepository
 	dRepo        DissertationRepository
 	semesterRepo SemesterRepository
+	scienceRepo  ScientificWorkRepository
 	db           *pgxpool.Pool
 }
 

@@ -19,6 +19,7 @@ type authorizationTokenTable struct {
 	// Columns
 	TokenID        postgres.ColumnString
 	ClientID       postgres.ColumnString
+	KasperID       postgres.ColumnString
 	TokenStatus    postgres.ColumnString
 	TokenNumber    postgres.ColumnString
 	CreatedAt      postgres.ColumnTimestampz
@@ -66,13 +67,14 @@ func newAuthorizationTokenTableImpl(schemaName, tableName, alias string) authori
 	var (
 		TokenIDColumn        = postgres.StringColumn("token_id")
 		ClientIDColumn       = postgres.StringColumn("client_id")
+		KasperIDColumn       = postgres.StringColumn("kasper_id")
 		TokenStatusColumn    = postgres.StringColumn("token_status")
 		TokenNumberColumn    = postgres.StringColumn("token_number")
 		CreatedAtColumn      = postgres.TimestampzColumn("created_at")
 		UpdatedAtColumn      = postgres.TimestampzColumn("updated_at")
 		ExpirationDateColumn = postgres.DateColumn("expiration_date")
-		allColumns           = postgres.ColumnList{TokenIDColumn, ClientIDColumn, TokenStatusColumn, TokenNumberColumn, CreatedAtColumn, UpdatedAtColumn, ExpirationDateColumn}
-		mutableColumns       = postgres.ColumnList{ClientIDColumn, TokenStatusColumn, TokenNumberColumn, CreatedAtColumn, UpdatedAtColumn, ExpirationDateColumn}
+		allColumns           = postgres.ColumnList{TokenIDColumn, ClientIDColumn, KasperIDColumn, TokenStatusColumn, TokenNumberColumn, CreatedAtColumn, UpdatedAtColumn, ExpirationDateColumn}
+		mutableColumns       = postgres.ColumnList{ClientIDColumn, KasperIDColumn, TokenStatusColumn, TokenNumberColumn, CreatedAtColumn, UpdatedAtColumn, ExpirationDateColumn}
 	)
 
 	return authorizationTokenTable{
@@ -81,6 +83,7 @@ func newAuthorizationTokenTableImpl(schemaName, tableName, alias string) authori
 		//Columns
 		TokenID:        TokenIDColumn,
 		ClientID:       ClientIDColumn,
+		KasperID:       KasperIDColumn,
 		TokenStatus:    TokenStatusColumn,
 		TokenNumber:    TokenNumberColumn,
 		CreatedAt:      CreatedAtColumn,

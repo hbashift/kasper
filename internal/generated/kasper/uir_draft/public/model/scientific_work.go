@@ -12,13 +12,13 @@ import (
 )
 
 type ScientificWork struct {
-	WorkID                  int32 `sql:"primary_key"`
-	StudentID               uuid.UUID
-	Semester                int32
-	Name                    string
-	State                   string
-	Impact                  float64
-	OutputData              *string
-	CoAuthors               *string
-	ConferenceParticipation string
+	WorkID     uuid.UUID `sql:"primary_key"`
+	StudentID  uuid.UUID
+	Semester   int32
+	Name       string
+	State      string
+	Impact     float64
+	OutputData *string
+	CoAuthors  *string
+	WorkType   *string
 }

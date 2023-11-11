@@ -15,6 +15,7 @@ import (
 type AuthorizationToken struct {
 	TokenID        uuid.UUID `sql:"primary_key"`
 	ClientID       uuid.UUID
+	KasperID       uuid.UUID
 	TokenStatus    TokenStatus
 	TokenNumber    string
 	CreatedAt      time.Time
