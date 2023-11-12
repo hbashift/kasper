@@ -31,14 +31,6 @@ func (r *SemesterRepository) GetStudentDissertationPlan(ctx context.Context, tx 
 	return plan, nil
 }
 
-func (r *SemesterRepository) UpsertSemesterPlan(ctx context.Context, tx *pgxpool.Pool, progress []*model.SemesterProgress) error {
-	if err := r.upsertSemesterPlanTx(ctx, tx, progress); err != nil {
-		return errors.Wrap(err, "UpsertSemesterPlan(): error during transaction")
-	}
-
-	return nil
-}
-
 func (r *SemesterRepository) getStudentDissertationPlanTx(ctx context.Context, tx *pgxpool.Pool, clientID uuid.UUID) ([]*models.StudentDissertationPlan, error) {
 	stmt, args := table.SemesterProgress.
 		SELECT(
@@ -70,6 +62,14 @@ func (r *SemesterRepository) getStudentDissertationPlanTx(ctx context.Context, t
 	}
 
 	return studentPlan, nil
+}
+
+func (r *SemesterRepository) UpsertSemesterPlan(ctx context.Context, tx *pgxpool.Pool, progress []*model.SemesterProgress) error {
+	if err := r.upsertSemesterPlanTx(ctx, tx, progress); err != nil {
+		return errors.Wrap(err, "UpsertSemesterPlan(): error during transaction")
+	}
+
+	return nil
 }
 
 func (r *SemesterRepository) upsertSemesterPlanTx(ctx context.Context, tx *pgxpool.Pool, progress []*model.SemesterProgress) error {
@@ -104,4 +104,16 @@ func (r *SemesterRepository) upsertSemesterPlanTx(ctx context.Context, tx *pgxpo
 	}
 
 	return nil
+}
+
+func scanDissertationPlan(row pgx.Row, target *models.StudentDissertationPlan) error {
+	return row.Scan(
+		&target.Name,
+		&target.First,
+		&target.Second,
+		&target.Third,
+		&target.Forth,
+		&target.Fifth,
+		&target.Sixth,
+	)
 }
