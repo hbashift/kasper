@@ -18,6 +18,8 @@ func (h *studentHandler) DeleteScientificWork(ctx *gin.Context) {
 
 	log.Println("starting delete")
 
+	log.Printf("config value: %s", ctx.Request.FormValue("config"))
+
 	reqBody := mapping.DeleteWorkIDs{}
 	if err = ctx.ShouldBindJSON(&reqBody); err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
