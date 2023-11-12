@@ -20,17 +20,24 @@ func (s *Service) InsertScientificWorks(ctx context.Context, token string, works
 		return ErrNonValidToken
 	}
 
-	var worksDomain []*model.ScientificWork
-
 	for _, work := range works {
-		workDomain := mapping.MapScientificWorkToDomain(work, session)
-		workDomain.WorkID = uuid.New()
-		worksDomain = append(worksDomain, workDomain)
-	}
+		if work.WorkID == nil {
+			workDomain := mapping.MapScientificWorkToDomain(work, session)
+			workDomain.WorkID = uuid.New()
 
-	err = s.scienceRepo.InsertStudentScientificWorks(ctx, s.db, worksDomain)
-	if err != nil {
-		return err
+			err = s.scienceRepo.InsertStudentScientificWorks(ctx, s.db, workDomain)
+			if err != nil {
+				return err
+			}
+
+		} else {
+			workDomain := mapping.MapScientificWorkToDomain(work, session)
+			err = s.scienceRepo.UpdateStudentScientificWorks(ctx, s.db, workDomain)
+			if err != nil {
+				return err
+			}
+
+		}
 	}
 
 	return nil

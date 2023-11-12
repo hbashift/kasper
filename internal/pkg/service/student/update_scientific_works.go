@@ -19,17 +19,13 @@ func (s *Service) UpdateScientificWorks(ctx context.Context, token string, works
 		return ErrNonValidToken
 	}
 
-	var worksDomain []*model.ScientificWork
-
 	for _, work := range works {
 		workDomain := mapping.MapScientificWorkToDomain(work, session)
 
-		worksDomain = append(worksDomain, workDomain)
-	}
-
-	err = s.scienceRepo.UpdateStudentScientificWorks(ctx, s.db, worksDomain)
-	if err != nil {
-		return errors.Wrap(err, "[Student]")
+		err = s.scienceRepo.UpdateStudentScientificWorks(ctx, s.db, workDomain)
+		if err != nil {
+			return errors.Wrap(err, "[Student]")
+		}
 	}
 
 	return nil

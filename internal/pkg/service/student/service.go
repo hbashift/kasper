@@ -17,8 +17,8 @@ type StudentRepository interface {
 }
 
 type ScientificWorkRepository interface {
-	UpdateStudentScientificWorks(ctx context.Context, tx *pgxpool.Pool, works []*model.ScientificWork) error
-	InsertStudentScientificWorks(ctx context.Context, tx *pgxpool.Pool, works []*model.ScientificWork) error
+	UpdateStudentScientificWorks(ctx context.Context, tx *pgxpool.Pool, works *model.ScientificWork) error
+	InsertStudentScientificWorks(ctx context.Context, tx *pgxpool.Pool, works *model.ScientificWork) error
 	GetScientificWorks(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) ([]*model.ScientificWork, error)
 }
 
