@@ -40,6 +40,7 @@ func scanAuthorizationToken(row pgx.Row, target *model.AuthorizationToken) error
 	return row.Scan(
 		&target.TokenID,
 		&target.ClientID,
+		&target.KasperID,
 		&target.TokenStatus,
 		&target.TokenNumber,
 		&target.CreatedAt,

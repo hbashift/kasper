@@ -44,6 +44,6 @@ type Service struct {
 	db           *pgxpool.Pool
 }
 
-func NewService(studRepo StudentRepository, tokenRepo TokenRepository, dRepo DissertationRepository, semesterRepo SemesterRepository, db *pgxpool.Pool) *Service {
-	return &Service{studRepo: studRepo, tokenRepo: tokenRepo, dRepo: dRepo, semesterRepo: semesterRepo, db: db}
+func NewService(studRepo StudentRepository, tokenRepo TokenRepository, dRepo DissertationRepository, semesterRepo SemesterRepository, scienceRepo ScientificWorkRepository, db *pgxpool.Pool) *Service {
+	return &Service{studRepo: studRepo, tokenRepo: tokenRepo, dRepo: dRepo, semesterRepo: semesterRepo, scienceRepo: scienceRepo, db: db}
 }

@@ -21,7 +21,7 @@ func NewScientificWork(postgres *pgxpool.Pool) *ScientificWork {
 	return &ScientificWork{postgres: postgres}
 }
 
-func (r *StudentRepository) GetScientificWorks(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) ([]*model.ScientificWork, error) {
+func (r *ScientificWork) GetScientificWorks(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) ([]*model.ScientificWork, error) {
 	result, err := r.getScientificWorksTx(ctx, tx, studentID)
 	if err != nil {
 		return nil, errors.Wrap(err, "GetScientificWorks()")
@@ -30,7 +30,7 @@ func (r *StudentRepository) GetScientificWorks(ctx context.Context, tx *pgxpool.
 	return result, nil
 }
 
-func (r *StudentRepository) getScientificWorksTx(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) ([]*model.ScientificWork, error) {
+func (r *ScientificWork) getScientificWorksTx(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) ([]*model.ScientificWork, error) {
 	var works []*model.ScientificWork
 
 	stmt, args := table.ScientificWork.
@@ -67,7 +67,7 @@ func (r *StudentRepository) getScientificWorksTx(ctx context.Context, tx *pgxpoo
 	return works, nil
 }
 
-func (r *StudentRepository) InsertStudentScientificWorks(ctx context.Context, tx *pgxpool.Pool, works []*model.ScientificWork) error {
+func (r *ScientificWork) InsertStudentScientificWorks(ctx context.Context, tx *pgxpool.Pool, works []*model.ScientificWork) error {
 	if err := r.insertStudentScientificWorksTx(ctx, tx, works); err != nil {
 		return errors.Wrap(err, "InsertStudentScientificWorks()")
 	}
@@ -75,10 +75,12 @@ func (r *StudentRepository) InsertStudentScientificWorks(ctx context.Context, tx
 	return nil
 }
 
-func (r *StudentRepository) insertStudentScientificWorksTx(ctx context.Context, tx *pgxpool.Pool, works []*model.ScientificWork) error {
+func (r *ScientificWork) insertStudentScientificWorksTx(ctx context.Context, tx *pgxpool.Pool, works []*model.ScientificWork) error {
 	stmt, args := table.ScientificWork.
-		INSERT(table.ScientificWork.MutableColumns).
+		INSERT(table.ScientificWork.AllColumns).
 		MODELS(works).
+		ON_CONFLICT(table.ScientificWork.StudentID, table.ScientificWork.Name).
+		DO_NOTHING().
 		Sql()
 
 	if err := tx.BeginFunc(ctx, func(tx pgx.Tx) error {
@@ -94,7 +96,7 @@ func (r *StudentRepository) insertStudentScientificWorksTx(ctx context.Context, 
 	return nil
 }
 
-func (r *StudentRepository) UpdateStudentScientificWorks(ctx context.Context, tx *pgxpool.Pool, works []*model.ScientificWork) error {
+func (r *ScientificWork) UpdateStudentScientificWorks(ctx context.Context, tx *pgxpool.Pool, works []*model.ScientificWork) error {
 	for _, work := range works {
 		if err := r.updateStudentScientificWorkTx(ctx, tx, work); err != nil {
 			return errors.Wrap(err, "UpdateStudentScientificWorks()")
@@ -104,7 +106,7 @@ func (r *StudentRepository) UpdateStudentScientificWorks(ctx context.Context, tx
 	return nil
 }
 
-func (r *StudentRepository) updateStudentScientificWorkTx(ctx context.Context, tx *pgxpool.Pool, work *model.ScientificWork) error {
+func (r *ScientificWork) updateStudentScientificWorkTx(ctx context.Context, tx *pgxpool.Pool, work *model.ScientificWork) error {
 	stmt, args := table.ScientificWork.
 		UPDATE(table.ScientificWork.MutableColumns).
 		MODEL(work).
