@@ -16,6 +16,7 @@ type StudentService interface {
 	GetScientificWorks(ctx context.Context, token string) ([]*mapping.ScientificWork, error)
 	InsertScientificWorks(ctx context.Context, token string, works []*mapping.ScientificWork) error
 	UpdateScientificWorks(ctx context.Context, token string, works []*mapping.ScientificWork) error
+	DeleteScientificWork(ctx context.Context, token string, deleteIDs *mapping.DeleteWorkIDs) error
 }
 
 type studentHandler struct {

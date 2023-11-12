@@ -124,6 +124,40 @@ func (r *ScientificWork) updateStudentScientificWorkTx(ctx context.Context, tx *
 	return nil
 }
 
+func (r *ScientificWork) DeleteStudentScientificWorks(ctx context.Context, tx *pgxpool.Pool, workIDs []*uuid.UUID) error {
+	var ids []postgres.Expression
+
+	for _, workID := range workIDs {
+		id := postgres.UUID(workID)
+		ids = append(ids, id)
+	}
+
+	if err := r.deleteStudentScientificWorks(ctx, tx, ids); err != nil {
+		return errors.Wrap(err, "DeleteStudentScientificWorks()")
+	}
+
+	return nil
+}
+
+func (r *ScientificWork) deleteStudentScientificWorks(ctx context.Context, tx *pgxpool.Pool, workIDs []postgres.Expression) error {
+	stmt, args := table.ScientificWork.
+		DELETE().
+		WHERE(table.ScientificWork.WorkID.IN(workIDs...)).
+		Sql()
+
+	if err := tx.BeginFunc(ctx, func(tx pgx.Tx) error {
+		if _, err := tx.Exec(ctx, stmt, args...); err != nil {
+			return err
+		}
+
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "deleteStudentScientificWorks()")
+	}
+
+	return nil
+}
+
 func scanScientificWork(row pgx.Row, target *model.ScientificWork) error {
 	return row.Scan(
 		&target.WorkID,

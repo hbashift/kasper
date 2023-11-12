@@ -2,6 +2,8 @@ package mapping
 
 import (
 	"uir_draft/internal/generated/kasper/uir_draft/public/model"
+
+	"github.com/google/uuid"
 )
 
 func MapScientificWorkToDomain(work *ScientificWork, session *model.AuthorizationToken) *model.ScientificWork {
@@ -36,4 +38,19 @@ func MapScientificWorkFromDomain(work *model.ScientificWork) *ScientificWork {
 	}
 
 	return res
+}
+
+func MapWorkIDsToDomain(ids *DeleteWorkIDs) ([]*uuid.UUID, error) {
+	var UUIDs []*uuid.UUID
+
+	for _, id := range ids.IDs {
+		uid, err := uuid.Parse(id)
+		if err != nil {
+			return nil, err
+		}
+
+		UUIDs = append(UUIDs, &uid)
+	}
+
+	return UUIDs, nil
 }

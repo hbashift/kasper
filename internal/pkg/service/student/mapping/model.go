@@ -38,3 +38,7 @@ type SemesterProgress struct {
 type Progress struct {
 	Progress []SemesterProgress `json:"progress,omitempty"`
 }
+
+type DeleteWorkIDs struct {
+	IDs []string `json:"ids,omitempty"`
+}
