@@ -17,14 +17,14 @@ func (h *studentHandler) InsertScientificWorks(ctx *gin.Context) {
 		return
 	}
 
-	log.Println(fmt.Sprintf("%s", ctx.Request.Body))
-
 	reqBody := mapping.Works{}
 	err = ctx.ShouldBindJSON(&reqBody)
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
+
+	log.Println(fmt.Sprintf("%+v", reqBody.Works))
 
 	//var scientificWorks []*mapping.ScientificWork
 	//
