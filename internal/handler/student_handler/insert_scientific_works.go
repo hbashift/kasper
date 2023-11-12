@@ -38,5 +38,5 @@ func (h *studentHandler) InsertScientificWorks(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, nil)
+	ctx.JSON(http.StatusOK, scientificWorks)
 }
