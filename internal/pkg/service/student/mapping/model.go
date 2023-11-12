@@ -7,14 +7,14 @@ import (
 )
 
 type ScientificWork struct {
-	WorkID     *uuid.UUID `json:"workID,omitempty"`
+	WorkID     *uuid.UUID `json:"work_id,omitempty"`
 	Semester   int32      `json:"semester,omitempty"`
 	Name       string     `json:"name,omitempty"`
 	State      string     `json:"state,omitempty"`
 	Impact     float64    `json:"impact,omitempty"`
-	OutputData *string    `json:"outputData,omitempty"`
-	CoAuthors  *string    `json:"coAuthors,omitempty"`
-	WorkType   *string    `json:"workType,omitempty"`
+	OutputData *string    `json:"output_data,omitempty"`
+	CoAuthors  *string    `json:"co_authors,omitempty"`
+	WorkType   *string    `json:"work_type,omitempty"`
 }
 
 type SemesterProgress struct {
