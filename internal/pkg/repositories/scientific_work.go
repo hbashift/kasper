@@ -97,25 +97,26 @@ func (r *ScientificWork) insertStudentScientificWorksTx(ctx context.Context, tx 
 }
 
 func (r *ScientificWork) UpdateStudentScientificWorks(ctx context.Context, tx *pgxpool.Pool, works []*model.ScientificWork) error {
-	for _, work := range works {
-		if err := r.updateStudentScientificWorkTx(ctx, tx, work); err != nil {
-			return errors.Wrap(err, "UpdateStudentScientificWorks()")
-		}
+	if err := r.updateStudentScientificWorkTx(ctx, tx, works); err != nil {
+		return errors.Wrap(err, "UpdateStudentScientificWorks()")
 	}
 
 	return nil
 }
 
-func (r *ScientificWork) updateStudentScientificWorkTx(ctx context.Context, tx *pgxpool.Pool, work *model.ScientificWork) error {
-	stmt, args := table.ScientificWork.
-		UPDATE(table.ScientificWork.MutableColumns).
-		MODEL(work).
-		WHERE(table.ScientificWork.WorkID.EQ(postgres.UUID(work.WorkID))).
-		Sql()
+func (r *ScientificWork) updateStudentScientificWorkTx(ctx context.Context, tx *pgxpool.Pool, works []*model.ScientificWork) error {
 
 	if err := tx.BeginFunc(ctx, func(tx pgx.Tx) error {
-		if _, err := tx.Exec(ctx, stmt, args...); err != nil {
-			return err
+		for _, work := range works {
+			stmt, args := table.ScientificWork.
+				UPDATE(table.ScientificWork.MutableColumns).
+				MODEL(work).
+				WHERE(table.ScientificWork.WorkID.EQ(postgres.UUID(work.WorkID))).
+				Sql()
+
+			if _, err := tx.Exec(ctx, stmt, args...); err != nil {
+				return err
+			}
 		}
 
 		return nil
