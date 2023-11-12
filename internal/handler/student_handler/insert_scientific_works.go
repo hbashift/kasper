@@ -1,12 +1,13 @@
 package student_handler
 
 import (
+	"fmt"
+	"log"
 	"net/http"
 
 	"uir_draft/internal/pkg/service/student/mapping"
 
 	"github.com/gin-gonic/gin"
-	"google.golang.org/appengine/log"
 )
 
 func (h *studentHandler) InsertScientificWorks(ctx *gin.Context) {
@@ -16,7 +17,7 @@ func (h *studentHandler) InsertScientificWorks(ctx *gin.Context) {
 		return
 	}
 
-	log.Warningf(ctx, "%s", ctx.Request.Body)
+	log.Println(fmt.Sprintf("%s", ctx.Request.Body))
 
 	reqBody := []*mapping.ScientificWork{}
 	err = ctx.ShouldBindJSON(&reqBody)
