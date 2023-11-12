@@ -1,6 +1,7 @@
 package student_handler
 
 import (
+	"log"
 	"net/http"
 
 	"uir_draft/internal/pkg/service/student/mapping"
@@ -15,11 +16,15 @@ func (h *studentHandler) DeleteScientificWork(ctx *gin.Context) {
 		return
 	}
 
+	log.Println("starting delete")
+
 	reqBody := mapping.DeleteWorkIDs{}
 	if err = ctx.ShouldBindJSON(&reqBody); err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
+
+	log.Printf("Request body: %+v", reqBody)
 
 	if err = h.service.DeleteScientificWork(ctx, token.String(), &reqBody); err != nil {
 		ctx.AbortWithError(http.StatusInternalServerError, err)
