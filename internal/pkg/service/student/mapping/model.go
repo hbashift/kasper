@@ -17,6 +17,10 @@ type ScientificWork struct {
 	WorkType   *string    `json:"work_type,omitempty"`
 }
 
+type Works struct {
+	Works []*ScientificWork `json:"works,omitempty"`
+}
+
 type SemesterProgress struct {
 	SemesterProgressID int32      `json:"semesterProgressID,omitempty"`
 	StudentID          uuid.UUID  `json:"studentID,omitempty"`
