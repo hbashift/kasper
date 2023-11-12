@@ -22,3 +22,18 @@ func MapScientificWorkToDomain(work *ScientificWork, session *model.Authorizatio
 
 	return res
 }
+
+func MapScientificWorkFromDomain(work *model.ScientificWork) *ScientificWork {
+	res := &ScientificWork{
+		Semester:   work.Semester,
+		Name:       work.Name,
+		State:      work.Name,
+		Impact:     work.Impact,
+		OutputData: work.OutputData,
+		CoAuthors:  work.CoAuthors,
+		WorkType:   work.WorkType,
+		WorkID:     &work.WorkID,
+	}
+
+	return res
+}

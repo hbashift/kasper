@@ -3,7 +3,6 @@ package student_handler
 import (
 	"context"
 
-	"uir_draft/internal/generated/kasper/uir_draft/public/model"
 	"uir_draft/internal/pkg/service/student"
 	"uir_draft/internal/pkg/service/student/mapping"
 
@@ -14,7 +13,7 @@ import (
 type StudentService interface {
 	GetDissertationPage(ctx context.Context, token string) (*student.DissertationPage, error)
 	UpsertSemesterPlan(ctx context.Context, token string, progress *mapping.Progress) error
-	GetScientificWorks(ctx context.Context, token string) ([]*model.ScientificWork, error)
+	GetScientificWorks(ctx context.Context, token string) ([]*mapping.ScientificWork, error)
 	InsertScientificWorks(ctx context.Context, token string, works []*mapping.ScientificWork) error
 	UpdateScientificWorks(ctx context.Context, token string, works []*mapping.ScientificWork) error
 }
