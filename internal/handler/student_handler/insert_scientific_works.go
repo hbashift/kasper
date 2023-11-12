@@ -29,7 +29,16 @@ func (h *studentHandler) InsertScientificWorks(ctx *gin.Context) {
 	var scientificWorks []*mapping.ScientificWork
 
 	for _, work := range reqBody.Works {
-		p := &work
+		p := &mapping.ScientificWork{
+			WorkID:     work.WorkID,
+			Semester:   work.Semester,
+			Name:       work.Name,
+			State:      work.State,
+			Impact:     work.Impact,
+			OutputData: work.OutputData,
+			CoAuthors:  work.CoAuthors,
+			WorkType:   work.WorkType,
+		}
 		scientificWorks = append(scientificWorks, p)
 	}
 
