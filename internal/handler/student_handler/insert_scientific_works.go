@@ -26,14 +26,14 @@ func (h *studentHandler) InsertScientificWorks(ctx *gin.Context) {
 
 	log.Println(fmt.Sprintf("%+v", reqBody.Works))
 
-	//var scientificWorks []*mapping.ScientificWork
-	//
-	//for _, work := range reqBody.Works {
-	//	p := &work
-	//	scientificWorks = append(scientificWorks, p)
-	//}
+	var scientificWorks []*mapping.ScientificWork
 
-	if err := h.service.InsertScientificWorks(ctx, token.String(), reqBody.Works); err != nil {
+	for _, work := range reqBody.Works {
+		p := &work
+		scientificWorks = append(scientificWorks, p)
+	}
+
+	if err := h.service.InsertScientificWorks(ctx, token.String(), scientificWorks); err != nil {
 		ctx.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}

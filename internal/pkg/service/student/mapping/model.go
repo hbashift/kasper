@@ -18,7 +18,7 @@ type ScientificWork struct {
 }
 
 type Works struct {
-	Works []*ScientificWork `json:"works,omitempty"`
+	Works []ScientificWork `json:"works,omitempty"`
 }
 
 type SemesterProgress struct {
