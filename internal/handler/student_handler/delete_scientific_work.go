@@ -1,7 +1,6 @@
 package student_handler
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -16,10 +15,6 @@ func (h *studentHandler) DeleteScientificWork(ctx *gin.Context) {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
-
-	log.Println(fmt.Sprintf("starting delete"))
-
-	log.Printf(fmt.Sprintf("config value: %s", ctx.Request.FormValue("config")))
 
 	reqBody := mapping.DeleteWorkIDs{}
 	if err = ctx.ShouldBindJSON(&reqBody); err != nil {

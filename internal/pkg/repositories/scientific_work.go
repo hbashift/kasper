@@ -79,8 +79,6 @@ func (r *ScientificWork) insertStudentScientificWorksTx(ctx context.Context, tx 
 	stmt, args := table.ScientificWork.
 		INSERT(table.ScientificWork.AllColumns).
 		MODEL(work).
-		ON_CONFLICT(table.ScientificWork.StudentID, table.ScientificWork.Name).
-		DO_NOTHING().
 		Sql()
 
 	if err := tx.BeginFunc(ctx, func(tx pgx.Tx) error {
