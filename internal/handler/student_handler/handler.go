@@ -14,9 +14,9 @@ type StudentService interface {
 	GetDissertationPage(ctx context.Context, token string) (*student.DissertationPage, error)
 	UpsertSemesterPlan(ctx context.Context, token string, progress *mapping.Progress) error
 	GetScientificWorks(ctx context.Context, token string) ([]*mapping.ScientificWork, error)
-	InsertScientificWorks(ctx context.Context, token string, works []*mapping.ScientificWork) error
+	InsertScientificWorks(ctx context.Context, token string, works []*mapping.ScientificWork) ([]*mapping.ScientificWork, error)
 	UpdateScientificWorks(ctx context.Context, token string, works []*mapping.ScientificWork) error
-	DeleteScientificWork(ctx context.Context, token string, deleteIDs *mapping.DeleteWorkIDs) error
+	DeleteScientificWork(ctx context.Context, token string, deleteIDs *mapping.DeleteWorkIDs) ([]*mapping.ScientificWork, error)
 }
 
 type studentHandler struct {

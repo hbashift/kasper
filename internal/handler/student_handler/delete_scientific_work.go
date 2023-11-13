@@ -24,10 +24,11 @@ func (h *studentHandler) DeleteScientificWork(ctx *gin.Context) {
 
 	log.Printf("Request body: %+v", reqBody)
 
-	if err = h.service.DeleteScientificWork(ctx, token.String(), &reqBody); err != nil {
+	newWorks, err := h.service.DeleteScientificWork(ctx, token.String(), &reqBody)
+	if err != nil {
 		ctx.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, nil)
+	ctx.JSON(http.StatusOK, newWorks)
 }

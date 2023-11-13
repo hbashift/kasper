@@ -38,14 +38,16 @@ func (h *studentHandler) InsertScientificWorks(ctx *gin.Context) {
 			OutputData: work.OutputData,
 			CoAuthors:  work.CoAuthors,
 			WorkType:   work.WorkType,
+			Volume:     work.Volume,
 		}
 		scientificWorks = append(scientificWorks, p)
 	}
 
-	if err := h.service.InsertScientificWorks(ctx, token.String(), scientificWorks); err != nil {
+	newWorks, err := h.service.InsertScientificWorks(ctx, token.String(), scientificWorks)
+	if err != nil {
 		ctx.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, scientificWorks)
+	ctx.JSON(http.StatusOK, newWorks)
 }

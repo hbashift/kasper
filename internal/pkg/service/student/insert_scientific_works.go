@@ -10,35 +10,38 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (s *Service) InsertScientificWorks(ctx context.Context, token string, works []*mapping.ScientificWork) error {
+func (s *Service) InsertScientificWorks(ctx context.Context, token string, works []*mapping.ScientificWork) ([]*mapping.ScientificWork, error) {
 	session, err := s.tokenRepo.Authenticate(ctx, token)
 	if err != nil {
-		return errors.Wrap(err, "[Student]")
+		return nil, errors.Wrap(err, "[Student]")
 	}
 
 	if session.TokenStatus != model.TokenStatus_Active {
-		return ErrNonValidToken
+		return nil, errors.Wrap(ErrNonValidToken, "[Student]")
 	}
 
+	// Upserting scientific works
 	for _, work := range works {
-		if work.WorkID == nil {
+		switch {
+		case work.WorkID == nil:
 			workDomain := mapping.MapScientificWorkToDomain(work, session)
 			workDomain.WorkID = uuid.New()
 
 			err = s.scienceRepo.InsertStudentScientificWorks(ctx, s.db, workDomain)
 			if err != nil {
-				return err
+				return nil, errors.Wrap(err, "[Student]")
 			}
 
-		} else {
+		case work.WorkID != nil:
 			workDomain := mapping.MapScientificWorkToDomain(work, session)
 			err = s.scienceRepo.UpdateStudentScientificWorks(ctx, s.db, workDomain)
 			if err != nil {
-				return err
+				return nil, errors.Wrap(err, "[Student]")
 			}
 
 		}
 	}
 
-	return nil
+	// Grepping all scientific works
+	return s.grepFromDBScientificWorks(ctx, session)
 }

@@ -16,7 +16,10 @@ func MapScientificWorkToDomain(work *ScientificWork, session *model.Authorizatio
 		OutputData: work.OutputData,
 		CoAuthors:  work.CoAuthors,
 		WorkType:   work.WorkType,
-		Volume:     &work.Volume,
+	}
+
+	if work.Volume > 0 {
+		res.Volume = &work.Volume
 	}
 
 	if work.WorkID != nil {

@@ -9,21 +9,23 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (s *Service) DeleteScientificWork(ctx context.Context, token string, deleteIDs *mapping.DeleteWorkIDs) error {
+func (s *Service) DeleteScientificWork(ctx context.Context, token string, deleteIDs *mapping.DeleteWorkIDs) ([]*mapping.ScientificWork, error) {
 	session, err := s.tokenRepo.Authenticate(ctx, token)
 	if err != nil {
-		return errors.Wrap(err, "authentication error")
+		return nil, errors.Wrap(err, "[Student]")
 	}
 
 	if session.TokenStatus != model.TokenStatus_Active {
-		return ErrNonValidToken
+		return nil, errors.Wrap(ErrNonValidToken, "[Student]")
 	}
 
 	workIDs, err := mapping.MapWorkIDsToDomain(deleteIDs)
 
+	// Deleting scientific works
 	if err = s.scienceRepo.DeleteStudentScientificWorks(ctx, s.db, workIDs); err != nil {
-		return errors.Wrap(err, "[Student]")
+		return nil, errors.Wrap(err, "[Student]")
 	}
 
-	return nil
+	// Grepping scientific works
+	return s.grepFromDBScientificWorks(ctx, session)
 }
