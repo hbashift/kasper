@@ -1,8 +1,6 @@
 package student_handler
 
 import (
-	"fmt"
-	"log"
 	"net/http"
 
 	"uir_draft/internal/pkg/service/student/mapping"
@@ -23,8 +21,6 @@ func (h *studentHandler) InsertScientificWorks(ctx *gin.Context) {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
-
-	log.Println(fmt.Sprintf("[Insert] Request body %+v", reqBody.Works))
 
 	var scientificWorks []*mapping.ScientificWork
 
@@ -48,8 +44,6 @@ func (h *studentHandler) InsertScientificWorks(ctx *gin.Context) {
 		ctx.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
-
-	log.Println(fmt.Sprintf("[Insert] Response body %+v", newWorks))
 
 	ctx.JSON(http.StatusOK, newWorks)
 }

@@ -30,6 +30,13 @@ func (h *studentHandler) DeleteScientificWork(ctx *gin.Context) {
 		return
 	}
 
-	log.Printf("[Delete] Response body: %+v", newWorks)
+	var works []mapping.ScientificWork
+
+	for _, m := range newWorks {
+		works = append(works, *m)
+	}
+
+	log.Printf("[Delete] Response body: %+v", works)
+
 	ctx.JSON(http.StatusOK, newWorks)
 }
