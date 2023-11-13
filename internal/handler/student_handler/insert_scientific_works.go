@@ -24,7 +24,7 @@ func (h *studentHandler) InsertScientificWorks(ctx *gin.Context) {
 		return
 	}
 
-	log.Println(fmt.Sprintf("%+v", reqBody.Works))
+	log.Println(fmt.Sprintf("[Insert] Request body %+v", reqBody.Works))
 
 	var scientificWorks []*mapping.ScientificWork
 
@@ -48,6 +48,8 @@ func (h *studentHandler) InsertScientificWorks(ctx *gin.Context) {
 		ctx.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
+
+	log.Println(fmt.Sprintf("[Insert] Response body %+v", newWorks))
 
 	ctx.JSON(http.StatusOK, newWorks)
 }

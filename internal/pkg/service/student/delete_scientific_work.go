@@ -2,6 +2,7 @@ package student
 
 import (
 	"context"
+	"time"
 
 	"uir_draft/internal/generated/kasper/uir_draft/public/model"
 	"uir_draft/internal/pkg/service/student/mapping"
@@ -26,6 +27,7 @@ func (s *Service) DeleteScientificWork(ctx context.Context, token string, delete
 		return nil, errors.Wrap(err, "[Student]")
 	}
 
+	time.Sleep(time.Second * 1)
 	// Grepping scientific works
 	return s.grepFromDBScientificWorks(ctx, session)
 }
