@@ -15,6 +15,7 @@ type ScientificWork struct {
 	OutputData *string    `json:"output_data,omitempty"`
 	CoAuthors  *string    `json:"co_authors,omitempty"`
 	WorkType   *string    `json:"work_type,omitempty"`
+	Volume     int32      `json:"volume,omitempty"`
 }
 
 type Works struct {

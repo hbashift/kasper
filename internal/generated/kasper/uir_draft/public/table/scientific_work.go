@@ -26,6 +26,7 @@ type scientificWorkTable struct {
 	OutputData postgres.ColumnString
 	CoAuthors  postgres.ColumnString
 	WorkType   postgres.ColumnString
+	Volume     postgres.ColumnInteger
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -75,8 +76,9 @@ func newScientificWorkTableImpl(schemaName, tableName, alias string) scientificW
 		OutputDataColumn = postgres.StringColumn("output_data")
 		CoAuthorsColumn  = postgres.StringColumn("co_authors")
 		WorkTypeColumn   = postgres.StringColumn("work_type")
-		allColumns       = postgres.ColumnList{WorkIDColumn, StudentIDColumn, SemesterColumn, NameColumn, StateColumn, ImpactColumn, OutputDataColumn, CoAuthorsColumn, WorkTypeColumn}
-		mutableColumns   = postgres.ColumnList{StudentIDColumn, SemesterColumn, NameColumn, StateColumn, ImpactColumn, OutputDataColumn, CoAuthorsColumn, WorkTypeColumn}
+		VolumeColumn     = postgres.IntegerColumn("volume")
+		allColumns       = postgres.ColumnList{WorkIDColumn, StudentIDColumn, SemesterColumn, NameColumn, StateColumn, ImpactColumn, OutputDataColumn, CoAuthorsColumn, WorkTypeColumn, VolumeColumn}
+		mutableColumns   = postgres.ColumnList{StudentIDColumn, SemesterColumn, NameColumn, StateColumn, ImpactColumn, OutputDataColumn, CoAuthorsColumn, WorkTypeColumn, VolumeColumn}
 	)
 
 	return scientificWorkTable{
@@ -92,6 +94,7 @@ func newScientificWorkTableImpl(schemaName, tableName, alias string) scientificW
 		OutputData: OutputDataColumn,
 		CoAuthors:  CoAuthorsColumn,
 		WorkType:   WorkTypeColumn,
+		Volume:     VolumeColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,

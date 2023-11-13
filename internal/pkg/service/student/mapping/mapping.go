@@ -16,6 +16,7 @@ func MapScientificWorkToDomain(work *ScientificWork, session *model.Authorizatio
 		OutputData: work.OutputData,
 		CoAuthors:  work.CoAuthors,
 		WorkType:   work.WorkType,
+		Volume:     &work.Volume,
 	}
 
 	if work.WorkID != nil {
@@ -35,6 +36,10 @@ func MapScientificWorkFromDomain(work *model.ScientificWork) *ScientificWork {
 		CoAuthors:  work.CoAuthors,
 		WorkType:   work.WorkType,
 		WorkID:     &work.WorkID,
+	}
+
+	if work.Volume != nil {
+		res.Volume = *work.Volume
 	}
 
 	return res

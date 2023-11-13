@@ -18,4 +18,5 @@ func UseSchema(schema string) {
 	StudentSupervisor = StudentSupervisor.FromSchema(schema)
 	Students = Students.FromSchema(schema)
 	Supervisors = Supervisors.FromSchema(schema)
+	TeachingLoad = TeachingLoad.FromSchema(schema)
 }

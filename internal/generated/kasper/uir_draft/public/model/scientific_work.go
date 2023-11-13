@@ -21,4 +21,5 @@ type ScientificWork struct {
 	OutputData *string
 	CoAuthors  *string
 	WorkType   *string
+	Volume     *int32
 }

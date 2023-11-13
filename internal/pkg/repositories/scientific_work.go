@@ -167,5 +167,6 @@ func scanScientificWork(row pgx.Row, target *model.ScientificWork) error {
 		&target.OutputData,
 		&target.CoAuthors,
 		&target.WorkType,
+		&target.Volume,
 	)
 }
