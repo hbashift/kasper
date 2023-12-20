@@ -16,4 +16,5 @@ type ClientUser struct {
 	ClientType UserType
 	Password   string
 	ClientID   uuid.UUID `sql:"primary_key"`
+	KasperID   uuid.UUID
 }

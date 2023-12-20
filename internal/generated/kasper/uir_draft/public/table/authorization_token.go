@@ -17,14 +17,13 @@ type authorizationTokenTable struct {
 	postgres.Table
 
 	// Columns
-	TokenID        postgres.ColumnString
-	ClientID       postgres.ColumnString
-	KasperID       postgres.ColumnString
-	TokenStatus    postgres.ColumnString
-	TokenNumber    postgres.ColumnString
-	CreatedAt      postgres.ColumnTimestampz
-	UpdatedAt      postgres.ColumnTimestampz
-	ExpirationDate postgres.ColumnDate
+	TokenID     postgres.ColumnString
+	ClientID    postgres.ColumnString
+	KasperID    postgres.ColumnString
+	TokenStatus postgres.ColumnString
+	TokenNumber postgres.ColumnString
+	CreatedAt   postgres.ColumnTimestampz
+	UpdatedAt   postgres.ColumnTimestampz
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -65,30 +64,28 @@ func newAuthorizationTokenTable(schemaName, tableName, alias string) *Authorizat
 
 func newAuthorizationTokenTableImpl(schemaName, tableName, alias string) authorizationTokenTable {
 	var (
-		TokenIDColumn        = postgres.StringColumn("token_id")
-		ClientIDColumn       = postgres.StringColumn("client_id")
-		KasperIDColumn       = postgres.StringColumn("kasper_id")
-		TokenStatusColumn    = postgres.StringColumn("token_status")
-		TokenNumberColumn    = postgres.StringColumn("token_number")
-		CreatedAtColumn      = postgres.TimestampzColumn("created_at")
-		UpdatedAtColumn      = postgres.TimestampzColumn("updated_at")
-		ExpirationDateColumn = postgres.DateColumn("expiration_date")
-		allColumns           = postgres.ColumnList{TokenIDColumn, ClientIDColumn, KasperIDColumn, TokenStatusColumn, TokenNumberColumn, CreatedAtColumn, UpdatedAtColumn, ExpirationDateColumn}
-		mutableColumns       = postgres.ColumnList{ClientIDColumn, KasperIDColumn, TokenStatusColumn, TokenNumberColumn, CreatedAtColumn, UpdatedAtColumn, ExpirationDateColumn}
+		TokenIDColumn     = postgres.StringColumn("token_id")
+		ClientIDColumn    = postgres.StringColumn("client_id")
+		KasperIDColumn    = postgres.StringColumn("kasper_id")
+		TokenStatusColumn = postgres.StringColumn("token_status")
+		TokenNumberColumn = postgres.StringColumn("token_number")
+		CreatedAtColumn   = postgres.TimestampzColumn("created_at")
+		UpdatedAtColumn   = postgres.TimestampzColumn("updated_at")
+		allColumns        = postgres.ColumnList{TokenIDColumn, ClientIDColumn, KasperIDColumn, TokenStatusColumn, TokenNumberColumn, CreatedAtColumn, UpdatedAtColumn}
+		mutableColumns    = postgres.ColumnList{ClientIDColumn, KasperIDColumn, TokenStatusColumn, TokenNumberColumn, CreatedAtColumn, UpdatedAtColumn}
 	)
 
 	return authorizationTokenTable{
 		Table: postgres.NewTable(schemaName, tableName, alias, allColumns...),
 
 		//Columns
-		TokenID:        TokenIDColumn,
-		ClientID:       ClientIDColumn,
-		KasperID:       KasperIDColumn,
-		TokenStatus:    TokenStatusColumn,
-		TokenNumber:    TokenNumberColumn,
-		CreatedAt:      CreatedAtColumn,
-		UpdatedAt:      UpdatedAtColumn,
-		ExpirationDate: ExpirationDateColumn,
+		TokenID:     TokenIDColumn,
+		ClientID:    ClientIDColumn,
+		KasperID:    KasperIDColumn,
+		TokenStatus: TokenStatusColumn,
+		TokenNumber: TokenNumberColumn,
+		CreatedAt:   CreatedAtColumn,
+		UpdatedAt:   UpdatedAtColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,

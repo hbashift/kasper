@@ -4,8 +4,10 @@ import (
 	"context"
 
 	"uir_draft/internal/app/kasper"
+	"uir_draft/internal/handler/authorization_handler"
 	"uir_draft/internal/handler/student_handler"
 	"uir_draft/internal/pkg/repositories"
+	"uir_draft/internal/pkg/service/authorization"
 	"uir_draft/internal/pkg/service/student"
 
 	"github.com/spf13/viper"
@@ -34,10 +36,15 @@ func main() {
 	semesterRepo := repositories.NewSemesterRepository(db)
 	scientificRepo := repositories.NewScientificWork(db)
 	loadRepo := repositories.NewTeachingLoadRepository()
+	clientRepo := repositories.NewClientUserRepository()
 
 	studService := student.NewService(studRepo, tokenRepo, dRepo, semesterRepo, scientificRepo, loadRepo, db)
 	studHandler := student_handler.NewStudentHandler(studService)
-	server := kasper.InitRoutes(studHandler)
+
+	authorizeService := authorization.NewService(clientRepo, tokenRepo, db)
+	authorizeHandler := authorization_handler.NewAuthorizationHandler(authorizeService)
+
+	server := kasper.InitRoutes(studHandler, authorizeHandler)
 
 	err = server.Run(":8080")
 	if err != nil {

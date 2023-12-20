@@ -19,7 +19,11 @@ type StudentHandler interface {
 	UpdateTeachingLoad(ctx *gin.Context)
 }
 
-func InitRoutes(student StudentHandler) *gin.Engine {
+type AuthorizationHandler interface {
+	Authorize(ctx *gin.Context)
+}
+
+func InitRoutes(student StudentHandler, authorization AuthorizationHandler) *gin.Engine {
 	router := gin.Default()
 
 	router.Use(cors.New(cors.Config{
@@ -41,5 +45,6 @@ func InitRoutes(student StudentHandler) *gin.Engine {
 	router.POST("/students/teaching_load/:id", student.InsertTeachingLoad)
 	router.PATCH("/students/teaching_load/:id", student.UpdateTeachingLoad)
 
+	router.POST("authorization/authorize", authorization.Authorize)
 	return router
 }

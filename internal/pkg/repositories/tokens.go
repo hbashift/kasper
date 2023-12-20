@@ -36,6 +36,20 @@ func (r *tokenRepository) Authenticate(ctx context.Context, token string) (*mode
 	return &session, nil
 }
 
+func (r *tokenRepository) InsertToken(ctx context.Context, tx *pgxpool.Pool, token *model.AuthorizationToken) error {
+	stmt, args := table.AuthorizationToken.
+		INSERT(table.AuthorizationToken.AllColumns).
+		MODEL(token).
+		Sql()
+
+	_, err := tx.Exec(ctx, stmt, args...)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func scanAuthorizationToken(row pgx.Row, target *model.AuthorizationToken) error {
 	return row.Scan(
 		&target.TokenID,
@@ -45,6 +59,5 @@ func scanAuthorizationToken(row pgx.Row, target *model.AuthorizationToken) error
 		&target.TokenNumber,
 		&target.CreatedAt,
 		&target.UpdatedAt,
-		&target.ExpirationDate,
 	)
 }
