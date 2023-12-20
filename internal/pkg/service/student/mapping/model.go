@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"uir_draft/internal/generated/kasper/uir_draft/public/model"
 )
 
 type ScientificWork struct {
@@ -42,4 +43,40 @@ type Progress struct {
 
 type DeleteWorkIDs struct {
 	IDs []string `json:"ids,omitempty"`
+}
+
+type SingleLoad struct {
+	StudentID      uuid.UUID        `json:"student_id,omitempty"`
+	Semester       int32            `json:"semester,omitempty"`
+	Hours          int32            `json:"hours,omitempty"`
+	AdditionalLoad *string          `json:"additional_load,omitempty"`
+	LoadType       TeachingLoadType `json:"load_type,omitempty"`
+	MainTeacher    string           `json:"main_teacher,omitempty"`
+	GroupName      string           `json:"group_name,omitempty"`
+	SubjectName    string           `json:"subject_name,omitempty"`
+}
+
+type TeachingLoadType string
+
+const (
+	TeachignLoadType_PRACTICE   TeachingLoadType = "practice"
+	TeachingLoadType_LECTURE    TeachingLoadType = "lecture"
+	TeachingLoadType_LABORATORY TeachingLoadType = "laboratory"
+	TeachingLoadType_UNKNOWN    TeachingLoadType = "unknown"
+)
+
+var TeachingLoadTypeMapFromDomain = map[model.TeachingLoadType]TeachingLoadType{
+	model.TeachingLoadType_Practice:   TeachignLoadType_PRACTICE,
+	model.TeachingLoadType_Lectures:   TeachingLoadType_LECTURE,
+	model.TeachingLoadType_Laboratory: TeachingLoadType_LABORATORY,
+}
+
+var TeachingLoadTypeMapToDomain = map[TeachingLoadType]model.TeachingLoadType{
+	TeachignLoadType_PRACTICE:   model.TeachingLoadType_Practice,
+	TeachingLoadType_LECTURE:    model.TeachingLoadType_Lectures,
+	TeachingLoadType_LABORATORY: model.TeachingLoadType_Laboratory,
+}
+
+type TeachingLoad struct {
+	Array []SingleLoad `json:"array"`
 }

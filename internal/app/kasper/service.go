@@ -14,6 +14,9 @@ type StudentHandler interface {
 	InsertScientificWorks(ctx *gin.Context)
 	UpdateScientificWorks(ctx *gin.Context)
 	DeleteScientificWork(ctx *gin.Context)
+	GetTeachingLoad(ctx *gin.Context)
+	InsertTeachingLoad(ctx *gin.Context)
+	UpdateTeachingLoad(ctx *gin.Context)
 }
 
 func InitRoutes(student StudentHandler) *gin.Engine {
@@ -34,6 +37,9 @@ func InitRoutes(student StudentHandler) *gin.Engine {
 	router.POST("/students/scientific_works/:id", student.InsertScientificWorks)
 	router.PATCH("/students/scientific_works/:id", student.UpdateScientificWorks)
 	router.DELETE("/students/scientific_works/:id", student.DeleteScientificWork)
+	router.GET("/students/teaching_load/:id", student.GetTeachingLoad)
+	router.POST("/students/teaching_load/:id", student.InsertTeachingLoad)
+	router.PATCH("/students/teaching_load/:id", student.UpdateTeachingLoad)
 
 	return router
 }

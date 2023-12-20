@@ -33,8 +33,9 @@ func main() {
 	dRepo := repositories.NewDissertationRepository(db)
 	semesterRepo := repositories.NewSemesterRepository(db)
 	scientificRepo := repositories.NewScientificWork(db)
+	loadRepo := repositories.NewTeachingLoadRepository()
 
-	studService := student.NewService(studRepo, tokenRepo, dRepo, semesterRepo, scientificRepo, db)
+	studService := student.NewService(studRepo, tokenRepo, dRepo, semesterRepo, scientificRepo, loadRepo, db)
 	studHandler := student_handler.NewStudentHandler(studService)
 	server := kasper.InitRoutes(studHandler)
 

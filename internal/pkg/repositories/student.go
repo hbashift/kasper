@@ -118,18 +118,6 @@ func (r *StudentRepository) updateStudentCommonInfoTx(ctx context.Context, tx *p
 	return nil
 }
 
-func scanDissertationPlan(row pgx.Row, target *models.StudentDissertationPlan) error {
-	return row.Scan(
-		&target.Name,
-		&target.First,
-		&target.Second,
-		&target.Third,
-		&target.Forth,
-		&target.Fifth,
-		&target.Sixth,
-	)
-}
-
 func scanStudentCommonInfo(row pgx.Row, target *models.StudentCommonInformation) error {
 	return row.Scan(
 		&target.DissertationTitle,

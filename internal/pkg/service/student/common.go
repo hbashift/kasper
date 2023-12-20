@@ -24,3 +24,13 @@ func (s *Service) grepFromDBScientificWorks(ctx context.Context, session *model.
 
 	return jsonWorks, nil
 }
+
+func (s *Service) grepFromDBTeachingLoad(ctx context.Context, session *model.AuthorizationToken) (*mapping.TeachingLoad, error) {
+	loads, err := s.loadRepo.GetStudentsTeachingLoad(ctx, s.db, session.KasperID)
+	if err != nil {
+		return nil, err
+	}
+
+	domainLoads := mapping.MapTeachingLoadFromDomain(loads)
+	return &domainLoads, nil
+}

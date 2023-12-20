@@ -1,6 +1,8 @@
 package mapping
 
 import (
+	"errors"
+
 	"uir_draft/internal/generated/kasper/uir_draft/public/model"
 
 	"github.com/google/uuid"
@@ -61,4 +63,61 @@ func MapWorkIDsToDomain(ids *DeleteWorkIDs) ([]*uuid.UUID, error) {
 	}
 
 	return UUIDs, nil
+}
+
+func MapTeachingLoadFromDomain(domainLoads []*model.TeachingLoad) TeachingLoad {
+	var loads []SingleLoad
+
+	for _, domainLoad := range domainLoads {
+		if domainLoad == nil {
+			continue
+		}
+
+		loadType, check := TeachingLoadTypeMapFromDomain[domainLoad.LoadType]
+		if !check {
+			loadType = TeachingLoadType_UNKNOWN
+		}
+
+		load := SingleLoad{
+			StudentID:      domainLoad.StudentID,
+			Semester:       domainLoad.Semester,
+			Hours:          domainLoad.Hours,
+			AdditionalLoad: domainLoad.AdditionalLoad,
+			LoadType:       loadType,
+			MainTeacher:    domainLoad.MainTeacher,
+			GroupName:      domainLoad.GroupName,
+			SubjectName:    domainLoad.SubjectName,
+		}
+
+		loads = append(loads, load)
+	}
+
+	return TeachingLoad{Array: loads}
+}
+
+func MapTeachingLoadToDomain(loads *TeachingLoad, session *model.AuthorizationToken) ([]*model.TeachingLoad, error) {
+	var domainLoads []*model.TeachingLoad
+
+	for _, load := range loads.Array {
+		loadType, check := TeachingLoadTypeMapToDomain[load.LoadType]
+		if !check {
+			return nil, errors.New("unknown teaching_load_type")
+		}
+
+		domainLoad := model.TeachingLoad{
+			LoadID:         uuid.New(),
+			StudentID:      session.KasperID,
+			Semester:       load.Semester,
+			Hours:          load.Hours,
+			AdditionalLoad: load.AdditionalLoad,
+			LoadType:       loadType,
+			MainTeacher:    load.MainTeacher,
+			GroupName:      load.GroupName,
+			SubjectName:    load.SubjectName,
+		}
+
+		domainLoads = append(domainLoads, &domainLoad)
+	}
+
+	return domainLoads, nil
 }

@@ -31,6 +31,12 @@ type SemesterRepository interface {
 	GetStudentDissertationPlan(ctx context.Context, tx *pgxpool.Pool, clientID uuid.UUID) ([]*models.StudentDissertationPlan, error)
 }
 
+type TeachingLoadRepository interface {
+	InsertStudentsTeachingLoad(ctx context.Context, tx *pgxpool.Pool, loads []*model.TeachingLoad) error
+	GetStudentsTeachingLoad(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) ([]*model.TeachingLoad, error)
+	UpdateStudentsTeachingLoad(ctx context.Context, tx *pgxpool.Pool, loads []*model.TeachingLoad) error
+}
+
 type TokenRepository interface {
 	// TODO сделать мидлварю
 	Authenticate(ctx context.Context, token string) (*model.AuthorizationToken, error)
@@ -42,9 +48,10 @@ type Service struct {
 	dRepo        DissertationRepository
 	semesterRepo SemesterRepository
 	scienceRepo  ScientificWorkRepository
+	loadRepo     TeachingLoadRepository
 	db           *pgxpool.Pool
 }
 
-func NewService(studRepo StudentRepository, tokenRepo TokenRepository, dRepo DissertationRepository, semesterRepo SemesterRepository, scienceRepo ScientificWorkRepository, db *pgxpool.Pool) *Service {
-	return &Service{studRepo: studRepo, tokenRepo: tokenRepo, dRepo: dRepo, semesterRepo: semesterRepo, scienceRepo: scienceRepo, db: db}
+func NewService(studRepo StudentRepository, tokenRepo TokenRepository, dRepo DissertationRepository, semesterRepo SemesterRepository, scienceRepo ScientificWorkRepository, loadRepo TeachingLoadRepository, db *pgxpool.Pool) *Service {
+	return &Service{studRepo: studRepo, tokenRepo: tokenRepo, dRepo: dRepo, semesterRepo: semesterRepo, scienceRepo: scienceRepo, loadRepo: loadRepo, db: db}
 }
