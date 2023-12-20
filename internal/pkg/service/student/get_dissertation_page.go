@@ -40,23 +40,23 @@ func (s *Service) GetDissertationPage(ctx context.Context, token string) (*Disse
 		return nil, errors.Wrap(err, "GetStudentCommonInfo()")
 	}
 
-	plan, err := s.semesterRepo.GetStudentDissertationPlan(ctx, s.db, session.ClientID)
+	plans, err := s.semesterRepo.GetStudentDissertationPlan(ctx, s.db, session.ClientID)
 	if err != nil {
 		return nil, errors.Wrap(err, "GetStudentDissertationPlan()")
 	}
 
-	planMap := make(map[string]*StudentDissertationPlan, len(plan))
+	planMap := make(map[string]*StudentDissertationPlan, len(plans))
 
-	for _, chapter := range plan {
-		ch := &StudentDissertationPlan{
-			First:  chapter.First,
-			Second: chapter.Second,
-			Third:  chapter.Third,
-			Forth:  chapter.Forth,
-			Fifth:  chapter.Fifth,
-			Sixth:  chapter.Sixth,
+	for _, semester := range plans {
+		plan := &StudentDissertationPlan{
+			First:  semester.First,
+			Second: semester.Second,
+			Third:  semester.Third,
+			Forth:  semester.Forth,
+			Fifth:  semester.Fifth,
+			Sixth:  semester.Sixth,
 		}
-		planMap[chapter.Name] = ch
+		planMap[semester.Name] = plan
 	}
 
 	return &DissertationPage{
