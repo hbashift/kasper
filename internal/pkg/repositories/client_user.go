@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"strings"
 
 	"github.com/go-jet/jet/v2/postgres"
 	"github.com/jackc/pgx/v4"
@@ -18,17 +19,22 @@ func NewClientUserRepository() *ClientUserRepository {
 }
 
 func (c *ClientUserRepository) GetClient(ctx context.Context, tx *pgxpool.Pool, email string) (*model.ClientUser, error) {
-	var clientUser *model.ClientUser
+	clientUser := &model.ClientUser{}
 
 	err := tx.BeginFunc(ctx, func(tx pgx.Tx) error {
 		stmt, args := table.ClientUser.
 			SELECT(table.ClientUser.AllColumns).
-			WHERE(table.ClientUser.Email.EQ(postgres.String(email))).
+			WHERE(table.ClientUser.Email.EQ(postgres.String(strings.TrimSpace(email)))).
 			Sql()
 
 		row := tx.QueryRow(ctx, stmt, args...)
 
-		return scanClientUser(row, clientUser)
+		err := scanClientUser(row, clientUser)
+		if err != nil {
+			return err
+		}
+
+		return nil
 	})
 	if err != nil {
 		return nil, err
