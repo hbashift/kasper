@@ -25,17 +25,16 @@ func (s *Service) UpsertSemesterPlan(ctx context.Context, token string, progress
 
 	for _, prog := range progress.Progress {
 		p := &model.SemesterProgress{
-			SemesterProgressID: prog.SemesterProgressID,
-			StudentID:          session.KasperID,
-			First:              prog.First,
-			Second:             prog.Second,
-			Third:              prog.Third,
-			Forth:              prog.Forth,
-			Fifth:              nil,
-			Sixth:              nil,
-			ProgressName:       model.ProgressType(prog.ProgressName),
-			LastUpdated:        lo.ToPtr(time.Now()),
-			ClientID:           session.ClientID,
+			StudentID:    session.KasperID,
+			First:        prog.First,
+			Second:       prog.Second,
+			Third:        prog.Third,
+			Forth:        prog.Forth,
+			Fifth:        nil,
+			Sixth:        nil,
+			ProgressName: model.ProgressType(prog.ProgressName),
+			LastUpdated:  lo.ToPtr(time.Now()),
+			ClientID:     session.ClientID,
 		}
 
 		progressDomain = append(progressDomain, p)

@@ -39,8 +39,6 @@ func (r *SemesterRepository) getStudentDissertationPlanTx(ctx context.Context, t
 			table.SemesterProgress.Second,
 			table.SemesterProgress.Third,
 			table.SemesterProgress.Forth,
-			table.SemesterProgress.Fifth,
-			table.SemesterProgress.Sixth,
 		).
 		WHERE(table.SemesterProgress.ClientID.EQ(postgres.UUID(clientID))).Sql()
 
@@ -113,7 +111,5 @@ func scanDissertationPlan(row pgx.Row, target *models.StudentDissertationPlan) e
 		&target.Second,
 		&target.Third,
 		&target.Forth,
-		&target.Fifth,
-		&target.Sixth,
 	)
 }

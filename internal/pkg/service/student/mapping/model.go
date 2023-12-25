@@ -24,15 +24,14 @@ type Works struct {
 }
 
 type SemesterProgress struct {
-	SemesterProgressID int32      `json:"semesterProgressID,omitempty"`
-	First              bool       `json:"first,omitempty"`
-	Second             bool       `json:"second,omitempty"`
-	Third              bool       `json:"third,omitempty"`
-	Forth              bool       `json:"forth,omitempty"`
-	Fifth              *bool      `json:"fifth,omitempty"`
-	Sixth              *bool      `json:"sixth,omitempty"`
-	ProgressName       string     `json:"progressName,omitempty"`
-	LastUpdated        *time.Time `json:"lastUpdated,omitempty"`
+	First        bool       `json:"first,omitempty"`
+	Second       bool       `json:"second,omitempty"`
+	Third        bool       `json:"third,omitempty"`
+	Forth        bool       `json:"forth,omitempty"`
+	Fifth        *bool      `json:"fifth,omitempty"`
+	Sixth        *bool      `json:"sixth,omitempty"`
+	ProgressName string     `json:"progressName,omitempty"`
+	LastUpdated  *time.Time `json:"lastUpdated,omitempty"`
 }
 
 type Progress struct {
