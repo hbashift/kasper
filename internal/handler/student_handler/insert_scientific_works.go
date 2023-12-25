@@ -1,6 +1,7 @@
 package student_handler
 
 import (
+	"log"
 	"net/http"
 
 	"uir_draft/internal/pkg/service/student/mapping"
@@ -38,6 +39,8 @@ func (h *studentHandler) InsertScientificWorks(ctx *gin.Context) {
 		}
 		scientificWorks = append(scientificWorks, p)
 	}
+
+	log.Println(reqBody)
 
 	newWorks, err := h.service.InsertScientificWorks(ctx, token.String(), scientificWorks)
 	if err != nil {
