@@ -85,8 +85,8 @@ func (r *SemesterRepository) upsertSemesterPlanTx(ctx context.Context, tx *pgxpo
 						table.SemesterProgress.Second.SET(postgres.Bool(semester.Second)),
 						table.SemesterProgress.Third.SET(postgres.Bool(semester.Third)),
 						table.SemesterProgress.Forth.SET(postgres.Bool(semester.Forth)),
-						table.SemesterProgress.Fifth.SET(postgres.Bool(*semester.Fifth)),
-						table.SemesterProgress.Sixth.SET(postgres.Bool(*semester.Sixth)),
+						//table.SemesterProgress.Fifth.SET(postgres.Bool(*semester.Fifth)),
+						//table.SemesterProgress.Sixth.SET(postgres.Bool(*semester.Sixth)),
 						table.SemesterProgress.LastUpdated.SET(postgres.TimestampzT(*semester.LastUpdated)),
 					),
 				).
