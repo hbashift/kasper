@@ -9,7 +9,7 @@ import (
 )
 
 func (s *Service) GetTeachingLoad(ctx context.Context, token string) (*mapping.TeachingLoad, error) {
-	session, err := s.tokenRepo.Authenticate(ctx, token)
+	session, err := s.tokenRepo.Authenticate(ctx, token, s.db)
 	if err != nil {
 		return nil, errors.Wrap(err, "[Student]")
 	}

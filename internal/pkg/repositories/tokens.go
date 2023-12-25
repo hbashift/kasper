@@ -20,14 +20,14 @@ func NewTokenRepository(postgres *pgxpool.Pool) *tokenRepository {
 	return &tokenRepository{postgres: postgres}
 }
 
-func (r *tokenRepository) Authenticate(ctx context.Context, token string) (*model.AuthorizationToken, error) {
+func (r *tokenRepository) Authenticate(ctx context.Context, token string, tx *pgxpool.Pool) (*model.AuthorizationToken, error) {
 	stmt, args := table.AuthorizationToken.
 		SELECT(table.AuthorizationToken.AllColumns).
 		WHERE(table.AuthorizationToken.TokenNumber.EQ(postgres.String(token))).Sql()
 
 	var session model.AuthorizationToken
 
-	row := r.postgres.QueryRow(ctx, stmt, args...)
+	row := tx.QueryRow(ctx, stmt, args...)
 
 	if err := scanAuthorizationToken(row, &session); err != nil {
 		return nil, errors.Wrap(err, "mapping authorization token")

@@ -11,7 +11,7 @@ import (
 )
 
 func (s *Service) InsertScientificWorks(ctx context.Context, token string, works []*mapping.ScientificWork) ([]*mapping.ScientificWork, error) {
-	session, err := s.tokenRepo.Authenticate(ctx, token)
+	session, err := s.tokenRepo.Authenticate(ctx, token, s.db)
 	if err != nil {
 		return nil, errors.Wrap(err, "[Student]")
 	}

@@ -39,7 +39,7 @@ type TeachingLoadRepository interface {
 
 type TokenRepository interface {
 	// TODO сделать мидлварю
-	Authenticate(ctx context.Context, token string) (*model.AuthorizationToken, error)
+	Authenticate(ctx context.Context, token string, db *pgxpool.Pool) (*model.AuthorizationToken, error)
 }
 
 type Service struct {

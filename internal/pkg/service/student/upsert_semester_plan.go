@@ -12,7 +12,7 @@ import (
 )
 
 func (s *Service) UpsertSemesterPlan(ctx context.Context, token string, progress *mapping.Progress) error {
-	session, err := s.tokenRepo.Authenticate(ctx, token)
+	session, err := s.tokenRepo.Authenticate(ctx, token, s.db)
 	if err != nil {
 		return errors.Wrap(err, "[Student]")
 	}

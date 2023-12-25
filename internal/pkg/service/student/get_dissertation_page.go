@@ -26,7 +26,7 @@ type DissertationPage struct {
 }
 
 func (s *Service) GetDissertationPage(ctx context.Context, token string) (*DissertationPage, error) {
-	session, err := s.tokenRepo.Authenticate(ctx, token)
+	session, err := s.tokenRepo.Authenticate(ctx, token, s.db)
 	if err != nil {
 		return nil, errors.Wrap(err, "authentication error")
 	}
