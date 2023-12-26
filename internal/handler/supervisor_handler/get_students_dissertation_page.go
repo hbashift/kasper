@@ -1,6 +1,7 @@
 package supervisor_handler
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -13,6 +14,11 @@ func (h *supervisorHandler) GetStudentsDissertationPage(ctx *gin.Context) {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
+
+	val, is := ctx.Get("studentID")
+	log.Printf("KeyValue: %v, %v\n", val, is)
+
+	log.Printf("Context: %+v", ctx)
 
 	stringId := ctx.Param("studentID")
 
