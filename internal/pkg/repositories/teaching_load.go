@@ -63,30 +63,45 @@ func (r *TeachingLoadRepository) getStudentsTeachingLoadTx(ctx context.Context, 
 	return loads, nil
 }
 
-func (r *TeachingLoadRepository) InsertStudentsTeachingLoad(ctx context.Context, tx *pgxpool.Pool, loads []*model.TeachingLoad) error {
-	if err := r.insertStudentsTeachingLoadTx(ctx, tx, loads); err != nil {
-		return errors.Wrap(err, "InsertStudentsTeachingLoad()")
+func (r *TeachingLoadRepository) UpsertStudentsTeachingLoad(ctx context.Context, tx *pgxpool.Pool, loads []*model.TeachingLoad) error {
+	if err := r.upsertStudentsTeachingLoadTx(ctx, tx, loads); err != nil {
+		return errors.Wrap(err, "UpsertStudentsTeachingLoad()")
 	}
 
 	return nil
 }
 
-func (r *TeachingLoadRepository) insertStudentsTeachingLoadTx(ctx context.Context, tx *pgxpool.Pool, loads []*model.TeachingLoad) error {
-	stmt, args := table.TeachingLoad.
-		INSERT(table.TeachingLoad.AllColumns).
-		MODELS(loads).
-		ON_CONFLICT().
-		DO_NOTHING().
-		Sql()
-
+func (r *TeachingLoadRepository) upsertStudentsTeachingLoadTx(ctx context.Context, tx *pgxpool.Pool, loads []*model.TeachingLoad) error {
 	if err := tx.BeginFunc(ctx, func(tx pgx.Tx) error {
-		if _, err := tx.Exec(ctx, stmt, args...); err != nil {
-			return err
+		for _, load := range loads {
+			settingParams := []postgres.ColumnAssigment{
+				table.TeachingLoad.LoadType.SET(postgres.String(load.LoadType.String())),
+				table.TeachingLoad.Hours.SET(postgres.Int32(load.Hours)),
+				table.TeachingLoad.SubjectName.SET(postgres.String(load.SubjectName)),
+				table.TeachingLoad.GroupName.SET(postgres.String(load.GroupName)),
+				table.TeachingLoad.MainTeacher.SET(postgres.String(load.MainTeacher)),
+			}
+
+			if load.AdditionalLoad != nil {
+				settingParams = append(settingParams,
+					table.TeachingLoad.AdditionalLoad.SET(postgres.String(*load.AdditionalLoad)))
+			}
+
+			stmt, args := table.TeachingLoad.
+				INSERT(table.TeachingLoad.AllColumns).
+				MODEL(load).
+				ON_CONFLICT(table.TeachingLoad.LoadID).
+				DO_UPDATE(postgres.SET(settingParams...)).
+				Sql()
+
+			if _, err := tx.Exec(ctx, stmt, args...); err != nil {
+				return err
+			}
 		}
 
 		return nil
 	}); err != nil {
-		return errors.Wrap(err, "insertStudentsTeachingLoadTx()")
+		return errors.Wrap(err, "upsertStudentsTeachingLoadTx()")
 	}
 
 	return nil

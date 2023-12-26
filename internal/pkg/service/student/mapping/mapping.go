@@ -79,6 +79,7 @@ func MapTeachingLoadFromDomain(domainLoads []*model.TeachingLoad) TeachingLoad {
 		}
 
 		load := SingleLoad{
+			LoadID:         &domainLoad.LoadID,
 			StudentID:      domainLoad.StudentID,
 			Semester:       domainLoad.Semester,
 			Hours:          domainLoad.Hours,
@@ -95,29 +96,26 @@ func MapTeachingLoadFromDomain(domainLoads []*model.TeachingLoad) TeachingLoad {
 	return TeachingLoad{Array: loads}
 }
 
-func MapTeachingLoadToDomain(loads *TeachingLoad, session *model.AuthorizationToken) ([]*model.TeachingLoad, error) {
-	var domainLoads []*model.TeachingLoad
-
-	for _, load := range loads.Array {
-		loadType, check := TeachingLoadTypeMapToDomain[load.LoadType]
-		if !check {
-			return nil, errors.New("unknown teaching_load_type")
-		}
-
-		domainLoad := model.TeachingLoad{
-			LoadID:         uuid.New(),
-			StudentID:      session.KasperID,
-			Semester:       load.Semester,
-			Hours:          load.Hours,
-			AdditionalLoad: load.AdditionalLoad,
-			LoadType:       loadType,
-			MainTeacher:    load.MainTeacher,
-			GroupName:      load.GroupName,
-			SubjectName:    load.SubjectName,
-		}
-
-		domainLoads = append(domainLoads, &domainLoad)
+func MapTeachingLoadToDomain(load *SingleLoad, session *model.AuthorizationToken) (*model.TeachingLoad, error) {
+	loadType, check := TeachingLoadTypeMapToDomain[load.LoadType]
+	if !check {
+		return nil, errors.New("unknown teaching_load_type")
 	}
 
-	return domainLoads, nil
+	domainLoad := model.TeachingLoad{
+		StudentID:      session.KasperID,
+		Semester:       load.Semester,
+		Hours:          load.Hours,
+		AdditionalLoad: load.AdditionalLoad,
+		LoadType:       loadType,
+		MainTeacher:    load.MainTeacher,
+		GroupName:      load.GroupName,
+		SubjectName:    load.SubjectName,
+	}
+
+	if load.LoadID != nil {
+		domainLoad.LoadID = *load.LoadID
+	}
+
+	return &domainLoad, nil
 }

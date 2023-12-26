@@ -51,6 +51,7 @@ type SingleLoad struct {
 	MainTeacher    string           `json:"mainTeacher,omitempty"`
 	GroupName      string           `json:"numberOfGroup,omitempty"`
 	SubjectName    string           `json:"subject,omitempty"`
+	LoadID         *uuid.UUID       `json:"loadID"`
 }
 
 type TeachingLoadType string

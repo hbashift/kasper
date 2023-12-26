@@ -21,7 +21,7 @@ func (h *studentHandler) InsertTeachingLoad(ctx *gin.Context) {
 		return
 	}
 
-	newTeachingLoad, err := h.service.InsertTeachingLoad(ctx, token.String(), &reqBody)
+	newTeachingLoad, err := h.service.UpsertTeachingLoad(ctx, token.String(), &reqBody)
 	if err != nil {
 		ctx.AbortWithError(http.StatusInternalServerError, err)
 		return
