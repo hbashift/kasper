@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"uir_draft/internal/generated/kasper/uir_draft/public/model"
+	"uir_draft/internal/pkg/models"
 
 	"github.com/google/uuid"
 )
@@ -120,12 +121,22 @@ func MapTeachingLoadToDomain(load *SingleLoad, session *model.AuthorizationToken
 	return &domainLoad, nil
 }
 
-func MapIDsFromDomain(domainIDs []*uuid.UUID) *IDs {
-	ids := IDs{}
+type DissertationIDs struct {
+	ID       uuid.UUID `json:"id,omitempty"`
+	Semester int       `json:"semester,omitempty"`
+}
+
+func MapIDsFromDomain(domainIDs []*models.IDs) []*DissertationIDs {
+	var ids []*DissertationIDs
 
 	for _, id := range domainIDs {
-		ids.IDs = append(ids.IDs, id.String())
+		some := DissertationIDs{
+			ID:       id.ID,
+			Semester: id.Semester,
+		}
+
+		ids = append(ids, &some)
 	}
 
-	return &ids
+	return ids
 }

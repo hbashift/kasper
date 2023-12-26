@@ -30,5 +30,6 @@ type StudentCommonInformation struct {
 }
 
 type IDs struct {
-	ID uuid.UUID `db:"id"`
+	ID       uuid.UUID `db:"id"`
+	Semester int       `db:"semester"`
 }

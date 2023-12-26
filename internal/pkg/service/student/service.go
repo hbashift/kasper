@@ -24,7 +24,7 @@ type ScientificWorkRepository interface {
 }
 
 type DissertationRepository interface {
-	GetDissertationIDs(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) ([]*uuid.UUID, error)
+	GetDissertationIDs(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) ([]*models.IDs, error)
 }
 
 type SemesterRepository interface {

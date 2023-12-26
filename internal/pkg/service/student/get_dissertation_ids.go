@@ -8,7 +8,7 @@ import (
 	"uir_draft/internal/pkg/service/student/mapping"
 )
 
-func (s *Service) GetDissertationIDs(ctx context.Context, token string) (*mapping.IDs, error) {
+func (s *Service) GetDissertationIDs(ctx context.Context, token string) ([]*mapping.DissertationIDs, error) {
 	session, err := s.tokenRepo.Authenticate(ctx, token, s.db)
 	if err != nil {
 		return nil, errors.Wrap(err, "[Student]")
