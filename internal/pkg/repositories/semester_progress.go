@@ -22,8 +22,8 @@ func NewSemesterRepository(postgres *pgxpool.Pool) *SemesterRepository {
 	return &SemesterRepository{postgres: postgres}
 }
 
-func (r *SemesterRepository) GetStudentDissertationPlan(ctx context.Context, tx *pgxpool.Pool, clientID uuid.UUID) ([]*models.StudentDissertationPlan, error) {
-	plan, err := r.getStudentDissertationPlanTx(ctx, tx, clientID)
+func (r *SemesterRepository) GetStudentDissertationPlan(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) ([]*models.StudentDissertationPlan, error) {
+	plan, err := r.getStudentDissertationPlanTx(ctx, tx, studentID)
 	if err != nil {
 		return nil, errors.Wrap(err, "GetStudentDissertationPlan():")
 	}
@@ -31,7 +31,7 @@ func (r *SemesterRepository) GetStudentDissertationPlan(ctx context.Context, tx 
 	return plan, nil
 }
 
-func (r *SemesterRepository) getStudentDissertationPlanTx(ctx context.Context, tx *pgxpool.Pool, clientID uuid.UUID) ([]*models.StudentDissertationPlan, error) {
+func (r *SemesterRepository) getStudentDissertationPlanTx(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) ([]*models.StudentDissertationPlan, error) {
 	stmt, args := table.SemesterProgress.
 		SELECT(
 			table.SemesterProgress.ProgressName.AS("name"),
@@ -40,7 +40,7 @@ func (r *SemesterRepository) getStudentDissertationPlanTx(ctx context.Context, t
 			table.SemesterProgress.Third,
 			table.SemesterProgress.Forth,
 		).
-		WHERE(table.SemesterProgress.ClientID.EQ(postgres.UUID(clientID))).Sql()
+		WHERE(table.SemesterProgress.StudentID.EQ(postgres.UUID(studentID))).Sql()
 
 	studentPlan := make([]*models.StudentDissertationPlan, 0)
 

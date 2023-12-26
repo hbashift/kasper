@@ -19,11 +19,15 @@ type StudentHandler interface {
 	DeleteTeachingLoad(ctx *gin.Context)
 }
 
+type SupervisorHandler interface {
+	GetListOfStudents(ctx *gin.Context)
+}
+
 type AuthorizationHandler interface {
 	Authorize(ctx *gin.Context)
 }
 
-func InitRoutes(student StudentHandler, authorization AuthorizationHandler) *gin.Engine {
+func InitRoutes(student StudentHandler, supervisor SupervisorHandler, authorization AuthorizationHandler) *gin.Engine {
 	router := gin.Default()
 
 	router.Use(cors.New(cors.Config{
@@ -44,6 +48,8 @@ func InitRoutes(student StudentHandler, authorization AuthorizationHandler) *gin
 	router.GET("/students/teaching_load/:id", student.GetTeachingLoad)
 	router.POST("/students/teaching_load/:id", student.UpsertTeachingLoad)
 	router.DELETE("/students/teaching_load/:id", student.DeleteTeachingLoad)
+
+	router.GET("/supervisors/list_of_students/:id", supervisor.GetListOfStudents)
 
 	router.POST("authorization/authorize", authorization.Authorize)
 	return router

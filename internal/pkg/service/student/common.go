@@ -9,6 +9,8 @@ import (
 	"github.com/pkg/errors"
 )
 
+var ErrNonValidToken = errors.New("token is expired")
+
 func (s *Service) grepFromDBScientificWorks(ctx context.Context, session *model.AuthorizationToken) ([]*mapping.ScientificWork, error) {
 	scientificWorks, err := s.scienceRepo.GetScientificWorks(ctx, s.db, session.KasperID)
 	if err != nil {

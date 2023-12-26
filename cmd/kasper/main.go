@@ -6,9 +6,11 @@ import (
 	"uir_draft/internal/app/kasper"
 	"uir_draft/internal/handler/authorization_handler"
 	"uir_draft/internal/handler/student_handler"
+	"uir_draft/internal/handler/supervisor_handler"
 	"uir_draft/internal/pkg/repositories"
 	"uir_draft/internal/pkg/service/authorization"
 	"uir_draft/internal/pkg/service/student"
+	"uir_draft/internal/pkg/service/supervisor"
 
 	"github.com/spf13/viper"
 )
@@ -44,7 +46,10 @@ func main() {
 	authorizeService := authorization.NewService(clientRepo, tokenRepo, db)
 	authorizeHandler := authorization_handler.NewAuthorizationHandler(authorizeService)
 
-	server := kasper.InitRoutes(studHandler, authorizeHandler)
+	supService := supervisor.NewService(studRepo, tokenRepo, semesterRepo, db)
+	supervisorHandler := supervisor_handler.NewSupervisorHandler(supService)
+
+	server := kasper.InitRoutes(studHandler, supervisorHandler, authorizeHandler)
 
 	err = server.Run(":8080")
 	if err != nil {

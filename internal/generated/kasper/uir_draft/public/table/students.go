@@ -30,6 +30,7 @@ type studentsTable struct {
 	StartDate          postgres.ColumnDate
 	AcademicLeave      postgres.ColumnBool
 	DissertationTitle  postgres.ColumnString
+	GroupNumber        postgres.ColumnString
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -83,8 +84,9 @@ func newStudentsTableImpl(schemaName, tableName, alias string) studentsTable {
 		StartDateColumn          = postgres.DateColumn("start_date")
 		AcademicLeaveColumn      = postgres.BoolColumn("academic_leave")
 		DissertationTitleColumn  = postgres.StringColumn("dissertation_title")
-		allColumns               = postgres.ColumnList{ClientIDColumn, StudentIDColumn, FullNameColumn, DepartmentColumn, EnrollmentOrderColumn, TitlePagePathColumn, ExplanatoryNoteURLColumn, SpecializationColumn, ActualSemesterColumn, SupervisorIDColumn, StartDateColumn, AcademicLeaveColumn, DissertationTitleColumn}
-		mutableColumns           = postgres.ColumnList{ClientIDColumn, FullNameColumn, DepartmentColumn, EnrollmentOrderColumn, TitlePagePathColumn, ExplanatoryNoteURLColumn, SpecializationColumn, ActualSemesterColumn, SupervisorIDColumn, StartDateColumn, AcademicLeaveColumn, DissertationTitleColumn}
+		GroupNumberColumn        = postgres.StringColumn("group_number")
+		allColumns               = postgres.ColumnList{ClientIDColumn, StudentIDColumn, FullNameColumn, DepartmentColumn, EnrollmentOrderColumn, TitlePagePathColumn, ExplanatoryNoteURLColumn, SpecializationColumn, ActualSemesterColumn, SupervisorIDColumn, StartDateColumn, AcademicLeaveColumn, DissertationTitleColumn, GroupNumberColumn}
+		mutableColumns           = postgres.ColumnList{ClientIDColumn, FullNameColumn, DepartmentColumn, EnrollmentOrderColumn, TitlePagePathColumn, ExplanatoryNoteURLColumn, SpecializationColumn, ActualSemesterColumn, SupervisorIDColumn, StartDateColumn, AcademicLeaveColumn, DissertationTitleColumn, GroupNumberColumn}
 	)
 
 	return studentsTable{
@@ -104,6 +106,7 @@ func newStudentsTableImpl(schemaName, tableName, alias string) studentsTable {
 		StartDate:          StartDateColumn,
 		AcademicLeave:      AcademicLeaveColumn,
 		DissertationTitle:  DissertationTitleColumn,
+		GroupNumber:        GroupNumberColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,

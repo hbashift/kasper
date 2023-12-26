@@ -9,8 +9,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-var ErrNonValidToken = errors.New("token is expired")
-
 type StudentDissertationPlan struct {
 	First  bool `json:"id1,omitempty"`
 	Second bool `json:"id2,omitempty"`
@@ -35,12 +33,12 @@ func (s *Service) GetDissertationPage(ctx context.Context, token string) (*Disse
 		return nil, ErrNonValidToken
 	}
 
-	commonInfo, err := s.studRepo.GetStudentCommonInfo(ctx, s.db, session.ClientID)
+	commonInfo, err := s.studRepo.GetStudentCommonInfo(ctx, s.db, session.KasperID)
 	if err != nil {
 		return nil, errors.Wrap(err, "GetStudentCommonInfo()")
 	}
 
-	plans, err := s.semesterRepo.GetStudentDissertationPlan(ctx, s.db, session.ClientID)
+	plans, err := s.semesterRepo.GetStudentDissertationPlan(ctx, s.db, session.KasperID)
 	if err != nil {
 		return nil, errors.Wrap(err, "GetStudentDissertationPlan()")
 	}

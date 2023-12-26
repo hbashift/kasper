@@ -22,8 +22,8 @@ func NewStudentRepository(postgres *pgxpool.Pool) *StudentRepository {
 	return &StudentRepository{postgres: postgres}
 }
 
-func (r *StudentRepository) GetStudentCommonInfo(ctx context.Context, tx *pgxpool.Pool, clientID uuid.UUID) (*models.StudentCommonInformation, error) {
-	commonInfo, err := r.getStudentCommonInformation(ctx, tx, clientID)
+func (r *StudentRepository) GetStudentCommonInfo(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) (*models.StudentCommonInformation, error) {
+	commonInfo, err := r.getStudentCommonInformation(ctx, tx, studentID)
 	if err != nil {
 		return nil, errors.Wrap(err, "GetStudentDissertationPlan()")
 	}
@@ -31,7 +31,7 @@ func (r *StudentRepository) GetStudentCommonInfo(ctx context.Context, tx *pgxpoo
 	return commonInfo, nil
 }
 
-func (r *StudentRepository) getStudentCommonInformation(ctx context.Context, tx *pgxpool.Pool, clientID uuid.UUID) (*models.StudentCommonInformation, error) {
+func (r *StudentRepository) getStudentCommonInformation(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) (*models.StudentCommonInformation, error) {
 	stmt, args := table.Students.
 		INNER_JOIN(table.Dissertation, table.Students.StudentID.EQ(table.Dissertation.StudentID)).
 		INNER_JOIN(table.Supervisors, table.Students.SupervisorID.EQ(table.Supervisors.SupervisorID)).
@@ -46,7 +46,7 @@ func (r *StudentRepository) getStudentCommonInformation(ctx context.Context, tx 
 			table.Students.TitlePagePath.AS("title_page_url"),
 			table.Students.ExplanatoryNoteURL.AS("explanatory_note_url"),
 		).
-		WHERE(table.Students.ClientID.EQ(postgres.UUID(clientID))).Sql()
+		WHERE(table.Students.StudentID.EQ(postgres.UUID(studentID))).Sql()
 
 	var studentCommonInfo models.StudentCommonInformation
 
@@ -118,6 +118,40 @@ func (r *StudentRepository) updateStudentCommonInfoTx(ctx context.Context, tx *p
 	return nil
 }
 
+func (r *StudentRepository) GetListOfStudents(ctx context.Context, tx *pgxpool.Pool, supervisorID *uuid.UUID) ([]*model.Students, error) {
+	list, err := r.getListOfStudentsTx(ctx, tx, supervisorID)
+	if err != nil {
+		return nil, errors.Wrap(err, "GetListOfStudents()")
+	}
+
+	return list, nil
+}
+
+func (r *StudentRepository) getListOfStudentsTx(ctx context.Context, tx *pgxpool.Pool, supervisorID *uuid.UUID) ([]*model.Students, error) {
+	stmt, args := table.Students.
+		SELECT(table.Students.AllColumns).
+		WHERE(table.Students.ClientID.EQ(postgres.UUID(supervisorID))).
+		Sql()
+
+	row, err := tx.Query(ctx, stmt, args...)
+	if err != nil {
+		return nil, errors.Wrap(err, "getListOfStudentsTx()")
+	}
+
+	var studentsList []*model.Students
+
+	for row.Next() {
+		var studentCommonInfo model.Students
+		if err = scanStudentRow(row, &studentCommonInfo); err != nil {
+			return nil, errors.Wrap(err, "getListOfStudentsTx()")
+		}
+
+		studentsList = append(studentsList, &studentCommonInfo)
+	}
+
+	return studentsList, nil
+}
+
 func scanStudentCommonInfo(row pgx.Row, target *models.StudentCommonInformation) error {
 	return row.Scan(
 		&target.DissertationTitle,
@@ -129,5 +163,24 @@ func scanStudentCommonInfo(row pgx.Row, target *models.StudentCommonInformation)
 		&target.DissertationStatus,
 		&target.TitlePageURL,
 		&target.ExplanatoryNoteURL,
+	)
+}
+
+func scanStudentRow(row pgx.Row, target *model.Students) error {
+	return row.Scan(
+		&target.ClientID,
+		&target.StudentID,
+		&target.FullName,
+		&target.Department,
+		&target.EnrollmentOrder,
+		&target.TitlePagePath,
+		&target.ExplanatoryNoteURL,
+		&target.Specialization,
+		&target.ActualSemester,
+		&target.SupervisorID,
+		&target.StartDate,
+		&target.AcademicLeave,
+		&target.DissertationTitle,
+		&target.GroupNumber,
 	)
 }

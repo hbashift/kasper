@@ -24,4 +24,5 @@ type StudentCommonInformation struct {
 	DissertationStatus    *string   `db:"dissertation_status" json:"jobStatus,omitempty"`
 	TitlePageURL          string    `db:"title_page_url" json:"titlePageURL,omitempty"`
 	ExplanatoryNoteURL    string    `db:"explanatory_note_url" json:"explanatoryNoteURL,omitempty"`
+	StudentName           string    `db:"student_name"`
 }

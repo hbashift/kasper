@@ -28,7 +28,7 @@ type DissertationRepository interface {
 
 type SemesterRepository interface {
 	UpsertSemesterPlan(ctx context.Context, tx *pgxpool.Pool, progress []*model.SemesterProgress) error
-	GetStudentDissertationPlan(ctx context.Context, tx *pgxpool.Pool, clientID uuid.UUID) ([]*models.StudentDissertationPlan, error)
+	GetStudentDissertationPlan(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) ([]*models.StudentDissertationPlan, error)
 }
 
 type TeachingLoadRepository interface {
