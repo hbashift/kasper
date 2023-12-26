@@ -7,6 +7,10 @@ import (
 	"github.com/google/uuid"
 )
 
+type Student struct {
+	StudentID uuid.UUID `json:"StudentID"`
+}
+
 func (h *supervisorHandler) GetStudentsDissertationPage(ctx *gin.Context) {
 	token, err := getUUID(ctx)
 	if err != nil {
@@ -14,7 +18,7 @@ func (h *supervisorHandler) GetStudentsDissertationPage(ctx *gin.Context) {
 		return
 	}
 
-	reqBody := uuid.UUID{}
+	reqBody := Student{}
 	err = ctx.ShouldBindJSON(&reqBody)
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
@@ -26,7 +30,7 @@ func (h *supervisorHandler) GetStudentsDissertationPage(ctx *gin.Context) {
 		return
 	}
 
-	page, err := h.service.GetDissertationPage(ctx, token.String(), reqBody)
+	page, err := h.service.GetDissertationPage(ctx, token.String(), reqBody.StudentID)
 	if err != nil {
 		ctx.AbortWithError(http.StatusInternalServerError, err)
 		return
