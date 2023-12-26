@@ -20,6 +20,10 @@ func (h *studentHandler) DeleteTeachingLoad(ctx *gin.Context) {
 		return
 	}
 
+	if len(reqBody.IDs) == 0 {
+		ctx.JSON(http.StatusOK, "no ids provided")
+	}
+
 	newWorks, err := h.service.DeleteTeachingLoad(ctx, token.String(), &reqBody)
 	if err != nil {
 		ctx.AbortWithError(http.StatusInternalServerError, err)

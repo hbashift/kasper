@@ -147,7 +147,7 @@ func (r *TeachingLoadRepository) DeleteTeachingLoad(ctx context.Context, tx *pgx
 	}
 
 	if err := r.deleteTeachingLoadTx(ctx, tx, ids); err != nil {
-		return errors.Wrap(err, "DeleteTeachingLoadTx()")
+		return errors.Wrap(err, "DeleteTeachingLoad()")
 	}
 
 	return nil
