@@ -45,12 +45,12 @@ type DeleteWorkIDs struct {
 type SingleLoad struct {
 	StudentID      uuid.UUID        `json:"student_id,omitempty"`
 	Semester       int32            `json:"semester,omitempty"`
-	Hours          int32            `json:"hours,omitempty"`
+	Hours          int32            `json:"numberOfHours,omitempty"`
 	AdditionalLoad *string          `json:"additional_load,omitempty"`
-	LoadType       TeachingLoadType `json:"load_type,omitempty"`
-	MainTeacher    string           `json:"main_teacher,omitempty"`
-	GroupName      string           `json:"group_name,omitempty"`
-	SubjectName    string           `json:"subject_name,omitempty"`
+	LoadType       TeachingLoadType `json:"typeOfClasses,omitempty"`
+	MainTeacher    string           `json:"mainTeacher,omitempty"`
+	GroupName      string           `json:"numberOfGroup,omitempty"`
+	SubjectName    string           `json:"subject,omitempty"`
 }
 
 type TeachingLoadType string
