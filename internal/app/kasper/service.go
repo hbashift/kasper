@@ -21,6 +21,7 @@ type StudentHandler interface {
 
 type SupervisorHandler interface {
 	GetListOfStudents(ctx *gin.Context)
+	GetStudentsDissertationPage(ctx *gin.Context)
 }
 
 type AuthorizationHandler interface {
@@ -50,6 +51,7 @@ func InitRoutes(student StudentHandler, supervisor SupervisorHandler, authorizat
 	router.DELETE("/students/teaching_load/:id", student.DeleteTeachingLoad)
 
 	router.GET("/supervisors/list_of_students/:id", supervisor.GetListOfStudents)
+	router.GET("/supervisors/student/:studentID/:id", supervisor.GetStudentsDissertationPage)
 
 	router.POST("authorization/authorize", authorization.Authorize)
 	return router
