@@ -1,6 +1,7 @@
 package student_handler
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -19,6 +20,8 @@ func (h *studentHandler) DeleteTeachingLoad(ctx *gin.Context) {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
+
+	log.Printf("[Delete] Request body: %+v", reqBody)
 
 	if len(reqBody.IDs) == 0 {
 		ctx.JSON(http.StatusOK, "no ids provided")
