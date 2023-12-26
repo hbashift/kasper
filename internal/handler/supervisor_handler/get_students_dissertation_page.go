@@ -15,8 +15,7 @@ func (h *supervisorHandler) GetStudentsDissertationPage(ctx *gin.Context) {
 		return
 	}
 
-	body := []byte{}
-	val, err := ctx.Request.Body.Read(body)
+	val := ctx.Request.Header
 	log.Printf("KeyValue: %+v\n", val)
 
 	log.Printf("Context: %+v", ctx)

@@ -52,7 +52,7 @@ func InitRoutes(student StudentHandler, supervisor SupervisorHandler, authorizat
 
 	router.GET("/supervisors/list_of_students/:id", supervisor.GetListOfStudents)
 	//router.GET("/supervisors/student/:studentID/:id", supervisor.GetStudentsDissertationPage)
-	router.GET("/supervisors/student/:id", supervisor.GetStudentsDissertationPage)
+	router.OPTIONS("/supervisors/student/:id", supervisor.GetStudentsDissertationPage)
 	router.POST("authorization/authorize", authorization.Authorize)
 	return router
 }
