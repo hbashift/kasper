@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *studentHandler) GetDissertation(ctx *gin.Context) {
+func (h *studentHandler) GetDissertationPage(ctx *gin.Context) {
 	token, err := getUUID(ctx)
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)

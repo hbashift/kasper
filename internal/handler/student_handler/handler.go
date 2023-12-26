@@ -16,11 +16,12 @@ type StudentService interface {
 	GetScientificWorks(ctx context.Context, token string) ([]*mapping.ScientificWork, error)
 	InsertScientificWorks(ctx context.Context, token string, works []*mapping.ScientificWork) ([]*mapping.ScientificWork, error)
 	UpdateScientificWorks(ctx context.Context, token string, works []*mapping.ScientificWork) error
-	DeleteScientificWork(ctx context.Context, token string, deleteIDs *mapping.DeleteWorkIDs) ([]*mapping.ScientificWork, error)
+	DeleteScientificWork(ctx context.Context, token string, deleteIDs *mapping.IDs) ([]*mapping.ScientificWork, error)
 	GetTeachingLoad(ctx context.Context, token string) (*mapping.TeachingLoad, error)
 	UpsertTeachingLoad(ctx context.Context, token string, loads *mapping.TeachingLoad) (*mapping.TeachingLoad, error)
-	DeleteTeachingLoad(ctx context.Context, token string, deleteIDs *mapping.DeleteWorkIDs) (*mapping.TeachingLoad, error)
+	DeleteTeachingLoad(ctx context.Context, token string, deleteIDs *mapping.IDs) (*mapping.TeachingLoad, error)
 	UploadDissertation(ctx *gin.Context, token string, semester *mapping.UploadDissertation) error
+	GetDissertationIDs(ctx context.Context, token string) (*mapping.IDs, error)
 }
 
 type studentHandler struct {

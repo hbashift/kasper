@@ -10,7 +10,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (s *Service) DeleteScientificWork(ctx context.Context, token string, deleteIDs *mapping.DeleteWorkIDs) ([]*mapping.ScientificWork, error) {
+func (s *Service) DeleteScientificWork(ctx context.Context, token string, deleteIDs *mapping.IDs) ([]*mapping.ScientificWork, error) {
 	session, err := s.tokenRepo.Authenticate(ctx, token, s.db)
 	if err != nil {
 		return nil, errors.Wrap(err, "[Student]")

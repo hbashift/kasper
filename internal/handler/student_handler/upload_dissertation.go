@@ -17,8 +17,6 @@ func (h *studentHandler) UploadDissertation(ctx *gin.Context) {
 		return
 	}
 
-	log.Println(ctx.Request)
-
 	reqBody := mapping.UploadDissertation{}
 	err = ctx.ShouldBind(&reqBody)
 	if err != nil {

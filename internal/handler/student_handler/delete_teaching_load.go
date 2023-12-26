@@ -15,7 +15,7 @@ func (h *studentHandler) DeleteTeachingLoad(ctx *gin.Context) {
 		return
 	}
 
-	reqBody := mapping.DeleteWorkIDs{}
+	reqBody := mapping.IDs{}
 	if err = ctx.ShouldBindJSON(&reqBody); err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return

@@ -8,7 +8,7 @@ import (
 )
 
 type StudentHandler interface {
-	GetDissertation(ctx *gin.Context)
+	GetDissertationPage(ctx *gin.Context)
 	UpsertSemesterProgress(ctx *gin.Context)
 	GetScientificWorks(ctx *gin.Context)
 	InsertScientificWorks(ctx *gin.Context)
@@ -41,7 +41,7 @@ func InitRoutes(student StudentHandler, supervisor SupervisorHandler, authorizat
 		MaxAge:           12 * time.Hour,
 	}))
 
-	router.GET("/students/dissertation/:id", student.GetDissertation)
+	router.GET("/students/dissertation/:id", student.GetDissertationPage)
 	router.POST("/students/dissertation/progress/:id", student.UpsertSemesterProgress)
 	router.GET("/students/scientific_works/:id", student.GetScientificWorks)
 	router.POST("/students/scientific_works/:id", student.InsertScientificWorks)

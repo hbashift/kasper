@@ -16,19 +16,34 @@ func (s *Service) UploadDissertation(ctx *gin.Context, token string, semester *m
 		return errors.Wrap(err, "[Student]")
 	}
 
-	file, err := ctx.FormFile("file")
+	pz, err := ctx.FormFile("pz")
 	if err != nil {
 		err = errors.Wrap(err, "Here")
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return nil
 	}
 
-	log.Println(file.Filename)
+	titul, err := ctx.FormFile("titul")
+	if err != nil {
+		err = errors.Wrap(err, "Here")
+		ctx.AbortWithError(http.StatusBadRequest, err)
+		return nil
+	}
+
+	log.Println(pz.Filename)
 
 	dst := fmt.Sprintf("./dissertations/%s/semester%d/%s",
-		session.KasperID.String(), semester.Semester.SemesterNumber, file.Filename)
+		session.KasperID.String(), semester.Semester.SemesterNumber, pz.Filename)
 
-	err = ctx.SaveUploadedFile(file, dst)
+	err = ctx.SaveUploadedFile(pz, dst)
+	if err != nil {
+		return errors.Wrap(err, "UploadDissertation()")
+	}
+
+	dst = fmt.Sprintf("./dissertations/%s/semester%d/%s",
+		session.KasperID.String(), semester.Semester.SemesterNumber, titul.Filename)
+
+	err = ctx.SaveUploadedFile(titul, dst)
 	if err != nil {
 		return errors.Wrap(err, "UploadDissertation()")
 	}

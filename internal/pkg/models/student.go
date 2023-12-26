@@ -2,6 +2,8 @@ package models
 
 import (
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type StudentDissertationPlan struct {
@@ -25,4 +27,8 @@ type StudentCommonInformation struct {
 	TitlePageURL          string    `db:"title_page_url" json:"titlePageURL,omitempty"`
 	ExplanatoryNoteURL    string    `db:"explanatory_note_url" json:"explanatoryNoteURL,omitempty"`
 	StudentName           string    `db:"student_name"`
+}
+
+type IDs struct {
+	ID uuid.UUID `db:"id"`
 }

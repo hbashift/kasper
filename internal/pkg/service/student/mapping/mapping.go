@@ -50,7 +50,7 @@ func MapScientificWorkFromDomain(work *model.ScientificWork) *ScientificWork {
 	return res
 }
 
-func MapWorkIDsToDomain(ids *DeleteWorkIDs) ([]*uuid.UUID, error) {
+func MapWorkIDsToDomain(ids *IDs) ([]*uuid.UUID, error) {
 	var UUIDs []*uuid.UUID
 
 	for _, id := range ids.IDs {
@@ -118,4 +118,14 @@ func MapTeachingLoadToDomain(load *SingleLoad, session *model.AuthorizationToken
 	}
 
 	return &domainLoad, nil
+}
+
+func MapIDsFromDomain(domainIDs []*uuid.UUID) *IDs {
+	ids := IDs{}
+
+	for _, id := range domainIDs {
+		ids.IDs = append(ids.IDs, id.String())
+	}
+
+	return &ids
 }

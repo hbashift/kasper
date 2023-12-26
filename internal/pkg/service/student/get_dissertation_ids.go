@@ -8,7 +8,7 @@ import (
 	"uir_draft/internal/pkg/service/student/mapping"
 )
 
-func (s *Service) DeleteTeachingLoad(ctx context.Context, token string, deleteIDs *mapping.IDs) (*mapping.TeachingLoad, error) {
+func (s *Service) GetDissertationIDs(ctx context.Context, token string) (*mapping.IDs, error) {
 	session, err := s.tokenRepo.Authenticate(ctx, token, s.db)
 	if err != nil {
 		return nil, errors.Wrap(err, "[Student]")
@@ -18,12 +18,10 @@ func (s *Service) DeleteTeachingLoad(ctx context.Context, token string, deleteID
 		return nil, errors.Wrap(ErrNonValidToken, "[Student]")
 	}
 
-	ids, err := mapping.MapWorkIDsToDomain(deleteIDs)
-
-	err = s.loadRepo.DeleteTeachingLoad(ctx, s.db, ids)
+	ids, err := s.dRepo.GetDissertationIDs(ctx, s.db, session.KasperID)
 	if err != nil {
-		return nil, errors.Wrap(err, "[Student]")
+		return nil, err
 	}
 
-	return s.grepFromDBTeachingLoad(ctx, session)
+	return mapping.MapIDsFromDomain(ids), nil
 }
