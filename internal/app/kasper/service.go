@@ -32,7 +32,7 @@ func InitRoutes(student StudentHandler, supervisor SupervisorHandler, authorizat
 	router := gin.Default()
 
 	router.Use(cors.New(cors.Config{
-		AllowMethods:     []string{"PUT", "PATCH", "POST", "GET", "DELETE"},
+		AllowMethods:     []string{"PUT", "PATCH", "POST", "GET", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Authorization", "Content-Type", "Accept-Encoding"},
 		ExposeHeaders:    []string{"Content-Length", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials", "Access-Control-Allow-Headers", "Access-Control-Allow-Methods"},
 		AllowCredentials: true,
@@ -53,6 +53,7 @@ func InitRoutes(student StudentHandler, supervisor SupervisorHandler, authorizat
 	router.GET("/supervisors/list_of_students/:id", supervisor.GetListOfStudents)
 	//router.GET("/supervisors/student/:studentID/:id", supervisor.GetStudentsDissertationPage)
 	router.OPTIONS("/supervisors/student/:id", supervisor.GetStudentsDissertationPage)
+
 	router.POST("authorization/authorize", authorization.Authorize)
 	return router
 }
