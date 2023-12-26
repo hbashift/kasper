@@ -77,3 +77,10 @@ var TeachingLoadTypeMapToDomain = map[TeachingLoadType]model.TeachingLoadType{
 type TeachingLoad struct {
 	Array []SingleLoad `json:"array"`
 }
+
+type SemesterTeachingLoad struct {
+	Semester1 []SingleLoad `json:"semester1,omitempty"`
+	Semester2 []SingleLoad `json:"semester2,omitempty"`
+	Semester3 []SingleLoad `json:"semester3,omitempty"`
+	Semester4 []SingleLoad `json:"semester4,omitempty"`
+}
