@@ -20,6 +20,7 @@ type StudentService interface {
 	GetTeachingLoad(ctx context.Context, token string) (*mapping.TeachingLoad, error)
 	UpsertTeachingLoad(ctx context.Context, token string, loads *mapping.TeachingLoad) (*mapping.TeachingLoad, error)
 	DeleteTeachingLoad(ctx context.Context, token string, deleteIDs *mapping.DeleteWorkIDs) (*mapping.TeachingLoad, error)
+	UploadDissertation(ctx *gin.Context, token string, semester *mapping.UploadDissertation) error
 }
 
 type studentHandler struct {

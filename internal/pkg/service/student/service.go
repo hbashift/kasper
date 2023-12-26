@@ -11,7 +11,7 @@ import (
 )
 
 type StudentRepository interface {
-	GetStudentCommonInfo(ctx context.Context, tx *pgxpool.Pool, clientID uuid.UUID) (*models.StudentCommonInformation, error)
+	GetStudentCommonInfo(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) (*models.StudentCommonInformation, error)
 	InsertStudentCommonInfo(ctx context.Context, tx *pgxpool.Pool, student model.Students) error
 	UpdateStudentCommonInfo(ctx context.Context, tx *pgxpool.Pool, student model.Students) error
 }
