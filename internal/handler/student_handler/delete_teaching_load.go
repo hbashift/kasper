@@ -22,6 +22,7 @@ func (h *studentHandler) DeleteTeachingLoad(ctx *gin.Context) {
 
 	if len(reqBody.IDs) == 0 {
 		ctx.JSON(http.StatusOK, "no ids provided")
+		return
 	}
 
 	newWorks, err := h.service.DeleteTeachingLoad(ctx, token.String(), &reqBody)
