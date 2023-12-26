@@ -20,9 +20,11 @@ func (h *supervisorHandler) GetStudentsDissertationPage(ctx *gin.Context) {
 
 	log.Printf("Context: %+v", ctx)
 
-	stringId := ctx.Param("studentID")
+	//stringId := ctx.Param("studentID")
+	//
+	//studentID, err := uuid.Parse(stringId)
+	studentID := uuid.New()
 
-	studentID, err := uuid.Parse(stringId)
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
