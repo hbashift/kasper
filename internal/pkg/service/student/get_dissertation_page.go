@@ -5,6 +5,7 @@ import (
 
 	"uir_draft/internal/generated/kasper/uir_draft/public/model"
 	"uir_draft/internal/pkg/models"
+	"uir_draft/internal/pkg/service/student/mapping"
 
 	"github.com/pkg/errors"
 )
@@ -21,6 +22,7 @@ type StudentDissertationPlan struct {
 type DissertationPage struct {
 	DissertationPlan map[string]*StudentDissertationPlan `json:"dissertationPlan"`
 	CommonInfo       models.StudentCommonInformation     `json:"commonInfo"`
+	IDs              []*mapping.DissertationIDs          `json:"ids"`
 }
 
 func (s *Service) GetDissertationPage(ctx context.Context, token string) (*DissertationPage, error) {
@@ -43,6 +45,13 @@ func (s *Service) GetDissertationPage(ctx context.Context, token string) (*Disse
 		return nil, errors.Wrap(err, "GetStudentDissertationPlan()")
 	}
 
+	domainIDs, err := s.dRepo.GetDissertationIDs(ctx, s.db, session.KasperID)
+	if err != nil {
+		return nil, err
+	}
+
+	ids := mapping.MapIDsFromDomain(domainIDs)
+
 	planMap := make(map[string]*StudentDissertationPlan, len(plans))
 
 	for _, semester := range plans {
@@ -60,5 +69,6 @@ func (s *Service) GetDissertationPage(ctx context.Context, token string) (*Disse
 	return &DissertationPage{
 		DissertationPlan: planMap,
 		CommonInfo:       *commonInfo,
+		IDs:              ids,
 	}, nil
 }
