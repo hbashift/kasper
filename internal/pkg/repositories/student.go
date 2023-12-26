@@ -130,7 +130,7 @@ func (r *StudentRepository) GetListOfStudents(ctx context.Context, tx *pgxpool.P
 func (r *StudentRepository) getListOfStudentsTx(ctx context.Context, tx *pgxpool.Pool, supervisorID *uuid.UUID) ([]*model.Students, error) {
 	stmt, args := table.Students.
 		SELECT(table.Students.AllColumns).
-		WHERE(table.Students.ClientID.EQ(postgres.UUID(supervisorID))).
+		WHERE(table.Students.SupervisorID.EQ(postgres.UUID(supervisorID))).
 		Sql()
 
 	row, err := tx.Query(ctx, stmt, args...)
