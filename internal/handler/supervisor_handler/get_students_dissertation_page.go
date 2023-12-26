@@ -15,8 +15,8 @@ func (h *supervisorHandler) GetStudentsDissertationPage(ctx *gin.Context) {
 		return
 	}
 
-	val, is := ctx.Get("studentID")
-	log.Printf("KeyValue: %v, %v\n", val, is)
+	val := ctx.Request.Header.Get("studentID")
+	log.Printf("KeyValue: %v\n", val)
 
 	log.Printf("Context: %+v", ctx)
 
