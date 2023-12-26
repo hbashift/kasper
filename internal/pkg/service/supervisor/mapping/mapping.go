@@ -14,7 +14,7 @@ func MapStudentListFromDomain(domain []*model.Students) *ListOfStudents {
 			Group:           lo.FromPtr(domainStudent.GroupNumber),
 			Topic:           domainStudent.DissertationTitle,
 			EnrollmentOrder: domainStudent.EnrollmentOrder,
-			DateOfStatement: lo.FromPtr(domainStudent.StartDate),
+			DateOfStatement: domainStudent.StartDate.Format("02/01/2006"),
 			StudentID:       domainStudent.StudentID,
 		}
 

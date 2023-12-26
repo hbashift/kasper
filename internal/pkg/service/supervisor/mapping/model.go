@@ -1,8 +1,6 @@
 package mapping
 
 import (
-	"time"
-
 	"github.com/google/uuid"
 )
 
@@ -15,6 +13,6 @@ type StudentCommonInfo struct {
 	Group           string    `json:"group,omitempty"`
 	Topic           string    `json:"topic,omitempty"`
 	EnrollmentOrder string    `json:"numberOfOrderOfStatement,omitempty"`
-	DateOfStatement time.Time `json:"dateOfStatement,omitempty"`
+	DateOfStatement string    `json:"dateOfStatement,omitempty"`
 	StudentID       uuid.UUID `json:"studentID,omitempty"`
 }
