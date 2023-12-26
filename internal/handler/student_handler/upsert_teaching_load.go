@@ -7,7 +7,7 @@ import (
 	"uir_draft/internal/pkg/service/student/mapping"
 )
 
-func (h *studentHandler) InsertTeachingLoad(ctx *gin.Context) {
+func (h *studentHandler) UpsertTeachingLoad(ctx *gin.Context) {
 	token, err := getUUID(ctx)
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)

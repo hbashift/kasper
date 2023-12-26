@@ -3,12 +3,11 @@ package student_handler
 import (
 	"net/http"
 
-	"uir_draft/internal/pkg/service/student/mapping"
-
 	"github.com/gin-gonic/gin"
+	"uir_draft/internal/pkg/service/student/mapping"
 )
 
-func (h *studentHandler) DeleteScientificWork(ctx *gin.Context) {
+func (h *studentHandler) DeleteTeachingLoad(ctx *gin.Context) {
 	token, err := getUUID(ctx)
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
@@ -21,16 +20,10 @@ func (h *studentHandler) DeleteScientificWork(ctx *gin.Context) {
 		return
 	}
 
-	newWorks, err := h.service.DeleteScientificWork(ctx, token.String(), &reqBody)
+	newWorks, err := h.service.DeleteTeachingLoad(ctx, token.String(), &reqBody)
 	if err != nil {
 		ctx.AbortWithError(http.StatusInternalServerError, err)
 		return
-	}
-
-	var works []mapping.ScientificWork
-
-	for _, m := range newWorks {
-		works = append(works, *m)
 	}
 
 	ctx.JSON(http.StatusOK, newWorks)

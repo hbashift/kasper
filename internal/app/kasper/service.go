@@ -15,7 +15,8 @@ type StudentHandler interface {
 	UpdateScientificWorks(ctx *gin.Context)
 	DeleteScientificWork(ctx *gin.Context)
 	GetTeachingLoad(ctx *gin.Context)
-	InsertTeachingLoad(ctx *gin.Context)
+	UpsertTeachingLoad(ctx *gin.Context)
+	DeleteTeachingLoad(ctx *gin.Context)
 }
 
 type AuthorizationHandler interface {
@@ -41,7 +42,8 @@ func InitRoutes(student StudentHandler, authorization AuthorizationHandler) *gin
 	router.PATCH("/students/scientific_works/:id", student.UpdateScientificWorks)
 	router.DELETE("/students/scientific_works/:id", student.DeleteScientificWork)
 	router.GET("/students/teaching_load/:id", student.GetTeachingLoad)
-	router.POST("/students/teaching_load/:id", student.InsertTeachingLoad)
+	router.POST("/students/teaching_load/:id", student.UpsertTeachingLoad)
+	router.DELETE("/students/teaching_load/:id", student.DeleteTeachingLoad)
 
 	router.POST("authorization/authorize", authorization.Authorize)
 	return router

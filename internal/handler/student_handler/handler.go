@@ -19,6 +19,7 @@ type StudentService interface {
 	DeleteScientificWork(ctx context.Context, token string, deleteIDs *mapping.DeleteWorkIDs) ([]*mapping.ScientificWork, error)
 	GetTeachingLoad(ctx context.Context, token string) (*mapping.TeachingLoad, error)
 	UpsertTeachingLoad(ctx context.Context, token string, loads *mapping.TeachingLoad) (*mapping.TeachingLoad, error)
+	DeleteTeachingLoad(ctx context.Context, token string, deleteIDs *mapping.DeleteWorkIDs) (*mapping.TeachingLoad, error)
 }
 
 type studentHandler struct {

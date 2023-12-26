@@ -35,6 +35,7 @@ type TeachingLoadRepository interface {
 	UpsertStudentsTeachingLoad(ctx context.Context, tx *pgxpool.Pool, loads []*model.TeachingLoad) error
 	GetStudentsTeachingLoad(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) ([]*model.TeachingLoad, error)
 	UpdateStudentsTeachingLoad(ctx context.Context, tx *pgxpool.Pool, loads []*model.TeachingLoad) error
+	DeleteTeachingLoad(ctx context.Context, tx *pgxpool.Pool, loadIDs []*uuid.UUID) error
 }
 
 type TokenRepository interface {

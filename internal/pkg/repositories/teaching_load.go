@@ -138,6 +138,40 @@ func (r *TeachingLoadRepository) updateStudentsTeachingLoadTx(ctx context.Contex
 	return nil
 }
 
+func (r *TeachingLoadRepository) DeleteTeachingLoad(ctx context.Context, tx *pgxpool.Pool, loadIDs []*uuid.UUID) error {
+	var ids []postgres.Expression
+
+	for _, loadID := range loadIDs {
+		id := postgres.UUID(loadID)
+		ids = append(ids, id)
+	}
+
+	if err := r.deleteTeachingLoadTx(ctx, tx, ids); err != nil {
+		return errors.Wrap(err, "DeleteTeachingLoadTx()")
+	}
+
+	return nil
+}
+
+func (r *TeachingLoadRepository) deleteTeachingLoadTx(ctx context.Context, tx *pgxpool.Pool, loadIDs []postgres.Expression) error {
+	stmt, args := table.TeachingLoad.
+		DELETE().
+		WHERE(table.TeachingLoad.LoadID.IN(loadIDs...)).
+		Sql()
+
+	if err := tx.BeginFunc(ctx, func(tx pgx.Tx) error {
+		if _, err := tx.Exec(ctx, stmt, args...); err != nil {
+			return err
+		}
+
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "deleteTeachingLoadTx()")
+	}
+
+	return nil
+}
+
 func scanTeachingLoad(row pgx.Row, target *model.TeachingLoad) error {
 	return row.Scan(
 		&target.LoadID,
