@@ -3,6 +3,7 @@ package student
 import (
 	"fmt"
 	"log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
@@ -15,19 +16,36 @@ func (s *Service) UploadDissertation(ctx *gin.Context, token string, semester *m
 		return errors.Wrap(err, "[Student]")
 	}
 
-	form, _ := ctx.MultipartForm()
-	files := form.File["upload"]
+	pz, err := ctx.FormFile("pz")
+	if err != nil {
+		err = errors.Wrap(err, "Here")
+		ctx.AbortWithError(http.StatusBadRequest, err)
+		return nil
+	}
 
-	for _, file := range files {
-		dst := fmt.Sprintf("./dissertations/%s/semester%d/%s",
-			session.KasperID.String(), semester.Semester.SemesterNumber, file.Filename)
+	title, err := ctx.FormFile("title")
+	if err != nil {
+		err = errors.Wrap(err, "Here")
+		ctx.AbortWithError(http.StatusBadRequest, err)
+		return nil
+	}
 
-		err = ctx.SaveUploadedFile(file, dst)
-		if err != nil {
-			return errors.Wrap(err, "UploadDissertation()")
-		}
+	log.Println(pz.Filename)
 
-		log.Println(file.Filename)
+	dst := fmt.Sprintf("./dissertations/%s/semester%d/%s",
+		session.KasperID.String(), semester.Semester.SemesterNumber, pz.Filename)
+
+	err = ctx.SaveUploadedFile(pz, dst)
+	if err != nil {
+		return errors.Wrap(err, "UploadDissertation()")
+	}
+
+	dst = fmt.Sprintf("./dissertations/%s/semester%d/%s",
+		session.KasperID.String(), semester.Semester.SemesterNumber, title.Filename)
+
+	err = ctx.SaveUploadedFile(title, dst)
+	if err != nil {
+		return errors.Wrap(err, "UploadDissertation()")
 	}
 
 	return nil
