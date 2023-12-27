@@ -80,7 +80,7 @@ type TeachingLoad struct {
 }
 
 type UploadDissertation struct {
-	Semester Semester `form:"data"`
+	Semester Semester `form:"semester"`
 }
 
 type Semester struct {
