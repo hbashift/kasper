@@ -33,8 +33,7 @@ func (r *StudentRepository) GetStudentCommonInfo(ctx context.Context, tx *pgxpoo
 
 func (r *StudentRepository) getStudentCommonInformation(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) (*models.StudentCommonInformation, error) {
 	stmt, args := table.Students.
-		INNER_JOIN(table.Dissertation, table.Students.StudentID.EQ(table.Dissertation.StudentID).
-			AND(table.Students.ActualSemester.EQ(table.Dissertation.Semester))).
+		INNER_JOIN(table.Dissertation, table.Students.StudentID.EQ(table.Dissertation.StudentID)).
 		INNER_JOIN(table.Supervisors, table.Students.SupervisorID.EQ(table.Supervisors.SupervisorID)).
 		SELECT(
 			table.Students.DissertationTitle.AS("dissertation_title"),
@@ -42,7 +41,7 @@ func (r *StudentRepository) getStudentCommonInformation(ctx context.Context, tx 
 			table.Students.EnrollmentOrder.AS("enrollment_order_number"),
 			table.Students.StartDate.AS("studying_start_date"),
 			table.Students.ActualSemester.AS("semester_number"),
-			table.Dissertation.Feedback.AS("feedback"),
+			table.Students.Feedback.AS("feedback"),
 			table.Dissertation.Status.AS("dissertation_status"),
 			table.Students.TitlePagePath.AS("title_page_url"),
 			table.Students.ExplanatoryNoteURL.AS("explanatory_note_url"),
