@@ -16,14 +16,7 @@ func (s *Service) UploadDissertation(ctx *gin.Context, token string, semester *m
 		return errors.Wrap(err, "[Student]")
 	}
 
-	pz, err := ctx.FormFile("pz")
-	if err != nil {
-		err = errors.Wrap(err, "Here")
-		ctx.AbortWithError(http.StatusBadRequest, err)
-		return nil
-	}
-
-	title, err := ctx.FormFile("title")
+	pz, err := ctx.FormFile("upload")
 	if err != nil {
 		err = errors.Wrap(err, "Here")
 		ctx.AbortWithError(http.StatusBadRequest, err)
@@ -39,14 +32,10 @@ func (s *Service) UploadDissertation(ctx *gin.Context, token string, semester *m
 	if err != nil {
 		return errors.Wrap(err, "UploadDissertation()")
 	}
-
-	dst = fmt.Sprintf("./dissertations/%s/semester%d/%s",
-		session.KasperID.String(), semester.Semester.SemesterNumber, title.Filename)
-
-	err = ctx.SaveUploadedFile(title, dst)
-	if err != nil {
-		return errors.Wrap(err, "UploadDissertation()")
-	}
-
+	/*
+		TODO:
+		1) записывать в БД названия файлов и их путь
+		2) Табличка для титульников
+	*/
 	return nil
 }
