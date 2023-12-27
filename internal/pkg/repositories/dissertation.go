@@ -114,7 +114,7 @@ func (r *DissertationRepository) upsertDissertationDataTx(ctx context.Context, t
 	}
 
 	stmt, args := table.Dissertation.
-		INSERT().
+		INSERT(table.Dissertation.AllColumns).
 		MODEL(dissertation).
 		ON_CONFLICT(table.Dissertation.DissertationID).
 		DO_UPDATE(
