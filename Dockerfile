@@ -10,3 +10,5 @@ COPY . .
 RUN go build -o ./bin/server ./cmd/kasper/main.go
 
 EXPOSE 8080
+
+CMD ["./bin/server"]

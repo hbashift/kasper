@@ -32,10 +32,6 @@ func (s *Service) UploadDissertation(ctx *gin.Context, token string, semester *m
 	if err != nil {
 		return errors.Wrap(err, "UploadDissertation()")
 	}
-	/*
-		TODO:
-		1) записывать в БД названия файлов и их путь
-		2) Табличка для титульников
-	*/
-	return nil
+
+	return s.dRepo.UpsertDissertationData(ctx, s.db, &session.KasperID, semester.Semester.SemesterNumber, pz.Filename)
 }

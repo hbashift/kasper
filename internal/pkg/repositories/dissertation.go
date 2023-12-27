@@ -2,7 +2,9 @@ package repositories
 
 import (
 	"context"
+	"time"
 
+	"github.com/samber/lo"
 	"uir_draft/internal/generated/kasper/uir_draft/public/model"
 	"uir_draft/internal/generated/kasper/uir_draft/public/table"
 	"uir_draft/internal/pkg/models"
@@ -93,6 +95,42 @@ func (r *DissertationRepository) getDissertationIDsTx(ctx context.Context, tx *p
 	}
 
 	return ids, nil
+}
+
+func (r *DissertationRepository) UpsertDissertationData(ctx context.Context, tx *pgxpool.Pool, studentID *uuid.UUID, semester int32, name string) error {
+	return r.upsertDissertationDataTx(ctx, tx, studentID, semester, name)
+}
+
+func (r *DissertationRepository) upsertDissertationDataTx(ctx context.Context, tx *pgxpool.Pool, studentID *uuid.UUID, semester int32, name string) error {
+	dissertation := model.Dissertation{
+		StudentID:      *studentID,
+		Status:         model.DissertationStatus_Todo,
+		CreatedAt:      lo.ToPtr(time.Now()),
+		UpdatedAt:      lo.ToPtr(time.Now()),
+		DissertationID: uuid.New(),
+		Semester:       semester,
+		Feedback:       nil,
+		Name:           name,
+	}
+
+	stmt, args := table.Dissertation.
+		INSERT().
+		MODEL(dissertation).
+		ON_CONFLICT(table.Dissertation.DissertationID).
+		DO_UPDATE(
+			postgres.SET(
+				table.Dissertation.Name.SET(postgres.String(name)),
+				table.Dissertation.UpdatedAt.SET(postgres.NOW()),
+			),
+		).
+		Sql()
+
+	_, err := tx.Exec(ctx, stmt, args...)
+	if err != nil {
+		return errors.Wrap(err, "upsertDissertationDataTx()")
+	}
+
+	return nil
 }
 
 func scanDissertationIDs(rows pgx.Row, target *models.IDs) error {

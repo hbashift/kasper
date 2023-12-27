@@ -18,7 +18,7 @@ services:
 #    depends_on:
 #      - database
     ports:
-      - "8081:8080"
+      - "8080:8080"
     restart: always
     volumes:
       - ./dissertations:/usr/src/app/dissertations

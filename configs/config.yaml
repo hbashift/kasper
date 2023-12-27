@@ -7,3 +7,10 @@ db:
   port: "5432"
   dbname: "uir_draft"
   sslmode: "disable"
+#db:
+#  username: "postgres"
+#  password: "admin"
+#  host: "host.docker.internal"
+#  port: "5432"
+#  dbname: "uir_draft"
+#  sslmode: "disable"

@@ -19,11 +19,12 @@ type dissertationTable struct {
 	// Columns
 	StudentID      postgres.ColumnString
 	Status         postgres.ColumnString
-	CreatedAt      postgres.ColumnDate
-	UpdatedAt      postgres.ColumnDate
+	CreatedAt      postgres.ColumnTimestampz
+	UpdatedAt      postgres.ColumnTimestampz
 	DissertationID postgres.ColumnString
 	Semester       postgres.ColumnInteger
 	Feedback       postgres.ColumnString
+	Name           postgres.ColumnString
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -66,13 +67,14 @@ func newDissertationTableImpl(schemaName, tableName, alias string) dissertationT
 	var (
 		StudentIDColumn      = postgres.StringColumn("student_id")
 		StatusColumn         = postgres.StringColumn("status")
-		CreatedAtColumn      = postgres.DateColumn("created_at")
-		UpdatedAtColumn      = postgres.DateColumn("updated_at")
+		CreatedAtColumn      = postgres.TimestampzColumn("created_at")
+		UpdatedAtColumn      = postgres.TimestampzColumn("updated_at")
 		DissertationIDColumn = postgres.StringColumn("dissertation_id")
 		SemesterColumn       = postgres.IntegerColumn("semester")
 		FeedbackColumn       = postgres.StringColumn("feedback")
-		allColumns           = postgres.ColumnList{StudentIDColumn, StatusColumn, CreatedAtColumn, UpdatedAtColumn, DissertationIDColumn, SemesterColumn, FeedbackColumn}
-		mutableColumns       = postgres.ColumnList{StudentIDColumn, StatusColumn, CreatedAtColumn, UpdatedAtColumn, SemesterColumn, FeedbackColumn}
+		NameColumn           = postgres.StringColumn("name")
+		allColumns           = postgres.ColumnList{StudentIDColumn, StatusColumn, CreatedAtColumn, UpdatedAtColumn, DissertationIDColumn, SemesterColumn, FeedbackColumn, NameColumn}
+		mutableColumns       = postgres.ColumnList{StudentIDColumn, StatusColumn, CreatedAtColumn, UpdatedAtColumn, SemesterColumn, FeedbackColumn, NameColumn}
 	)
 
 	return dissertationTable{
@@ -86,6 +88,7 @@ func newDissertationTableImpl(schemaName, tableName, alias string) dissertationT
 		DissertationID: DissertationIDColumn,
 		Semester:       SemesterColumn,
 		Feedback:       FeedbackColumn,
+		Name:           NameColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,

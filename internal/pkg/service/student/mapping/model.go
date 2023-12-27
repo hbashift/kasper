@@ -84,5 +84,5 @@ type UploadDissertation struct {
 }
 
 type Semester struct {
-	SemesterNumber int `json:"semester"`
+	SemesterNumber int32 `json:"semester"`
 }

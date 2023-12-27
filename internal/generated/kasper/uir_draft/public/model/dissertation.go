@@ -20,4 +20,5 @@ type Dissertation struct {
 	DissertationID uuid.UUID `sql:"primary_key"`
 	Semester       int32
 	Feedback       *string
+	Name           string
 }

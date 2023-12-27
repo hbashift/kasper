@@ -25,6 +25,7 @@ type ScientificWorkRepository interface {
 
 type DissertationRepository interface {
 	GetDissertationIDs(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) ([]*models.IDs, error)
+	UpsertDissertationData(ctx context.Context, tx *pgxpool.Pool, studentID *uuid.UUID, semester int32, name string) error
 }
 
 type SemesterRepository interface {
