@@ -18,7 +18,7 @@ func (s *Service) UploadDissertation(ctx *gin.Context, token string, semester *m
 	}
 
 	dirPath := fmt.Sprintf("./dissertations/%s/semester%d", session.KasperID.String(), semester.Semester.SemesterNumber)
-	err = os.Remove(dirPath)
+	err = os.RemoveAll(dirPath)
 	if err != nil {
 		return errors.Wrap(err, "could not clean directory")
 	}
