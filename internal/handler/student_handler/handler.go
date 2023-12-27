@@ -3,6 +3,7 @@ package student_handler
 import (
 	"context"
 
+	"uir_draft/internal/generated/kasper/uir_draft/public/model"
 	"uir_draft/internal/pkg/service/student"
 	"uir_draft/internal/pkg/service/student/mapping"
 
@@ -22,6 +23,7 @@ type StudentService interface {
 	DeleteTeachingLoad(ctx context.Context, token string, deleteIDs *mapping.IDs) (*mapping.TeachingLoad, error)
 	UploadDissertation(ctx *gin.Context, token string, semester *mapping.UploadDissertation) error
 	GetDissertationIDs(ctx context.Context, token string) ([]*mapping.DissertationIDs, error)
+	DownloadDissertation(ctx *gin.Context, token string, dissertationID *mapping.DissertationID) (*model.Dissertation, error)
 }
 
 type studentHandler struct {

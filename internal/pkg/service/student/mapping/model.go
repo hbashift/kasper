@@ -86,3 +86,7 @@ type UploadDissertation struct {
 type Semester struct {
 	SemesterNumber int32 `json:"semester"`
 }
+
+type DissertationID struct {
+	DissertationID uuid.UUID `json:"dissertationID"`
+}

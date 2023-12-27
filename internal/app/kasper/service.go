@@ -18,6 +18,7 @@ type StudentHandler interface {
 	UpsertTeachingLoad(ctx *gin.Context)
 	DeleteTeachingLoad(ctx *gin.Context)
 	UploadDissertation(ctx *gin.Context)
+	DownloadDissertation(ctx *gin.Context)
 }
 
 type SupervisorHandler interface {

@@ -132,9 +132,40 @@ func (r *DissertationRepository) upsertDissertationDataTx(ctx context.Context, t
 	return nil
 }
 
+func (r *DissertationRepository) GetDissertationData(ctx context.Context, tx *pgxpool.Pool, dissertationID uuid.UUID) (*model.Dissertation, error) {
+	return r.getDissertationDataTx(ctx, tx, dissertationID)
+}
+
+func (r *DissertationRepository) getDissertationDataTx(ctx context.Context, tx *pgxpool.Pool, dissertationID uuid.UUID) (*model.Dissertation, error) {
+	stmt, args := table.Dissertation.
+		SELECT(table.Dissertation.AllColumns).
+		WHERE(table.Dissertation.DissertationID.EQ(postgres.UUID(dissertationID))).
+		Sql()
+
+	dissertation := &model.Dissertation{}
+	row := tx.QueryRow(ctx, stmt, args...)
+	if err := scanDissertation(row, dissertation); err != nil {
+		return nil, errors.Wrap(err, "getDissertationDataTx()")
+	}
+
+	return dissertation, nil
+}
+
 func scanDissertationIDs(rows pgx.Row, target *models.IDs) error {
 	return rows.Scan(
 		&target.ID,
 		&target.Semester,
+	)
+}
+
+func scanDissertation(row pgx.Row, target *model.Dissertation) error {
+	return row.Scan(
+		&target.StudentID,
+		&target.Status,
+		&target.CreatedAt,
+		&target.UpdatedAt,
+		&target.DissertationID,
+		&target.Semester,
+		&target.Name,
 	)
 }
