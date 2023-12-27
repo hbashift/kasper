@@ -26,5 +26,6 @@ type Students struct {
 	StartDate          *time.Time
 	AcademicLeave      bool
 	DissertationTitle  string
+	Feedback           *string
 	GroupNumber        *string
 }

@@ -109,14 +109,13 @@ func (r *DissertationRepository) upsertDissertationDataTx(ctx context.Context, t
 		UpdatedAt:      lo.ToPtr(time.Now()),
 		DissertationID: uuid.New(),
 		Semester:       semester,
-		Feedback:       nil,
 		Name:           name,
 	}
 
 	stmt, args := table.Dissertation.
 		INSERT(table.Dissertation.AllColumns).
 		MODEL(dissertation).
-		ON_CONFLICT(table.Dissertation.DissertationID).
+		ON_CONFLICT(table.Dissertation.StudentID, table.Dissertation.Semester).
 		DO_UPDATE(
 			postgres.SET(
 				table.Dissertation.Name.SET(postgres.String(name)),

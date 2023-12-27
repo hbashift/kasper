@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
@@ -14,6 +15,12 @@ func (s *Service) UploadDissertation(ctx *gin.Context, token string, semester *m
 	session, err := s.tokenRepo.Authenticate(ctx, token, s.db)
 	if err != nil {
 		return errors.Wrap(err, "[Student]")
+	}
+
+	dirPath := fmt.Sprintf("./dissertations/%s/semester%d", session.KasperID.String(), semester.Semester.SemesterNumber)
+	err = os.Remove(dirPath)
+	if err != nil {
+		return errors.Wrap(err, "could not clean directory")
 	}
 
 	pz, err := ctx.FormFile("upload")

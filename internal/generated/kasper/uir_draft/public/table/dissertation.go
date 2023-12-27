@@ -23,7 +23,6 @@ type dissertationTable struct {
 	UpdatedAt      postgres.ColumnTimestampz
 	DissertationID postgres.ColumnString
 	Semester       postgres.ColumnInteger
-	Feedback       postgres.ColumnString
 	Name           postgres.ColumnString
 
 	AllColumns     postgres.ColumnList
@@ -71,10 +70,9 @@ func newDissertationTableImpl(schemaName, tableName, alias string) dissertationT
 		UpdatedAtColumn      = postgres.TimestampzColumn("updated_at")
 		DissertationIDColumn = postgres.StringColumn("dissertation_id")
 		SemesterColumn       = postgres.IntegerColumn("semester")
-		FeedbackColumn       = postgres.StringColumn("feedback")
 		NameColumn           = postgres.StringColumn("name")
-		allColumns           = postgres.ColumnList{StudentIDColumn, StatusColumn, CreatedAtColumn, UpdatedAtColumn, DissertationIDColumn, SemesterColumn, FeedbackColumn, NameColumn}
-		mutableColumns       = postgres.ColumnList{StudentIDColumn, StatusColumn, CreatedAtColumn, UpdatedAtColumn, SemesterColumn, FeedbackColumn, NameColumn}
+		allColumns           = postgres.ColumnList{StudentIDColumn, StatusColumn, CreatedAtColumn, UpdatedAtColumn, DissertationIDColumn, SemesterColumn, NameColumn}
+		mutableColumns       = postgres.ColumnList{StudentIDColumn, StatusColumn, CreatedAtColumn, UpdatedAtColumn, SemesterColumn, NameColumn}
 	)
 
 	return dissertationTable{
@@ -87,7 +85,6 @@ func newDissertationTableImpl(schemaName, tableName, alias string) dissertationT
 		UpdatedAt:      UpdatedAtColumn,
 		DissertationID: DissertationIDColumn,
 		Semester:       SemesterColumn,
-		Feedback:       FeedbackColumn,
 		Name:           NameColumn,
 
 		AllColumns:     allColumns,
