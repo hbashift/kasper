@@ -18,7 +18,6 @@ type dissertationTable struct {
 
 	// Columns
 	StudentID      postgres.ColumnString
-	Status         postgres.ColumnString
 	CreatedAt      postgres.ColumnTimestampz
 	UpdatedAt      postgres.ColumnTimestampz
 	DissertationID postgres.ColumnString
@@ -65,14 +64,13 @@ func newDissertationTable(schemaName, tableName, alias string) *DissertationTabl
 func newDissertationTableImpl(schemaName, tableName, alias string) dissertationTable {
 	var (
 		StudentIDColumn      = postgres.StringColumn("student_id")
-		StatusColumn         = postgres.StringColumn("status")
 		CreatedAtColumn      = postgres.TimestampzColumn("created_at")
 		UpdatedAtColumn      = postgres.TimestampzColumn("updated_at")
 		DissertationIDColumn = postgres.StringColumn("dissertation_id")
 		SemesterColumn       = postgres.IntegerColumn("semester")
 		NameColumn           = postgres.StringColumn("name")
-		allColumns           = postgres.ColumnList{StudentIDColumn, StatusColumn, CreatedAtColumn, UpdatedAtColumn, DissertationIDColumn, SemesterColumn, NameColumn}
-		mutableColumns       = postgres.ColumnList{StudentIDColumn, StatusColumn, CreatedAtColumn, UpdatedAtColumn, SemesterColumn, NameColumn}
+		allColumns           = postgres.ColumnList{StudentIDColumn, CreatedAtColumn, UpdatedAtColumn, DissertationIDColumn, SemesterColumn, NameColumn}
+		mutableColumns       = postgres.ColumnList{StudentIDColumn, CreatedAtColumn, UpdatedAtColumn, SemesterColumn, NameColumn}
 	)
 
 	return dissertationTable{
@@ -80,7 +78,6 @@ func newDissertationTableImpl(schemaName, tableName, alias string) dissertationT
 
 		//Columns
 		StudentID:      StudentIDColumn,
-		Status:         StatusColumn,
 		CreatedAt:      CreatedAtColumn,
 		UpdatedAt:      UpdatedAtColumn,
 		DissertationID: DissertationIDColumn,

@@ -14,7 +14,6 @@ import (
 
 type Dissertation struct {
 	StudentID      uuid.UUID
-	Status         DissertationStatus
 	CreatedAt      *time.Time
 	UpdatedAt      *time.Time
 	DissertationID uuid.UUID `sql:"primary_key"`

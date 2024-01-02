@@ -42,7 +42,7 @@ func (r *StudentRepository) getStudentCommonInformation(ctx context.Context, tx 
 			table.Students.StartDate.AS("studying_start_date"),
 			table.Students.ActualSemester.AS("semester_number"),
 			table.Students.Feedback.AS("feedback"),
-			table.Dissertation.Status.AS("dissertation_status"),
+			table.Students.DissertationStatus.AS("dissertation_status"),
 			table.Students.TitlePagePath.AS("title_page_url"),
 			table.Students.ExplanatoryNoteURL.AS("explanatory_note_url"),
 		).

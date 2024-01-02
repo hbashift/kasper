@@ -24,25 +24,6 @@ func NewDissertationRepository(postgres *pgxpool.Pool) *DissertationRepository {
 	return &DissertationRepository{postgres: postgres}
 }
 
-func (r *DissertationRepository) updateDissertationStatusTx(ctx context.Context, tx pgx.Tx, dissertationID uuid.UUID, status string) error {
-	if err := tx.BeginFunc(ctx, func(tx pgx.Tx) error {
-		stmt, args := table.Dissertation.UPDATE(table.Dissertation.Status).
-			SET(status).
-			WHERE(table.Dissertation.DissertationID.EQ(postgres.UUID(dissertationID))).
-			Sql()
-
-		if _, err := tx.Exec(ctx, stmt, args...); err != nil {
-			return err
-		}
-
-		return nil
-	}); err != nil {
-		return errors.Wrap(err, "insert semester progress")
-	}
-
-	return nil
-}
-
 func (r *DissertationRepository) insertDissertationTx(ctx context.Context, tx pgx.Tx, dissertation model.Dissertation) error {
 	stmt, args := table.Dissertation.INSERT(table.Dissertation.AllColumns).
 		MODEL(dissertation).Sql()
@@ -104,7 +85,6 @@ func (r *DissertationRepository) UpsertDissertationData(ctx context.Context, tx 
 func (r *DissertationRepository) upsertDissertationDataTx(ctx context.Context, tx *pgxpool.Pool, studentID *uuid.UUID, semester int32, name string) error {
 	dissertation := model.Dissertation{
 		StudentID:      *studentID,
-		Status:         model.DissertationStatus_Todo,
 		CreatedAt:      lo.ToPtr(time.Now()),
 		UpdatedAt:      lo.ToPtr(time.Now()),
 		DissertationID: uuid.New(),
@@ -161,7 +141,6 @@ func scanDissertationIDs(rows pgx.Row, target *models.IDs) error {
 func scanDissertation(row pgx.Row, target *model.Dissertation) error {
 	return row.Scan(
 		&target.StudentID,
-		&target.Status,
 		&target.CreatedAt,
 		&target.UpdatedAt,
 		&target.DissertationID,
