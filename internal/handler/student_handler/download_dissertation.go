@@ -37,5 +37,11 @@ func (h *studentHandler) DownloadDissertation(ctx *gin.Context) {
 		return
 	}
 
+	dis := struct {
+		Name string `json:"name"`
+	}{
+		Name: dissertation.Name,
+	}
 	ctx.File(dst)
+	ctx.JSON(http.StatusOK, dis)
 }
