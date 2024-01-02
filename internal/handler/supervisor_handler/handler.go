@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"uir_draft/internal/generated/kasper/uir_draft/public/model"
 	"uir_draft/internal/pkg/service/supervisor"
 	"uir_draft/internal/pkg/service/supervisor/mapping"
 )
@@ -12,6 +13,7 @@ import (
 type SupervisorService interface {
 	GetStudentsList(ctx context.Context, token string) (*mapping.ListOfStudents, error)
 	GetDissertationPage(ctx context.Context, token string, studentID uuid.UUID) (*supervisor.DissertationPage, error)
+	DownloadDissertation(ctx context.Context, token string, info *mapping.DownloadDissertation) (*model.Dissertation, error)
 }
 
 type supervisorHandler struct {

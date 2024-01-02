@@ -16,3 +16,8 @@ type StudentCommonInfo struct {
 	DateOfStatement string    `json:"dateOfStatement,omitempty"`
 	StudentID       uuid.UUID `json:"studentID,omitempty"`
 }
+
+type DownloadDissertation struct {
+	Semester  int32     `json:"semester,omitempty"`
+	StudentID uuid.UUID `json:"studentID,omitempty"`
+}

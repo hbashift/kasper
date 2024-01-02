@@ -25,14 +25,25 @@ type TokenRepository interface {
 	Authenticate(ctx context.Context, token string, db *pgxpool.Pool) (*model.AuthorizationToken, error)
 }
 
+type DissertationRepository interface {
+	GetDissertationData(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID, semester int32) (*model.Dissertation, error)
+}
+
 type Service struct {
 	studRepo     StudentRepository
 	tokenRepo    TokenRepository
 	semesterRepo SemesterRepository
+	dRepo        DissertationRepository
 
 	db *pgxpool.Pool
 }
 
-func NewService(studRepo StudentRepository, tokenRepo TokenRepository, semesterRepo SemesterRepository, db *pgxpool.Pool) *Service {
-	return &Service{studRepo: studRepo, tokenRepo: tokenRepo, semesterRepo: semesterRepo, db: db}
+func NewService(studRepo StudentRepository, tokenRepo TokenRepository, semesterRepo SemesterRepository, dRepo DissertationRepository, db *pgxpool.Pool) *Service {
+	return &Service{
+		studRepo:     studRepo,
+		tokenRepo:    tokenRepo,
+		semesterRepo: semesterRepo,
+		dRepo:        dRepo,
+		db:           db,
+	}
 }
