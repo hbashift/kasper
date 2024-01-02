@@ -17,8 +17,12 @@ func (h *authorizationHandler) HealthCheck(ctx *gin.Context) {
 	}
 
 	check, err := h.authorization.HealthCheck(ctx, token.String())
-	if errors.Is(err, authorization.ErrNonValidToken) {
+	switch {
+	case errors.Is(err, authorization.ErrNonValidToken):
 		ctx.AbortWithError(http.StatusUnauthorized, err)
+		return
+	case err != nil:
+		ctx.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
 
