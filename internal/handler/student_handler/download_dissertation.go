@@ -37,6 +37,6 @@ func (h *studentHandler) DownloadDissertation(ctx *gin.Context) {
 		return
 	}
 
-	ctx.Header("File-Name", dissertation.Name)
+	ctx.Header("Content-Disposition", dissertation.Name)
 	ctx.File(dst)
 }
