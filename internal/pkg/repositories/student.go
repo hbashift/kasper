@@ -182,6 +182,8 @@ func scanStudentRow(row pgx.Row, target *model.Students) error {
 		&target.StartDate,
 		&target.AcademicLeave,
 		&target.DissertationTitle,
+		&target.Feedback,
 		&target.GroupNumber,
+		&target.DissertationStatus,
 	)
 }
