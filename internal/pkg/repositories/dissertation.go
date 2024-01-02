@@ -158,6 +158,22 @@ func (r *DissertationRepository) GetStatuses(ctx context.Context, tx *pgxpool.Po
 	return statuses, nil
 }
 
+func (r *DissertationRepository) SetStatus(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID, semester int32, status model.DissertationStatus) error {
+	stmt, args := table.Dissertation.
+		UPDATE(table.Dissertation.Status).
+		SET(status).
+		WHERE(table.Dissertation.StudentID.EQ(postgres.UUID(studentID)).
+			AND(table.Dissertation.Semester.EQ(postgres.Int32(semester)))).
+		Sql()
+
+	_, err := tx.Exec(ctx, stmt, args...)
+	if err != nil {
+		return errors.Wrap(err, "SetStatus()")
+	}
+
+	return nil
+}
+
 func scanDissertationStatus(rows pgx.Row, target *mapping.DissertationStatus) error {
 	return rows.Scan(
 		&target.Status,

@@ -14,6 +14,7 @@ type SupervisorService interface {
 	GetDissertationPage(ctx context.Context, token string, studentID uuid.UUID) (*supervisor.DissertationPage, error)
 	DownloadDissertation(ctx context.Context, token string, info *mapping.DownloadDissertation) (*model.Dissertation, error)
 	UpdateFeedback(ctx context.Context, token string, info *mapping.UpdateFeedback) error
+	SetStatus(ctx context.Context, token string, info *mapping.SetStatus) error
 }
 
 type supervisorHandler struct {

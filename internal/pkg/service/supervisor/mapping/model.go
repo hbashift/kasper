@@ -26,3 +26,8 @@ type UpdateFeedback struct {
 	StudentID uuid.UUID `json:"studentID"`
 	Feedback  string    `json:"feedback,omitempty"`
 }
+
+type SetStatus struct {
+	Semester int32  `json:"semester,omitempty"`
+	Status   string `json:"status"`
+}

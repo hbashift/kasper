@@ -28,6 +28,7 @@ type TokenRepository interface {
 }
 
 type DissertationRepository interface {
+	SetStatus(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID, semester int32, status model.DissertationStatus) error
 	GetStatuses(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) ([]*mapping.DissertationStatus, error)
 	GetDissertationData(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID, semester int32) (*model.Dissertation, error)
 }
