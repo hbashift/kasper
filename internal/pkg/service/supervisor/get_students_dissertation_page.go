@@ -58,7 +58,7 @@ func (s *Service) GetDissertationPage(ctx context.Context, token string, student
 		}
 		planMap[semester.Name] = plan
 	}
-	statuses, err := s.dRepo.GetStatuses(ctx, s.db, session.KasperID)
+	statuses, err := s.dRepo.GetStatuses(ctx, s.db, studentID)
 	if err != nil {
 		return nil, err
 	}
