@@ -28,7 +28,7 @@ func MapDissertationStatus(status string) model.DissertationStatus {
 	switch {
 	case status == "Не сдано":
 		return model.DissertationStatus_Failed
-	case status == "Сдано":
+	case status == "Принято":
 		return model.DissertationStatus_Passed
 	case status == "На доработку":
 		return model.DissertationStatus_Todo
