@@ -50,6 +50,22 @@ func (r *tokenRepository) InsertToken(ctx context.Context, tx *pgxpool.Pool, tok
 	return nil
 }
 
+func (r *tokenRepository) GetUserTypeByToken(ctx context.Context, tx *pgxpool.Pool, token string) (*model.UserType, error) {
+	stmt, args := table.AuthorizationToken.
+		INNER_JOIN(table.ClientUser, table.AuthorizationToken.KasperID.EQ(table.ClientUser.KasperID)).
+		SELECT(table.ClientUser.ClientType).
+		WHERE(table.AuthorizationToken.TokenNumber.EQ(postgres.String(token))).Sql()
+
+	row := tx.QueryRow(ctx, stmt, args...)
+
+	var clientType model.UserType
+	if err := row.Scan(&clientType); err != nil {
+		return nil, errors.Wrap(err, "GetUserTypeByToken()")
+	}
+
+	return &clientType, nil
+}
+
 func scanAuthorizationToken(row pgx.Row, target *model.AuthorizationToken) error {
 	return row.Scan(
 		&target.TokenID,

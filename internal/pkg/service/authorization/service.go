@@ -19,6 +19,7 @@ type ClientUserRepository interface {
 type TokenRepository interface {
 	InsertToken(ctx context.Context, tx *pgxpool.Pool, token *model.AuthorizationToken) error
 	Authenticate(ctx context.Context, token string, tx *pgxpool.Pool) (*model.AuthorizationToken, error)
+	GetUserTypeByToken(ctx context.Context, tx *pgxpool.Pool, token string) (*model.UserType, error)
 }
 
 type Service struct {

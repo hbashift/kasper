@@ -17,3 +17,7 @@ type ChangePassword struct {
 	OldPassword string `json:"oldPassword,omitempty"`
 	NewPassword string `json:"newPassword,omitempty"`
 }
+
+type HealthCheck struct {
+	UserType string `json:"userType"`
+}

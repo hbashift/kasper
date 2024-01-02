@@ -9,6 +9,7 @@ import (
 type AuthorizationService interface {
 	Authorize(ctx context.Context, info *mapping.AuthorizeInfo) (*mapping.Authorization, bool, error)
 	ChangePassword(ctx context.Context, token string, info *mapping.ChangePassword) error
+	HealthCheck(ctx context.Context, token string) (*mapping.HealthCheck, error)
 }
 
 type authorizationHandler struct {
