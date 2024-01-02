@@ -12,9 +12,9 @@ import "errors"
 type UserType string
 
 const (
-	UserType_Administrator UserType = "administrator"
-	UserType_Student       UserType = "student"
-	UserType_Supervisor    UserType = "supervisor"
+	UserType_Admin      UserType = "admin"
+	UserType_Student    UserType = "student"
+	UserType_Supervisor UserType = "supervisor"
 )
 
 func (e *UserType) Scan(value interface{}) error {
@@ -29,8 +29,8 @@ func (e *UserType) Scan(value interface{}) error {
 	}
 
 	switch enumValue {
-	case "administrator":
-		*e = UserType_Administrator
+	case "admin":
+		*e = UserType_Admin
 	case "student":
 		*e = UserType_Student
 	case "supervisor":
