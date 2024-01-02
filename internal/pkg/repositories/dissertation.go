@@ -8,6 +8,7 @@ import (
 	"uir_draft/internal/generated/kasper/uir_draft/public/model"
 	"uir_draft/internal/generated/kasper/uir_draft/public/table"
 	"uir_draft/internal/pkg/models"
+	"uir_draft/internal/pkg/service/student/mapping"
 
 	"github.com/go-jet/jet/v2/postgres"
 	"github.com/google/uuid"
@@ -132,6 +133,38 @@ func (r *DissertationRepository) getDissertationDataTx(ctx context.Context, tx *
 	return dissertation, nil
 }
 
+func (r *DissertationRepository) GetStatuses(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) ([]*mapping.DissertationStatus, error) {
+	stmt, args := table.Dissertation.
+		SELECT(table.Dissertation.Status, table.Dissertation.Semester).
+		WHERE(table.Dissertation.StudentID.EQ(postgres.UUID(studentID))).
+		Sql()
+
+	rows, err := tx.Query(ctx, stmt, args...)
+	if err != nil {
+		return nil, errors.Wrap(err, "GetStatuses()")
+	}
+
+	var statuses []*mapping.DissertationStatus
+
+	for rows.Next() {
+		status := &mapping.DissertationStatus{}
+		if err := scanDissertationStatus(rows, status); err != nil {
+			return nil, errors.Wrap(err, "scanDissertationStatus()")
+		}
+
+		statuses = append(statuses, status)
+	}
+
+	return statuses, nil
+}
+
+func scanDissertationStatus(rows pgx.Row, target *mapping.DissertationStatus) error {
+	return rows.Scan(
+		&target.Status,
+		&target.Semester,
+	)
+}
+
 func scanDissertationIDs(rows pgx.Row, target *models.IDs) error {
 	return rows.Scan(
 		&target.ID,
@@ -142,6 +175,7 @@ func scanDissertationIDs(rows pgx.Row, target *models.IDs) error {
 func scanDissertation(row pgx.Row, target *model.Dissertation) error {
 	return row.Scan(
 		&target.StudentID,
+		&target.Status,
 		&target.CreatedAt,
 		&target.UpdatedAt,
 		&target.DissertationID,

@@ -42,7 +42,6 @@ func (r *StudentRepository) getStudentCommonInformation(ctx context.Context, tx 
 			table.Students.StartDate.AS("studying_start_date"),
 			table.Students.ActualSemester.AS("semester_number"),
 			table.Students.Feedback.AS("feedback"),
-			table.Students.DissertationStatus.AS("dissertation_status"),
 			table.Students.TitlePagePath.AS("title_page_url"),
 			table.Students.ExplanatoryNoteURL.AS("explanatory_note_url"),
 		).
@@ -161,7 +160,6 @@ func scanStudentCommonInfo(row pgx.Row, target *models.StudentCommonInformation)
 		&target.StudyingStartDate,
 		&target.Semester,
 		&target.Feedback,
-		&target.DissertationStatus,
 		&target.TitlePageURL,
 		&target.ExplanatoryNoteURL,
 	)
@@ -184,6 +182,5 @@ func scanStudentRow(row pgx.Row, target *model.Students) error {
 		&target.DissertationTitle,
 		&target.Feedback,
 		&target.GroupNumber,
-		&target.DissertationStatus,
 	)
 }

@@ -28,5 +28,4 @@ type Students struct {
 	DissertationTitle  string
 	Feedback           *string
 	GroupNumber        *string
-	DissertationStatus DissertationStatus
 }

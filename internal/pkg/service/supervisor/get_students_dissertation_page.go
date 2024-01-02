@@ -7,6 +7,7 @@ import (
 	"github.com/pkg/errors"
 	"uir_draft/internal/generated/kasper/uir_draft/public/model"
 	"uir_draft/internal/pkg/models"
+	"uir_draft/internal/pkg/service/student/mapping"
 )
 
 type StudentDissertationPlan struct {
@@ -19,8 +20,9 @@ type StudentDissertationPlan struct {
 }
 
 type DissertationPage struct {
-	DissertationPlan map[string]*StudentDissertationPlan `json:"dissertationPlan"`
-	CommonInfo       models.StudentCommonInformation     `json:"commonInfo"`
+	DissertationPlan     map[string]*StudentDissertationPlan `json:"dissertationPlan"`
+	CommonInfo           models.StudentCommonInformation     `json:"commonInfo"`
+	DissertationStatuses []*mapping.DissertationStatus       `json:"statuses"`
 }
 
 func (s *Service) GetDissertationPage(ctx context.Context, token string, studentID uuid.UUID) (*DissertationPage, error) {
@@ -56,9 +58,14 @@ func (s *Service) GetDissertationPage(ctx context.Context, token string, student
 		}
 		planMap[semester.Name] = plan
 	}
+	statuses, err := s.dRepo.GetStatuses(ctx, s.db, session.KasperID)
+	if err != nil {
+		return nil, err
+	}
 
 	return &DissertationPage{
-		DissertationPlan: planMap,
-		CommonInfo:       *commonInfo,
+		DissertationPlan:     planMap,
+		CommonInfo:           *commonInfo,
+		DissertationStatuses: statuses,
 	}, nil
 }

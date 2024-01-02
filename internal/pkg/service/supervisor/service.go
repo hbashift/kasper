@@ -8,6 +8,7 @@ import (
 	"github.com/pkg/errors"
 	"uir_draft/internal/generated/kasper/uir_draft/public/model"
 	"uir_draft/internal/pkg/models"
+	"uir_draft/internal/pkg/service/student/mapping"
 )
 
 var ErrNonValidToken = errors.New("token is expired")
@@ -26,6 +27,7 @@ type TokenRepository interface {
 }
 
 type DissertationRepository interface {
+	GetStatuses(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) ([]*mapping.DissertationStatus, error)
 	GetDissertationData(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID, semester int32) (*model.Dissertation, error)
 }
 

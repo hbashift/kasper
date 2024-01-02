@@ -90,3 +90,8 @@ type Semester struct {
 type DownloadDissertation struct {
 	Semester int32 `json:"semester"`
 }
+
+type DissertationStatus struct {
+	Semester int32                    `db:"semester" json:"semester"`
+	Status   model.DissertationStatus `db:"status" json:"status"`
+}

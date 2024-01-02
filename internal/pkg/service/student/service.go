@@ -5,6 +5,7 @@ import (
 
 	"uir_draft/internal/generated/kasper/uir_draft/public/model"
 	"uir_draft/internal/pkg/models"
+	"uir_draft/internal/pkg/service/student/mapping"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -24,6 +25,7 @@ type ScientificWorkRepository interface {
 }
 
 type DissertationRepository interface {
+	GetStatuses(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) ([]*mapping.DissertationStatus, error)
 	GetDissertationIDs(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) ([]*models.IDs, error)
 	UpsertDissertationData(ctx context.Context, tx *pgxpool.Pool, studentID *uuid.UUID, semester int32, name string) error
 	GetDissertationData(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID, semester int32) (*model.Dissertation, error)

@@ -32,7 +32,6 @@ type studentsTable struct {
 	DissertationTitle  postgres.ColumnString
 	Feedback           postgres.ColumnString
 	GroupNumber        postgres.ColumnString
-	DissertationStatus postgres.ColumnString
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -88,9 +87,8 @@ func newStudentsTableImpl(schemaName, tableName, alias string) studentsTable {
 		DissertationTitleColumn  = postgres.StringColumn("dissertation_title")
 		FeedbackColumn           = postgres.StringColumn("feedback")
 		GroupNumberColumn        = postgres.StringColumn("group_number")
-		DissertationStatusColumn = postgres.StringColumn("dissertation_status")
-		allColumns               = postgres.ColumnList{ClientIDColumn, StudentIDColumn, FullNameColumn, DepartmentColumn, EnrollmentOrderColumn, TitlePagePathColumn, ExplanatoryNoteURLColumn, SpecializationColumn, ActualSemesterColumn, SupervisorIDColumn, StartDateColumn, AcademicLeaveColumn, DissertationTitleColumn, FeedbackColumn, GroupNumberColumn, DissertationStatusColumn}
-		mutableColumns           = postgres.ColumnList{ClientIDColumn, FullNameColumn, DepartmentColumn, EnrollmentOrderColumn, TitlePagePathColumn, ExplanatoryNoteURLColumn, SpecializationColumn, ActualSemesterColumn, SupervisorIDColumn, StartDateColumn, AcademicLeaveColumn, DissertationTitleColumn, FeedbackColumn, GroupNumberColumn, DissertationStatusColumn}
+		allColumns               = postgres.ColumnList{ClientIDColumn, StudentIDColumn, FullNameColumn, DepartmentColumn, EnrollmentOrderColumn, TitlePagePathColumn, ExplanatoryNoteURLColumn, SpecializationColumn, ActualSemesterColumn, SupervisorIDColumn, StartDateColumn, AcademicLeaveColumn, DissertationTitleColumn, FeedbackColumn, GroupNumberColumn}
+		mutableColumns           = postgres.ColumnList{ClientIDColumn, FullNameColumn, DepartmentColumn, EnrollmentOrderColumn, TitlePagePathColumn, ExplanatoryNoteURLColumn, SpecializationColumn, ActualSemesterColumn, SupervisorIDColumn, StartDateColumn, AcademicLeaveColumn, DissertationTitleColumn, FeedbackColumn, GroupNumberColumn}
 	)
 
 	return studentsTable{
@@ -112,7 +110,6 @@ func newStudentsTableImpl(schemaName, tableName, alias string) studentsTable {
 		DissertationTitle:  DissertationTitleColumn,
 		Feedback:           FeedbackColumn,
 		GroupNumber:        GroupNumberColumn,
-		DissertationStatus: DissertationStatusColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,
