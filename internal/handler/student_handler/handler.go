@@ -23,7 +23,7 @@ type StudentService interface {
 	DeleteTeachingLoad(ctx context.Context, token string, deleteIDs *mapping.IDs) (*mapping.TeachingLoad, error)
 	UploadDissertation(ctx *gin.Context, token string, semester *mapping.UploadDissertation) error
 	GetDissertationIDs(ctx context.Context, token string) ([]*mapping.DissertationIDs, error)
-	DownloadDissertation(ctx *gin.Context, token string, dissertationID *mapping.DissertationID) (*model.Dissertation, error)
+	DownloadDissertation(ctx *gin.Context, token string, dissertationID *mapping.DownloadDissertation) (*model.Dissertation, error)
 }
 
 type studentHandler struct {

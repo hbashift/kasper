@@ -7,7 +7,7 @@ import (
 	"uir_draft/internal/pkg/service/student/mapping"
 )
 
-func (s *Service) DownloadDissertation(ctx *gin.Context, token string, dissertationID *mapping.DissertationID) (*model.Dissertation, error) {
+func (s *Service) DownloadDissertation(ctx *gin.Context, token string, dissertationID *mapping.DownloadDissertation) (*model.Dissertation, error) {
 	session, err := s.tokenRepo.Authenticate(ctx, token, s.db)
 	if err != nil {
 		return nil, errors.Wrap(err, "[Student]")
@@ -17,7 +17,7 @@ func (s *Service) DownloadDissertation(ctx *gin.Context, token string, dissertat
 		return nil, errors.Wrap(ErrNonValidToken, "[Student]")
 	}
 
-	dissertation, err := s.dRepo.GetDissertationData(ctx, s.db, dissertationID.DissertationID)
+	dissertation, err := s.dRepo.GetDissertationData(ctx, s.db, session.KasperID, dissertationID.Semester)
 	if err != nil {
 		return nil, errors.Wrap(err, "DownloadDissertation()")
 	}

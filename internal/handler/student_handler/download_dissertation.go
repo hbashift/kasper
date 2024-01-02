@@ -16,7 +16,7 @@ func (h *studentHandler) DownloadDissertation(ctx *gin.Context) {
 		return
 	}
 
-	reqBody := mapping.DissertationID{}
+	reqBody := mapping.DownloadDissertation{}
 	if err = ctx.ShouldBindJSON(&reqBody); err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return

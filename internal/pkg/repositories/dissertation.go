@@ -112,14 +112,15 @@ func (r *DissertationRepository) upsertDissertationDataTx(ctx context.Context, t
 	return nil
 }
 
-func (r *DissertationRepository) GetDissertationData(ctx context.Context, tx *pgxpool.Pool, dissertationID uuid.UUID) (*model.Dissertation, error) {
-	return r.getDissertationDataTx(ctx, tx, dissertationID)
+func (r *DissertationRepository) GetDissertationData(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID, semester int32) (*model.Dissertation, error) {
+	return r.getDissertationDataTx(ctx, tx, studentID, semester)
 }
 
-func (r *DissertationRepository) getDissertationDataTx(ctx context.Context, tx *pgxpool.Pool, dissertationID uuid.UUID) (*model.Dissertation, error) {
+func (r *DissertationRepository) getDissertationDataTx(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID, semester int32) (*model.Dissertation, error) {
 	stmt, args := table.Dissertation.
 		SELECT(table.Dissertation.AllColumns).
-		WHERE(table.Dissertation.DissertationID.EQ(postgres.UUID(dissertationID))).
+		WHERE(table.Dissertation.StudentID.EQ(postgres.UUID(studentID)).
+			AND(table.Dissertation.Semester.EQ(postgres.Int32(semester)))).
 		Sql()
 
 	dissertation := &model.Dissertation{}

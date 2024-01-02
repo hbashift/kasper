@@ -87,6 +87,6 @@ type Semester struct {
 	SemesterNumber int32 `json:"semester"`
 }
 
-type DissertationID struct {
-	DissertationID uuid.UUID `json:"dissertationID"`
+type DownloadDissertation struct {
+	Semester int32 `json:"semester"`
 }
