@@ -11,3 +11,9 @@ type AuthorizeInfo struct {
 	Email    string `json:"email,omitempty"`
 	Password string `json:"password,omitempty"`
 }
+
+type ChangePassword struct {
+	Email       string `json:"email"`
+	OldPassword string `json:"oldPassword,omitempty"`
+	NewPassword string `json:"newPassword,omitempty"`
+}

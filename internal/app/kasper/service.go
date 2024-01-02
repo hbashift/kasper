@@ -29,6 +29,7 @@ type SupervisorHandler interface {
 
 type AuthorizationHandler interface {
 	Authorize(ctx *gin.Context)
+	ChangePassword(ctx *gin.Context)
 }
 
 func InitRoutes(student StudentHandler, supervisor SupervisorHandler, authorization AuthorizationHandler) *gin.Engine {
@@ -59,6 +60,7 @@ func InitRoutes(student StudentHandler, supervisor SupervisorHandler, authorizat
 	router.PUT("/supervisors/student/:id", supervisor.GetStudentsDissertationPage)
 	router.POST("/supervisor/students/dissertation/:id", supervisor.DownloadDissertation)
 
-	router.POST("authorization/authorize", authorization.Authorize)
+	router.POST("/authorization/authorize", authorization.Authorize)
+	router.POST("/authorization/change_password/:id", authorization.ChangePassword)
 	return router
 }

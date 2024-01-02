@@ -1,32 +1,31 @@
-package student_handler
+package authorization_handler
 
 import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"uir_draft/internal/pkg/helpers"
-	"uir_draft/internal/pkg/service/student/mapping"
+	"uir_draft/internal/pkg/service/authorization/mapping"
 )
 
-func (h *studentHandler) UpsertTeachingLoad(ctx *gin.Context) {
+func (h *authorizationHandler) ChangePassword(ctx *gin.Context) {
 	token, err := helpers.GetUUID(ctx)
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
-	reqBody := mapping.TeachingLoad{}
-	err = ctx.ShouldBindJSON(&reqBody)
-	if err != nil {
+	reqBody := mapping.ChangePassword{}
+	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
-	newTeachingLoad, err := h.service.UpsertTeachingLoad(ctx, token.String(), &reqBody)
+	err = h.authorization.ChangePassword(ctx, token.String(), &reqBody)
 	if err != nil {
 		ctx.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, newTeachingLoad)
+	ctx.Status(http.StatusOK)
 }

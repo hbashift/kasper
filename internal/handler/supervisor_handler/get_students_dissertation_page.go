@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"uir_draft/internal/pkg/helpers"
 )
 
 type Student struct {
@@ -12,7 +13,7 @@ type Student struct {
 }
 
 func (h *supervisorHandler) GetStudentsDissertationPage(ctx *gin.Context) {
-	token, err := getUUID(ctx)
+	token, err := helpers.GetUUID(ctx)
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return

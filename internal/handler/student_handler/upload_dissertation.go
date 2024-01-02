@@ -6,11 +6,12 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
+	"uir_draft/internal/pkg/helpers"
 	"uir_draft/internal/pkg/service/student/mapping"
 )
 
 func (h *studentHandler) UploadDissertation(ctx *gin.Context) {
-	token, err := getUUID(ctx)
+	token, err := helpers.GetUUID(ctx)
 	if err != nil {
 		err = errors.Wrap(err, "Here 2")
 		ctx.AbortWithError(http.StatusBadRequest, err)
