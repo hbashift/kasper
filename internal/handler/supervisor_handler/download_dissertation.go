@@ -6,11 +6,12 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"uir_draft/internal/pkg/helpers"
 	"uir_draft/internal/pkg/service/supervisor/mapping"
 )
 
 func (h *supervisorHandler) DownloadDissertation(ctx *gin.Context) {
-	token, err := getUUID(ctx)
+	token, err := helpers.GetUUID(ctx)
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
