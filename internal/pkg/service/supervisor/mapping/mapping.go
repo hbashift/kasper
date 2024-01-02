@@ -23,3 +23,16 @@ func MapStudentListFromDomain(domain []*model.Students) *ListOfStudents {
 
 	return list
 }
+
+func MapDissertationStatus(status string) model.DissertationStatus {
+	switch {
+	case status == "Не сдано":
+		return model.DissertationStatus_Failed
+	case status == "Сдано":
+		return model.DissertationStatus_Passed
+	case status == "На доработку":
+		return model.DissertationStatus_Todo
+	default:
+		return model.DissertationStatus_Empty
+	}
+}

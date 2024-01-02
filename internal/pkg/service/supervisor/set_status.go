@@ -18,5 +18,7 @@ func (s *Service) SetStatus(ctx context.Context, token string, info *mapping.Set
 		return errors.Wrap(ErrNonValidToken, "[Supervisor]")
 	}
 
-	return s.dRepo.SetStatus(ctx, s.db, info.StudentID, info.Semester, model.DissertationStatus(info.Status))
+	status := mapping.MapDissertationStatus(info.Status)
+
+	return s.dRepo.SetStatus(ctx, s.db, info.StudentID, info.Semester, status)
 }
