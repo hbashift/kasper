@@ -29,7 +29,12 @@ func (s *Service) ChangePassword(ctx context.Context, token string, info *mappin
 		return errors.Wrap(err, "[Authorization]")
 	}
 
-	err = s.clientRepo.ChangePassword(ctx, s.db, session.ClientID, info.NewPassword)
+	password, err := bcrypt.GenerateFromPassword([]byte(info.NewPassword), bcrypt.DefaultCost)
+	if err != nil {
+		return errors.Wrap(err, "bcrypt.GenerateFromPassword")
+	}
+
+	err = s.clientRepo.ChangePassword(ctx, s.db, session.ClientID, string(password))
 	if err != nil {
 		return errors.Wrap(err, "[Authorization]")
 	}
