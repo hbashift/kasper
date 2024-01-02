@@ -58,7 +58,7 @@ func InitRoutes(student StudentHandler, supervisor SupervisorHandler, authorizat
 
 	router.GET("/supervisors/list_of_students/:id", supervisor.GetListOfStudents)
 	router.PUT("/supervisors/student/:id", supervisor.GetStudentsDissertationPage)
-	router.POST("/supervisor/students/dissertation/:id", supervisor.DownloadDissertation)
+	router.PUT("/supervisor/students/dissertation/:id", supervisor.DownloadDissertation)
 
 	router.POST("/authorization/authorize", authorization.Authorize)
 	router.POST("/authorization/change_password/:id", authorization.ChangePassword)
