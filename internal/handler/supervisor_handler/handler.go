@@ -13,6 +13,7 @@ type SupervisorService interface {
 	GetStudentsList(ctx context.Context, token string) (*mapping.ListOfStudents, error)
 	GetDissertationPage(ctx context.Context, token string, studentID uuid.UUID) (*supervisor.DissertationPage, error)
 	DownloadDissertation(ctx context.Context, token string, info *mapping.DownloadDissertation) (*model.Dissertation, error)
+	UpdateFeedback(ctx context.Context, token string, info *mapping.UpdateFeedback) error
 }
 
 type supervisorHandler struct {

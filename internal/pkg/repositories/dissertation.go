@@ -158,8 +158,6 @@ func (r *DissertationRepository) GetStatuses(ctx context.Context, tx *pgxpool.Po
 	return statuses, nil
 }
 
-func (r *DissertationRepository) UpdateFeedback(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID)
-
 func scanDissertationStatus(rows pgx.Row, target *mapping.DissertationStatus) error {
 	return rows.Scan(
 		&target.Status,

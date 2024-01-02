@@ -21,3 +21,8 @@ type DownloadDissertation struct {
 	Semester  int32     `json:"semester,omitempty"`
 	StudentID uuid.UUID `json:"studentID,omitempty"`
 }
+
+type UpdateFeedback struct {
+	StudentID uuid.UUID `json:"studentID"`
+	Feedback  string    `json:"feedback,omitempty"`
+}

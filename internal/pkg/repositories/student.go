@@ -152,6 +152,21 @@ func (r *StudentRepository) getListOfStudentsTx(ctx context.Context, tx *pgxpool
 	return studentsList, nil
 }
 
+func (r *StudentRepository) UpdateFeedback(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID, feedback string) error {
+	stmt, args := table.Students.
+		UPDATE(table.Students.Feedback).
+		SET(feedback).
+		WHERE(table.Students.StudentID.EQ(postgres.UUID(studentID))).
+		Sql()
+
+	_, err := tx.Exec(ctx, stmt, args...)
+	if err != nil {
+		return errors.Wrap(err, "UpdateFeedback()")
+	}
+
+	return nil
+}
+
 func scanStudentCommonInfo(row pgx.Row, target *models.StudentCommonInformation) error {
 	return row.Scan(
 		&target.DissertationTitle,
