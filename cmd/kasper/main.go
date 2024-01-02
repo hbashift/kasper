@@ -46,7 +46,7 @@ func main() {
 	authorizeService := authorization.NewService(clientRepo, tokenRepo, db)
 	authorizeHandler := authorization_handler.NewAuthorizationHandler(authorizeService)
 
-	supService := supervisor.NewService(studRepo, tokenRepo, semesterRepo, db)
+	supService := supervisor.NewService(studRepo, tokenRepo, semesterRepo, dRepo, db)
 	supervisorHandler := supervisor_handler.NewSupervisorHandler(supService)
 
 	server := kasper.InitRoutes(studHandler, supervisorHandler, authorizeHandler)
