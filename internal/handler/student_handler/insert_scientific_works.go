@@ -4,13 +4,14 @@ import (
 	"log"
 	"net/http"
 
+	"uir_draft/internal/pkg/helpers"
 	"uir_draft/internal/pkg/service/student/mapping"
 
 	"github.com/gin-gonic/gin"
 )
 
 func (h *studentHandler) InsertScientificWorks(ctx *gin.Context) {
-	token, err := getUUID(ctx)
+	token, err := helpers.GetUUID(ctx)
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return

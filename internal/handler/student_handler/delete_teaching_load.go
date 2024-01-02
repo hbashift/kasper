@@ -5,11 +5,12 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"uir_draft/internal/pkg/helpers"
 	"uir_draft/internal/pkg/service/student/mapping"
 )
 
 func (h *studentHandler) DeleteTeachingLoad(ctx *gin.Context) {
-	token, err := getUUID(ctx)
+	token, err := helpers.GetUUID(ctx)
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return

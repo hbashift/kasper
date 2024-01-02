@@ -3,13 +3,14 @@ package student_handler
 import (
 	"net/http"
 
+	"uir_draft/internal/pkg/helpers"
 	"uir_draft/internal/pkg/service/student/mapping"
 
 	"github.com/gin-gonic/gin"
 )
 
 func (h *studentHandler) UpsertSemesterProgress(ctx *gin.Context) {
-	id, err := getUUID(ctx)
+	id, err := helpers.GetUUID(ctx)
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
