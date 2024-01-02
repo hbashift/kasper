@@ -35,7 +35,7 @@ func InitRoutes(student StudentHandler, supervisor SupervisorHandler, authorizat
 
 	router.Use(cors.New(cors.Config{
 		AllowMethods:     []string{"PUT", "PATCH", "POST", "GET", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Authorization", "Content-Type", "Accept-Encoding", "StudentID"},
+		AllowHeaders:     []string{"Origin", "Authorization", "Content-Type", "Accept-Encoding", "StudentID", "File-Name"},
 		ExposeHeaders:    []string{"Content-Length", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials", "Access-Control-Allow-Headers", "Access-Control-Allow-Methods", "StudentID"},
 		AllowCredentials: true,
 		AllowAllOrigins:  true,
