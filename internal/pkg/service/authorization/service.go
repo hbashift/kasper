@@ -13,6 +13,7 @@ var ErrNonValidToken = errors.New("token is expired")
 
 type ClientUserRepository interface {
 	GetClient(ctx context.Context, tx *pgxpool.Pool, email string) (*model.ClientUser, error)
+	GetClientByClientID(ctx context.Context, tx *pgxpool.Pool, clientID uuid.UUID) (*model.ClientUser, error)
 	ChangePassword(ctx context.Context, tx *pgxpool.Pool, clientID uuid.UUID, password string) error
 }
 

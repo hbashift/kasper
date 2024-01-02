@@ -60,6 +60,23 @@ func (r *ClientUserRepository) ChangePassword(ctx context.Context, tx *pgxpool.P
 	return nil
 }
 
+func (r *ClientUserRepository) GetClientByClientID(ctx context.Context, tx *pgxpool.Pool, clientID uuid.UUID) (*model.ClientUser, error) {
+	stmt, args := table.ClientUser.
+		SELECT(table.ClientUser.AllColumns).
+		WHERE(table.ClientUser.ClientID.EQ(postgres.UUID(clientID))).
+		Sql()
+	clientUser := &model.ClientUser{}
+	row := tx.QueryRow(ctx, stmt, args...)
+
+	err := scanClientUser(row, clientUser)
+	if err != nil {
+		return nil, err
+	}
+
+	return clientUser, nil
+
+}
+
 func scanClientUser(row pgx.Row, target *model.ClientUser) error {
 	return row.Scan(
 		&target.Email,

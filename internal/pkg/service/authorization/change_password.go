@@ -19,7 +19,7 @@ func (s *Service) ChangePassword(ctx context.Context, token string, info *mappin
 		return errors.Wrap(ErrNonValidToken, "[Authorization]")
 	}
 
-	client, err := s.clientRepo.GetClient(ctx, s.db, info.Email)
+	client, err := s.clientRepo.GetClientByClientID(ctx, s.db, session.ClientID)
 	if err != nil {
 		return errors.Wrap(err, "[Authorization]")
 	}
