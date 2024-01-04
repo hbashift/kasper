@@ -14,8 +14,11 @@ func MapStudentListFromDomain(domain []*model.Students) *ListOfStudents {
 			Group:           lo.FromPtr(domainStudent.GroupNumber),
 			Topic:           domainStudent.DissertationTitle,
 			EnrollmentOrder: domainStudent.EnrollmentOrder,
-			DateOfStatement: domainStudent.StartDate.Format("02/01/2006"),
 			StudentID:       domainStudent.StudentID,
+		}
+
+		if domainStudent.StartDate != nil {
+			student.DateOfStatement = domainStudent.StartDate.Format("02/01/2006")
 		}
 
 		list.Array = append(list.Array, student)
