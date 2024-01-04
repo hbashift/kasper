@@ -29,6 +29,8 @@ type SupervisorHandler interface {
 	DownloadDissertation(ctx *gin.Context)
 	SetStatus(ctx *gin.Context)
 	UpdateFeedback(ctx *gin.Context)
+	GetScientificWorks(ctx *gin.Context)
+	GetTeachingLoad(ctx *gin.Context)
 }
 
 type AuthorizationHandler interface {
@@ -68,6 +70,8 @@ func InitRoutes(student StudentHandler, supervisor SupervisorHandler, authorizat
 	router.PUT("/supervisor/students/dissertation/:id", supervisor.DownloadDissertation)
 	router.POST("/supervisor/students/set_status/:id", supervisor.SetStatus)
 	router.POST("/supervisor/students/feedback/:id", supervisor.UpdateFeedback)
+	router.GET("/supervisor/students/scientific_works/:id", supervisor.GetScientificWorks)
+	router.GET("/supervisor/students/teaching_load/:id", supervisor.GetTeachingLoad)
 
 	router.POST("/authorization/authorize", authorization.Authorize)
 	router.POST("/authorization/change_password/:id", authorization.ChangePassword)
