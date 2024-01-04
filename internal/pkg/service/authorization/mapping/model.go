@@ -5,6 +5,7 @@ import "github.com/google/uuid"
 type Authorization struct {
 	ClientType string    `json:"client_type,omitempty"`
 	Token      uuid.UUID `json:"token,omitempty"`
+	Registered bool      `json:"registered"`
 }
 
 type AuthorizeInfo struct {
