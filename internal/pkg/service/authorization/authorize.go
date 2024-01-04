@@ -40,5 +40,6 @@ func (s *Service) Authorize(ctx context.Context, info *mapping.AuthorizeInfo) (*
 	return &mapping.Authorization{
 		ClientType: client.ClientType.String(),
 		Token:      uuid.MustParse(token.TokenNumber),
+		Registered: client.Registered,
 	}, true, nil
 }

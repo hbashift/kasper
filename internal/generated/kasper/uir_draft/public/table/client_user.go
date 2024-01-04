@@ -22,6 +22,7 @@ type clientUserTable struct {
 	Password   postgres.ColumnString
 	ClientID   postgres.ColumnString
 	KasperID   postgres.ColumnString
+	Registered postgres.ColumnBool
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -67,8 +68,9 @@ func newClientUserTableImpl(schemaName, tableName, alias string) clientUserTable
 		PasswordColumn   = postgres.StringColumn("password")
 		ClientIDColumn   = postgres.StringColumn("client_id")
 		KasperIDColumn   = postgres.StringColumn("kasper_id")
-		allColumns       = postgres.ColumnList{EmailColumn, ClientTypeColumn, PasswordColumn, ClientIDColumn, KasperIDColumn}
-		mutableColumns   = postgres.ColumnList{EmailColumn, ClientTypeColumn, PasswordColumn, KasperIDColumn}
+		RegisteredColumn = postgres.BoolColumn("registered")
+		allColumns       = postgres.ColumnList{EmailColumn, ClientTypeColumn, PasswordColumn, ClientIDColumn, KasperIDColumn, RegisteredColumn}
+		mutableColumns   = postgres.ColumnList{EmailColumn, ClientTypeColumn, PasswordColumn, KasperIDColumn, RegisteredColumn}
 	)
 
 	return clientUserTable{
@@ -80,6 +82,7 @@ func newClientUserTableImpl(schemaName, tableName, alias string) clientUserTable
 		Password:   PasswordColumn,
 		ClientID:   ClientIDColumn,
 		KasperID:   KasperIDColumn,
+		Registered: RegisteredColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,

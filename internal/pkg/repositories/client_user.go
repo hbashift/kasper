@@ -84,5 +84,6 @@ func scanClientUser(row pgx.Row, target *model.ClientUser) error {
 		&target.Password,
 		&target.ClientID,
 		&target.KasperID,
+		&target.Registered,
 	)
 }
