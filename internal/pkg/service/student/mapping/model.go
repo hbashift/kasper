@@ -20,7 +20,8 @@ type ScientificWork struct {
 }
 
 type Works struct {
-	Works []ScientificWork `json:"works,omitempty"`
+	Works []*ScientificWork `json:"works,omitempty"`
+	Years int32             `json:"years"`
 }
 
 type SemesterProgress struct {
@@ -79,6 +80,7 @@ var TeachingLoadTypeMapToDomain = map[TeachingLoadType]model.TeachingLoadType{
 
 type TeachingLoad struct {
 	Array []SingleLoad `json:"array"`
+	Years int32        `json:"years"`
 }
 
 type UploadDissertation struct {

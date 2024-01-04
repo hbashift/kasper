@@ -25,5 +25,12 @@ func (s *Service) GetTeachingLoad(ctx context.Context, token string) (*mapping.T
 
 	loads := mapping.MapTeachingLoadFromDomain(load)
 
+	years, err := s.studRepo.GetNumberOfYears(ctx, s.db, session.KasperID)
+	if err != nil {
+		return nil, errors.Wrap(err, "[Student]")
+	}
+
+	loads.Years = years
+
 	return &loads, nil
 }

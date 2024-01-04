@@ -9,10 +9,10 @@ import (
 	"uir_draft/internal/pkg/service/student/mapping"
 )
 
-func (s *Service) GetScientificWorks(ctx context.Context, token string, studentID uuid.UUID) ([]*mapping.ScientificWork, error) {
+func (s *Service) GetScientificWorks(ctx context.Context, token string, studentID uuid.UUID) (*mapping.Works, error) {
 	session, err := s.tokenRepo.Authenticate(ctx, token, s.db)
 	if err != nil {
-		return nil, errors.Wrap(err, "[Student]")
+		return nil, errors.Wrap(err, "[Admin]")
 	}
 
 	if session.TokenStatus != model.TokenStatus_Active {
@@ -21,7 +21,7 @@ func (s *Service) GetScientificWorks(ctx context.Context, token string, studentI
 
 	scientificWorks, err := s.scienceRepo.GetScientificWorks(ctx, s.db, studentID)
 	if err != nil {
-		return nil, errors.Wrap(err, "[Student]")
+		return nil, errors.Wrap(err, "[Admin]")
 	}
 
 	var jsonWorks []*mapping.ScientificWork
@@ -31,5 +31,15 @@ func (s *Service) GetScientificWorks(ctx context.Context, token string, studentI
 		jsonWorks = append(jsonWorks, jsonWork)
 	}
 
-	return jsonWorks, nil
+	years, err := s.studRepo.GetNumberOfYears(ctx, s.db, session.KasperID)
+	if err != nil {
+		return nil, errors.Wrap(err, "[Supervisor]")
+	}
+
+	result := &mapping.Works{
+		Works: jsonWorks,
+		Years: years,
+	}
+
+	return result, nil
 }

@@ -15,6 +15,7 @@ type StudentRepository interface {
 	GetStudentCommonInfo(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) (*models.StudentCommonInformation, error)
 	InsertStudentCommonInfo(ctx context.Context, tx *pgxpool.Pool, student model.Students) error
 	UpdateStudentCommonInfo(ctx context.Context, tx *pgxpool.Pool, student model.Students) error
+	GetNumberOfYears(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) (int32, error)
 }
 
 type ScientificWorkRepository interface {

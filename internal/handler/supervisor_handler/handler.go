@@ -16,7 +16,7 @@ type SupervisorService interface {
 	DownloadDissertation(ctx context.Context, token string, info *mapping.DownloadDissertation) (*model.Dissertation, error)
 	UpdateFeedback(ctx context.Context, token string, info *mapping.UpdateFeedback) error
 	SetStatus(ctx context.Context, token string, info *mapping.SetStatus) error
-	GetScientificWorks(ctx context.Context, token string, studentID uuid.UUID) ([]*studmapping.ScientificWork, error)
+	GetScientificWorks(ctx context.Context, token string, studentID uuid.UUID) (*studmapping.Works, error)
 	GetTeachingLoad(ctx context.Context, token string, studentID uuid.UUID) (*studmapping.TeachingLoad, error)
 }
 

@@ -169,6 +169,22 @@ func (r *StudentRepository) SetAcademicLeave(ctx context.Context, tx *pgxpool.Po
 	return nil
 }
 
+func (r *StudentRepository) GetNumberOfYears(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) (int32, error) {
+	stmt, args := table.Students.
+		SELECT(table.Students.NumberOfYears).
+		WHERE(table.Students.StudentID.EQ(postgres.UUID(studentID))).
+		Sql()
+
+	row := tx.QueryRow(ctx, stmt, args...)
+	years := int32(0)
+
+	if err := row.Scan(&years); err != nil {
+		return 0, errors.Wrap(err, "GetNumberOfYears()")
+	}
+
+	return years, nil
+}
+
 func scanStudentCommonInfo(row pgx.Row, target *models.StudentCommonInformation) error {
 	return row.Scan(
 		&target.DissertationTitle,
