@@ -30,7 +30,7 @@ func (s *Service) FirstRegistry(ctx context.Context, token string, info *mapping
 		ActualSemester:    info.ActualSemester,
 		StartDate:         info.StartDate,
 		AcademicLeave:     false,
-		DissertationTitle: info.DissertationTitle,
+		DissertationTitle: "unknown",
 		Feedback:          nil,
 		GroupNumber:       info.GroupNumber,
 		SupervisorID:      uuid.Nil,

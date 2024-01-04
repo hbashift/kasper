@@ -99,13 +99,21 @@ type DissertationStatus struct {
 }
 
 type FirstRegistry struct {
-	FullName          string     `json:"fullName,omitempty"`
-	Department        string     `json:"department,omitempty"`
-	EnrollmentOrder   string     `json:"enrollmentOrder,omitempty"`
-	Specialization    string     `json:"specialization,omitempty"`
-	ActualSemester    int32      `json:"actualSemester,omitempty"`
-	SupervisorID      *uuid.UUID `json:"supervisorID,omitempty"`
-	StartDate         *time.Time `json:"startDate,omitempty"`
-	DissertationTitle string     `json:"dissertationTitle,omitempty"`
-	GroupNumber       *string    `json:"groupNumber,omitempty"`
+	FullName        string     `json:"fullName,omitempty"`
+	Department      string     `json:"department,omitempty"`
+	EnrollmentOrder string     `json:"enrollmentOrder,omitempty"`
+	Specialization  string     `json:"specialization,omitempty"`
+	ActualSemester  int32      `json:"actualSemester,omitempty"`
+	SupervisorID    *uuid.UUID `json:"supervisorID,omitempty"`
+	StartDate       *time.Time `json:"startDate,omitempty"`
+	GroupNumber     *string    `json:"groupNumber,omitempty"`
+}
+
+type Supervisor struct {
+	Name         string    `json:"name,omitempty"`
+	SupervisorID uuid.UUID `json:"supervisorID,omitempty"`
+}
+
+type Supervisors struct {
+	Supervisors []*Supervisor `json:"supervisors,omitempty"`
 }

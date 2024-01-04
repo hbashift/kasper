@@ -48,6 +48,10 @@ type TokenRepository interface {
 	Authenticate(ctx context.Context, token string, db *pgxpool.Pool) (*model.AuthorizationToken, error)
 }
 
+type SupervisorsRepository interface {
+	GetSupervisors(ctx context.Context, tx *pgxpool.Pool) ([]*model.Supervisors, error)
+}
+
 type Service struct {
 	studRepo     StudentRepository
 	tokenRepo    TokenRepository
@@ -55,9 +59,10 @@ type Service struct {
 	semesterRepo SemesterRepository
 	scienceRepo  ScientificWorkRepository
 	loadRepo     TeachingLoadRepository
+	supRepo      SupervisorsRepository
 	db           *pgxpool.Pool
 }
 
-func NewService(studRepo StudentRepository, tokenRepo TokenRepository, dRepo DissertationRepository, semesterRepo SemesterRepository, scienceRepo ScientificWorkRepository, loadRepo TeachingLoadRepository, db *pgxpool.Pool) *Service {
-	return &Service{studRepo: studRepo, tokenRepo: tokenRepo, dRepo: dRepo, semesterRepo: semesterRepo, scienceRepo: scienceRepo, loadRepo: loadRepo, db: db}
+func NewService(studRepo StudentRepository, tokenRepo TokenRepository, dRepo DissertationRepository, semesterRepo SemesterRepository, scienceRepo ScientificWorkRepository, loadRepo TeachingLoadRepository, supRepo SupervisorsRepository, db *pgxpool.Pool) *Service {
+	return &Service{studRepo: studRepo, tokenRepo: tokenRepo, dRepo: dRepo, semesterRepo: semesterRepo, scienceRepo: scienceRepo, loadRepo: loadRepo, supRepo: supRepo, db: db}
 }
