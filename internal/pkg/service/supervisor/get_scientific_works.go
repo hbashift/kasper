@@ -31,7 +31,7 @@ func (s *Service) GetScientificWorks(ctx context.Context, token string, studentI
 		jsonWorks = append(jsonWorks, jsonWork)
 	}
 
-	years, err := s.studRepo.GetNumberOfYears(ctx, s.db, session.KasperID)
+	years, err := s.studRepo.GetNumberOfYears(ctx, s.db, studentID)
 	if err != nil {
 		return nil, errors.Wrap(err, "[Supervisor]")
 	}

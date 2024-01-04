@@ -58,5 +58,7 @@ func (s *Service) FirstRegistry(ctx context.Context, token string, info *mapping
 		SupervisorID: supID,
 	})
 
+	// TODO сделать инициализацию програсса в семестре
+
 	return nil
 }
