@@ -45,5 +45,10 @@ func (s *Service) FirstRegistry(ctx context.Context, token string, info *mapping
 		return err
 	}
 
+	err = s.cliRepo.SetRegistered(ctx, s.db, session.ClientID)
+	if err != nil {
+		return errors.Wrap(err, "[Student]")
+	}
+
 	return nil
 }

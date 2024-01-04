@@ -77,6 +77,21 @@ func (r *ClientUserRepository) GetClientByClientID(ctx context.Context, tx *pgxp
 
 }
 
+func (r *ClientUserRepository) SetRegistered(ctx context.Context, tx *pgxpool.Pool, clientID uuid.UUID) error {
+	stmt, args := table.ClientUser.
+		UPDATE(table.ClientUser.Registered).
+		SET(true).
+		WHERE(table.ClientUser.ClientID.EQ(postgres.UUID(clientID))).
+		Sql()
+
+	_, err := tx.Exec(ctx, stmt, args...)
+	if err != nil {
+		return errors.Wrap(err, "SetRegistered()")
+	}
+
+	return nil
+}
+
 func scanClientUser(row pgx.Row, target *model.ClientUser) error {
 	return row.Scan(
 		&target.Email,

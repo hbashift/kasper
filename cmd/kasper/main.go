@@ -41,7 +41,7 @@ func main() {
 	clientRepo := repositories.NewClientUserRepository()
 	supRepo := repositories.NewSupervisorRepository()
 
-	studService := student.NewService(studRepo, tokenRepo, dRepo, semesterRepo, scientificRepo, loadRepo, supRepo, db)
+	studService := student.NewService(studRepo, tokenRepo, dRepo, semesterRepo, scientificRepo, loadRepo, supRepo, clientRepo, db)
 	studHandler := student_handler.NewStudentHandler(studService)
 
 	authorizeService := authorization.NewService(clientRepo, tokenRepo, db)
