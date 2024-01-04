@@ -91,6 +91,7 @@ func (r *DissertationRepository) upsertDissertationDataTx(ctx context.Context, t
 		DissertationID: uuid.New(),
 		Semester:       semester,
 		Name:           name,
+		Status:         model.DissertationStatus_Empty,
 	}
 
 	stmt, args := table.Dissertation.
