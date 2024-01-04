@@ -176,8 +176,6 @@ func scanStudentCommonInfo(row pgx.Row, target *models.StudentCommonInformation)
 		&target.StudyingStartDate,
 		&target.Semester,
 		&target.Feedback,
-		&target.TitlePageURL,
-		&target.ExplanatoryNoteURL,
 	)
 }
 
