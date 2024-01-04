@@ -107,6 +107,7 @@ type FirstRegistry struct {
 	SupervisorID    *uuid.UUID `json:"supervisorID,omitempty"`
 	StartDate       *time.Time `json:"startDate,omitempty"`
 	GroupNumber     *string    `json:"groupNumber,omitempty"`
+	NumberOfYears   int32      `json:"numberOfYears"`
 }
 
 type Supervisor struct {

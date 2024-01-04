@@ -26,6 +26,7 @@ type StudentCommonInformation struct {
 	TitlePageURL          string    `db:"title_page_url" json:"titlePageURL,omitempty"`
 	ExplanatoryNoteURL    string    `db:"explanatory_note_url" json:"explanatoryNoteURL,omitempty"`
 	StudentName           string    `db:"student_name"`
+	NumberOfYears         int32     `db:"number_of_years" json:"number_of_years"`
 }
 
 type IDs struct {

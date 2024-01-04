@@ -26,4 +26,5 @@ type Students struct {
 	DissertationTitle string
 	Feedback          *string
 	GroupNumber       *string
+	NumberOfYears     int32
 }

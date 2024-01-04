@@ -42,6 +42,7 @@ func (r *StudentRepository) getStudentCommonInformation(ctx context.Context, tx 
 			table.Students.StartDate.AS("studying_start_date"),
 			table.Students.ActualSemester.AS("semester_number"),
 			table.Students.Feedback.AS("feedback"),
+			table.Students.NumberOfYears.AS("number_of_years"),
 		).
 		WHERE(table.Students.StudentID.EQ(postgres.UUID(studentID))).
 		Sql()
@@ -176,6 +177,7 @@ func scanStudentCommonInfo(row pgx.Row, target *models.StudentCommonInformation)
 		&target.StudyingStartDate,
 		&target.Semester,
 		&target.Feedback,
+		&target.NumberOfYears,
 	)
 }
 
@@ -194,5 +196,6 @@ func scanStudentRow(row pgx.Row, target *model.Students) error {
 		&target.DissertationTitle,
 		&target.Feedback,
 		&target.GroupNumber,
+		&target.NumberOfYears,
 	)
 }

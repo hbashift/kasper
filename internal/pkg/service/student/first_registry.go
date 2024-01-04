@@ -34,6 +34,7 @@ func (s *Service) FirstRegistry(ctx context.Context, token string, info *mapping
 		Feedback:          nil,
 		GroupNumber:       info.GroupNumber,
 		SupervisorID:      uuid.Nil,
+		NumberOfYears:     info.NumberOfYears,
 	}
 	supID := uuid.Nil
 

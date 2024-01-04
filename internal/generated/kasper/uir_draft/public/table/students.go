@@ -30,6 +30,7 @@ type studentsTable struct {
 	DissertationTitle postgres.ColumnString
 	Feedback          postgres.ColumnString
 	GroupNumber       postgres.ColumnString
+	NumberOfYears     postgres.ColumnInteger
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -83,8 +84,9 @@ func newStudentsTableImpl(schemaName, tableName, alias string) studentsTable {
 		DissertationTitleColumn = postgres.StringColumn("dissertation_title")
 		FeedbackColumn          = postgres.StringColumn("feedback")
 		GroupNumberColumn       = postgres.StringColumn("group_number")
-		allColumns              = postgres.ColumnList{ClientIDColumn, StudentIDColumn, FullNameColumn, DepartmentColumn, EnrollmentOrderColumn, SpecializationColumn, ActualSemesterColumn, SupervisorIDColumn, StartDateColumn, AcademicLeaveColumn, DissertationTitleColumn, FeedbackColumn, GroupNumberColumn}
-		mutableColumns          = postgres.ColumnList{ClientIDColumn, FullNameColumn, DepartmentColumn, EnrollmentOrderColumn, SpecializationColumn, ActualSemesterColumn, SupervisorIDColumn, StartDateColumn, AcademicLeaveColumn, DissertationTitleColumn, FeedbackColumn, GroupNumberColumn}
+		NumberOfYearsColumn     = postgres.IntegerColumn("number_of_years")
+		allColumns              = postgres.ColumnList{ClientIDColumn, StudentIDColumn, FullNameColumn, DepartmentColumn, EnrollmentOrderColumn, SpecializationColumn, ActualSemesterColumn, SupervisorIDColumn, StartDateColumn, AcademicLeaveColumn, DissertationTitleColumn, FeedbackColumn, GroupNumberColumn, NumberOfYearsColumn}
+		mutableColumns          = postgres.ColumnList{ClientIDColumn, FullNameColumn, DepartmentColumn, EnrollmentOrderColumn, SpecializationColumn, ActualSemesterColumn, SupervisorIDColumn, StartDateColumn, AcademicLeaveColumn, DissertationTitleColumn, FeedbackColumn, GroupNumberColumn, NumberOfYearsColumn}
 	)
 
 	return studentsTable{
@@ -104,6 +106,7 @@ func newStudentsTableImpl(schemaName, tableName, alias string) studentsTable {
 		DissertationTitle: DissertationTitleColumn,
 		Feedback:          FeedbackColumn,
 		GroupNumber:       GroupNumberColumn,
+		NumberOfYears:     NumberOfYearsColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,
