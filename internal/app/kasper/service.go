@@ -20,6 +20,7 @@ type StudentHandler interface {
 	UploadDissertation(ctx *gin.Context)
 	DownloadDissertation(ctx *gin.Context)
 	GetSupervisors(ctx *gin.Context)
+	FirstRegistry(ctx *gin.Context)
 }
 
 type SupervisorHandler interface {
@@ -60,6 +61,7 @@ func InitRoutes(student StudentHandler, supervisor SupervisorHandler, authorizat
 	router.POST("/students/dissertation/file/:id", student.UploadDissertation)
 	router.PUT("/students/dissertation/file/:id", student.DownloadDissertation)
 	router.GET("/students/supervisors/:id", student.GetSupervisors)
+	router.POST("/students/registration/:id", student.FirstRegistry)
 
 	router.GET("/supervisors/list_of_students/:id", supervisor.GetListOfStudents)
 	router.PUT("/supervisors/student/:id", supervisor.GetStudentsDissertationPage)
