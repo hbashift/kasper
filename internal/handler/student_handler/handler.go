@@ -24,6 +24,7 @@ type StudentService interface {
 	GetDissertationIDs(ctx context.Context, token string) ([]*mapping.DissertationIDs, error)
 	DownloadDissertation(ctx *gin.Context, token string, dissertationID *mapping.DownloadDissertation) (*model.Dissertation, error)
 	GetSupervisors(ctx context.Context, token string) (*mapping.Supervisors, error)
+	FirstRegistry(ctx context.Context, token string, info *mapping.FirstRegistry) error
 }
 
 type studentHandler struct {
