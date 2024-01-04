@@ -26,7 +26,7 @@ func (s *Service) FirstRegistry(ctx context.Context, token string, info *mapping
 		FullName:          info.FullName,
 		Department:        info.Department,
 		EnrollmentOrder:   info.EnrollmentOrder,
-		Specialization:    lo.ToPtr(model.StudentSpecialization(info.Specialization)),
+		Specialization:    lo.ToPtr(info.Specialization),
 		ActualSemester:    info.ActualSemester,
 		StartDate:         info.StartDate,
 		AcademicLeave:     false,
