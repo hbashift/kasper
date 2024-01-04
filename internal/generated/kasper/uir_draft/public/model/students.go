@@ -18,7 +18,7 @@ type Students struct {
 	FullName          string
 	Department        string
 	EnrollmentOrder   string
-	Specialization    *StudentSpecialization
+	Specialization    *string
 	ActualSemester    int32
 	SupervisorID      uuid.UUID
 	StartDate         *time.Time
