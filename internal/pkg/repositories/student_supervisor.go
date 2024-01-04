@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/pkg/errors"
+	"uir_draft/internal/generated/kasper/uir_draft/public/model"
 	"uir_draft/internal/generated/kasper/uir_draft/public/table"
 )
 
@@ -27,6 +28,17 @@ func (r *StudentSupervisorRepository) ChangeSupervisor(ctx context.Context, tx *
 	_, err := tx.Exec(ctx, stmt, args...)
 	if err != nil {
 		return errors.Wrap(err, "ChangeSupervisor()")
+	}
+
+	return nil
+}
+
+func (r *StudentSupervisorRepository) SetStudentSupervisor(ctx context.Context, tx *pgxpool.Pool, model model.StudentSupervisor) error {
+	stmt, args := table.StudentSupervisor.INSERT(table.StudentSupervisor.MutableColumns).MODEL(model).Sql()
+
+	_, err := tx.Exec(ctx, stmt, args...)
+	if err != nil {
+		return errors.Wrap(err, "SetStudentSupervisor()")
 	}
 
 	return nil

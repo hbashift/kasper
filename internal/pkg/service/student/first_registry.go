@@ -35,9 +35,11 @@ func (s *Service) FirstRegistry(ctx context.Context, token string, info *mapping
 		GroupNumber:       info.GroupNumber,
 		SupervisorID:      uuid.Nil,
 	}
+	supID := uuid.Nil
 
 	if info.SupervisorID != nil {
 		student.SupervisorID = *info.SupervisorID
+		supID = *info.SupervisorID
 	}
 
 	err = s.studRepo.InsertStudentCommonInfo(ctx, s.db, student)
@@ -49,6 +51,11 @@ func (s *Service) FirstRegistry(ctx context.Context, token string, info *mapping
 	if err != nil {
 		return errors.Wrap(err, "[Student]")
 	}
+
+	err = s.studSupRepo.SetStudentSupervisor(ctx, s.db, model.StudentSupervisor{
+		StudentID:    session.KasperID,
+		SupervisorID: supID,
+	})
 
 	return nil
 }
