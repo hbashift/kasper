@@ -19,8 +19,10 @@ type SemesterProgress struct {
 	Second             bool
 	Third              bool
 	Forth              bool
-	Fifth              *bool
-	Sixth              *bool
+	Fifth              bool
+	Sixth              bool
+	Seventh            bool
+	Eighth             bool
 	ProgressName       ProgressType
 	LastUpdated        *time.Time
 	ClientID           uuid.UUID

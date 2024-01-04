@@ -5,6 +5,7 @@ import (
 
 	"github.com/google/uuid"
 	"uir_draft/internal/generated/kasper/uir_draft/public/model"
+	studmapping "uir_draft/internal/pkg/service/student/mapping"
 	"uir_draft/internal/pkg/service/supervisor"
 	"uir_draft/internal/pkg/service/supervisor/mapping"
 )
@@ -15,6 +16,8 @@ type SupervisorService interface {
 	DownloadDissertation(ctx context.Context, token string, info *mapping.DownloadDissertation) (*model.Dissertation, error)
 	UpdateFeedback(ctx context.Context, token string, info *mapping.UpdateFeedback) error
 	SetStatus(ctx context.Context, token string, info *mapping.SetStatus) error
+	GetScientificWorks(ctx context.Context, token string, studentID uuid.UUID) ([]*studmapping.ScientificWork, error)
+	GetTeachingLoad(ctx context.Context, token string, studentID uuid.UUID) (*studmapping.TeachingLoad, error)
 }
 
 type supervisorHandler struct {

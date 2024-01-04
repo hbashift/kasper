@@ -28,8 +28,10 @@ type SemesterProgress struct {
 	Second       bool       `json:"second,omitempty"`
 	Third        bool       `json:"third,omitempty"`
 	Forth        bool       `json:"forth,omitempty"`
-	Fifth        *bool      `json:"fifth,omitempty"`
-	Sixth        *bool      `json:"sixth,omitempty"`
+	Fifth        bool       `json:"fifth,omitempty"`
+	Sixth        bool       `json:"sixth,omitempty"`
+	Seventh      bool       `json:"seventh,omitempty"`
+	Eighth       bool       `json:"eighth,omitempty"`
 	ProgressName string     `json:"progressName,omitempty"`
 	LastUpdated  *time.Time `json:"lastUpdated,omitempty"`
 }
@@ -94,4 +96,16 @@ type DownloadDissertation struct {
 type DissertationStatus struct {
 	Semester int32                    `db:"semester" json:"semester"`
 	Status   model.DissertationStatus `db:"status" json:"status"`
+}
+
+type FirstRegistry struct {
+	FullName          string     `json:"fullName,omitempty"`
+	Department        string     `json:"department,omitempty"`
+	EnrollmentOrder   string     `json:"enrollmentOrder,omitempty"`
+	Specialization    string     `json:"specialization,omitempty"`
+	ActualSemester    int32      `json:"actualSemester,omitempty"`
+	SupervisorID      *uuid.UUID `json:"supervisorID,omitempty"`
+	StartDate         *time.Time `json:"startDate,omitempty"`
+	DissertationTitle string     `json:"dissertationTitle,omitempty"`
+	GroupNumber       *string    `json:"groupNumber,omitempty"`
 }

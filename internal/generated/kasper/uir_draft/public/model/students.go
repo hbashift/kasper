@@ -13,19 +13,17 @@ import (
 )
 
 type Students struct {
-	ClientID           uuid.UUID
-	StudentID          uuid.UUID `sql:"primary_key"`
-	FullName           string
-	Department         string
-	EnrollmentOrder    string
-	TitlePagePath      string
-	ExplanatoryNoteURL string
-	Specialization     *StudentSpecialization
-	ActualSemester     int32
-	SupervisorID       uuid.UUID
-	StartDate          *time.Time
-	AcademicLeave      bool
-	DissertationTitle  string
-	Feedback           *string
-	GroupNumber        *string
+	ClientID          uuid.UUID
+	StudentID         uuid.UUID `sql:"primary_key"`
+	FullName          string
+	Department        string
+	EnrollmentOrder   string
+	Specialization    *StudentSpecialization
+	ActualSemester    int32
+	SupervisorID      uuid.UUID
+	StartDate         *time.Time
+	AcademicLeave     bool
+	DissertationTitle string
+	Feedback          *string
+	GroupNumber       *string
 }

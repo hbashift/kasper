@@ -25,6 +25,8 @@ type semesterProgressTable struct {
 	Forth              postgres.ColumnBool
 	Fifth              postgres.ColumnBool
 	Sixth              postgres.ColumnBool
+	Seventh            postgres.ColumnBool
+	Eighth             postgres.ColumnBool
 	ProgressName       postgres.ColumnString
 	LastUpdated        postgres.ColumnTimestampz
 	ClientID           postgres.ColumnString
@@ -76,11 +78,13 @@ func newSemesterProgressTableImpl(schemaName, tableName, alias string) semesterP
 		ForthColumn              = postgres.BoolColumn("forth")
 		FifthColumn              = postgres.BoolColumn("fifth")
 		SixthColumn              = postgres.BoolColumn("sixth")
+		SeventhColumn            = postgres.BoolColumn("seventh")
+		EighthColumn             = postgres.BoolColumn("eighth")
 		ProgressNameColumn       = postgres.StringColumn("progress_name")
 		LastUpdatedColumn        = postgres.TimestampzColumn("last_updated")
 		ClientIDColumn           = postgres.StringColumn("client_id")
-		allColumns               = postgres.ColumnList{SemesterProgressIDColumn, StudentIDColumn, FirstColumn, SecondColumn, ThirdColumn, ForthColumn, FifthColumn, SixthColumn, ProgressNameColumn, LastUpdatedColumn, ClientIDColumn}
-		mutableColumns           = postgres.ColumnList{StudentIDColumn, FirstColumn, SecondColumn, ThirdColumn, ForthColumn, FifthColumn, SixthColumn, ProgressNameColumn, LastUpdatedColumn, ClientIDColumn}
+		allColumns               = postgres.ColumnList{SemesterProgressIDColumn, StudentIDColumn, FirstColumn, SecondColumn, ThirdColumn, ForthColumn, FifthColumn, SixthColumn, SeventhColumn, EighthColumn, ProgressNameColumn, LastUpdatedColumn, ClientIDColumn}
+		mutableColumns           = postgres.ColumnList{StudentIDColumn, FirstColumn, SecondColumn, ThirdColumn, ForthColumn, FifthColumn, SixthColumn, SeventhColumn, EighthColumn, ProgressNameColumn, LastUpdatedColumn, ClientIDColumn}
 	)
 
 	return semesterProgressTable{
@@ -95,6 +99,8 @@ func newSemesterProgressTableImpl(schemaName, tableName, alias string) semesterP
 		Forth:              ForthColumn,
 		Fifth:              FifthColumn,
 		Sixth:              SixthColumn,
+		Seventh:            SeventhColumn,
+		Eighth:             EighthColumn,
 		ProgressName:       ProgressNameColumn,
 		LastUpdated:        LastUpdatedColumn,
 		ClientID:           ClientIDColumn,

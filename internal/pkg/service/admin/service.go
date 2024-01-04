@@ -1,4 +1,4 @@
-package supervisor
+package admin
 
 import (
 	"context"
@@ -13,7 +13,12 @@ import (
 
 var ErrNonValidToken = errors.New("token is expired")
 
+type StudentSupervisorRepository interface {
+	ChangeSupervisor(ctx context.Context, tx *pgxpool.Pool, studentID, supervisorID uuid.UUID) error
+}
+
 type StudentRepository interface {
+	SetAcademicLeave(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID, isAcademicLeave bool) error
 	UpdateFeedback(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID, feedback string) error
 	GetStudentCommonInfo(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) (*models.StudentCommonInformation, error)
 	GetListOfStudents(ctx context.Context, tx *pgxpool.Pool, supervisorID *uuid.UUID) ([]*model.Students, error)
@@ -28,7 +33,6 @@ type TokenRepository interface {
 }
 
 type DissertationRepository interface {
-	SetStatus(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID, semester int32, status model.DissertationStatus) error
 	GetStatuses(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) ([]*mapping.DissertationStatus, error)
 	GetDissertationData(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID, semester int32) (*model.Dissertation, error)
 }
@@ -48,6 +52,7 @@ type Service struct {
 	dRepo        DissertationRepository
 	scienceRepo  ScientificWorksRepository
 	loadRepo     TeachingLoadRepo
+	studSupRepo  StudentSupervisorRepository
 
 	db *pgxpool.Pool
 }

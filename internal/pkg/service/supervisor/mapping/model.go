@@ -32,3 +32,7 @@ type SetStatus struct {
 	Status    string    `json:"status"`
 	StudentID uuid.UUID `json:"studentID"`
 }
+
+type StudentID struct {
+	StudentID uuid.UUID `json:"studentID"`
+}

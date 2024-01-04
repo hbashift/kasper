@@ -42,8 +42,6 @@ func (r *StudentRepository) getStudentCommonInformation(ctx context.Context, tx 
 			table.Students.StartDate.AS("studying_start_date"),
 			table.Students.ActualSemester.AS("semester_number"),
 			table.Students.Feedback.AS("feedback"),
-			table.Students.TitlePagePath.AS("title_page_url"),
-			table.Students.ExplanatoryNoteURL.AS("explanatory_note_url"),
 		).
 		WHERE(table.Students.StudentID.EQ(postgres.UUID(studentID))).
 		Sql()
@@ -73,13 +71,7 @@ func (r *StudentRepository) insertStudentCommonInfoTx(ctx context.Context, tx *p
 		INSERT(table.Students.AllColumns).
 		MODEL(student).Sql()
 
-	if err := tx.BeginFunc(ctx, func(tx pgx.Tx) error {
-		if _, err := tx.Exec(ctx, stmt, args...); err != nil {
-			return err
-		}
-
-		return nil
-	}); err != nil {
+	if _, err := tx.Exec(ctx, stmt, args...); err != nil {
 		return errors.Wrap(err, "insert student common info")
 	}
 
@@ -105,13 +97,7 @@ func (r *StudentRepository) updateStudentCommonInfoTx(ctx context.Context, tx *p
 		MODEL(student).
 		WHERE(table.Students.StudentID.EQ(postgres.UUID(student.StudentID))).Sql()
 
-	if err := tx.BeginFunc(ctx, func(tx pgx.Tx) error {
-		if _, err := tx.Exec(ctx, stmt, args...); err != nil {
-			return err
-		}
-
-		return nil
-	}); err != nil {
+	if _, err := tx.Exec(ctx, stmt, args...); err != nil {
 		return errors.Wrap(err, "update student common info")
 	}
 
@@ -167,6 +153,21 @@ func (r *StudentRepository) UpdateFeedback(ctx context.Context, tx *pgxpool.Pool
 	return nil
 }
 
+func (r *StudentRepository) SetAcademicLeave(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID, isAcademicLeave bool) error {
+	stmt, args := table.Students.
+		UPDATE(table.Students.AcademicLeave).
+		SET(isAcademicLeave).
+		WHERE(table.Students.StudentID.EQ(postgres.UUID(studentID))).
+		Sql()
+
+	_, err := tx.Exec(ctx, stmt, args...)
+	if err != nil {
+		return errors.Wrap(err, "SetAcademicLeave()")
+	}
+
+	return nil
+}
+
 func scanStudentCommonInfo(row pgx.Row, target *models.StudentCommonInformation) error {
 	return row.Scan(
 		&target.DissertationTitle,
@@ -187,8 +188,6 @@ func scanStudentRow(row pgx.Row, target *model.Students) error {
 		&target.FullName,
 		&target.Department,
 		&target.EnrollmentOrder,
-		&target.TitlePagePath,
-		&target.ExplanatoryNoteURL,
 		&target.Specialization,
 		&target.ActualSemester,
 		&target.SupervisorID,
