@@ -30,9 +30,9 @@ func (r *SupervisorRepository) GetSupervisors(ctx context.Context, tx *pgxpool.P
 		supervisor := &model.Supervisors{}
 
 		if err = rows.Scan(
-			&supervisor.SupervisorID,
-			&supervisor.FullName,
 			&supervisor.ClientID,
+			&supervisor.FullName,
+			&supervisor.SupervisorID,
 		); err != nil {
 			return nil, errors.Wrap(err, "GetSupervisors()")
 		}
