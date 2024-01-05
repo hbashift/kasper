@@ -9,7 +9,7 @@ import (
 )
 
 type Student struct {
-	StudentID uuid.UUID `json:"StudentID"`
+	StudentID uuid.UUID `json:"studentID"`
 }
 
 func (h *administratorHandler) GetStudentsDissertationPage(ctx *gin.Context) {
