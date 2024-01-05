@@ -33,7 +33,6 @@ func (r *StudentRepository) GetStudentCommonInfo(ctx context.Context, tx *pgxpoo
 
 func (r *StudentRepository) getStudentCommonInformation(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) (*models.StudentCommonInformation, error) {
 	stmt, args := table.Students.
-		INNER_JOIN(table.Dissertation, table.Students.StudentID.EQ(table.Dissertation.StudentID)).
 		INNER_JOIN(table.Supervisors, table.Students.SupervisorID.EQ(table.Supervisors.SupervisorID)).
 		SELECT(
 			table.Students.DissertationTitle.AS("dissertation_title"),
@@ -99,6 +98,20 @@ func (r *StudentRepository) updateStudentCommonInfoTx(ctx context.Context, tx *p
 
 	if _, err := tx.Exec(ctx, stmt, args...); err != nil {
 		return errors.Wrap(err, "update student common info")
+	}
+
+	return nil
+}
+
+func (r *StudentRepository) SetTheme(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID, title string) error {
+	stmt, args := table.Students.
+		UPDATE(table.Students.DissertationTitle).
+		SET(title).
+		WHERE(table.Students.StudentID.EQ(postgres.UUID(studentID))).
+		Sql()
+
+	if _, err := tx.Exec(ctx, stmt, args...); err != nil {
+		return err
 	}
 
 	return nil

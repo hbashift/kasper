@@ -25,7 +25,7 @@ func NewDissertationRepository(postgres *pgxpool.Pool) *DissertationRepository {
 	return &DissertationRepository{postgres: postgres}
 }
 
-func (r *DissertationRepository) insertDissertationTx(ctx context.Context, tx pgx.Tx, dissertation model.Dissertation) error {
+func (r *DissertationRepository) InsertDissertationTx(ctx context.Context, tx *pgxpool.Pool, dissertation model.Dissertation) error {
 	stmt, args := table.Dissertation.INSERT(table.Dissertation.AllColumns).
 		MODEL(dissertation).Sql()
 

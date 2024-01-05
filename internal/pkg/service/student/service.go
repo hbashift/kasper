@@ -12,6 +12,7 @@ import (
 )
 
 type StudentRepository interface {
+	SetTheme(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID, title string) error
 	GetStudentCommonInfo(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) (*models.StudentCommonInformation, error)
 	InsertStudentCommonInfo(ctx context.Context, tx *pgxpool.Pool, student model.Students) error
 	UpdateStudentCommonInfo(ctx context.Context, tx *pgxpool.Pool, student model.Students) error
@@ -26,6 +27,7 @@ type ScientificWorkRepository interface {
 }
 
 type DissertationRepository interface {
+	InsertDissertationTx(ctx context.Context, tx *pgxpool.Pool, dissertation model.Dissertation) error
 	GetStatuses(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) ([]*mapping.DissertationStatus, error)
 	GetDissertationIDs(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) ([]*models.IDs, error)
 	UpsertDissertationData(ctx context.Context, tx *pgxpool.Pool, studentID *uuid.UUID, semester int32, name string) error

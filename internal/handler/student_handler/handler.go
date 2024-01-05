@@ -25,6 +25,7 @@ type StudentService interface {
 	DownloadDissertation(ctx *gin.Context, token string, dissertationID *mapping.DownloadDissertation) (*model.Dissertation, error)
 	GetSupervisors(ctx context.Context, token string) (*mapping.Supervisors, error)
 	FirstRegistry(ctx context.Context, token string, info *mapping.FirstRegistry) error
+	SetTheme(ctx context.Context, token, theme string) error
 }
 
 type studentHandler struct {
