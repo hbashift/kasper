@@ -90,10 +90,9 @@ func (r *StudentRepository) UpdateStudentCommonInfo(ctx context.Context, tx *pgx
 func (r *StudentRepository) updateStudentCommonInfoTx(ctx context.Context, tx *pgxpool.Pool, student model.Students) error {
 	stmt, args := table.Students.
 		UPDATE(
-			table.Students.FullName,
-			table.Students.Specialization,
-			table.Students.AcademicLeave,
 			table.Students.DissertationTitle,
+			table.Students.EnrollmentOrder,
+			table.Students.StartDate,
 		).
 		MODEL(student).
 		WHERE(table.Students.StudentID.EQ(postgres.UUID(student.StudentID))).Sql()

@@ -39,7 +39,20 @@ type AuthorizationHandler interface {
 	HealthCheck(ctx *gin.Context)
 }
 
-func InitRoutes(student StudentHandler, supervisor SupervisorHandler, authorization AuthorizationHandler) *gin.Engine {
+type AdministratorHandler interface {
+	SetAcademicLeave(ctx *gin.Context)
+	UpdateStudentCommonInfo(ctx *gin.Context)
+	ChangeSupervisor(ctx *gin.Context)
+	GetPairs(ctx *gin.Context)
+	GetScientificWorks(ctx *gin.Context)
+	GetStudentsDissertationPage(ctx *gin.Context)
+	GetTeachingLoad(ctx *gin.Context)
+}
+
+func InitRoutes(student StudentHandler,
+	supervisor SupervisorHandler,
+	authorization AuthorizationHandler,
+	adminHandler AdministratorHandler) *gin.Engine {
 	router := gin.Default()
 
 	router.Use(cors.New(cors.Config{
@@ -76,5 +89,14 @@ func InitRoutes(student StudentHandler, supervisor SupervisorHandler, authorizat
 	router.POST("/authorization/authorize", authorization.Authorize)
 	router.POST("/authorization/change_password/:id", authorization.ChangePassword)
 	router.GET("/authorization/check/:id", authorization.HealthCheck)
+
+	router.POST("/admin/students/set_academic/:id", adminHandler.SetAcademicLeave)
+	router.POST("/admin/students/common_info/:id", adminHandler.UpdateStudentCommonInfo)
+	router.POST("/admin/pairs/:id", adminHandler.ChangeSupervisor)
+	router.GET("/admin/pairs/:id", adminHandler.GetPairs)
+	router.GET("/admin/students/scientific/:id", adminHandler.GetScientificWorks)
+	router.GET("/admin/students/load/:id", adminHandler.GetTeachingLoad)
+	router.GET("/admin/students/dissertation/:id", adminHandler.GetStudentsDissertationPage)
+
 	return router
 }

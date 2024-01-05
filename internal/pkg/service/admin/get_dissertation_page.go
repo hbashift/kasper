@@ -3,6 +3,7 @@ package admin
 import (
 	"context"
 
+	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"uir_draft/internal/generated/kasper/uir_draft/public/model"
 	"uir_draft/internal/pkg/models"
@@ -25,7 +26,7 @@ type DissertationPage struct {
 	DissertationStatuses []*mapping.DissertationStatus       `json:"statuses"`
 }
 
-func (s *Service) GetDissertationPage(ctx context.Context, token string) (*DissertationPage, error) {
+func (s *Service) GetDissertationPage(ctx context.Context, token string, studentID uuid.UUID) (*DissertationPage, error) {
 	session, err := s.tokenRepo.Authenticate(ctx, token, s.db)
 	if err != nil {
 		return nil, errors.Wrap(err, "authentication error")
@@ -35,12 +36,12 @@ func (s *Service) GetDissertationPage(ctx context.Context, token string) (*Disse
 		return nil, ErrNonValidToken
 	}
 
-	commonInfo, err := s.studRepo.GetStudentCommonInfo(ctx, s.db, session.KasperID)
+	commonInfo, err := s.studRepo.GetStudentCommonInfo(ctx, s.db, studentID)
 	if err != nil {
 		return nil, errors.Wrap(err, "GetStudentCommonInfo()")
 	}
 
-	plans, err := s.semesterRepo.GetStudentDissertationPlan(ctx, s.db, session.KasperID)
+	plans, err := s.semesterRepo.GetStudentDissertationPlan(ctx, s.db, studentID)
 	if err != nil {
 		return nil, errors.Wrap(err, "GetStudentDissertationPlan()")
 	}
@@ -59,7 +60,7 @@ func (s *Service) GetDissertationPage(ctx context.Context, token string) (*Disse
 		planMap[semester.Name] = plan
 	}
 
-	statuses, err := s.dRepo.GetStatuses(ctx, s.db, session.KasperID)
+	statuses, err := s.dRepo.GetStatuses(ctx, s.db, studentID)
 	if err != nil {
 		return nil, err
 	}

@@ -4,10 +4,12 @@ import (
 	"context"
 
 	"uir_draft/internal/app/kasper"
+	admin_handler "uir_draft/internal/handler/admin"
 	"uir_draft/internal/handler/authorization_handler"
 	"uir_draft/internal/handler/student_handler"
 	"uir_draft/internal/handler/supervisor_handler"
 	"uir_draft/internal/pkg/repositories"
+	"uir_draft/internal/pkg/service/admin"
 	"uir_draft/internal/pkg/service/authorization"
 	"uir_draft/internal/pkg/service/student"
 	"uir_draft/internal/pkg/service/supervisor"
@@ -51,7 +53,10 @@ func main() {
 	supService := supervisor.NewService(studRepo, tokenRepo, semesterRepo, dRepo, scientificRepo, loadRepo, db)
 	supervisorHandler := supervisor_handler.NewSupervisorHandler(supService)
 
-	server := kasper.InitRoutes(studHandler, supervisorHandler, authorizeHandler)
+	adminService := admin.NewService(studRepo, tokenRepo, semesterRepo, dRepo, scientificRepo, loadRepo, studSupRepo, supRepo, db)
+	adminHandler := admin_handler.NewAdministratorHandler(adminService)
+
+	server := kasper.InitRoutes(studHandler, supervisorHandler, authorizeHandler, adminHandler)
 
 	err = server.Run(":8080")
 	if err != nil {
