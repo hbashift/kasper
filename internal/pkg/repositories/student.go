@@ -90,7 +90,6 @@ func (r *StudentRepository) UpdateStudentCommonInfo(ctx context.Context, tx *pgx
 func (r *StudentRepository) updateStudentCommonInfoTx(ctx context.Context, tx *pgxpool.Pool, student model.Students) error {
 	stmt, args := table.Students.
 		UPDATE(
-			table.Students.DissertationTitle,
 			table.Students.EnrollmentOrder,
 			table.Students.StartDate,
 		).
