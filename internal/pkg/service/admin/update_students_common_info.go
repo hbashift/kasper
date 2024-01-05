@@ -2,6 +2,7 @@ package admin
 
 import (
 	"context"
+	"time"
 
 	"github.com/pkg/errors"
 	"uir_draft/internal/generated/kasper/uir_draft/public/model"
@@ -18,10 +19,14 @@ func (s *Service) UpdateStudentsCommonInfo(ctx context.Context, token string, in
 		return ErrNonValidToken
 	}
 
+	startDate, err := time.Parse(time.DateOnly, info.StartDate)
+	if err != nil {
+		return err
+	}
 	student := model.Students{
 		StudentID:       info.StudentID,
 		EnrollmentOrder: info.EnrollmentOrder,
-		StartDate:       info.StartDate,
+		StartDate:       &startDate,
 	}
 
 	if err = s.studRepo.UpdateStudentCommonInfo(ctx, s.db, student); err != nil {

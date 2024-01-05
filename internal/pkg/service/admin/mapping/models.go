@@ -1,8 +1,6 @@
 package mapping
 
 import (
-	"time"
-
 	"github.com/google/uuid"
 )
 
@@ -21,10 +19,10 @@ type ChangeSupervisor struct {
 }
 
 type UpdateStudentsCommonInfo struct {
-	StudentID         uuid.UUID  `json:"studentID,omitempty"`
-	EnrollmentOrder   string     `json:"enrollmentOrder,omitempty"`
-	StartDate         *time.Time `json:"startDate"`
-	DissertationTitle string     `json:"dissertationTitle"`
+	StudentID         uuid.UUID `json:"studentID,omitempty"`
+	EnrollmentOrder   string    `json:"enrollmentOrder,omitempty"`
+	StartDate         string    `json:"startDate"`
+	DissertationTitle string    `json:"dissertationTitle"`
 }
 
 type StudentSupervisorPair struct {
