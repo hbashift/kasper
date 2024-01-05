@@ -23,10 +23,10 @@ type UpdateStudentsCommonInfo struct {
 }
 
 type StudentSupervisorPair struct {
-	StudentName    string    `json:"studentName,omitempty" db:"student_name"`
-	StudentID      uuid.UUID `json:"studentID,omitempty" db:"student_id"`
-	SupervisorName string    `json:"supervisorName,omitempty" db:"supervisor_name"`
-	SupervisorID   uuid.UUID `json:"supervisorID,omitempty" db:"supervisor_id"`
+	StudentName    string    `json:"studentFullName,omitempty" db:"student_name"`
+	StudentID      uuid.UUID `json:"studentId,omitempty" db:"student_id"`
+	SupervisorName string    `json:"teacherFullName,omitempty" db:"supervisor_name"`
+	SupervisorID   uuid.UUID `json:"teacherId,omitempty" db:"supervisor_id"`
 }
 
 type SupervisorInfo struct {
