@@ -19,7 +19,7 @@ func (s *Service) UpdateStudentsCommonInfo(ctx context.Context, token string, in
 		return ErrNonValidToken
 	}
 
-	startDate, err := time.Parse("02.01.2006", info.StartDate)
+	startDate, err := time.Parse(time.DateOnly, info.StartDate)
 	if err != nil {
 		return err
 	}
