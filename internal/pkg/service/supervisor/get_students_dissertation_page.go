@@ -2,11 +2,11 @@ package supervisor
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"uir_draft/internal/generated/kasper/uir_draft/public/model"
-	"uir_draft/internal/pkg/models"
 	"uir_draft/internal/pkg/service/student/mapping"
 )
 
@@ -19,9 +19,22 @@ type StudentDissertationPlan struct {
 	Sixth  bool `json:"id6,omitempty"`
 }
 
+type StudCommonInfo struct {
+	DissertationTitle     string  `db:"dissertation_title" json:"theme,omitempty"`
+	SupervisorName        string  `db:"supervisor_name" json:"teacherFullName,omitempty"`
+	EnrollmentOrderNumber string  `db:"enrollment_order_number" json:"numberOfOrderOfStatement,omitempty"`
+	StudyingStartDate     string  `db:"studying_start_date" json:"dateOfOrderOfStatement"`
+	Semester              int32   `db:"semester_number" json:"actualSemestr,omitempty"`
+	Feedback              *string `db:"feedback" json:"feedback,omitempty"`
+	TitlePageURL          string  `db:"title_page_url" json:"titlePageURL,omitempty"`
+	ExplanatoryNoteURL    string  `db:"explanatory_note_url" json:"explanatoryNoteURL,omitempty"`
+	StudentName           string  `db:"student_name"`
+	NumberOfYears         int32   `db:"number_of_years" json:"number_of_years"`
+}
+
 type DissertationPage struct {
 	DissertationPlan     map[string]*StudentDissertationPlan `json:"dissertationPlan"`
-	CommonInfo           models.StudentCommonInformation     `json:"commonInfo"`
+	CommonInfo           *StudCommonInfo                     `json:"commonInfo"`
 	DissertationStatuses []*mapping.DissertationStatus       `json:"statuses"`
 }
 
@@ -42,7 +55,7 @@ func (s *Service) GetDissertationPage(ctx context.Context, token string, student
 
 	plans, err := s.semesterRepo.GetStudentDissertationPlan(ctx, s.db, studentID)
 	if err != nil {
-		return nil, errors.Wrap(err, "GetStudentDissertationPlan()")
+		return nil, errors.Wrap(err, "[Supervisor]")
 	}
 
 	planMap := make(map[string]*StudentDissertationPlan, len(plans))
@@ -63,9 +76,24 @@ func (s *Service) GetDissertationPage(ctx context.Context, token string, student
 		return nil, err
 	}
 
+	startDate := commonInfo.StudyingStartDate.Format(time.DateOnly)
+
+	info := StudCommonInfo{
+		DissertationTitle:     commonInfo.DissertationTitle,
+		SupervisorName:        commonInfo.SupervisorName,
+		EnrollmentOrderNumber: commonInfo.EnrollmentOrderNumber,
+		StudyingStartDate:     startDate,
+		Semester:              commonInfo.Semester,
+		Feedback:              commonInfo.Feedback,
+		TitlePageURL:          commonInfo.TitlePageURL,
+		ExplanatoryNoteURL:    commonInfo.ExplanatoryNoteURL,
+		StudentName:           commonInfo.StudentName,
+		NumberOfYears:         commonInfo.NumberOfYears,
+	}
+
 	return &DissertationPage{
 		DissertationPlan:     planMap,
-		CommonInfo:           *commonInfo,
+		CommonInfo:           &info,
 		DissertationStatuses: statuses,
 	}, nil
 }

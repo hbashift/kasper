@@ -107,7 +107,7 @@ type FirstRegistry struct {
 	Specialization  string     `json:"specialization,omitempty"`
 	ActualSemester  int32      `json:"actualSemester,omitempty"`
 	SupervisorID    *uuid.UUID `json:"supervisorID,omitempty"`
-	StartDate       *time.Time `json:"startDate,omitempty"`
+	StartDate       string     `json:"startDate,omitempty"`
 	GroupNumber     *string    `json:"groupNumber,omitempty"`
 	NumberOfYears   int32      `json:"numberOfYears"`
 }

@@ -20,6 +20,10 @@ func (s *Service) FirstRegistry(ctx context.Context, token string, info *mapping
 	if session.TokenStatus != model.TokenStatus_Active {
 		return errors.Wrap(ErrNonValidToken, "[Student]")
 	}
+	startDate, err := time.Parse(time.DateOnly, info.StartDate)
+	if err != nil {
+		return err
+	}
 
 	student := model.Students{
 		ClientID:          session.ClientID,
@@ -29,7 +33,7 @@ func (s *Service) FirstRegistry(ctx context.Context, token string, info *mapping
 		EnrollmentOrder:   info.EnrollmentOrder,
 		Specialization:    lo.ToPtr(info.Specialization),
 		ActualSemester:    info.ActualSemester,
-		StartDate:         info.StartDate,
+		StartDate:         &startDate,
 		AcademicLeave:     false,
 		DissertationTitle: "unknown",
 		Feedback:          nil,
