@@ -60,9 +60,9 @@ type SingleLoad struct {
 type TeachingLoadType string
 
 const (
-	TeachignLoadType_PRACTICE   TeachingLoadType = "practice"
-	TeachingLoadType_LECTURE    TeachingLoadType = "lecture"
-	TeachingLoadType_LABORATORY TeachingLoadType = "laboratory"
+	TeachignLoadType_PRACTICE   TeachingLoadType = "Семинар"
+	TeachingLoadType_LECTURE    TeachingLoadType = "Лекция"
+	TeachingLoadType_LABORATORY TeachingLoadType = "Лабораторная"
 	TeachingLoadType_UNKNOWN    TeachingLoadType = "unknown"
 )
 
