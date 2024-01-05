@@ -22,3 +22,5 @@ services:
     restart: always
     volumes:
       - ./dissertations:/usr/src/app/dissertations
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
