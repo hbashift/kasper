@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/google/uuid"
 	"uir_draft/internal/generated/kasper/uir_draft/public/model"
 	"uir_draft/internal/pkg/service/student/mapping"
 
@@ -25,18 +26,19 @@ func (s *Service) UpsertSemesterPlan(ctx context.Context, token string, progress
 
 	for _, prog := range progress.Progress {
 		p := &model.SemesterProgress{
-			StudentID:    session.KasperID,
-			First:        prog.First,
-			Second:       prog.Second,
-			Third:        prog.Third,
-			Forth:        prog.Forth,
-			Fifth:        prog.Fifth,
-			Sixth:        prog.Sixth,
-			Seventh:      prog.Seventh,
-			Eighth:       prog.Eighth,
-			ProgressName: model.ProgressType(prog.ProgressName),
-			LastUpdated:  lo.ToPtr(time.Now()),
-			ClientID:     session.ClientID,
+			SemesterProgressID: uuid.New(),
+			StudentID:          session.KasperID,
+			First:              prog.First,
+			Second:             prog.Second,
+			Third:              prog.Third,
+			Forth:              prog.Forth,
+			Fifth:              prog.Fifth,
+			Sixth:              prog.Sixth,
+			Seventh:            prog.Seventh,
+			Eighth:             prog.Eighth,
+			ProgressName:       model.ProgressType(prog.ProgressName),
+			LastUpdated:        lo.ToPtr(time.Now()),
+			ClientID:           session.ClientID,
 		}
 
 		progressDomain = append(progressDomain, p)
