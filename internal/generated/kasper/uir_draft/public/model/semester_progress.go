@@ -13,7 +13,7 @@ import (
 )
 
 type SemesterProgress struct {
-	SemesterProgressID int32 `sql:"primary_key"`
+	SemesterProgressID uuid.UUID `sql:"primary_key"`
 	StudentID          uuid.UUID
 	First              bool
 	Second             bool

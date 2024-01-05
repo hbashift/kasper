@@ -77,18 +77,19 @@ func (s *Service) FirstRegistry(ctx context.Context, token string, info *mapping
 
 	for _, progressType := range progressTypes {
 		progress := model.SemesterProgress{
-			StudentID:    session.KasperID,
-			First:        false,
-			Second:       false,
-			Third:        false,
-			Forth:        false,
-			Fifth:        false,
-			Sixth:        false,
-			Seventh:      false,
-			Eighth:       false,
-			ProgressName: progressType,
-			LastUpdated:  lo.ToPtr(time.Now()),
-			ClientID:     session.ClientID,
+			SemesterProgressID: uuid.New(),
+			StudentID:          session.KasperID,
+			First:              false,
+			Second:             false,
+			Third:              false,
+			Forth:              false,
+			Fifth:              false,
+			Sixth:              false,
+			Seventh:            false,
+			Eighth:             false,
+			ProgressName:       progressType,
+			LastUpdated:        lo.ToPtr(time.Now()),
+			ClientID:           session.ClientID,
 		}
 
 		models = append(models, progress)

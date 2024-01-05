@@ -109,7 +109,7 @@ func (r *SemesterRepository) upsertSemesterPlanTx(ctx context.Context, tx *pgxpo
 
 func (r *SemesterRepository) InitSemesterProgress(ctx context.Context, tx *pgxpool.Pool, models []model.SemesterProgress) error {
 	stmt, args := table.SemesterProgress.
-		INSERT(table.SemesterProgress.MutableColumns).
+		INSERT(table.SemesterProgress.AllColumns).
 		MODELS(models).
 		Sql()
 
@@ -130,5 +130,9 @@ func scanDissertationPlan(row pgx.Row, target *models.StudentDissertationPlan) e
 		&target.Second,
 		&target.Third,
 		&target.Forth,
+		&target.Fifth,
+		&target.Sixth,
+		&target.Seventh,
+		&target.Eighth,
 	)
 }

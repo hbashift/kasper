@@ -17,7 +17,7 @@ type semesterProgressTable struct {
 	postgres.Table
 
 	// Columns
-	SemesterProgressID postgres.ColumnInteger
+	SemesterProgressID postgres.ColumnString
 	StudentID          postgres.ColumnString
 	First              postgres.ColumnBool
 	Second             postgres.ColumnBool
@@ -70,7 +70,7 @@ func newSemesterProgressTable(schemaName, tableName, alias string) *SemesterProg
 
 func newSemesterProgressTableImpl(schemaName, tableName, alias string) semesterProgressTable {
 	var (
-		SemesterProgressIDColumn = postgres.IntegerColumn("semester_progress_id")
+		SemesterProgressIDColumn = postgres.StringColumn("semester_progress_id")
 		StudentIDColumn          = postgres.StringColumn("student_id")
 		FirstColumn              = postgres.BoolColumn("first")
 		SecondColumn             = postgres.BoolColumn("second")
