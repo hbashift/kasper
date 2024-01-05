@@ -1,7 +1,7 @@
 port: "5432"
 host: "localhost"
 db:
-  username: "main"
+  username: "postgres"
   password: ""
   host: "host.docker.internal"
   port: "5432"
