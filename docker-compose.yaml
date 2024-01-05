@@ -23,4 +23,4 @@ services:
     volumes:
       - ./dissertations:/usr/src/app/dissertations
     extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - "host.docker.internal:127.0.0.1"
