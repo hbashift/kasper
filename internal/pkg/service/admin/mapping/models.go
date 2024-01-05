@@ -21,9 +21,10 @@ type ChangeSupervisor struct {
 }
 
 type UpdateStudentsCommonInfo struct {
-	StudentID       uuid.UUID  `json:"studentID,omitempty"`
-	EnrollmentOrder string     `json:"enrollmentOrder,omitempty"`
-	StartDate       *time.Time `json:"startDate"`
+	StudentID         uuid.UUID  `json:"studentID,omitempty"`
+	EnrollmentOrder   string     `json:"enrollmentOrder,omitempty"`
+	StartDate         *time.Time `json:"startDate"`
+	DissertationTitle string     `json:"dissertationTitle"`
 }
 
 type StudentSupervisorPair struct {
