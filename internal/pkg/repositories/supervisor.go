@@ -33,6 +33,10 @@ func (r *SupervisorRepository) GetSupervisors(ctx context.Context, tx *pgxpool.P
 			&supervisor.ClientID,
 			&supervisor.FullName,
 			&supervisor.SupervisorID,
+			&supervisor.Department,
+			&supervisor.Faculty,
+			&supervisor.Degree,
+			&supervisor.Email,
 		); err != nil {
 			return nil, errors.Wrap(err, "GetSupervisors()")
 		}

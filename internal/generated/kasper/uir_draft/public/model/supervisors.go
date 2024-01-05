@@ -15,4 +15,8 @@ type Supervisors struct {
 	ClientID     uuid.UUID
 	FullName     string
 	SupervisorID uuid.UUID `sql:"primary_key"`
+	Department   *string
+	Faculty      *string
+	Degree       *string
+	Email        *string
 }
