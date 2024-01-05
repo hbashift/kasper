@@ -33,6 +33,7 @@ type DissertationRepository interface {
 }
 
 type SemesterRepository interface {
+	InitSemesterProgress(ctx context.Context, tx *pgxpool.Pool, models []model.SemesterProgress) error
 	UpsertSemesterPlan(ctx context.Context, tx *pgxpool.Pool, progress []*model.SemesterProgress) error
 	GetStudentDissertationPlan(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) ([]*models.StudentDissertationPlan, error)
 }

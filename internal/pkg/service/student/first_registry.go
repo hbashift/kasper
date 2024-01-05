@@ -2,6 +2,7 @@ package student
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
@@ -59,6 +60,45 @@ func (s *Service) FirstRegistry(ctx context.Context, token string, info *mapping
 	})
 
 	// TODO сделать инициализацию програсса в семестре
+	var models []model.SemesterProgress
+	progressTypes := []model.ProgressType{
+		model.ProgressType_Intro,
+		model.ProgressType_Main,
+		model.ProgressType_Ch1,
+		model.ProgressType_Ch2,
+		model.ProgressType_Ch3,
+		model.ProgressType_Ch4,
+		model.ProgressType_Ch5,
+		model.ProgressType_Ch6,
+		model.ProgressType_End,
+		model.ProgressType_Literature,
+		model.ProgressType_Abstract,
+	}
+
+	for _, progressType := range progressTypes {
+		progress := model.SemesterProgress{
+			SemesterProgressID: 0,
+			StudentID:          session.KasperID,
+			First:              false,
+			Second:             false,
+			Third:              false,
+			Forth:              false,
+			Fifth:              false,
+			Sixth:              false,
+			Seventh:            false,
+			Eighth:             false,
+			ProgressName:       progressType,
+			LastUpdated:        lo.ToPtr(time.Now()),
+			ClientID:           session.ClientID,
+		}
+
+		models = append(models, progress)
+	}
+
+	err = s.semesterRepo.InitSemesterProgress(ctx, s.db, models)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

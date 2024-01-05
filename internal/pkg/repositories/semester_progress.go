@@ -106,6 +106,20 @@ func (r *SemesterRepository) upsertSemesterPlanTx(ctx context.Context, tx *pgxpo
 	return nil
 }
 
+func (r *SemesterRepository) InitSemesterProgress(ctx context.Context, tx *pgxpool.Pool, models []model.SemesterProgress) error {
+	stmt, args := table.SemesterProgress.
+		INSERT(table.SemesterProgress.MutableColumns).
+		MODELS(models).
+		Sql()
+
+	_, err := tx.Exec(ctx, stmt, args...)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func scanDissertationPlan(row pgx.Row, target *models.StudentDissertationPlan) error {
 	return row.Scan(
 		&target.Name,
