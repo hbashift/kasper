@@ -2,6 +2,7 @@ package mapping
 
 import (
 	"errors"
+	"strings"
 
 	"uir_draft/internal/generated/kasper/uir_draft/public/model"
 	"uir_draft/internal/pkg/models"
@@ -98,7 +99,8 @@ func MapTeachingLoadFromDomain(domainLoads []*model.TeachingLoad) TeachingLoad {
 }
 
 func MapTeachingLoadToDomain(load *SingleLoad, session *model.AuthorizationToken) (*model.TeachingLoad, error) {
-	loadType, check := TeachingLoadTypeMapToDomain[load.LoadType]
+	t := strings.TrimSpace(string(load.LoadType))
+	loadType, check := TeachingLoadTypeMapToDomain[TeachingLoadType(t)]
 	if !check {
 		return nil, errors.New("unknown teaching_load_type")
 	}
