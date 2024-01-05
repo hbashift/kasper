@@ -22,7 +22,7 @@ func (s *Service) FirstRegistry(ctx context.Context, token string, info *mapping
 	}
 	startDate, err := time.Parse(time.DateOnly, info.StartDate)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "[Student]")
 	}
 
 	student := model.Students{

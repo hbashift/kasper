@@ -40,6 +40,10 @@ func (r *SemesterRepository) getStudentDissertationPlanTx(ctx context.Context, t
 			table.SemesterProgress.Second,
 			table.SemesterProgress.Third,
 			table.SemesterProgress.Forth,
+			table.SemesterProgress.Fifth,
+			table.SemesterProgress.Sixth,
+			table.SemesterProgress.Seventh,
+			table.SemesterProgress.Eighth,
 		).
 		WHERE(table.SemesterProgress.StudentID.EQ(postgres.UUID(studentID))).Sql()
 
