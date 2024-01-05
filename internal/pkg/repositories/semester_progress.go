@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"log"
 
 	"uir_draft/internal/generated/kasper/uir_draft/public/model"
 	"uir_draft/internal/generated/kasper/uir_draft/public/table"
@@ -111,6 +112,8 @@ func (r *SemesterRepository) InitSemesterProgress(ctx context.Context, tx *pgxpo
 		INSERT(table.SemesterProgress.MutableColumns).
 		MODELS(models).
 		Sql()
+
+	log.Println(stmt+"\n", args)
 
 	_, err := tx.Exec(ctx, stmt, args...)
 	if err != nil {
