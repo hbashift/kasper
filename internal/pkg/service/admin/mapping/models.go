@@ -30,8 +30,8 @@ type StudentSupervisorPair struct {
 }
 
 type SupervisorInfo struct {
-	SupervisorName string    `json:"supervisorName,omitempty"`
-	SupervisorID   uuid.UUID `json:"supervisorID,omitempty"`
+	SupervisorName string    `json:"teacherFullName,omitempty"`
+	SupervisorID   uuid.UUID `json:"teacherId,omitempty"`
 }
 
 type GetStudSupPairs struct {
