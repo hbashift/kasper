@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/go-jet/jet/v2/postgres"
-	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/pkg/errors"
@@ -20,14 +19,24 @@ func NewStudentSupervisorRepository() *StudentSupervisorRepository {
 	return &StudentSupervisorRepository{}
 }
 
-func (r *StudentSupervisorRepository) ChangeSupervisor(ctx context.Context, tx *pgxpool.Pool, studentID, supervisorID uuid.UUID) error {
-	stmt, args := table.StudentSupervisor.
-		UPDATE(table.StudentSupervisor.SupervisorID).
-		SET(supervisorID).
-		WHERE(table.StudentSupervisor.StudentID.EQ(postgres.UUID(studentID))).
-		Sql()
+func (r *StudentSupervisorRepository) ChangeSupervisor(ctx context.Context, tx *pgxpool.Pool, pairs []*mapping.ChangeSupervisor) error {
+	err := tx.BeginFunc(ctx, func(tx pgx.Tx) error {
+		for _, pair := range pairs {
+			stmt, args := table.StudentSupervisor.
+				UPDATE(table.StudentSupervisor.SupervisorID).
+				SET(pair.SupervisorID).
+				WHERE(table.StudentSupervisor.StudentID.EQ(postgres.UUID(pair.StudentID))).
+				Sql()
 
-	_, err := tx.Exec(ctx, stmt, args...)
+			_, err := tx.Exec(ctx, stmt, args...)
+			if err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
+
 	if err != nil {
 		return errors.Wrap(err, "ChangeSupervisor()")
 	}

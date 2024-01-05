@@ -16,7 +16,7 @@ var ErrNonValidToken = errors.New("token is expired")
 
 type StudentSupervisorRepository interface {
 	GetPairs(ctx context.Context, tx *pgxpool.Pool) ([]*adminmap.StudentSupervisorPair, error)
-	ChangeSupervisor(ctx context.Context, tx *pgxpool.Pool, studentID, supervisorID uuid.UUID) error
+	ChangeSupervisor(ctx context.Context, tx *pgxpool.Pool, pairs []*adminmap.ChangeSupervisor) error
 }
 
 type StudentRepository interface {

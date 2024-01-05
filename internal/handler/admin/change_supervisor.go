@@ -15,7 +15,7 @@ func (h *administratorHandler) ChangeSupervisor(ctx *gin.Context) {
 		return
 	}
 
-	reqBody := mapping.ChangeSupervisor{}
+	reqBody := mapping.ChangeSupervisorArray{}
 	if err = ctx.ShouldBindJSON(&reqBody); err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return

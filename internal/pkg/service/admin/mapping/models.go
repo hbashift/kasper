@@ -11,6 +11,10 @@ type SetAcademicLeave struct {
 	IsAcademicLeave bool      `json:"isAcademicLeave,omitempty"`
 }
 
+type ChangeSupervisorArray struct {
+	Pairs []*ChangeSupervisor `json:"pairs"`
+}
+
 type ChangeSupervisor struct {
 	StudentID    uuid.UUID `json:"studentID,omitempty"`
 	SupervisorID uuid.UUID `json:"supervisorID,omitempty"`

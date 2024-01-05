@@ -8,7 +8,7 @@ import (
 	"uir_draft/internal/pkg/service/admin/mapping"
 )
 
-func (s *Service) ChangeSupervisor(ctx context.Context, token string, studSup *mapping.ChangeSupervisor) error {
+func (s *Service) ChangeSupervisor(ctx context.Context, token string, studSup *mapping.ChangeSupervisorArray) error {
 	session, err := s.tokenRepo.Authenticate(ctx, token, s.db)
 	if err != nil {
 		return errors.Wrap(err, "authentication error")
@@ -18,7 +18,7 @@ func (s *Service) ChangeSupervisor(ctx context.Context, token string, studSup *m
 		return ErrNonValidToken
 	}
 
-	if err = s.studSupRepo.ChangeSupervisor(ctx, s.db, studSup.StudentID, studSup.SupervisorID); err != nil {
+	if err = s.studSupRepo.ChangeSupervisor(ctx, s.db, studSup.Pairs); err != nil {
 		return errors.Wrap(err, "[Admin]")
 	}
 
