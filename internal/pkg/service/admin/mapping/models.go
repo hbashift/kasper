@@ -16,8 +16,8 @@ type ChangeSupervisorArray struct {
 }
 
 type ChangeSupervisor struct {
-	StudentID    uuid.UUID `json:"studentID,omitempty"`
-	SupervisorID uuid.UUID `json:"supervisorID,omitempty"`
+	StudentID    uuid.UUID `json:"studentId,omitempty"`
+	SupervisorID uuid.UUID `json:"teacherId,omitempty"`
 }
 
 type UpdateStudentsCommonInfo struct {
