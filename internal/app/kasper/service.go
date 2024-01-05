@@ -94,9 +94,9 @@ func InitRoutes(student StudentHandler,
 	router.POST("/admin/students/common_info/:id", adminHandler.UpdateStudentCommonInfo)
 	router.POST("/admin/pairs/:id", adminHandler.ChangeSupervisor)
 	router.GET("/admin/pairs/:id", adminHandler.GetPairs)
-	router.GET("/admin/students/scientific/:id", adminHandler.GetScientificWorks)
-	router.GET("/admin/students/load/:id", adminHandler.GetTeachingLoad)
-	router.GET("/admin/students/dissertation/:id", adminHandler.GetStudentsDissertationPage)
+	router.PUT("/admin/students/scientific/:id", adminHandler.GetScientificWorks)
+	router.PUT("/admin/students/load/:id", adminHandler.GetTeachingLoad)
+	router.PUT("/admin/students/dissertation/:id", adminHandler.GetStudentsDissertationPage)
 
 	return router
 }
