@@ -85,6 +85,7 @@ func InitRoutes(student StudentHandler,
 	router.POST("/supervisor/students/feedback/:id", supervisor.UpdateFeedback)
 	router.PUT("/supervisor/students/scientific_works/:id", supervisor.GetScientificWorks)
 	router.PUT("/supervisor/students/teaching_load/:id", supervisor.GetTeachingLoad)
+	router.POST("/supervisor/students/common_info/:id", adminHandler.UpdateStudentCommonInfo)
 
 	router.POST("/authorization/authorize", authorization.Authorize)
 	router.POST("/authorization/change_password/:id", authorization.ChangePassword)
