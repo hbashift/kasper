@@ -10,4 +10,4 @@ services:
     volumes:
       - ./dissertations:/usr/src/app/dissertations
     extra_hosts:
-      - "database:79.174.84.44"
+      - "database:127.0.0.1"
