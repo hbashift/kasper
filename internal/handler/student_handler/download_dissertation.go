@@ -39,7 +39,7 @@ func (h *studentHandler) DownloadDissertation(ctx *gin.Context) {
 		return
 	}
 
-	ctx.Header("Content-Disposition", "attachment; filename*=\"utf8'ru-ru'"+dissertation.Name+"\"")
+	ctx.Header("Content-Disposition", dissertation.Name)
 	log.Println(ctx.GetHeader("Content-Disposition"))
 	ctx.File(dst)
 }
