@@ -34,7 +34,7 @@ func (s *Service) GetStudSupPairs(ctx context.Context, token string) (*mapping.G
 		supervisors = append(supervisors, &supervisor)
 	}
 
-	pairs, err := s.studSupRepo.GetPairs(ctx, s.db)
+	pairs, err := s.studRepo.GetPairs(ctx, s.db)
 	if err != nil {
 		return nil, errors.Wrap(err, "[Admin]")
 	}

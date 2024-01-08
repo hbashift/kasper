@@ -42,9 +42,8 @@ func main() {
 	loadRepo := repositories.NewTeachingLoadRepository()
 	clientRepo := repositories.NewClientUserRepository()
 	supRepo := repositories.NewSupervisorRepository()
-	studSupRepo := repositories.NewStudentSupervisorRepository()
 
-	studService := student.NewService(studRepo, tokenRepo, dRepo, semesterRepo, scientificRepo, loadRepo, supRepo, clientRepo, studSupRepo, db)
+	studService := student.NewService(studRepo, tokenRepo, dRepo, semesterRepo, scientificRepo, loadRepo, supRepo, clientRepo, db)
 	studHandler := student_handler.NewStudentHandler(studService)
 
 	authorizeService := authorization.NewService(clientRepo, tokenRepo, db)
@@ -53,7 +52,7 @@ func main() {
 	supService := supervisor.NewService(studRepo, tokenRepo, semesterRepo, dRepo, scientificRepo, loadRepo, db)
 	supervisorHandler := supervisor_handler.NewSupervisorHandler(supService)
 
-	adminService := admin.NewService(studRepo, tokenRepo, semesterRepo, dRepo, scientificRepo, loadRepo, studSupRepo, supRepo, db)
+	adminService := admin.NewService(studRepo, tokenRepo, semesterRepo, dRepo, scientificRepo, loadRepo, supRepo, db)
 	adminHandler := admin_handler.NewAdministratorHandler(adminService)
 
 	server := kasper.InitRoutes(studHandler, supervisorHandler, authorizeHandler, adminHandler)

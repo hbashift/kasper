@@ -18,7 +18,7 @@ func (s *Service) ChangeSupervisor(ctx context.Context, token string, studSup *m
 		return ErrNonValidToken
 	}
 
-	if err = s.studSupRepo.ChangeSupervisor(ctx, s.db, studSup.Pairs); err != nil {
+	if err = s.studRepo.ChangeSupervisor(ctx, s.db, studSup.Pairs); err != nil {
 		return errors.Wrap(err, "[Admin]")
 	}
 

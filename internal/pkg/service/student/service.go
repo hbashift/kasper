@@ -60,10 +60,6 @@ type ClientUserRepository interface {
 	SetRegistered(ctx context.Context, tx *pgxpool.Pool, clientID uuid.UUID) error
 }
 
-type StudentSupervisorRepository interface {
-	SetStudentSupervisor(ctx context.Context, tx *pgxpool.Pool, model model.StudentSupervisor) error
-}
-
 type Service struct {
 	studRepo     StudentRepository
 	tokenRepo    TokenRepository
@@ -73,10 +69,9 @@ type Service struct {
 	loadRepo     TeachingLoadRepository
 	supRepo      SupervisorsRepository
 	cliRepo      ClientUserRepository
-	studSupRepo  StudentSupervisorRepository
 	db           *pgxpool.Pool
 }
 
-func NewService(studRepo StudentRepository, tokenRepo TokenRepository, dRepo DissertationRepository, semesterRepo SemesterRepository, scienceRepo ScientificWorkRepository, loadRepo TeachingLoadRepository, supRepo SupervisorsRepository, cliRepo ClientUserRepository, studSupRepo StudentSupervisorRepository, db *pgxpool.Pool) *Service {
-	return &Service{studRepo: studRepo, tokenRepo: tokenRepo, dRepo: dRepo, semesterRepo: semesterRepo, scienceRepo: scienceRepo, loadRepo: loadRepo, supRepo: supRepo, cliRepo: cliRepo, studSupRepo: studSupRepo, db: db}
+func NewService(studRepo StudentRepository, tokenRepo TokenRepository, dRepo DissertationRepository, semesterRepo SemesterRepository, scienceRepo ScientificWorkRepository, loadRepo TeachingLoadRepository, supRepo SupervisorsRepository, cliRepo ClientUserRepository, db *pgxpool.Pool) *Service {
+	return &Service{studRepo: studRepo, tokenRepo: tokenRepo, dRepo: dRepo, semesterRepo: semesterRepo, scienceRepo: scienceRepo, loadRepo: loadRepo, supRepo: supRepo, cliRepo: cliRepo, db: db}
 }

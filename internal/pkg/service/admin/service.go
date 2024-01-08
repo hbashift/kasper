@@ -14,12 +14,9 @@ import (
 
 var ErrNonValidToken = errors.New("token is expired")
 
-type StudentSupervisorRepository interface {
+type StudentRepository interface {
 	GetPairs(ctx context.Context, tx *pgxpool.Pool) ([]*adminmap.StudentSupervisorPair, error)
 	ChangeSupervisor(ctx context.Context, tx *pgxpool.Pool, pairs []*adminmap.ChangeSupervisor) error
-}
-
-type StudentRepository interface {
 	GetNumberOfYears(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) (int32, error)
 	SetAcademicLeave(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID, isAcademicLeave bool) error
 	UpdateFeedback(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID, feedback string) error
@@ -60,12 +57,11 @@ type Service struct {
 	dRepo        DissertationRepository
 	scienceRepo  ScientificWorksRepository
 	loadRepo     TeachingLoadRepo
-	studSupRepo  StudentSupervisorRepository
 	supRepo      SupervisorRepository
 
 	db *pgxpool.Pool
 }
 
-func NewService(studRepo StudentRepository, tokenRepo TokenRepository, semesterRepo SemesterRepository, dRepo DissertationRepository, scienceRepo ScientificWorksRepository, loadRepo TeachingLoadRepo, studSupRepo StudentSupervisorRepository, supRepo SupervisorRepository, db *pgxpool.Pool) *Service {
-	return &Service{studRepo: studRepo, tokenRepo: tokenRepo, semesterRepo: semesterRepo, dRepo: dRepo, scienceRepo: scienceRepo, loadRepo: loadRepo, studSupRepo: studSupRepo, supRepo: supRepo, db: db}
+func NewService(studRepo StudentRepository, tokenRepo TokenRepository, semesterRepo SemesterRepository, dRepo DissertationRepository, scienceRepo ScientificWorksRepository, loadRepo TeachingLoadRepo, supRepo SupervisorRepository, db *pgxpool.Pool) *Service {
+	return &Service{studRepo: studRepo, tokenRepo: tokenRepo, semesterRepo: semesterRepo, dRepo: dRepo, scienceRepo: scienceRepo, loadRepo: loadRepo, supRepo: supRepo, db: db}
 }

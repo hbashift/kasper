@@ -41,11 +41,9 @@ func (s *Service) FirstRegistry(ctx context.Context, token string, info *mapping
 		SupervisorID:      uuid.Nil,
 		NumberOfYears:     info.NumberOfYears,
 	}
-	supID := uuid.Nil
 
 	if info.SupervisorID != nil {
 		student.SupervisorID = *info.SupervisorID
-		supID = *info.SupervisorID
 	}
 
 	err = s.studRepo.InsertStudentCommonInfo(ctx, s.db, student)
@@ -57,11 +55,6 @@ func (s *Service) FirstRegistry(ctx context.Context, token string, info *mapping
 	if err != nil {
 		return errors.Wrap(err, "[Student]")
 	}
-
-	err = s.studSupRepo.SetStudentSupervisor(ctx, s.db, model.StudentSupervisor{
-		StudentID:    session.KasperID,
-		SupervisorID: supID,
-	})
 
 	// TODO сделать инициализацию програсса в семестре
 	var models []model.SemesterProgress

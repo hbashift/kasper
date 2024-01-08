@@ -6,6 +6,7 @@ import (
 	"uir_draft/internal/generated/kasper/uir_draft/public/model"
 	"uir_draft/internal/generated/kasper/uir_draft/public/table"
 	"uir_draft/internal/pkg/models"
+	"uir_draft/internal/pkg/service/admin/mapping"
 
 	"github.com/go-jet/jet/v2/postgres"
 	"github.com/google/uuid"
@@ -81,6 +82,72 @@ func (r *StudentRepository) insertStudentCommonInfoTx(ctx context.Context, tx *p
 func (r *StudentRepository) UpdateStudentCommonInfo(ctx context.Context, tx *pgxpool.Pool, student model.Students) error {
 	if err := r.updateStudentCommonInfoTx(ctx, tx, student); err != nil {
 		return errors.Wrap(err, "UpdateStudentCommonInfo(): error during transaction")
+	}
+
+	return nil
+}
+
+func (r *StudentRepository) GetPairs(ctx context.Context, tx *pgxpool.Pool) ([]*mapping.StudentSupervisorPair, error) {
+	stmt, args := table.Students.
+		INNER_JOIN(table.Supervisors, table.Supervisors.SupervisorID.EQ(table.Students.SupervisorID)).
+		SELECT(
+			table.Supervisors.SupervisorID.AS("supervisor_id"),
+			table.Supervisors.FullName.AS("supervisor_name"),
+			table.Students.StudentID.AS("student_id"),
+			table.Students.FullName.AS("student_name"),
+		).
+		Sql()
+
+	rows, err := tx.Query(ctx, stmt, args...)
+	if err != nil {
+		return nil, errors.Wrap(err, "GetPairs()")
+	}
+
+	var pairs []*mapping.StudentSupervisorPair
+
+	for rows.Next() {
+		pair := &mapping.StudentSupervisorPair{}
+		if err = scanPairsRow(rows, pair); err != nil {
+			return nil, err
+		}
+
+		pairs = append(pairs, pair)
+	}
+
+	return pairs, nil
+}
+
+func (r *StudentRepository) ChangeSupervisor(ctx context.Context, tx *pgxpool.Pool, pairs []*mapping.ChangeSupervisor) error {
+	err := tx.BeginFunc(ctx, func(tx pgx.Tx) error {
+		for _, pair := range pairs {
+			stmt1, args1 := table.Students.
+				UPDATE(table.Students.SupervisorID).
+				SET(pair.SupervisorID).
+				WHERE(table.Students.StudentID.EQ(postgres.UUID(pair.StudentID))).
+				Sql()
+
+			_, err := tx.Exec(ctx, stmt1, args1...)
+			if err != nil {
+				return err
+			}
+
+			stmt2, args2 := table.StudentSupervisor.
+				UPDATE(table.StudentSupervisor.SupervisorID).
+				SET(pair.SupervisorID).
+				WHERE(table.StudentSupervisor.StudentID.EQ(postgres.UUID(pair.StudentID))).
+				Sql()
+
+			_, err = tx.Exec(ctx, stmt2, args2...)
+			if err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return errors.Wrap(err, "ChangeSupervisor()")
 	}
 
 	return nil
@@ -225,5 +292,14 @@ func scanStudentRow(row pgx.Row, target *model.Students) error {
 		&target.Feedback,
 		&target.GroupNumber,
 		&target.NumberOfYears,
+	)
+}
+
+func scanPairsRow(row pgx.Row, target *mapping.StudentSupervisorPair) error {
+	return row.Scan(
+		&target.SupervisorID,
+		&target.SupervisorName,
+		&target.StudentID,
+		&target.StudentName,
 	)
 }
