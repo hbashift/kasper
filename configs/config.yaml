@@ -3,7 +3,7 @@ host: "localhost"
 db:
   username: "postgres"
   password: "postgres"
-  host: "database"
+  host: "host.docker.internal"
   port: "5432"
   dbname: "uir_draft"
   sslmode: "disable"
