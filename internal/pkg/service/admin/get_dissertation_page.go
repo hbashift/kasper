@@ -11,12 +11,14 @@ import (
 )
 
 type StudentDissertationPlan struct {
-	First  bool `json:"id1,omitempty"`
-	Second bool `json:"id2,omitempty"`
-	Third  bool `json:"id3,omitempty"`
-	Forth  bool `json:"id4,omitempty"`
-	Fifth  bool `json:"id5,omitempty"`
-	Sixth  bool `json:"id6,omitempty"`
+	First   bool `json:"id1,omitempty"`
+	Second  bool `json:"id2,omitempty"`
+	Third   bool `json:"id3,omitempty"`
+	Forth   bool `json:"id4,omitempty"`
+	Fifth   bool `json:"id5,omitempty"`
+	Sixth   bool `json:"id6,omitempty"`
+	Seventh bool `json:"id7,omitempty"`
+	Eighth  bool `json:"id8,omitempty"`
 }
 
 type StudCommonInfo struct {
@@ -63,12 +65,14 @@ func (s *Service) GetDissertationPage(ctx context.Context, token string, student
 
 	for _, semester := range plans {
 		plan := &StudentDissertationPlan{
-			First:  semester.First,
-			Second: semester.Second,
-			Third:  semester.Third,
-			Forth:  semester.Forth,
-			Fifth:  semester.Fifth,
-			Sixth:  semester.Sixth,
+			First:   semester.First,
+			Second:  semester.Second,
+			Third:   semester.Third,
+			Forth:   semester.Forth,
+			Fifth:   semester.Fifth,
+			Sixth:   semester.Sixth,
+			Seventh: semester.Seventh,
+			Eighth:  semester.Eighth,
 		}
 		planMap[semester.Name] = plan
 	}

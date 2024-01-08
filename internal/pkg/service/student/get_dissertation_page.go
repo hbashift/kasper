@@ -72,12 +72,14 @@ func (s *Service) GetDissertationPage(ctx context.Context, token string) (*Disse
 
 	for _, semester := range plans {
 		plan := &StudentDissertationPlan{
-			First:  semester.First,
-			Second: semester.Second,
-			Third:  semester.Third,
-			Forth:  semester.Forth,
-			Fifth:  semester.Fifth,
-			Sixth:  semester.Sixth,
+			First:   semester.First,
+			Second:  semester.Second,
+			Third:   semester.Third,
+			Forth:   semester.Forth,
+			Fifth:   semester.Fifth,
+			Sixth:   semester.Sixth,
+			Seventh: semester.Seventh,
+			Eighth:  semester.Eighth,
 		}
 		planMap[semester.Name] = plan
 	}
