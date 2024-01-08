@@ -2,6 +2,7 @@ package supervisor_handler
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 
@@ -38,6 +39,7 @@ func (h *supervisorHandler) DownloadDissertation(ctx *gin.Context) {
 		return
 	}
 
-	ctx.Header("Content-Disposition", dissertation.Name)
+	ctx.Header("Content-Disposition", "attachment; filename*=\"utf8'ru-ru'"+dissertation.Name+"\"")
+	log.Println(ctx.GetHeader("Content-Disposition"))
 	ctx.File(dst)
 }
