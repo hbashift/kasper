@@ -3,10 +3,6 @@ services:
   database:
     image: postgres:alpine
     restart: always
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=admin
-      - POSTGRES_DB=uir_draft
     ports:
       - "5432:5432"
     volumes:
