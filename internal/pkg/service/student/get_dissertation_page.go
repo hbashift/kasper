@@ -11,12 +11,14 @@ import (
 )
 
 type StudentDissertationPlan struct {
-	First  bool `json:"id1,omitempty"`
-	Second bool `json:"id2,omitempty"`
-	Third  bool `json:"id3,omitempty"`
-	Forth  bool `json:"id4,omitempty"`
-	Fifth  bool `json:"id5,omitempty"`
-	Sixth  bool `json:"id6,omitempty"`
+	First   bool `json:"id1,omitempty"`
+	Second  bool `json:"id2,omitempty"`
+	Third   bool `json:"id3,omitempty"`
+	Forth   bool `json:"id4,omitempty"`
+	Fifth   bool `json:"id5,omitempty"`
+	Sixth   bool `json:"id6,omitempty"`
+	Seventh bool `json:"id7,omitempty"`
+	Eighth  bool `json:"id8,omitempty"`
 }
 
 type StudCommonInfo struct {
