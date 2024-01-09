@@ -10,4 +10,4 @@ services:
     volumes:
       - ./dissertations:/usr/src/app/dissertations
     extra_hosts:
-      - "database:localhost"
+      - "database:127.0.0.1"
