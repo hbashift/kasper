@@ -48,6 +48,7 @@ type AdministratorHandler interface {
 	GetScientificWorks(ctx *gin.Context)
 	GetStudentsDissertationPage(ctx *gin.Context)
 	GetTeachingLoad(ctx *gin.Context)
+	GetSupervisorsStudents(ctx *gin.Context)
 }
 
 func InitRoutes(student StudentHandler,
@@ -100,6 +101,7 @@ func InitRoutes(student StudentHandler,
 	router.PUT("/admin/students/scientific/:id", adminHandler.GetScientificWorks)
 	router.PUT("/admin/students/load/:id", adminHandler.GetTeachingLoad)
 	router.PUT("/admin/students/dissertation/:id", adminHandler.GetStudentsDissertationPage)
+	router.PUT("/admin/supervisor/students/:id", adminHandler.GetSupervisorsStudents)
 
 	return router
 }

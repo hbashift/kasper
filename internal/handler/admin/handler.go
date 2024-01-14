@@ -7,6 +7,7 @@ import (
 	"uir_draft/internal/pkg/service/admin"
 	"uir_draft/internal/pkg/service/admin/mapping"
 	studmapping "uir_draft/internal/pkg/service/student/mapping"
+	supmapping "uir_draft/internal/pkg/service/supervisor/mapping"
 )
 
 type AdministratorService interface {
@@ -17,6 +18,7 @@ type AdministratorService interface {
 	GetTeachingLoad(ctx context.Context, token string, studentID uuid.UUID) (*studmapping.TeachingLoad, error)
 	GetScientificWorks(ctx context.Context, token string, studentID uuid.UUID) (*studmapping.Works, error)
 	GetDissertationPage(ctx context.Context, token string, studentID uuid.UUID) (*admin.DissertationPage, error)
+	GetSupervisorsStudents(ctx context.Context, token string, supervisorID uuid.UUID) (*supmapping.ListOfStudents, error)
 }
 
 type administratorHandler struct {

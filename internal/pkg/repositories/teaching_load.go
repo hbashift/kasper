@@ -75,7 +75,7 @@ func (r *TeachingLoadRepository) upsertStudentsTeachingLoadTx(ctx context.Contex
 	if err := tx.BeginFunc(ctx, func(tx pgx.Tx) error {
 		for _, load := range loads {
 			settingParams := []postgres.ColumnAssigment{
-				table.TeachingLoad.LoadType.SET(table.TeachingLoad.EXCLUDED.LoadType),
+				table.TeachingLoad.LoadType.SET(postgres.String(load.LoadType.String())),
 				table.TeachingLoad.Hours.SET(postgres.Int32(load.Hours)),
 				table.TeachingLoad.SubjectName.SET(postgres.String(load.SubjectName)),
 				table.TeachingLoad.GroupName.SET(postgres.String(load.GroupName)),
