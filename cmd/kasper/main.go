@@ -8,6 +8,7 @@ import (
 	"uir_draft/internal/handler/authorization_handler"
 	"uir_draft/internal/handler/student_handler"
 	"uir_draft/internal/handler/supervisor_handler"
+	"uir_draft/internal/pkg/configs"
 	"uir_draft/internal/pkg/repositories"
 	"uir_draft/internal/pkg/service/admin"
 	"uir_draft/internal/pkg/service/authorization"
@@ -21,7 +22,7 @@ func main() {
 	err := initConfig()
 	ctx := context.Background()
 
-	db, err := repositories.InitPostgresDB(ctx, repositories.Config{
+	db, err := configs.InitPostgresDB(ctx, configs.Config{
 		Host:     viper.GetString("db.host"),
 		Port:     viper.GetString("db.port"),
 		Username: viper.GetString("db.username"),

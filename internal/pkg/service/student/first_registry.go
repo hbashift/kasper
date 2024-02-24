@@ -4,11 +4,12 @@ import (
 	"context"
 	"time"
 
+	"uir_draft/internal/generated/kasper/uir_draft/public/model"
+	"uir_draft/internal/pkg/service/student/mapping"
+
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"github.com/samber/lo"
-	"uir_draft/internal/generated/kasper/uir_draft/public/model"
-	"uir_draft/internal/pkg/service/student/mapping"
 )
 
 func (s *Service) FirstRegistry(ctx context.Context, token string, info *mapping.FirstRegistry) error {
@@ -56,7 +57,7 @@ func (s *Service) FirstRegistry(ctx context.Context, token string, info *mapping
 		return errors.Wrap(err, "[Student]")
 	}
 
-	// TODO сделать инициализацию програсса в семестре
+	// TODO сделать инициализацию прогресса в семестре
 	var models []model.SemesterProgress
 	progressTypes := []model.ProgressType{
 		model.ProgressType_Intro,

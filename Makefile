@@ -1,4 +1,4 @@
-LOCAL_DB_DSN = "postgres://postgres@localhost:5432/uir_draft?sslmode=disable"
+LOCAL_DB_DSN = "postgres://postgres@localhost:5432/new_uir?sslmode=disable"
 
 jet:
-	@PATH=$(LOCAL_BIN):$(PATH) jet -dsn $(LOCAL_DB_DSN) -path=./internal/generated/kasper
+	@PATH=$(LOCAL_BIN):$(PATH) jet -dsn $(LOCAL_DB_DSN) -path=./internal/generated/new_kasper
