@@ -50,9 +50,6 @@ func (r *TeachingLoadRepository) GetTeachingLoadStatusTx(ctx context.Context, tx
 		Sql()
 
 	rows, err := tx.Query(ctx, stmt, args...)
-	if errors.Is(err, pgx.ErrNoRows) {
-		return nil, nil
-	}
 	if err != nil {
 		return nil, errors.Wrap(err, "GetTeachingLoadStatusTx()")
 	}
@@ -285,17 +282,14 @@ func (r *TeachingLoadRepository) GetTeachingLoadsTx(ctx context.Context, tx pgx.
 			table.AdditionalLoad.AllColumns.Except(table.AdditionalLoad.TLoadID),
 		).
 		FROM(table.TeachingLoadStatus.
-			INNER_JOIN(table.ClassroomLoad, table.TeachingLoadStatus.LoadsID.EQ(table.ClassroomLoad.TLoadID)).
-			INNER_JOIN(table.IndividualStudentsLoad, table.TeachingLoadStatus.LoadsID.EQ(table.IndividualStudentsLoad.TLoadID)).
-			INNER_JOIN(table.AdditionalLoad, table.TeachingLoadStatus.LoadsID.EQ(table.AdditionalLoad.TLoadID)),
+			LEFT_JOIN(table.ClassroomLoad, table.TeachingLoadStatus.LoadsID.EQ(table.ClassroomLoad.TLoadID)).
+			LEFT_JOIN(table.IndividualStudentsLoad, table.TeachingLoadStatus.LoadsID.EQ(table.IndividualStudentsLoad.TLoadID)).
+			LEFT_JOIN(table.AdditionalLoad, table.TeachingLoadStatus.LoadsID.EQ(table.AdditionalLoad.TLoadID)),
 		).
 		WHERE(table.TeachingLoadStatus.StudentID.EQ(postgres.UUID(studentID))).
 		Sql()
 
 	rows, err := tx.Query(ctx, stmt, args...)
-	if errors.Is(err, pgx.ErrNoRows) {
-		return nil, nil
-	}
 	if err != nil {
 		return nil, errors.Wrap(err, "GetTeachingLoadTx()")
 	}
@@ -342,6 +336,7 @@ func scanTeachingLoadStatus(row pgx.Row, target *models.TeachingLoad) error {
 		&target.ClassroomLoad.GroupName,
 		&target.ClassroomLoad.SubjectName,
 		&target.IndividualStudentsLoad.LoadID,
+		&target.IndividualStudentsLoad.LoadType,
 		&target.IndividualStudentsLoad.StudentsAmount,
 		&target.IndividualStudentsLoad.Comment,
 		&target.AdditionalLoad.LoadID,

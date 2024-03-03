@@ -36,3 +36,7 @@ type Service struct {
 	client           ClientRepository
 	db               *pgxpool.Pool
 }
+
+func NewService(dissertationRepo DissertationRepository, tokenRepo TokenRepository, userRepo UsersRepository, client ClientRepository, db *pgxpool.Pool) *Service {
+	return &Service{dissertationRepo: dissertationRepo, tokenRepo: tokenRepo, userRepo: userRepo, client: client, db: db}
+}

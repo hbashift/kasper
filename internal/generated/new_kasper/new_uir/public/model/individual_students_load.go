@@ -14,6 +14,7 @@ import (
 type IndividualStudentsLoad struct {
 	LoadID         uuid.UUID `sql:"primary_key"`
 	TLoadID        uuid.UUID
+	LoadType       IndividualStudentsLoadType
 	StudentsAmount int32
 	Comment        *string
 }

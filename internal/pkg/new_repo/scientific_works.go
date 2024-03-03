@@ -50,9 +50,6 @@ func (r *ScientificRepository) GetScientificWorksStatusTx(ctx context.Context, t
 		Sql()
 
 	rows, err := tx.Query(ctx, stmt, args...)
-	if errors.Is(err, pgx.ErrNoRows) {
-		return nil, nil
-	}
 	if err != nil {
 		return nil, errors.Wrap(err, "GetScientificWorksStatusTx()")
 	}
@@ -305,17 +302,14 @@ func (r *ScientificRepository) GetScientificWorksTx(ctx context.Context, tx pgx.
 			table.ResearchProjects.AllColumns.Except(table.ResearchProjects.WorksID),
 		).
 		FROM(table.ScientificWorksStatus.
-			INNER_JOIN(table.Publications, table.ScientificWorksStatus.WorksID.EQ(table.Publications.WorksID)).
-			INNER_JOIN(table.Conferences, table.ScientificWorksStatus.WorksID.EQ(table.Conferences.WorksID)).
-			INNER_JOIN(table.ResearchProjects, table.ScientificWorksStatus.WorksID.EQ(table.ResearchProjects.WorksID)),
+			LEFT_JOIN(table.Publications, table.ScientificWorksStatus.WorksID.EQ(table.Publications.WorksID)).
+			LEFT_JOIN(table.Conferences, table.ScientificWorksStatus.WorksID.EQ(table.Conferences.WorksID)).
+			LEFT_JOIN(table.ResearchProjects, table.ScientificWorksStatus.WorksID.EQ(table.ResearchProjects.WorksID)),
 		).
 		WHERE(table.ScientificWorksStatus.StudentID.EQ(postgres.UUID(studentID))).
 		Sql()
 
 	rows, err := tx.Query(ctx, stmt, args...)
-	if errors.Is(err, pgx.ErrNoRows) {
-		return nil, nil
-	}
 	if err != nil {
 		return nil, errors.Wrap(err, "GetScientificWorksTx()")
 	}

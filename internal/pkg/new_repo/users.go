@@ -75,6 +75,22 @@ func (r *UsersRepository) ChangeUsersPasswordTx(ctx context.Context, tx pgx.Tx, 
 	return nil
 }
 
+func (r *UsersRepository) GetUserByEmailTx(ctx context.Context, tx pgx.Tx, email string) (model.Users, error) {
+	stmt, args := table.Users.
+		SELECT(table.Users.AllColumns).
+		WHERE(table.Users.Email.EQ(postgres.String(email))).
+		Sql()
+
+	row := tx.QueryRow(ctx, stmt, args...)
+
+	user := model.Users{}
+	if err := scanUser(row, &user); err != nil {
+		return model.Users{}, errors.Wrap(err, "GetUserByEmailTx()")
+	}
+
+	return user, nil
+}
+
 func scanUser(row pgx.Row, target *model.Users) error {
 	return row.Scan(
 		&target.UserID,

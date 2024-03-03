@@ -36,7 +36,7 @@ func (r *TokenRepository) GetUserIDByTokenTx(ctx context.Context, tx pgx.Tx, tok
 
 func (r *TokenRepository) InsertTokenTx(ctx context.Context, tx pgx.Tx, token *model.AuthorizationToken) error {
 	stmt, args := table.AuthorizationToken.
-		INSERT(table.AuthorizationToken.AllColumns).
+		INSERT(table.AuthorizationToken.AllColumns.Except(table.AuthorizationToken.TokenID)).
 		MODEL(token).
 		Sql()
 

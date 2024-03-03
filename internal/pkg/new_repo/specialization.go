@@ -36,9 +36,6 @@ func (r *EnumRepository) GetSpecializationsTx(ctx context.Context, tx pgx.Tx) ([
 		Sql()
 
 	rows, err := tx.Query(ctx, stmt, args...)
-	if errors.Is(err, pgx.ErrNoRows) {
-		return nil, nil
-	}
 	if err != nil {
 		return nil, errors.Wrap(err, "GetSpecializationsTx()")
 	}
@@ -115,9 +112,6 @@ func (r *EnumRepository) GetGroupsTx(ctx context.Context, tx pgx.Tx) ([]model.Gr
 		Sql()
 
 	rows, err := tx.Query(ctx, stmt, args...)
-	if errors.Is(err, pgx.ErrNoRows) {
-		return nil, nil
-	}
 	if err != nil {
 		return nil, errors.Wrap(err, "GetGroupsTx()")
 	}

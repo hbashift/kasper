@@ -85,9 +85,6 @@ func (r *DissertationRepository) GetSemesterProgressTx(ctx context.Context, tx p
 		Sql()
 
 	rows, err := tx.Query(ctx, stmt, args...)
-	if errors.Is(err, pgx.ErrNoRows) {
-		return nil, nil
-	}
 	if err != nil {
 		return nil, errors.Wrap(err, "GetSemesterProgressTx()")
 	}
@@ -175,9 +172,6 @@ func (r *DissertationRepository) GetDissertationsTx(ctx context.Context, tx pgx.
 		Sql()
 
 	rows, err := tx.Query(ctx, stmt, args...)
-	if errors.Is(err, pgx.ErrNoRows) {
-		return nil, nil
-	}
 	if err != nil {
 		return nil, errors.Wrap(err, "GetDissertationsTx()")
 	}
@@ -207,9 +201,6 @@ func (r *DissertationRepository) GetActualDissertationData(ctx context.Context, 
 	dissertation := model.Dissertations{}
 
 	if err := scanDissertation(row, &dissertation); err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return model.Dissertations{}, nil
-		}
 		return model.Dissertations{}, errors.Wrap(err, "GetActualDissertationTx")
 	}
 
@@ -247,9 +238,6 @@ func (r *DissertationRepository) GetDissertationTitlesTx(ctx context.Context, tx
 		Sql()
 
 	rows, err := tx.Query(ctx, stmt, args...)
-	if errors.Is(err, pgx.ErrNoRows) {
-		return nil, nil
-	}
 	if err != nil {
 		return nil, errors.Wrap(err, "GetDissertationTitlesTx()")
 	}
@@ -277,9 +265,6 @@ func (r *DissertationRepository) GetFeedbackTx(ctx context.Context, tx pgx.Tx, s
 		Sql()
 
 	rows, err := tx.Query(ctx, stmt, args...)
-	if errors.Is(err, pgx.ErrNoRows) {
-		return nil, nil
-	}
 	if err != nil {
 		return nil, errors.Wrap(err, "GetFeedbackTx()")
 	}

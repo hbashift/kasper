@@ -19,6 +19,7 @@ type individualStudentsLoadTable struct {
 	//Columns
 	LoadID         postgres.ColumnString
 	TLoadID        postgres.ColumnString
+	LoadType       postgres.ColumnString
 	StudentsAmount postgres.ColumnInteger
 	Comment        postgres.ColumnString
 
@@ -53,10 +54,11 @@ func newIndividualStudentsLoadTableImpl(schemaName, tableName, alias string) ind
 	var (
 		LoadIDColumn         = postgres.StringColumn("load_id")
 		TLoadIDColumn        = postgres.StringColumn("t_load_id")
+		LoadTypeColumn       = postgres.StringColumn("load_type")
 		StudentsAmountColumn = postgres.IntegerColumn("students_amount")
 		CommentColumn        = postgres.StringColumn("comment")
-		allColumns           = postgres.ColumnList{LoadIDColumn, TLoadIDColumn, StudentsAmountColumn, CommentColumn}
-		mutableColumns       = postgres.ColumnList{TLoadIDColumn, StudentsAmountColumn, CommentColumn}
+		allColumns           = postgres.ColumnList{LoadIDColumn, TLoadIDColumn, LoadTypeColumn, StudentsAmountColumn, CommentColumn}
+		mutableColumns       = postgres.ColumnList{TLoadIDColumn, LoadTypeColumn, StudentsAmountColumn, CommentColumn}
 	)
 
 	return individualStudentsLoadTable{
@@ -65,6 +67,7 @@ func newIndividualStudentsLoadTableImpl(schemaName, tableName, alias string) ind
 		//Columns
 		LoadID:         LoadIDColumn,
 		TLoadID:        TLoadIDColumn,
+		LoadType:       LoadTypeColumn,
 		StudentsAmount: StudentsAmountColumn,
 		Comment:        CommentColumn,
 

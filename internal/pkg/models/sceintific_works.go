@@ -7,43 +7,73 @@ import (
 )
 
 type Publication struct {
-	PublicationID uuid.UUID `json:"publication_id,omitempty" db:"publications.publication_id"`
-	Name          string    `json:"name,omitempty" db:"publications.name"`
-	Index         string    `json:"index,omitempty" db:"publications.index"`
-	Impact        float64   `json:"impact,omitempty" db:"publications.impact"`
-	Status        string    `json:"status,omitempty" db:"publications.status"`
-	OutputData    *string   `json:"output_data,omitempty" db:"publications.output_data"`
-	CoAuthors     *string   `json:"co_authors,omitempty" db:"publications.co_authors"`
-	Volume        *int32    `json:"volume,omitempty" db:"publications.volume"`
+	// ID научной публикации
+	PublicationID *uuid.UUID `json:"publication_id,omitempty" db:"publications.publication_id" format:"uuid"`
+	// Название научной публикации
+	Name *string `json:"name,omitempty" db:"publications.name"`
+	// Индекс научной работы
+	Index *string `json:"index,omitempty" db:"publications.index" enums:"scopus,rinc,wac,unknown"`
+	// Влияние
+	Impact *float64 `json:"impact,omitempty" db:"publications.impact" format:"float"`
+	// Статус прогресса публикации
+	Status *string `json:"status,omitempty" db:"publications.status" enums:"to print,published,in progress"`
+	// Выходные данные
+	OutputData *string `json:"output_data,omitempty" db:"publications.output_data"`
+	// Со-Авторы
+	CoAuthors *string `json:"co_authors,omitempty" db:"publications.co_authors"`
+	// Объем написанной работы
+	Volume *int32 `json:"volume,omitempty" db:"publications.volume"`
 }
 
 type Conference struct {
-	ConferenceID   uuid.UUID `json:"conference_id,omitempty" db:"conferences.conference_id"`
-	Status         string    `json:"status,omitempty" db:"conferences.status"`
-	Index          string    `json:"index,omitempty" db:"conferences.index"`
-	ConferenceName string    `json:"conference_name,omitempty" db:"conferences.conference_name"`
-	ReportName     string    `json:"report_name,omitempty" db:"conferences.report_name"`
-	Location       string    `json:"location,omitempty" db:"conferences.location"`
-	ReportedAt     time.Time `json:"reported_at" db:"conferences.reported_at"`
+	// ID конференции
+	ConferenceID *uuid.UUID `json:"conference_id,omitempty" db:"conferences.conference_id" format:"uuid"`
+	// Статус прогресса научной конференции
+	Status *string `json:"status,omitempty" db:"conferences.status" enums:"registered,performed"`
+	// Индекс конференции
+	Index *string `json:"index,omitempty" db:"conferences.index" enums:"scopus,rinc,wac,unknown"`
+	// Название конференции
+	ConferenceName *string `json:"conference_name,omitempty" db:"conferences.conference_name"`
+	// Название доклада
+	ReportName *string `json:"report_name,omitempty" db:"conferences.report_name"`
+	// Место проведения
+	Location *string `json:"location,omitempty" db:"conferences.location"`
+	// Дата доклада
+	ReportedAt *time.Time `json:"reported_at" db:"conferences.reported_at" format:"date-time"`
 }
 
 type ResearchProject struct {
-	ProjectID   uuid.UUID `json:"project_id,omitempty" db:"research_projects.project_id"`
-	ProjectName string    `json:"project_name,omitempty" db:"research_projects.project_name"`
-	StartAt     time.Time `json:"start_at" db:"research_projects.start_at"`
-	EndAt       time.Time `json:"end_at" db:"research_projects.end_at"`
-	AddInfo     *string   `json:"add_info,omitempty" db:"research_projects.add_info"`
-	Grantee     *string   `json:"grantee,omitempty" db:"research_projects.grantee"`
+	// ID научного проекта
+	ProjectID *uuid.UUID `json:"project_id,omitempty" db:"research_projects.project_id" format:"uuid"`
+	// Название проекта
+	ProjectName *string `json:"project_name,omitempty" db:"research_projects.project_name"`
+	// Дата начала проекта
+	StartAt *time.Time `json:"start_at" db:"research_projects.start_at" format:"date-time"`
+	// Дата окончание
+	EndAt *time.Time `json:"end_at" db:"research_projects.end_at" format:"date-time"`
+	// Дополнительная информация
+	AddInfo *string `json:"add_info,omitempty" db:"research_projects.add_info"`
+	// Грантодатель
+	Grantee *string `json:"grantee,omitempty" db:"research_projects.grantee"`
 }
 
 type ScientificWork struct {
-	WorksID         uuid.UUID       `json:"works_id,omitempty" db:"scientific_works.works_id"`
-	Semester        int             `json:"semester,omitempty" db:"scientific_works.semester"`
-	StudentID       uuid.UUID       `json:"student_id,omitempty" db:"scientific_works.student_id"`
-	ApprovalStatus  string          `json:"works_status,omitempty" db:"scientific_works.approval_status"`
-	UpdatedAt       time.Time       `json:"updated_at" db:"scientific_works.updated_at"`
-	AcceptedAt      *time.Time      `json:"accepted_at,omitempty" db:"scientific_works.accepted_at"`
-	Publication     Publication     `json:"publication"`
-	Conference      Conference      `json:"conference"`
+	// ID Совокупности научных работ за семестр
+	WorksID uuid.UUID `json:"works_id,omitempty" db:"scientific_works.works_id" format:"uuid"`
+	// Семестр, за который присылаются научные работы
+	Semester int `json:"semester,omitempty" db:"scientific_works.semester"`
+	// ID студента
+	StudentID uuid.UUID `json:"student_id,omitempty" db:"scientific_works.student_id" format:"uuid"`
+	// Статус проверки и подтверждения
+	ApprovalStatus string `json:"works_status,omitempty" db:"scientific_works.approval_status" enums:"todo,approved,on review,in progress,empty,failed"`
+	// Дата последнего обновления
+	UpdatedAt time.Time `json:"updated_at" db:"scientific_works.updated_at" format:"date-time"`
+	// Дата принятия научным руководителем
+	AcceptedAt *time.Time `json:"accepted_at,omitempty" db:"scientific_works.accepted_at" format:"date-time"`
+	// Объект, описывающий научную публикацию
+	Publication Publication `json:"publication"`
+	// Объект, описывающий научную конференцию
+	Conference Conference `json:"conference"`
+	// Объект, описывающий научно-исследовательский проект
 	ResearchProject ResearchProject `json:"research_project"`
 }

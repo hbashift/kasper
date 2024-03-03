@@ -25,9 +25,6 @@ func (r *MarksRepository) GetStudentMarksTx(ctx context.Context, tx pgx.Tx, stud
 		Sql()
 
 	rows, err := tx.Query(ctx, stmt, args...)
-	if errors.Is(err, pgx.ErrNoRows) {
-		return nil, nil
-	}
 	if err != nil {
 		return nil, errors.Wrap(err, "GetStudentMarksTx()")
 	}

@@ -7,6 +7,7 @@ import (
 	"uir_draft/internal/generated/new_kasper/new_uir/public/model"
 
 	"github.com/google/uuid"
+	"github.com/pkg/errors"
 	"github.com/samber/lo"
 )
 
@@ -51,7 +52,7 @@ func MapDissertationPageFromDomain(dProgresses []model.SemesterProgress, dDisser
 	}
 }
 
-func MapSemesterProgressToDomain(progresses []SemesterProgressRequest, status model.ApprovalStatus, studentID uuid.UUID) []model.SemesterProgress {
+func MapSemesterProgressToDomain(progresses []SemesterProgressRequest, status model.ApprovalStatus, studentID uuid.UUID) ([]model.SemesterProgress, error) {
 	updatedAt := time.Now()
 
 	var acceptedAt *time.Time
@@ -63,7 +64,10 @@ func MapSemesterProgressToDomain(progresses []SemesterProgressRequest, status mo
 	dProgresses := make([]model.SemesterProgress, 0, len(progresses))
 
 	for _, progress := range progresses {
-		dProgress := progress.ToDomain()
+		dProgress, err := progress.ToDomain()
+		if err != nil {
+			return nil, errors.Wrap(err, "MapSemesterProgressToDomain()")
+		}
 
 		dProgress.ProgressID = uuid.New()
 		dProgress.StudentID = studentID
@@ -74,37 +78,37 @@ func MapSemesterProgressToDomain(progresses []SemesterProgressRequest, status mo
 		dProgresses = append(dProgresses, dProgress)
 	}
 
-	return dProgresses
+	return dProgresses, nil
 }
 
 func MapPublicationsToDomain(publications []Publication, workID uuid.UUID) (dPublicationsInsert, dPublicationsUpdate []model.Publications, err error) {
 	for _, publication := range publications {
 		var index model.WorkIndex = ""
-		if err := index.Scan(publication.Index); err != nil {
+		if err := index.Scan(strings.TrimSpace(lo.FromPtr(publication.Index))); err != nil {
 			return nil, nil, ErrInvalidEnumValue
 		}
 
 		var status model.PublicationStatus = ""
-		if err := status.Scan(publication.Status); err != nil {
+		if err := status.Scan(strings.TrimSpace(lo.FromPtr(publication.Status))); err != nil {
 			return nil, nil, ErrInvalidEnumValue
 		}
 
 		dPublication := model.Publications{
 			WorksID:    workID,
-			Name:       publication.Name,
+			Name:       lo.FromPtr(publication.Name),
 			Index:      index,
-			Impact:     publication.Impact,
+			Impact:     lo.FromPtr(publication.Impact),
 			Status:     status,
 			OutputData: publication.OutputData,
 			CoAuthors:  publication.CoAuthors,
 			Volume:     publication.Volume,
 		}
 
-		if publication.PublicationID == uuid.Nil {
+		if lo.FromPtr(publication.PublicationID) == uuid.Nil {
 			dPublication.PublicationID = uuid.New()
 			dPublicationsInsert = append(dPublicationsInsert, dPublication)
 		} else {
-			dPublication.PublicationID = publication.PublicationID
+			dPublication.PublicationID = lo.FromPtr(publication.PublicationID)
 			dPublicationsUpdate = append(dPublicationsUpdate, dPublication)
 		}
 	}
@@ -115,12 +119,12 @@ func MapPublicationsToDomain(publications []Publication, workID uuid.UUID) (dPub
 func MapConferencesToDomain(conferences []Conference, workID uuid.UUID) (dConferencesInsert, dConferencesUpdate []model.Conferences, err error) {
 	for _, conf := range conferences {
 		var index model.WorkIndex = ""
-		if err := index.Scan(conf.Index); err != nil {
+		if err := index.Scan(strings.TrimSpace(lo.FromPtr(conf.Index))); err != nil {
 			return nil, nil, ErrInvalidEnumValue
 		}
 
 		var status model.ConferenceStatus = ""
-		if err := status.Scan(conf.Status); err != nil {
+		if err := status.Scan(strings.TrimSpace(lo.FromPtr(conf.Status))); err != nil {
 			return nil, nil, ErrInvalidEnumValue
 		}
 
@@ -128,17 +132,17 @@ func MapConferencesToDomain(conferences []Conference, workID uuid.UUID) (dConfer
 			WorksID:        workID,
 			Status:         status,
 			Index:          index,
-			ConferenceName: conf.ConferenceName,
-			ReportName:     conf.ReportName,
-			Location:       conf.Location,
-			ReportedAt:     conf.ReportedAt,
+			ConferenceName: lo.FromPtr(conf.ConferenceName),
+			ReportName:     lo.FromPtr(conf.ReportName),
+			Location:       lo.FromPtr(conf.Location),
+			ReportedAt:     lo.FromPtr(conf.ReportedAt),
 		}
 
-		if conf.ConferenceID == uuid.Nil {
+		if lo.FromPtr(conf.ConferenceID) == uuid.Nil {
 			dConf.ConferenceID = uuid.New()
 			dConferencesInsert = append(dConferencesInsert, dConf)
 		} else {
-			dConf.ConferenceID = conf.ConferenceID
+			dConf.ConferenceID = lo.FromPtr(conf.ConferenceID)
 			dConferencesUpdate = append(dConferencesUpdate, dConf)
 		}
 	}
@@ -150,18 +154,18 @@ func MapResearchProjectToDomain(projects []ResearchProject, workID uuid.UUID) (d
 	for _, proj := range projects {
 		dProj := model.ResearchProjects{
 			WorksID:     workID,
-			ProjectName: proj.ProjectName,
-			StartAt:     proj.StartAt,
-			EndAt:       proj.EndAt,
+			ProjectName: lo.FromPtr(proj.ProjectName),
+			StartAt:     lo.FromPtr(proj.StartAt),
+			EndAt:       lo.FromPtr(proj.EndAt),
 			AddInfo:     proj.AddInfo,
 			Grantee:     proj.Grantee,
 		}
 
-		if proj.ProjectID == uuid.Nil {
+		if lo.FromPtr(proj.ProjectID) == uuid.Nil {
 			dProj.ProjectID = uuid.New()
 			dResearchInsert = append(dResearchInsert, dProj)
 		} else {
-			dProj.ProjectID = proj.ProjectID
+			dProj.ProjectID = lo.FromPtr(proj.ProjectID)
 			dResearchUpdate = append(dResearchUpdate, dProj)
 		}
 	}
@@ -172,23 +176,23 @@ func MapResearchProjectToDomain(projects []ResearchProject, workID uuid.UUID) (d
 func MapClassroomLoadToDomain(loads []ClassroomLoad, tLoadID uuid.UUID) (dLoadInsert, dLoadUpdate []model.ClassroomLoad, err error) {
 	for _, load := range loads {
 		var loadType model.ClassroomLoadType
-		if err := loadType.Scan(load.LoadType); err != nil {
+		if err := loadType.Scan(strings.TrimSpace(lo.FromPtr(load.LoadType))); err != nil {
 			return nil, nil, ErrInvalidEnumValue
 		}
 
 		dLoad := model.ClassroomLoad{
 			TLoadID:     tLoadID,
-			Hours:       load.Hours,
+			Hours:       lo.FromPtr(load.Hours),
 			LoadType:    loadType,
-			MainTeacher: load.MainTeacher,
-			GroupName:   load.GroupName,
-			SubjectName: load.SubjectName,
+			MainTeacher: lo.FromPtr(load.MainTeacher),
+			GroupName:   lo.FromPtr(load.GroupName),
+			SubjectName: lo.FromPtr(load.SubjectName),
 		}
-		if load.LoadID == uuid.Nil {
+		if lo.FromPtr(load.LoadID) == uuid.Nil {
 			dLoad.LoadID = uuid.New()
 			dLoadInsert = append(dLoadInsert, dLoad)
 		} else {
-			dLoad.LoadID = load.LoadID
+			dLoad.LoadID = lo.FromPtr(load.LoadID)
 			dLoadUpdate = append(dLoadUpdate, dLoad)
 		}
 	}
@@ -196,40 +200,45 @@ func MapClassroomLoadToDomain(loads []ClassroomLoad, tLoadID uuid.UUID) (dLoadIn
 	return dLoadInsert, dLoadUpdate, nil
 }
 
-func MapIndividualWorkToDomain(loads []IndividualStudentsLoad, tLoadID uuid.UUID) (dLoadInsert, dLoadUpdate []model.IndividualStudentsLoad) {
+func MapIndividualWorkToDomain(loads []IndividualStudentsLoad, tLoadID uuid.UUID) (dLoadInsert, dLoadUpdate []model.IndividualStudentsLoad, err error) {
 	for _, load := range loads {
 		dLoad := model.IndividualStudentsLoad{
 			TLoadID:        tLoadID,
-			StudentsAmount: load.StudentsAmount,
+			StudentsAmount: lo.FromPtr(load.StudentsAmount),
 			Comment:        load.Comment,
 		}
 
-		if load.LoadID == uuid.Nil {
+		var loadType model.ApprovalStatus
+		if err = loadType.Scan(load.LoadType); err != nil {
+			return nil, nil, errors.Wrap(err, "MapIndividualWorkToDomain()")
+		}
+
+		if lo.FromPtr(load.LoadID) == uuid.Nil {
 			dLoad.LoadID = uuid.New()
 			dLoadInsert = append(dLoadInsert, dLoad)
 		} else {
-			dLoad.LoadID = load.LoadID
+			dLoad.LoadID = lo.FromPtr(load.LoadID)
 			dLoadUpdate = append(dLoadUpdate, dLoad)
 		}
 	}
 
-	return dLoadInsert, dLoadUpdate
+	return dLoadInsert, dLoadUpdate, nil
 }
 
 func MapAdditionalLoadToDomain(loads []AdditionalLoad, tLoadID uuid.UUID) (dLoadInsert, dLoadUpdate []model.AdditionalLoad) {
 	for _, load := range loads {
 		dLoad := model.AdditionalLoad{
 			TLoadID: tLoadID,
-			Name:    load.Name,
+			Name:    lo.FromPtr(load.Name),
 			Volume:  load.Volume,
 			Comment: load.Comment,
 		}
 
-		if load.LoadID == uuid.Nil {
+		if lo.FromPtr(load.LoadID) == uuid.Nil {
 			dLoad.LoadID = uuid.New()
 			dLoadInsert = append(dLoadInsert, dLoad)
 		} else {
-			dLoad.LoadID = load.LoadID
+			dLoad.LoadID = lo.FromPtr(load.LoadID)
 			dLoadUpdate = append(dLoadUpdate, dLoad)
 		}
 	}

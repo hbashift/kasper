@@ -29,9 +29,6 @@ func (r *ClientRepository) GetStudentStatusTx(ctx context.Context, tx pgx.Tx, st
 	student := model.Students{}
 
 	if err := scanStudent(row, &student); err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return model.Students{}, nil
-		}
 		return model.Students{}, errors.Wrap(err, "GetStudentStatusTx()")
 	}
 

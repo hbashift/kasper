@@ -59,7 +59,11 @@ func (s *Service) UpsertSemesterProgress(ctx context.Context, studentID uuid.UUI
 			return models.ErrNonMutableStatus
 		}
 
-		dProgress := models.MapSemesterProgressToDomain(progress, model.ApprovalStatus_InProgress, studentID)
+		dProgress, err := models.MapSemesterProgressToDomain(progress, model.ApprovalStatus_InProgress, studentID)
+		if err != nil {
+			return err
+		}
+
 		err = s.dissertationRepo.UpsertSemesterProgressTx(ctx, tx, dProgress)
 		if err != nil {
 			return err

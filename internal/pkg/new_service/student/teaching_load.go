@@ -87,7 +87,11 @@ func (s *Service) UpsertIndividualLoad(ctx context.Context, studentID, tLoadID u
 			return models.ErrNotActualSemester
 		}
 
-		insert, update := models.MapIndividualWorkToDomain(loads, tLoadID)
+		insert, update, err := models.MapIndividualWorkToDomain(loads, tLoadID)
+		if err != nil {
+			return errors.Wrap(err, "UpsertIndividualLoad()")
+		}
+
 		err = s.loadRepo.InsertIndividualLoadsTx(ctx, tx, insert)
 		if err != nil {
 			return err

@@ -22,8 +22,6 @@ func MapErrorToCode(err error) int {
 		return http.StatusUnauthorized
 	case errors.Is(err, pgx.ErrNoRows):
 		return http.StatusNoContent
-	case errors.Is(err, ErrWrongUserType):
-		return http.StatusUnauthorized
 	}
 
 	return http.StatusInternalServerError

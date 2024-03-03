@@ -101,3 +101,7 @@ type Service struct {
 	userRepo         UsersRepository
 	db               *pgxpool.Pool
 }
+
+func NewService(dissertationRepo DissertationRepository, loadRepo TeachingLoadRepository, scienceRepo ScientificRepository, marksRepo MarksRepository, studRepo StudentRepository, tokenRepo TokenRepository, userRepo UsersRepository, db *pgxpool.Pool) *Service {
+	return &Service{dissertationRepo: dissertationRepo, loadRepo: loadRepo, scienceRepo: scienceRepo, marksRepo: marksRepo, studRepo: studRepo, tokenRepo: tokenRepo, userRepo: userRepo, db: db}
+}

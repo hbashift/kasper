@@ -1,0 +1,1757 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Сервис Kasper",
+        "contact": {},
+        "version": "0.1.2"
+    },
+    "host": "localhost:8080",
+    "basePath": "/api/v1",
+    "paths": {
+        "/students/dissertation/progress/{token}": {
+            "post": {
+                "description": "Обновление прогресса написания диссертации",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Student.Dissertation"
+                ],
+                "summary": "Обновление прогресса написания диссертации",
+                "parameters": [
+                    {
+                        "description": "Данные",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.UpsertProgressRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/students/dissertation/{token}": {
+            "get": {
+                "description": "Получение данных для страницы диссертации",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Student.Dissertation"
+                ],
+                "summary": "Получение данных для страницы диссертации",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Данные",
+                        "schema": {
+                            "$ref": "#/definitions/models.DissertationPageResponse"
+                        }
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/students/load/additional/{token}": {
+            "post": {
+                "description": "Добавление или обновление дополнительной нагрузки",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Student.TeachingLoad"
+                ],
+                "summary": "Добавление или обновление дополнительной нагрузки",
+                "parameters": [
+                    {
+                        "description": "Данные",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.UpsertAdditionalLoadRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Удаление дополнительной нагрузки по ID нагрузки",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Student.TeachingLoad"
+                ],
+                "summary": "Удаление дополнительной педнагрузки",
+                "parameters": [
+                    {
+                        "description": "ID нагрузок и семестр",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.DeleteIDs"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/students/load/classroom/{token}": {
+            "post": {
+                "description": "Добавление или обновление аудиторной нагрузки",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Student.TeachingLoad"
+                ],
+                "summary": "Добавление или обновление аудиторной нагрузки",
+                "parameters": [
+                    {
+                        "description": "Данные",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.UpsertClassroomLoadRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Удаление аудиторной нагрузки по ID нагрузки",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Student.TeachingLoad"
+                ],
+                "summary": "Удаление аудиторной педнагрузки",
+                "parameters": [
+                    {
+                        "description": "ID нагрузок и семестр",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.DeleteIDs"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/students/load/individual/{token}": {
+            "post": {
+                "description": "Добавление или обновление индивидуальных нагрузок",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Student.TeachingLoad"
+                ],
+                "summary": "Добавление или обновление индивидуальных нагрузок",
+                "parameters": [
+                    {
+                        "description": "Данные",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.UpsertIndividualLoadRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Удаление индивидуальных педнагрузок по ID нагрузок",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Student.TeachingLoad"
+                ],
+                "summary": "Удаление индивидуальных педагогических нагрузок",
+                "parameters": [
+                    {
+                        "description": "ID нагрузок и семестр",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.DeleteIDs"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/students/load/{token}": {
+            "get": {
+                "description": "Получение данных для страницы педагогической нагрузки",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Student.TeachingLoad"
+                ],
+                "summary": "Получение данных для страницы педагогической нагрузки",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Данные",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.TeachingLoad"
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/students/review/{token}": {
+            "post": {
+                "description": "Переводит научные работы, пед нагрузку и диссертацию в статус 'in_review', который является блокирующим",
+                "tags": [
+                    "Student"
+                ],
+                "summary": "Отправка на проверку",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/students/works/conferences/{token}": {
+            "post": {
+                "description": "Добавление или обновление научных конференций",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Student.ScientificWorks"
+                ],
+                "summary": "Добавление или обновление научных конференций",
+                "parameters": [
+                    {
+                        "description": "Данные",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.UpsertConferencesRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Удаление научных конференций по ID конференций",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Student.ScientificWorks"
+                ],
+                "summary": "Удаление научных конференций",
+                "parameters": [
+                    {
+                        "description": "ID работ и семестр",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.DeleteIDs"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/students/works/projects/{token}": {
+            "post": {
+                "description": "Добавление или обновление научных проектов",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Student.ScientificWorks"
+                ],
+                "summary": "Добавление или обновление научных проектов",
+                "parameters": [
+                    {
+                        "description": "Данные",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.UpsertResearchProjectsRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Удаление научных исследований по ID этих исследований",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Student.ScientificWorks"
+                ],
+                "summary": "Удаление научных исследований",
+                "parameters": [
+                    {
+                        "description": "ID работ и семестр",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.DeleteIDs"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/students/works/publications/{token}": {
+            "post": {
+                "description": "Добавление или обновление научных публикаций",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Student.ScientificWorks"
+                ],
+                "summary": "Добавление или обновление научных публикаций",
+                "parameters": [
+                    {
+                        "description": "Данные",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.UpsertPublicationsRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Удаление научных публикаций по ID публикаций",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Student.ScientificWorks"
+                ],
+                "summary": "Удаление научных публикаций",
+                "parameters": [
+                    {
+                        "description": "ID работ и семестр",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.DeleteIDs"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/students/works/{token}": {
+            "get": {
+                "description": "Получение данных для страницы научных работ",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Student.ScientificWorks"
+                ],
+                "summary": "Получение данных для страницы научных работ",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Данные",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.ScientificWork"
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.AdditionalLoad": {
+            "type": "object",
+            "properties": {
+                "comment": {
+                    "description": "Комментарий",
+                    "type": "string"
+                },
+                "load_id": {
+                    "description": "ID дополнительной нагрузки",
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "name": {
+                    "description": "Название нагрузки",
+                    "type": "string"
+                },
+                "volume": {
+                    "description": "Объем",
+                    "type": "string"
+                }
+            }
+        },
+        "models.ClassroomLoad": {
+            "type": "object",
+            "properties": {
+                "group_name": {
+                    "description": "Название группы",
+                    "type": "string"
+                },
+                "hours": {
+                    "description": "Кол-во часов",
+                    "type": "integer"
+                },
+                "load_id": {
+                    "description": "ID аудиторной нагрузки",
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "load_type": {
+                    "description": "Тип аудиторной нагрузки",
+                    "type": "string",
+                    "enum": [
+                        "practice",
+                        "lectures",
+                        "laboratory"
+                    ]
+                },
+                "main_teacher": {
+                    "description": "Основное учитель",
+                    "type": "string"
+                },
+                "subject_name": {
+                    "description": "Название предмета",
+                    "type": "string"
+                }
+            }
+        },
+        "models.Conference": {
+            "type": "object",
+            "properties": {
+                "conference_id": {
+                    "description": "ID конференции",
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "conference_name": {
+                    "description": "Название конференции",
+                    "type": "string"
+                },
+                "index": {
+                    "description": "Индекс конференции",
+                    "type": "string",
+                    "enum": [
+                        "scopus",
+                        "rinc",
+                        "wac",
+                        "unknown"
+                    ]
+                },
+                "location": {
+                    "description": "Место проведения",
+                    "type": "string"
+                },
+                "report_name": {
+                    "description": "Название доклада",
+                    "type": "string"
+                },
+                "reported_at": {
+                    "description": "Дата доклада",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "status": {
+                    "description": "Статус прогресса научной конференции",
+                    "type": "string",
+                    "enum": [
+                        "registered",
+                        "performed"
+                    ]
+                }
+            }
+        },
+        "models.DissertationPageResponse": {
+            "type": "object",
+            "properties": {
+                "dissertation_titles": {
+                    "description": "Названия диссертаций",
+                    "type": "array",
+                    "items": {
+                        "format": "array",
+                        "$ref": "#/definitions/models.DissertationTitlesResponse"
+                    }
+                },
+                "dissertations_statuses": {
+                    "description": "Статусы всех диссертаций (файлов)",
+                    "type": "array",
+                    "items": {
+                        "format": "array",
+                        "$ref": "#/definitions/models.DissertationsResponse"
+                    }
+                },
+                "feedback": {
+                    "description": "Массив обратной связи по каждой из диссертаций (за каждый семестр)",
+                    "type": "array",
+                    "items": {
+                        "format": "array",
+                        "$ref": "#/definitions/models.FeedbackResponse"
+                    }
+                },
+                "semester_progress": {
+                    "description": "Прогресс написания диссертации",
+                    "type": "array",
+                    "items": {
+                        "format": "array",
+                        "$ref": "#/definitions/models.SemesterProgressResponse"
+                    }
+                }
+            }
+        },
+        "models.DissertationTitlesResponse": {
+            "type": "object",
+            "properties": {
+                "accepted_at": {
+                    "description": "Дата принятия",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "created_at": {
+                    "description": "Дата создания",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "semester": {
+                    "description": "Семестр",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "Статус проверки и подтверждения",
+                    "type": "string",
+                    "enum": [
+                        "todo",
+                        "approved",
+                        "on review",
+                        "in progress",
+                        "empty",
+                        "failed"
+                    ]
+                },
+                "student_id": {
+                    "description": "ID студента",
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "title": {
+                    "description": "Название",
+                    "type": "string"
+                },
+                "title_id": {
+                    "description": "ID названия диссертации",
+                    "type": "string",
+                    "format": "uuid"
+                }
+            }
+        },
+        "models.DissertationsResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "description": "Дата создания",
+                    "type": "string"
+                },
+                "dissertation_id": {
+                    "description": "ID диссертации",
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "semester": {
+                    "description": "Семестр",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "Статус проверки и подтверждения",
+                    "type": "string",
+                    "enum": [
+                        "todo",
+                        "approved",
+                        "on review",
+                        "in progress",
+                        "empty",
+                        "failed"
+                    ]
+                },
+                "student_id": {
+                    "description": "ID студента",
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "updated_at": {
+                    "description": "Дата последнего обновления",
+                    "type": "string"
+                }
+            }
+        },
+        "models.FeedbackResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "description": "Дата создания",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "dissertation_id": {
+                    "description": "ID диссертации к которой привязана обратная связь",
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "feedback": {
+                    "description": "Текст обратной связи",
+                    "type": "string"
+                },
+                "feedback_id": {
+                    "description": "ID обратной связи",
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "semester": {
+                    "description": "Семестр",
+                    "type": "integer"
+                },
+                "student_id": {
+                    "description": "ID студента",
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "updated_at": {
+                    "description": "Дата последнего обновления",
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        },
+        "models.IndividualStudentsLoad": {
+            "type": "object",
+            "properties": {
+                "comment": {
+                    "description": "Комментарий",
+                    "type": "string"
+                },
+                "load_id": {
+                    "description": "ID индивидуальной работы со студентами",
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "load_type": {
+                    "description": "Тип индивидуальной работы",
+                    "type": "string",
+                    "enum": [
+                        "project practice",
+                        "bachelor",
+                        "masters"
+                    ]
+                },
+                "students_amount": {
+                    "description": "Количество студентов",
+                    "type": "integer"
+                }
+            }
+        },
+        "models.Publication": {
+            "type": "object",
+            "properties": {
+                "co_authors": {
+                    "description": "Со-Авторы",
+                    "type": "string"
+                },
+                "impact": {
+                    "description": "Влияние",
+                    "type": "number",
+                    "format": "float"
+                },
+                "index": {
+                    "description": "Индекс научной работы",
+                    "type": "string",
+                    "enum": [
+                        "scopus",
+                        "rinc",
+                        "wac",
+                        "unknown"
+                    ]
+                },
+                "name": {
+                    "description": "Название научной публикации",
+                    "type": "string"
+                },
+                "output_data": {
+                    "description": "Выходные данные",
+                    "type": "string"
+                },
+                "publication_id": {
+                    "description": "ID научной публикации",
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "status": {
+                    "description": "Статус прогресса публикации",
+                    "type": "string",
+                    "enum": [
+                        "to print",
+                        "published",
+                        "in progress"
+                    ]
+                },
+                "volume": {
+                    "description": "Объем написанной работы",
+                    "type": "integer"
+                }
+            }
+        },
+        "models.ResearchProject": {
+            "type": "object",
+            "properties": {
+                "add_info": {
+                    "description": "Дополнительная информация",
+                    "type": "string"
+                },
+                "end_at": {
+                    "description": "Дата окончание",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "grantee": {
+                    "description": "Грантодатель",
+                    "type": "string"
+                },
+                "project_id": {
+                    "description": "ID научного проекта",
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "project_name": {
+                    "description": "Название проекта",
+                    "type": "string"
+                },
+                "start_at": {
+                    "description": "Дата начала проекта",
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        },
+        "models.ScientificWork": {
+            "type": "object",
+            "properties": {
+                "accepted_at": {
+                    "description": "Дата принятия научным руководителем",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "conference": {
+                    "description": "Объект, описывающий научную конференцию",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.Conference"
+                        }
+                    ]
+                },
+                "publication": {
+                    "description": "Объект, описывающий научную публикацию",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.Publication"
+                        }
+                    ]
+                },
+                "research_project": {
+                    "description": "Объект, описывающий научно-исследовательский проект",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.ResearchProject"
+                        }
+                    ]
+                },
+                "semester": {
+                    "description": "Семестр, за который присылаются научные работы",
+                    "type": "integer"
+                },
+                "student_id": {
+                    "description": "ID студента",
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "updated_at": {
+                    "description": "Дата последнего обновления",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "works_id": {
+                    "description": "ID Совокупности научных работ за семестр",
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "works_status": {
+                    "description": "Статус проверки и подтверждения",
+                    "type": "string",
+                    "enum": [
+                        "todo",
+                        "approved",
+                        "on review",
+                        "in progress",
+                        "empty",
+                        "failed"
+                    ]
+                }
+            }
+        },
+        "models.SemesterProgressRequest": {
+            "type": "object",
+            "properties": {
+                "eighth": {
+                    "description": "Восьмой семестр",
+                    "type": "boolean"
+                },
+                "fifth": {
+                    "description": "Пятый семестр",
+                    "type": "boolean"
+                },
+                "first": {
+                    "description": "Первый семестр",
+                    "type": "boolean"
+                },
+                "forth": {
+                    "description": "Четвертый семестр",
+                    "type": "boolean"
+                },
+                "progress_type": {
+                    "description": "Тип прогресса написания диссертации",
+                    "type": "string",
+                    "enum": [
+                        "intro",
+                        "ch. 1",
+                        "ch. 2",
+                        "ch. 3",
+                        "ch. 4",
+                        "ch. 5",
+                        "ch. 6",
+                        "end",
+                        "literature",
+                        "abstract"
+                    ]
+                },
+                "second": {
+                    "description": "Второй семестр",
+                    "type": "boolean"
+                },
+                "seventh": {
+                    "description": "Седьмой семестр",
+                    "type": "boolean"
+                },
+                "sixth": {
+                    "description": "Шестой семестр",
+                    "type": "boolean"
+                },
+                "third": {
+                    "description": "Третий семестр",
+                    "type": "boolean"
+                }
+            }
+        },
+        "models.SemesterProgressResponse": {
+            "type": "object",
+            "properties": {
+                "accepted_at": {
+                    "description": "Дата принятия научным руководителем",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "eighth": {
+                    "type": "boolean"
+                },
+                "fifth": {
+                    "type": "boolean"
+                },
+                "first": {
+                    "type": "boolean"
+                },
+                "forth": {
+                    "type": "boolean"
+                },
+                "progress_id": {
+                    "description": "ID прогресса написания для одного типа прогресса",
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "progress_type": {
+                    "description": "Тип прогресса",
+                    "type": "string",
+                    "enum": [
+                        "intro",
+                        "ch. 1",
+                        "ch. 2",
+                        "ch. 3",
+                        "ch. 4",
+                        "ch. 5",
+                        "ch. 6",
+                        "end",
+                        "literature",
+                        "abstract"
+                    ]
+                },
+                "second": {
+                    "type": "boolean"
+                },
+                "seventh": {
+                    "type": "boolean"
+                },
+                "sixth": {
+                    "type": "boolean"
+                },
+                "status": {
+                    "description": "Статус проверки и подтверждения",
+                    "type": "string",
+                    "enum": [
+                        "todo",
+                        "approved",
+                        "on review",
+                        "in progress",
+                        "empty",
+                        "failed"
+                    ]
+                },
+                "student_id": {
+                    "description": "ID студента",
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "third": {
+                    "type": "boolean"
+                },
+                "updated_at": {
+                    "description": "Дата последнего обновления",
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        },
+        "models.TeachingLoad": {
+            "type": "object",
+            "properties": {
+                "accepted_at": {
+                    "description": "Дата принятия научным руководителем",
+                    "type": "string"
+                },
+                "additional_load": {
+                    "description": "Объект, описывающий дополнительную нагрузку",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.AdditionalLoad"
+                        }
+                    ]
+                },
+                "approval_status": {
+                    "description": "Статус проверки и подтверждения",
+                    "type": "string",
+                    "enum": [
+                        "todo",
+                        "approved",
+                        "on review",
+                        "in progress",
+                        "empty",
+                        "failed"
+                    ]
+                },
+                "classroom_load": {
+                    "description": "Объект, описывающий аудиторную нагрузку",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.ClassroomLoad"
+                        }
+                    ]
+                },
+                "individual_students_load": {
+                    "description": "Объект, описывающий индивидуальную работу со студентами",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.IndividualStudentsLoad"
+                        }
+                    ]
+                },
+                "loads_id": {
+                    "description": "ID совокупности нагрузок за семестр",
+                    "type": "string"
+                },
+                "semester": {
+                    "description": "Семестр",
+                    "type": "integer"
+                },
+                "student_id": {
+                    "description": "ID студента",
+                    "type": "string"
+                },
+                "updated_at": {
+                    "description": "Дата последнего обновления",
+                    "type": "string"
+                }
+            }
+        },
+        "request_models.DeleteIDs": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "semester": {
+                    "type": "integer"
+                }
+            }
+        },
+        "request_models.UpsertAdditionalLoadRequest": {
+            "type": "object",
+            "properties": {
+                "loads": {
+                    "description": "Дополнительные нагрузки, которые нужно добавить/изменить. Если запрос на добавление, то\nID дополнительной нагрузки (load_id) не заполнять (делать null), в противном случае - иначе",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.AdditionalLoad"
+                    }
+                },
+                "semester": {
+                    "description": "Семестр",
+                    "type": "integer"
+                },
+                "t_load_id": {
+                    "description": "ID совокупности всех нагрузок за семестр",
+                    "type": "string",
+                    "format": "uuid"
+                }
+            }
+        },
+        "request_models.UpsertClassroomLoadRequest": {
+            "type": "object",
+            "properties": {
+                "loads": {
+                    "description": "Аудиторные нагрузки, которые нужно добавить/изменить. Если запрос на добавление, то\nID нагрузки (load_id) не заполнять (делать null), в противном случае - иначе",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ClassroomLoad"
+                    }
+                },
+                "semester": {
+                    "description": "Семестр",
+                    "type": "integer"
+                },
+                "t_load_id": {
+                    "description": "ID совокупности всех нагрузок за семестр",
+                    "type": "string",
+                    "format": "uuid"
+                }
+            }
+        },
+        "request_models.UpsertConferencesRequest": {
+            "type": "object",
+            "properties": {
+                "conferences": {
+                    "description": "Научные конференции, которые нужно добавить/изменить. Если запрос на добавление, то\nID конференции (conference_id) не заполнять (делать null), в противном случае - иначе",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Conference"
+                    }
+                },
+                "semester": {
+                    "description": "Семестр",
+                    "type": "integer"
+                },
+                "work_id": {
+                    "description": "ID совокупности всех научных работ за семестр",
+                    "type": "string",
+                    "format": "uuid"
+                }
+            }
+        },
+        "request_models.UpsertIndividualLoadRequest": {
+            "type": "object",
+            "properties": {
+                "loads": {
+                    "description": "Индивидуальные нагрузки, которые нужно добавить/изменить. Если запрос на добавление, то\nID индивидуальной нагрузки (load_id) не заполнять (делать null), в противном случае - иначе",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.IndividualStudentsLoad"
+                    }
+                },
+                "semester": {
+                    "type": "integer"
+                },
+                "t_load_id": {
+                    "type": "string",
+                    "format": "uuid"
+                }
+            }
+        },
+        "request_models.UpsertProgressRequest": {
+            "type": "object",
+            "properties": {
+                "progresses": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.SemesterProgressRequest"
+                    }
+                }
+            }
+        },
+        "request_models.UpsertPublicationsRequest": {
+            "type": "object",
+            "properties": {
+                "publications": {
+                    "description": "Научные публикации, которые нужно добавить/изменить. Если запрос на добавление, то\nID публикации (publication_id) не заполнять (делать null), в противном случае - иначе",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Publication"
+                    }
+                },
+                "semester": {
+                    "type": "integer"
+                },
+                "work_id": {
+                    "description": "ID совокупности всех научных работ за семестр",
+                    "type": "string",
+                    "format": "uuid"
+                }
+            }
+        },
+        "request_models.UpsertResearchProjectsRequest": {
+            "type": "object",
+            "properties": {
+                "projects": {
+                    "description": "Научные проекты, которые нужно добавить/изменить. Если запрос на добавление, то\nID проекта (project_id) не заполнять (делать null), в противном случае - иначе",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ResearchProject"
+                    }
+                },
+                "semester": {
+                    "type": "integer"
+                },
+                "work_id": {
+                    "description": "ID совокупности всех научных работ за семестр",
+                    "type": "string",
+                    "format": "uuid"
+                }
+            }
+        }
+    }
+}

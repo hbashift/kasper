@@ -3,9 +3,10 @@ package admin
 import (
 	"net/http"
 
-	"github.com/gin-gonic/gin"
 	"uir_draft/internal/pkg/helpers"
 	"uir_draft/internal/pkg/service/admin/mapping"
+
+	"github.com/gin-gonic/gin"
 )
 
 func (h *administratorHandler) ChangeSupervisor(ctx *gin.Context) {
