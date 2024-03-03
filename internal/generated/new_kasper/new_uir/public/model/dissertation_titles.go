@@ -13,11 +13,11 @@ import (
 )
 
 type DissertationTitles struct {
-	TitleID        uuid.UUID `sql:"primary_key"`
-	DissertationID uuid.UUID
-	Title          string
-	CreatedAt      time.Time
-	Status         ApprovalStatus
-	AcceptedAt     *time.Time
-	Semester       int32
+	TitleID    uuid.UUID `sql:"primary_key"`
+	StudentID  uuid.UUID
+	Title      string
+	CreatedAt  time.Time
+	Status     ApprovalStatus
+	AcceptedAt *time.Time
+	Semester   int32
 }

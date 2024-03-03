@@ -23,6 +23,7 @@ type dissertationsTable struct {
 	CreatedAt      postgres.ColumnTimestampz
 	UpdatedAt      postgres.ColumnTimestampz
 	Semester       postgres.ColumnInteger
+	FileName       postgres.ColumnString
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -59,8 +60,9 @@ func newDissertationsTableImpl(schemaName, tableName, alias string) dissertation
 		CreatedAtColumn      = postgres.TimestampzColumn("created_at")
 		UpdatedAtColumn      = postgres.TimestampzColumn("updated_at")
 		SemesterColumn       = postgres.IntegerColumn("semester")
-		allColumns           = postgres.ColumnList{DissertationIDColumn, StudentIDColumn, StatusColumn, CreatedAtColumn, UpdatedAtColumn, SemesterColumn}
-		mutableColumns       = postgres.ColumnList{StudentIDColumn, StatusColumn, CreatedAtColumn, UpdatedAtColumn, SemesterColumn}
+		FileNameColumn       = postgres.StringColumn("file_name")
+		allColumns           = postgres.ColumnList{DissertationIDColumn, StudentIDColumn, StatusColumn, CreatedAtColumn, UpdatedAtColumn, SemesterColumn, FileNameColumn}
+		mutableColumns       = postgres.ColumnList{StudentIDColumn, StatusColumn, CreatedAtColumn, UpdatedAtColumn, SemesterColumn, FileNameColumn}
 	)
 
 	return dissertationsTable{
@@ -73,6 +75,7 @@ func newDissertationsTableImpl(schemaName, tableName, alias string) dissertation
 		CreatedAt:      CreatedAtColumn,
 		UpdatedAt:      UpdatedAtColumn,
 		Semester:       SemesterColumn,
+		FileName:       FileNameColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,

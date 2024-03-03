@@ -102,6 +102,7 @@ func (r *StudentRepository) GetPairs(ctx context.Context, tx *pgxpool.Pool) ([]*
 	if err != nil {
 		return nil, errors.Wrap(err, "GetPairs()")
 	}
+	defer rows.Close()
 
 	var pairs []*mapping.StudentSupervisorPair
 

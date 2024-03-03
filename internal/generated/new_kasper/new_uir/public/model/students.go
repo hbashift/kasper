@@ -21,7 +21,7 @@ type Students struct {
 	ActualSemester int32
 	Years          int32
 	StartDate      time.Time
-	StatusID       StudentStatus
+	StudyingStatus StudentStatus
 	GroupID        int32
 	Status         ApprovalStatus
 	CanEdit        bool

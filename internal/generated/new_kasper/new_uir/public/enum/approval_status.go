@@ -15,10 +15,12 @@ var ApprovalStatus = &struct {
 	OnReview   postgres.StringExpression
 	InProgress postgres.StringExpression
 	Empty      postgres.StringExpression
+	Failed     postgres.StringExpression
 }{
 	Todo:       postgres.NewEnumValue("todo"),
 	Approved:   postgres.NewEnumValue("approved"),
 	OnReview:   postgres.NewEnumValue("on review"),
 	InProgress: postgres.NewEnumValue("in progress"),
 	Empty:      postgres.NewEnumValue("empty"),
+	Failed:     postgres.NewEnumValue("failed"),
 }

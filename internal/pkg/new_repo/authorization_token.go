@@ -9,7 +9,6 @@ import (
 	"github.com/go-jet/jet/v2/postgres"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4"
-	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/pkg/errors"
 )
 
@@ -19,7 +18,23 @@ func NewTokenRepository() *TokenRepository {
 	return &TokenRepository{}
 }
 
-func (r *TokenRepository) InsertTokenTx(ctx context.Context, tx *pgxpool.Tx, token *model.AuthorizationToken) error {
+func (r *TokenRepository) GetUserIDByTokenTx(ctx context.Context, tx pgx.Tx, token string) (uuid.UUID, error) {
+	stmt, args := table.AuthorizationToken.
+		SELECT(table.AuthorizationToken.UserID).
+		WHERE(table.AuthorizationToken.TokenNumber.EQ(postgres.String(token))).
+		Sql()
+
+	row := tx.QueryRow(ctx, stmt, args...)
+	userID := uuid.UUID{}
+
+	if err := row.Scan(&userID); err != nil {
+		return uuid.Nil, errors.Wrap(err, "GetUserIDByTokenTx()")
+	}
+
+	return userID, nil
+}
+
+func (r *TokenRepository) InsertTokenTx(ctx context.Context, tx pgx.Tx, token *model.AuthorizationToken) error {
 	stmt, args := table.AuthorizationToken.
 		INSERT(table.AuthorizationToken.AllColumns).
 		MODEL(token).
@@ -32,7 +47,7 @@ func (r *TokenRepository) InsertTokenTx(ctx context.Context, tx *pgxpool.Tx, tok
 	return nil
 }
 
-func (r *TokenRepository) GetUsersActiveTokensTx(ctx context.Context, tx *pgxpool.Tx, userID uuid.UUID) ([]model.AuthorizationToken, error) {
+func (r *TokenRepository) GetUsersActiveTokensTx(ctx context.Context, tx pgx.Tx, userID uuid.UUID) ([]model.AuthorizationToken, error) {
 	stmt, args := table.AuthorizationToken.
 		SELECT(table.AuthorizationToken.AllColumns).
 		WHERE(
@@ -45,6 +60,7 @@ func (r *TokenRepository) GetUsersActiveTokensTx(ctx context.Context, tx *pgxpoo
 	if err != nil {
 		return nil, errors.Wrap(err, "GetUsersActiveTokensTx()")
 	}
+	defer rows.Close()
 
 	tokens := make([]model.AuthorizationToken, 0)
 
@@ -59,6 +75,21 @@ func (r *TokenRepository) GetUsersActiveTokensTx(ctx context.Context, tx *pgxpoo
 	}
 
 	return tokens, nil
+}
+
+func (r *TokenRepository) GetByTokenNumberTx(ctx context.Context, tx pgx.Tx, token string) (model.AuthorizationToken, error) {
+	stmt, args := table.AuthorizationToken.
+		SELECT(table.AuthorizationToken.AllColumns).
+		WHERE(table.AuthorizationToken.TokenNumber.EQ(postgres.String(token))).
+		Sql()
+
+	row := tx.QueryRow(ctx, stmt, args...)
+	tokenM := model.AuthorizationToken{}
+	if err := scanToken(row, &tokenM); err != nil {
+		return model.AuthorizationToken{}, errors.Wrap(err, "GetByTokenNumberTx()")
+	}
+
+	return tokenM, nil
 }
 
 func scanToken(row pgx.Row, target *model.AuthorizationToken) error {

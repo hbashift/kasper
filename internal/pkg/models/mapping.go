@@ -1,0 +1,271 @@
+package models
+
+import (
+	"strings"
+	"time"
+
+	"uir_draft/internal/generated/new_kasper/new_uir/public/model"
+
+	"github.com/google/uuid"
+	"github.com/samber/lo"
+)
+
+func MapDissertationPageFromDomain(dProgresses []model.SemesterProgress, dDissertations []model.Dissertations, dTitles []model.DissertationTitles, dFeedbacks []model.Feedback) DissertationPageResponse {
+	progresses := make([]SemesterProgressResponse, 0, len(dProgresses))
+	for _, dProgress := range dProgresses {
+		progress := SemesterProgressResponse{}
+		progress.SetDomainData(dProgress)
+
+		progresses = append(progresses, progress)
+	}
+
+	dissertations := make([]DissertationsResponse, 0, len(dDissertations))
+	for _, dDissertation := range dDissertations {
+		dissertation := DissertationsResponse{}
+		dissertation.SetDomainData(dDissertation)
+
+		dissertations = append(dissertations, dissertation)
+	}
+
+	titles := make([]DissertationTitlesResponse, 0, len(dTitles))
+	for _, dTitle := range dTitles {
+		title := DissertationTitlesResponse{}
+		title.SetDomainData(dTitle)
+
+		titles = append(titles, title)
+	}
+
+	feedbacks := make([]FeedbackResponse, 0, len(dFeedbacks))
+	for _, dFeedback := range dFeedbacks {
+		feedback := FeedbackResponse{}
+		feedback.SetDomainData(dFeedback)
+
+		feedbacks = append(feedbacks, feedback)
+	}
+
+	return DissertationPageResponse{
+		SemesterProgress:      progresses,
+		DissertationsStatuses: dissertations,
+		DissertationTitles:    titles,
+		Feedback:              feedbacks,
+	}
+}
+
+func MapSemesterProgressToDomain(progresses []SemesterProgressRequest, status model.ApprovalStatus, studentID uuid.UUID) []model.SemesterProgress {
+	updatedAt := time.Now()
+
+	var acceptedAt *time.Time
+	acceptedAt = nil
+	if status == model.ApprovalStatus_Approved {
+		acceptedAt = lo.ToPtr(time.Now())
+	}
+
+	dProgresses := make([]model.SemesterProgress, 0, len(progresses))
+
+	for _, progress := range progresses {
+		dProgress := progress.ToDomain()
+
+		dProgress.ProgressID = uuid.New()
+		dProgress.StudentID = studentID
+		dProgress.UpdatedAt = updatedAt
+		dProgress.Status = status
+		dProgress.AcceptedAt = acceptedAt
+
+		dProgresses = append(dProgresses, dProgress)
+	}
+
+	return dProgresses
+}
+
+func MapPublicationsToDomain(publications []Publication, workID uuid.UUID) (dPublicationsInsert, dPublicationsUpdate []model.Publications, err error) {
+	for _, publication := range publications {
+		var index model.WorkIndex = ""
+		if err := index.Scan(publication.Index); err != nil {
+			return nil, nil, ErrInvalidEnumValue
+		}
+
+		var status model.PublicationStatus = ""
+		if err := status.Scan(publication.Status); err != nil {
+			return nil, nil, ErrInvalidEnumValue
+		}
+
+		dPublication := model.Publications{
+			WorksID:    workID,
+			Name:       publication.Name,
+			Index:      index,
+			Impact:     publication.Impact,
+			Status:     status,
+			OutputData: publication.OutputData,
+			CoAuthors:  publication.CoAuthors,
+			Volume:     publication.Volume,
+		}
+
+		if publication.PublicationID == uuid.Nil {
+			dPublication.PublicationID = uuid.New()
+			dPublicationsInsert = append(dPublicationsInsert, dPublication)
+		} else {
+			dPublication.PublicationID = publication.PublicationID
+			dPublicationsUpdate = append(dPublicationsUpdate, dPublication)
+		}
+	}
+
+	return dPublicationsInsert, dPublicationsUpdate, nil
+}
+
+func MapConferencesToDomain(conferences []Conference, workID uuid.UUID) (dConferencesInsert, dConferencesUpdate []model.Conferences, err error) {
+	for _, conf := range conferences {
+		var index model.WorkIndex = ""
+		if err := index.Scan(conf.Index); err != nil {
+			return nil, nil, ErrInvalidEnumValue
+		}
+
+		var status model.ConferenceStatus = ""
+		if err := status.Scan(conf.Status); err != nil {
+			return nil, nil, ErrInvalidEnumValue
+		}
+
+		dConf := model.Conferences{
+			WorksID:        workID,
+			Status:         status,
+			Index:          index,
+			ConferenceName: conf.ConferenceName,
+			ReportName:     conf.ReportName,
+			Location:       conf.Location,
+			ReportedAt:     conf.ReportedAt,
+		}
+
+		if conf.ConferenceID == uuid.Nil {
+			dConf.ConferenceID = uuid.New()
+			dConferencesInsert = append(dConferencesInsert, dConf)
+		} else {
+			dConf.ConferenceID = conf.ConferenceID
+			dConferencesUpdate = append(dConferencesUpdate, dConf)
+		}
+	}
+
+	return dConferencesInsert, dConferencesUpdate, nil
+}
+
+func MapResearchProjectToDomain(projects []ResearchProject, workID uuid.UUID) (dResearchInsert, dResearchUpdate []model.ResearchProjects) {
+	for _, proj := range projects {
+		dProj := model.ResearchProjects{
+			WorksID:     workID,
+			ProjectName: proj.ProjectName,
+			StartAt:     proj.StartAt,
+			EndAt:       proj.EndAt,
+			AddInfo:     proj.AddInfo,
+			Grantee:     proj.Grantee,
+		}
+
+		if proj.ProjectID == uuid.Nil {
+			dProj.ProjectID = uuid.New()
+			dResearchInsert = append(dResearchInsert, dProj)
+		} else {
+			dProj.ProjectID = proj.ProjectID
+			dResearchUpdate = append(dResearchUpdate, dProj)
+		}
+	}
+
+	return dResearchInsert, dResearchUpdate
+}
+
+func MapClassroomLoadToDomain(loads []ClassroomLoad, tLoadID uuid.UUID) (dLoadInsert, dLoadUpdate []model.ClassroomLoad, err error) {
+	for _, load := range loads {
+		var loadType model.ClassroomLoadType
+		if err := loadType.Scan(load.LoadType); err != nil {
+			return nil, nil, ErrInvalidEnumValue
+		}
+
+		dLoad := model.ClassroomLoad{
+			TLoadID:     tLoadID,
+			Hours:       load.Hours,
+			LoadType:    loadType,
+			MainTeacher: load.MainTeacher,
+			GroupName:   load.GroupName,
+			SubjectName: load.SubjectName,
+		}
+		if load.LoadID == uuid.Nil {
+			dLoad.LoadID = uuid.New()
+			dLoadInsert = append(dLoadInsert, dLoad)
+		} else {
+			dLoad.LoadID = load.LoadID
+			dLoadUpdate = append(dLoadUpdate, dLoad)
+		}
+	}
+
+	return dLoadInsert, dLoadUpdate, nil
+}
+
+func MapIndividualWorkToDomain(loads []IndividualStudentsLoad, tLoadID uuid.UUID) (dLoadInsert, dLoadUpdate []model.IndividualStudentsLoad) {
+	for _, load := range loads {
+		dLoad := model.IndividualStudentsLoad{
+			TLoadID:        tLoadID,
+			StudentsAmount: load.StudentsAmount,
+			Comment:        load.Comment,
+		}
+
+		if load.LoadID == uuid.Nil {
+			dLoad.LoadID = uuid.New()
+			dLoadInsert = append(dLoadInsert, dLoad)
+		} else {
+			dLoad.LoadID = load.LoadID
+			dLoadUpdate = append(dLoadUpdate, dLoad)
+		}
+	}
+
+	return dLoadInsert, dLoadUpdate
+}
+
+func MapAdditionalLoadToDomain(loads []AdditionalLoad, tLoadID uuid.UUID) (dLoadInsert, dLoadUpdate []model.AdditionalLoad) {
+	for _, load := range loads {
+		dLoad := model.AdditionalLoad{
+			TLoadID: tLoadID,
+			Name:    load.Name,
+			Volume:  load.Volume,
+			Comment: load.Comment,
+		}
+
+		if load.LoadID == uuid.Nil {
+			dLoad.LoadID = uuid.New()
+			dLoadInsert = append(dLoadInsert, dLoad)
+		} else {
+			dLoad.LoadID = load.LoadID
+			dLoadUpdate = append(dLoadUpdate, dLoad)
+		}
+	}
+
+	return dLoadInsert, dLoadUpdate
+}
+
+func MapFeedbackToDomain(request FeedbackRequest, studentID uuid.UUID) model.Feedback {
+	return model.Feedback{
+		FeedbackID:     uuid.New(),
+		StudentID:      studentID,
+		DissertationID: request.DissertationID,
+		Feedback:       request.Feedback,
+		Semester:       request.Semester,
+		CreatedAt:      time.Now(),
+		UpdatedAt:      time.Now(),
+	}
+}
+
+func MapApprovalStatusToDomain(status string) (model.ApprovalStatus, error) {
+	status = strings.TrimSpace(strings.ToLower(status))
+
+	switch {
+	case status == model.ApprovalStatus_OnReview.String():
+		return model.ApprovalStatus_OnReview, nil
+	case status == model.ApprovalStatus_InProgress.String():
+		return model.ApprovalStatus_InProgress, nil
+	case status == model.ApprovalStatus_Approved.String():
+		return model.ApprovalStatus_Approved, nil
+	case status == model.ApprovalStatus_Todo.String():
+		return model.ApprovalStatus_Todo, nil
+	case status == model.ApprovalStatus_Failed.String():
+		return model.ApprovalStatus_Failed, nil
+	case status == "":
+		return model.ApprovalStatus_Empty, nil
+	default:
+		return "", ErrUnknownApprovalStatus
+	}
+}

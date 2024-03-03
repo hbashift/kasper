@@ -3,13 +3,14 @@ package admin
 import (
 	"context"
 
-	"github.com/google/uuid"
-	"github.com/jackc/pgx/v4/pgxpool"
-	"github.com/pkg/errors"
 	"uir_draft/internal/generated/kasper/uir_draft/public/model"
 	"uir_draft/internal/pkg/models"
 	adminmap "uir_draft/internal/pkg/service/admin/mapping"
 	"uir_draft/internal/pkg/service/student/mapping"
+
+	"github.com/google/uuid"
+	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/pkg/errors"
 )
 
 var ErrNonValidToken = errors.New("token is expired")

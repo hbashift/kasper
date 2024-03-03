@@ -16,3 +16,7 @@ func GetUUID(ctx *gin.Context) (*uuid.UUID, error) {
 
 	return &id, nil
 }
+
+func GetToken(ctx *gin.Context) string {
+	return ctx.Param("token")
+}

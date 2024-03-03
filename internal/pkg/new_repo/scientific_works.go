@@ -2,15 +2,15 @@ package new_repo
 
 import (
 	"context"
+	"time"
 
 	"uir_draft/internal/generated/new_kasper/new_uir/public/model"
 	"uir_draft/internal/generated/new_kasper/new_uir/public/table"
-	"uir_draft/internal/pkg/domain"
+	"uir_draft/internal/pkg/models"
 
 	"github.com/go-jet/jet/v2/postgres"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4"
-	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/pkg/errors"
 )
 
@@ -20,17 +20,43 @@ func NewScientificRepository() *ScientificRepository {
 	return &ScientificRepository{}
 }
 
-func (r *ScientificRepository) GetScientificWorksStatusTx(ctx context.Context, tx *pgxpool.Tx, studentID uuid.UUID) ([]model.ScientificWorksStatus, error) {
+func (r *ScientificRepository) SetScientificWorkStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID, status model.ApprovalStatus, semester int32, acceptedAt *time.Time) error {
+	stmt, args := table.ScientificWorksStatus.
+		UPDATE(
+			table.ScientificWorksStatus.UpdatedAt,
+			table.ScientificWorksStatus.AcceptedAt,
+			table.ScientificWorksStatus.Status,
+		).
+		SET(
+			time.Now(),
+			acceptedAt,
+			status,
+		).
+		WHERE(table.ScientificWorksStatus.StudentID.EQ(postgres.UUID(studentID)).
+			AND(table.ScientificWorksStatus.Semester.EQ(postgres.Int32(semester)))).
+		Sql()
+
+	if _, err := tx.Exec(ctx, stmt, args...); err != nil {
+		return errors.Wrap(err, "SetScientificWorkStatusTx()")
+	}
+
+	return nil
+}
+
+func (r *ScientificRepository) GetScientificWorksStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]model.ScientificWorksStatus, error) {
 	stmt, args := table.ScientificWorksStatus.
 		SELECT(table.ScientificWorksStatus.AllColumns).
 		WHERE(table.ScientificWorksStatus.StudentID.EQ(postgres.UUID(studentID))).
 		Sql()
 
 	rows, err := tx.Query(ctx, stmt, args...)
-
+	if errors.Is(err, pgx.ErrNoRows) {
+		return nil, nil
+	}
 	if err != nil {
 		return nil, errors.Wrap(err, "GetScientificWorksStatusTx()")
 	}
+	defer rows.Close()
 
 	works := make([]model.ScientificWorksStatus, 0, 8)
 
@@ -47,32 +73,30 @@ func (r *ScientificRepository) GetScientificWorksStatusTx(ctx context.Context, t
 	return works, nil
 }
 
-func (r *ScientificRepository) UpdateScientificWorksStatusTx(ctx context.Context, tx *pgxpool.Tx, works []model.ScientificWorksStatus) error {
-	for _, work := range works {
-		stmt, args := table.ScientificWorksStatus.
-			UPDATE(
-				table.ScientificWorksStatus.Status,
-				table.ScientificWorksStatus.UpdatedAt,
-				table.ScientificWorksStatus.AcceptedAt,
-			).
-			SET(
-				work.Status,
-				work.UpdatedAt,
-				work.AcceptedAt,
-			).
-			WHERE(table.ScientificWorksStatus.WorksID.EQ(postgres.UUID(work.WorksID)).
-				AND(table.ScientificWorksStatus.Semester.EQ(postgres.Int32(work.Semester)))).
-			Sql()
+func (r *ScientificRepository) UpdateScientificWorksStatusTx(ctx context.Context, tx pgx.Tx, work model.ScientificWorksStatus) error {
+	stmt, args := table.ScientificWorksStatus.
+		UPDATE(
+			table.ScientificWorksStatus.Status,
+			table.ScientificWorksStatus.UpdatedAt,
+			table.ScientificWorksStatus.AcceptedAt,
+		).
+		SET(
+			work.Status,
+			work.UpdatedAt,
+			work.AcceptedAt,
+		).
+		WHERE(table.ScientificWorksStatus.WorksID.EQ(postgres.UUID(work.WorksID)).
+			AND(table.ScientificWorksStatus.Semester.EQ(postgres.Int32(work.Semester)))).
+		Sql()
 
-		if _, err := tx.Exec(ctx, stmt, args...); err != nil {
-			return errors.Wrap(err, "UpdateScientificWorksStatusTx()")
-		}
+	if _, err := tx.Exec(ctx, stmt, args...); err != nil {
+		return errors.Wrap(err, "UpdateScientificWorksStatusTx()")
 	}
 
 	return nil
 }
 
-func (r *ScientificRepository) InsertPublicationsTx(ctx context.Context, tx *pgxpool.Pool, publications []model.Publications) error {
+func (r *ScientificRepository) InsertPublicationsTx(ctx context.Context, tx pgx.Tx, publications []model.Publications) error {
 	stmt, args := table.Publications.
 		INSERT().
 		MODELS(publications).
@@ -86,7 +110,7 @@ func (r *ScientificRepository) InsertPublicationsTx(ctx context.Context, tx *pgx
 	return nil
 }
 
-func (r *ScientificRepository) UpdatePublicationsTx(ctx context.Context, tx *pgxpool.Tx, publications []model.Publications) error {
+func (r *ScientificRepository) UpdatePublicationsTx(ctx context.Context, tx pgx.Tx, publications []model.Publications) error {
 	for _, publication := range publications {
 		stmt, args := table.Publications.
 			UPDATE(
@@ -119,7 +143,7 @@ func (r *ScientificRepository) UpdatePublicationsTx(ctx context.Context, tx *pgx
 	return nil
 }
 
-func (r *ScientificRepository) DeletePublicationsTx(ctx context.Context, tx *pgxpool.Tx, publicationsIDs []uuid.UUID) error {
+func (r *ScientificRepository) DeletePublicationsTx(ctx context.Context, tx pgx.Tx, publicationsIDs []uuid.UUID) error {
 	var exps []postgres.Expression
 	for _, id := range publicationsIDs {
 		exp := postgres.Expression(postgres.UUID(id))
@@ -139,7 +163,7 @@ func (r *ScientificRepository) DeletePublicationsTx(ctx context.Context, tx *pgx
 	return nil
 }
 
-func (r *ScientificRepository) InsertConferencesTx(ctx context.Context, tx *pgxpool.Tx, conferences []model.Conferences) error {
+func (r *ScientificRepository) InsertConferencesTx(ctx context.Context, tx pgx.Tx, conferences []model.Conferences) error {
 	stmt, args := table.Conferences.
 		INSERT().
 		MODELS(conferences).
@@ -153,7 +177,7 @@ func (r *ScientificRepository) InsertConferencesTx(ctx context.Context, tx *pgxp
 	return nil
 }
 
-func (r *ScientificRepository) UpdateConferencesTx(ctx context.Context, tx *pgxpool.Tx, conferences []model.Conferences) error {
+func (r *ScientificRepository) UpdateConferencesTx(ctx context.Context, tx pgx.Tx, conferences []model.Conferences) error {
 	for _, conference := range conferences {
 		stmt, args := table.Conferences.
 			UPDATE(
@@ -186,7 +210,7 @@ func (r *ScientificRepository) UpdateConferencesTx(ctx context.Context, tx *pgxp
 	return nil
 }
 
-func (r *ScientificRepository) DeleteConferencesTx(ctx context.Context, tx *pgxpool.Tx, conferencesIDs []uuid.UUID) error {
+func (r *ScientificRepository) DeleteConferencesTx(ctx context.Context, tx pgx.Tx, conferencesIDs []uuid.UUID) error {
 	var exps []postgres.Expression
 	for _, id := range conferencesIDs {
 		exp := postgres.Expression(postgres.UUID(id))
@@ -206,7 +230,7 @@ func (r *ScientificRepository) DeleteConferencesTx(ctx context.Context, tx *pgxp
 	return nil
 }
 
-func (r *ScientificRepository) InsertResearchProjectsTx(ctx context.Context, tx *pgxpool.Tx, projects []model.ResearchProjects) error {
+func (r *ScientificRepository) InsertResearchProjectsTx(ctx context.Context, tx pgx.Tx, projects []model.ResearchProjects) error {
 	stmt, args := table.ResearchProjects.
 		INSERT().
 		MODELS(projects).
@@ -219,7 +243,7 @@ func (r *ScientificRepository) InsertResearchProjectsTx(ctx context.Context, tx 
 	return nil
 }
 
-func (r *ScientificRepository) UpdateResearchProjectsTx(ctx context.Context, tx *pgxpool.Tx, projects []model.ResearchProjects) error {
+func (r *ScientificRepository) UpdateResearchProjectsTx(ctx context.Context, tx pgx.Tx, projects []model.ResearchProjects) error {
 	for _, project := range projects {
 		stmt, args := table.ResearchProjects.
 			UPDATE(
@@ -247,7 +271,7 @@ func (r *ScientificRepository) UpdateResearchProjectsTx(ctx context.Context, tx 
 	return nil
 }
 
-func (r *ScientificRepository) DeleteResearchProjectsTx(ctx context.Context, tx *pgxpool.Tx, projectsIDs []uuid.UUID) error {
+func (r *ScientificRepository) DeleteResearchProjectsTx(ctx context.Context, tx pgx.Tx, projectsIDs []uuid.UUID) error {
 	var exps []postgres.Expression
 	for _, id := range projectsIDs {
 		exp := postgres.Expression(postgres.UUID(id))
@@ -267,7 +291,7 @@ func (r *ScientificRepository) DeleteResearchProjectsTx(ctx context.Context, tx 
 	return nil
 }
 
-func (r *ScientificRepository) GetScientificWorksTx(ctx context.Context, tx *pgxpool.Tx, studentID uuid.UUID) ([]domain.ScientificWork, error) {
+func (r *ScientificRepository) GetScientificWorksTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]models.ScientificWork, error) {
 	stmt, args := table.ScientificWorksStatus.
 		SELECT(
 			table.ScientificWorksStatus.WorksID,
@@ -289,14 +313,18 @@ func (r *ScientificRepository) GetScientificWorksTx(ctx context.Context, tx *pgx
 		Sql()
 
 	rows, err := tx.Query(ctx, stmt, args...)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return nil, nil
+	}
 	if err != nil {
 		return nil, errors.Wrap(err, "GetScientificWorksTx()")
 	}
+	defer rows.Close()
 
-	works := make([]domain.ScientificWork, 0, 10)
+	works := make([]models.ScientificWork, 0, 10)
 
 	for rows.Next() {
-		work := domain.ScientificWork{}
+		work := models.ScientificWork{}
 
 		if err := scanScientificWork(rows, &work); err != nil {
 			return nil, errors.Wrap(err, "GetScientificWorksTx(): scanning rows")
@@ -319,7 +347,7 @@ func scanScientificWorksStatusStatus(row pgx.Row, target *model.ScientificWorksS
 	)
 }
 
-func scanScientificWork(row pgx.Row, target *domain.ScientificWork) error {
+func scanScientificWork(row pgx.Row, target *models.ScientificWork) error {
 	return row.Scan(
 		&target.WorksID,
 		&target.Semester,
@@ -351,7 +379,7 @@ func scanScientificWork(row pgx.Row, target *domain.ScientificWork) error {
 	)
 }
 
-func scanPublication(row pgx.Row, target *domain.Publication) error {
+func scanPublication(row pgx.Row, target *models.Publication) error {
 	return row.Scan(
 		&target.PublicationID,
 		&target.Name,
@@ -364,7 +392,7 @@ func scanPublication(row pgx.Row, target *domain.Publication) error {
 	)
 }
 
-func scanConference(row pgx.Row, target *domain.Conference) error {
+func scanConference(row pgx.Row, target *models.Conference) error {
 	return row.Scan(
 		&target.ConferenceID,
 		&target.Status,
@@ -376,7 +404,7 @@ func scanConference(row pgx.Row, target *domain.Conference) error {
 	)
 }
 
-func scanResearchProject(row pgx.Row, target *domain.ResearchProject) error {
+func scanResearchProject(row pgx.Row, target *models.ResearchProject) error {
 	return row.Scan(
 		&target.ProjectID,
 		&target.ProjectName,
@@ -387,7 +415,7 @@ func scanResearchProject(row pgx.Row, target *domain.ResearchProject) error {
 	)
 }
 
-//func (r *ScientificRepository) GetPublicationsTx(ctx context.Context, tx *pgxpool.Tx, publicationIDs []uuid.UUID) ([]model.Publications, error) {
+//func (r *ScientificRepository) GetPublicationsTx(ctx context.Context, tx pgx.Tx, publicationIDs []uuid.UUID) ([]model.Publications, error) {
 //	idExpressions := make([]postgres.Expression, 0, len(publicationIDs))
 //
 //	for _, id := range publicationIDs {
@@ -420,7 +448,7 @@ func scanResearchProject(row pgx.Row, target *domain.ResearchProject) error {
 //	return publications, nil
 //}
 
-//func (r *ScientificRepository) GetConferencesTx(ctx context.Context, tx *pgxpool.Tx, conferenceIDs []uuid.UUID) ([]model.Conferences, error) {
+//func (r *ScientificRepository) GetConferencesTx(ctx context.Context, tx pgx.Tx, conferenceIDs []uuid.UUID) ([]model.Conferences, error) {
 //	idExpressions := make([]postgres.Expression, 0, len(conferenceIDs))
 //
 //	for _, id := range conferenceIDs {
@@ -453,7 +481,7 @@ func scanResearchProject(row pgx.Row, target *domain.ResearchProject) error {
 //	return conferences, nil
 //}
 
-//func (r *ScientificRepository) GetResearchProjectsTx(ctx context.Context, tx *pgxpool.Tx, projectIDs []uuid.UUID) ([]model.ResearchProjects, error) {
+//func (r *ScientificRepository) GetResearchProjectsTx(ctx context.Context, tx pgx.Tx, projectIDs []uuid.UUID) ([]model.ResearchProjects, error) {
 //	idExpressions := make([]postgres.Expression, 0, len(projectIDs))
 //
 //	for _, id := range projectIDs {

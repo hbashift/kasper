@@ -9,7 +9,6 @@ import (
 	"github.com/go-jet/jet/v2/postgres"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4"
-	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/pkg/errors"
 )
 
@@ -19,7 +18,7 @@ func NewUsersRepository() *UsersRepository {
 	return &UsersRepository{}
 }
 
-func (r *UsersRepository) InsertUsersTx(ctx context.Context, tx *pgxpool.Tx, users []model.Users) error {
+func (r *UsersRepository) InsertUsersTx(ctx context.Context, tx pgx.Tx, users []model.Users) error {
 	stmt, args := table.Users.
 		INSERT().
 		MODELS(users).
@@ -32,7 +31,7 @@ func (r *UsersRepository) InsertUsersTx(ctx context.Context, tx *pgxpool.Tx, use
 	return nil
 }
 
-func (r *UsersRepository) GetUserTx(ctx context.Context, tx *pgxpool.Tx, userID uuid.UUID) (model.Users, error) {
+func (r *UsersRepository) GetUserTx(ctx context.Context, tx pgx.Tx, userID uuid.UUID) (model.Users, error) {
 	stmt, args := table.Users.
 		SELECT(table.Users.AllColumns).
 		WHERE(table.Users.UserID.EQ(postgres.UUID(userID))).
@@ -48,7 +47,7 @@ func (r *UsersRepository) GetUserTx(ctx context.Context, tx *pgxpool.Tx, userID 
 	return user, nil
 }
 
-func (r *UsersRepository) SetUserRegisteredTx(ctx context.Context, tx *pgxpool.Tx, userID uuid.UUID) error {
+func (r *UsersRepository) SetUserRegisteredTx(ctx context.Context, tx pgx.Tx, userID uuid.UUID) error {
 	stmt, args := table.Users.
 		UPDATE(table.Users.Registered).
 		SET(true).
@@ -62,7 +61,7 @@ func (r *UsersRepository) SetUserRegisteredTx(ctx context.Context, tx *pgxpool.T
 	return nil
 }
 
-func (r *UsersRepository) ChangeUsersPasswordTx(ctx context.Context, tx *pgxpool.Tx, userID uuid.UUID, password string) error {
+func (r *UsersRepository) ChangeUsersPasswordTx(ctx context.Context, tx pgx.Tx, userID uuid.UUID, password string) error {
 	stmt, args := table.Users.
 		UPDATE(table.Users.Password).
 		SET(password).

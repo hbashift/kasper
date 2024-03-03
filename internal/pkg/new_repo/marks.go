@@ -9,7 +9,6 @@ import (
 	"github.com/go-jet/jet/v2/postgres"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4"
-	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/pkg/errors"
 )
 
@@ -19,16 +18,20 @@ func NewMarksRepository() *MarksRepository {
 	return &MarksRepository{}
 }
 
-func (r *MarksRepository) GetStudentMarksTx(ctx context.Context, tx *pgxpool.Tx, studentID uuid.UUID) ([]model.Marks, error) {
+func (r *MarksRepository) GetStudentMarksTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]model.Marks, error) {
 	stmt, args := table.Marks.
 		SELECT(table.Marks.AllColumns).
 		WHERE(table.Marks.StudentID.EQ(postgres.UUID(studentID))).
 		Sql()
 
 	rows, err := tx.Query(ctx, stmt, args...)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return nil, nil
+	}
 	if err != nil {
 		return nil, errors.Wrap(err, "GetStudentMarksTx()")
 	}
+	defer rows.Close()
 
 	marks := make([]model.Marks, 0, 8)
 
@@ -45,7 +48,7 @@ func (r *MarksRepository) GetStudentMarksTx(ctx context.Context, tx *pgxpool.Tx,
 	return marks, nil
 }
 
-func (r *MarksRepository) UpsertMarkTx(ctx context.Context, tx *pgxpool.Tx, model model.Marks) error {
+func (r *MarksRepository) UpsertMarkTx(ctx context.Context, tx pgx.Tx, model model.Marks) error {
 	stmt, args := table.Marks.
 		INSERT().
 		MODELS(model).

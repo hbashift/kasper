@@ -2,34 +2,61 @@ package new_repo
 
 import (
 	"context"
+	"time"
 
 	"uir_draft/internal/generated/new_kasper/new_uir/public/model"
 	"uir_draft/internal/generated/new_kasper/new_uir/public/table"
-	"uir_draft/internal/pkg/domain"
+	"uir_draft/internal/pkg/models"
 
 	"github.com/go-jet/jet/v2/postgres"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4"
-	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/pkg/errors"
 )
 
-type TeachingLoadStatusRepository struct{}
+type TeachingLoadRepository struct{}
 
-func NewTeachingLoadStatusRepository() *TeachingLoadStatusRepository {
-	return &TeachingLoadStatusRepository{}
+func NewTeachingLoadStatusRepository() *TeachingLoadRepository {
+	return &TeachingLoadRepository{}
 }
 
-func (r *TeachingLoadStatusRepository) GetTeachingLoadStatusTx(ctx context.Context, tx *pgxpool.Tx, studentID uuid.UUID) ([]model.TeachingLoadStatus, error) {
+func (r *TeachingLoadRepository) SetTeachingLoadStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID, status model.ApprovalStatus, semester int32, acceptedAt *time.Time) error {
+	stmt, args := table.TeachingLoadStatus.
+		UPDATE(
+			table.TeachingLoadStatus.UpdatedAt,
+			table.TeachingLoadStatus.AcceptedAt,
+			table.TeachingLoadStatus.Status,
+		).
+		SET(
+			time.Now(),
+			acceptedAt,
+			status,
+		).
+		WHERE(table.TeachingLoadStatus.StudentID.EQ(postgres.UUID(studentID)).
+			AND(table.TeachingLoadStatus.Semester.EQ(postgres.Int32(semester)))).
+		Sql()
+
+	if _, err := tx.Exec(ctx, stmt, args...); err != nil {
+		return errors.Wrap(err, "SetTeachingLoadStatusTx()")
+	}
+
+	return nil
+}
+
+func (r *TeachingLoadRepository) GetTeachingLoadStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]model.TeachingLoadStatus, error) {
 	stmt, args := table.TeachingLoadStatus.
 		SELECT(table.TeachingLoadStatus.AllColumns).
 		WHERE(table.TeachingLoadStatus.StudentID.EQ(postgres.UUID(studentID))).
 		Sql()
 
 	rows, err := tx.Query(ctx, stmt, args...)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return nil, nil
+	}
 	if err != nil {
 		return nil, errors.Wrap(err, "GetTeachingLoadStatusTx()")
 	}
+	defer rows.Close()
 
 	loads := make([]model.TeachingLoadStatus, 0, 8)
 
@@ -46,7 +73,7 @@ func (r *TeachingLoadStatusRepository) GetTeachingLoadStatusTx(ctx context.Conte
 	return loads, nil
 }
 
-func (r *TeachingLoadStatusRepository) UpdateTeachingLoadStatusTx(ctx context.Context, tx *pgxpool.Tx, loads []model.TeachingLoadStatus) error {
+func (r *TeachingLoadRepository) UpdateTeachingLoadStatusTx(ctx context.Context, tx pgx.Tx, loads []model.TeachingLoadStatus) error {
 	for _, load := range loads {
 		stmt, args := table.TeachingLoadStatus.
 			UPDATE(
@@ -71,7 +98,7 @@ func (r *TeachingLoadStatusRepository) UpdateTeachingLoadStatusTx(ctx context.Co
 	return nil
 }
 
-func (r *TeachingLoadStatusRepository) InsertClassroomLoadsTx(ctx context.Context, tx *pgxpool.Pool, loads []model.ClassroomLoad) error {
+func (r *TeachingLoadRepository) InsertClassroomLoadsTx(ctx context.Context, tx pgx.Tx, loads []model.ClassroomLoad) error {
 	stmt, args := table.ClassroomLoad.
 		INSERT().
 		MODELS(loads).
@@ -84,7 +111,7 @@ func (r *TeachingLoadStatusRepository) InsertClassroomLoadsTx(ctx context.Contex
 	return nil
 }
 
-func (r *TeachingLoadStatusRepository) UpdateClassroomLoadsTx(ctx context.Context, tx *pgxpool.Tx, loads []model.ClassroomLoad) error {
+func (r *TeachingLoadRepository) UpdateClassroomLoadsTx(ctx context.Context, tx pgx.Tx, loads []model.ClassroomLoad) error {
 	for _, load := range loads {
 		stmt, args := table.ClassroomLoad.
 			UPDATE(
@@ -112,7 +139,7 @@ func (r *TeachingLoadStatusRepository) UpdateClassroomLoadsTx(ctx context.Contex
 	return nil
 }
 
-func (r *ScientificRepository) DeleteClassroomLoadsTx(ctx context.Context, tx *pgxpool.Tx, classroomsIDs []uuid.UUID) error {
+func (r *TeachingLoadRepository) DeleteClassroomLoadsTx(ctx context.Context, tx pgx.Tx, classroomsIDs []uuid.UUID) error {
 	var exps []postgres.Expression
 	for _, id := range classroomsIDs {
 		exp := postgres.Expression(postgres.UUID(id))
@@ -132,7 +159,7 @@ func (r *ScientificRepository) DeleteClassroomLoadsTx(ctx context.Context, tx *p
 	return nil
 }
 
-func (r *TeachingLoadStatusRepository) InsertIndividualLoadsTx(ctx context.Context, tx *pgxpool.Tx, loads []model.IndividualStudentsLoad) error {
+func (r *TeachingLoadRepository) InsertIndividualLoadsTx(ctx context.Context, tx pgx.Tx, loads []model.IndividualStudentsLoad) error {
 	stmt, args := table.IndividualStudentsLoad.
 		INSERT().
 		MODELS(loads).
@@ -145,7 +172,7 @@ func (r *TeachingLoadStatusRepository) InsertIndividualLoadsTx(ctx context.Conte
 	return nil
 }
 
-func (r *TeachingLoadStatusRepository) UpdateIndividualLoadsTx(ctx context.Context, tx *pgxpool.Tx, loads []model.IndividualStudentsLoad) error {
+func (r *TeachingLoadRepository) UpdateIndividualLoadsTx(ctx context.Context, tx pgx.Tx, loads []model.IndividualStudentsLoad) error {
 	for _, load := range loads {
 		stmt, args := table.IndividualStudentsLoad.
 			UPDATE(
@@ -167,7 +194,7 @@ func (r *TeachingLoadStatusRepository) UpdateIndividualLoadsTx(ctx context.Conte
 	return nil
 }
 
-func (r *ScientificRepository) DeleteIndividualStudentsLoadsTx(ctx context.Context, tx *pgxpool.Tx, individualsIDs []uuid.UUID) error {
+func (r *TeachingLoadRepository) DeleteIndividualStudentsLoadsTx(ctx context.Context, tx pgx.Tx, individualsIDs []uuid.UUID) error {
 	var exps []postgres.Expression
 	for _, id := range individualsIDs {
 		exp := postgres.Expression(postgres.UUID(id))
@@ -187,7 +214,7 @@ func (r *ScientificRepository) DeleteIndividualStudentsLoadsTx(ctx context.Conte
 	return nil
 }
 
-func (r *TeachingLoadStatusRepository) InsertAdditionalLoadsTx(ctx context.Context, tx *pgxpool.Tx, loads []model.AdditionalLoad) error {
+func (r *TeachingLoadRepository) InsertAdditionalLoadsTx(ctx context.Context, tx pgx.Tx, loads []model.AdditionalLoad) error {
 	stmt, args := table.AdditionalLoad.
 		INSERT().
 		MODELS(loads).
@@ -200,7 +227,7 @@ func (r *TeachingLoadStatusRepository) InsertAdditionalLoadsTx(ctx context.Conte
 	return nil
 }
 
-func (r *TeachingLoadStatusRepository) UpdateAdditionalLoadsTx(ctx context.Context, tx *pgxpool.Tx, loads []model.AdditionalLoad) error {
+func (r *TeachingLoadRepository) UpdateAdditionalLoadsTx(ctx context.Context, tx pgx.Tx, loads []model.AdditionalLoad) error {
 	for _, load := range loads {
 		stmt, args := table.AdditionalLoad.
 			UPDATE(
@@ -224,7 +251,7 @@ func (r *TeachingLoadStatusRepository) UpdateAdditionalLoadsTx(ctx context.Conte
 	return nil
 }
 
-func (r *ScientificRepository) DeleteAdditionalLoadsTx(ctx context.Context, tx *pgxpool.Tx, additionalIDs []uuid.UUID) error {
+func (r *TeachingLoadRepository) DeleteAdditionalLoadsTx(ctx context.Context, tx pgx.Tx, additionalIDs []uuid.UUID) error {
 	var exps []postgres.Expression
 	for _, id := range additionalIDs {
 		exp := postgres.Expression(postgres.UUID(id))
@@ -244,7 +271,7 @@ func (r *ScientificRepository) DeleteAdditionalLoadsTx(ctx context.Context, tx *
 	return nil
 }
 
-func (r *TeachingLoadStatusRepository) GetTeachingLoadsTx(ctx context.Context, tx *pgxpool.Tx, studentID uuid.UUID) ([]domain.TeachingLoad, error) {
+func (r *TeachingLoadRepository) GetTeachingLoadsTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]models.TeachingLoad, error) {
 	stmt, args := table.TeachingLoadStatus.
 		SELECT(
 			table.TeachingLoadStatus.LoadsID,
@@ -266,14 +293,18 @@ func (r *TeachingLoadStatusRepository) GetTeachingLoadsTx(ctx context.Context, t
 		Sql()
 
 	rows, err := tx.Query(ctx, stmt, args...)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return nil, nil
+	}
 	if err != nil {
 		return nil, errors.Wrap(err, "GetTeachingLoadTx()")
 	}
+	defer rows.Close()
 
-	loads := make([]domain.TeachingLoad, 0, 10)
+	loads := make([]models.TeachingLoad, 0, 10)
 
 	for rows.Next() {
-		load := domain.TeachingLoad{}
+		load := models.TeachingLoad{}
 
 		if err := scanTeachingLoadStatus(rows, &load); err != nil {
 			return nil, errors.Wrap(err, "GetTeachingLoadTx(): scanning row")
@@ -296,7 +327,7 @@ func scanTeachingLoadStatusStatus(row pgx.Row, target *model.TeachingLoadStatus)
 	)
 }
 
-func scanTeachingLoadStatus(row pgx.Row, target *domain.TeachingLoad) error {
+func scanTeachingLoadStatus(row pgx.Row, target *models.TeachingLoad) error {
 	return row.Scan(
 		&target.LoadsID,
 		&target.StudentID,

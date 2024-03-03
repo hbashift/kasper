@@ -25,7 +25,7 @@ type studentsTable struct {
 	ActualSemester postgres.ColumnInteger
 	Years          postgres.ColumnInteger
 	StartDate      postgres.ColumnTimestampz
-	StatusID       postgres.ColumnString
+	StudyingStatus postgres.ColumnString
 	GroupID        postgres.ColumnInteger
 	Status         postgres.ColumnString
 	CanEdit        postgres.ColumnBool
@@ -67,12 +67,12 @@ func newStudentsTableImpl(schemaName, tableName, alias string) studentsTable {
 		ActualSemesterColumn = postgres.IntegerColumn("actual_semester")
 		YearsColumn          = postgres.IntegerColumn("years")
 		StartDateColumn      = postgres.TimestampzColumn("start_date")
-		StatusIDColumn       = postgres.StringColumn("status_id")
+		StudyingStatusColumn = postgres.StringColumn("studying_status")
 		GroupIDColumn        = postgres.IntegerColumn("group_id")
 		StatusColumn         = postgres.StringColumn("status")
 		CanEditColumn        = postgres.BoolColumn("can_edit")
-		allColumns           = postgres.ColumnList{StudentIDColumn, UserIDColumn, FullNameColumn, DepartmentColumn, SpecIDColumn, ActualSemesterColumn, YearsColumn, StartDateColumn, StatusIDColumn, GroupIDColumn, StatusColumn, CanEditColumn}
-		mutableColumns       = postgres.ColumnList{UserIDColumn, FullNameColumn, DepartmentColumn, SpecIDColumn, ActualSemesterColumn, YearsColumn, StartDateColumn, StatusIDColumn, GroupIDColumn, StatusColumn, CanEditColumn}
+		allColumns           = postgres.ColumnList{StudentIDColumn, UserIDColumn, FullNameColumn, DepartmentColumn, SpecIDColumn, ActualSemesterColumn, YearsColumn, StartDateColumn, StudyingStatusColumn, GroupIDColumn, StatusColumn, CanEditColumn}
+		mutableColumns       = postgres.ColumnList{UserIDColumn, FullNameColumn, DepartmentColumn, SpecIDColumn, ActualSemesterColumn, YearsColumn, StartDateColumn, StudyingStatusColumn, GroupIDColumn, StatusColumn, CanEditColumn}
 	)
 
 	return studentsTable{
@@ -87,7 +87,7 @@ func newStudentsTableImpl(schemaName, tableName, alias string) studentsTable {
 		ActualSemester: ActualSemesterColumn,
 		Years:          YearsColumn,
 		StartDate:      StartDateColumn,
-		StatusID:       StatusIDColumn,
+		StudyingStatus: StudyingStatusColumn,
 		GroupID:        GroupIDColumn,
 		Status:         StatusColumn,
 		CanEdit:        CanEditColumn,

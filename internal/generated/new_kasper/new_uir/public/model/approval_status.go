@@ -17,6 +17,7 @@ const (
 	ApprovalStatus_OnReview   ApprovalStatus = "on review"
 	ApprovalStatus_InProgress ApprovalStatus = "in progress"
 	ApprovalStatus_Empty      ApprovalStatus = "empty"
+	ApprovalStatus_Failed     ApprovalStatus = "failed"
 )
 
 func (e *ApprovalStatus) Scan(value interface{}) error {
@@ -41,6 +42,8 @@ func (e *ApprovalStatus) Scan(value interface{}) error {
 		*e = ApprovalStatus_InProgress
 	case "empty":
 		*e = ApprovalStatus_Empty
+	case "failed":
+		*e = ApprovalStatus_Failed
 	default:
 		return errors.New("jet: Invalid scan value '" + enumValue + "' for ApprovalStatus enum")
 	}

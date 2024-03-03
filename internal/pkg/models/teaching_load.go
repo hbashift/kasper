@@ -1,20 +1,18 @@
-package domain
+package models
 
 import (
 	"time"
-
-	"uir_draft/internal/generated/new_kasper/new_uir/public/model"
 
 	"github.com/google/uuid"
 )
 
 type ClassroomLoad struct {
-	LoadID      uuid.UUID               `json:"load_id,omitempty" db:"classroom_load.load_id"`
-	Hours       int32                   `json:"hours,omitempty" db:"classroom_load.hours"`
-	LoadType    model.ClassroomLoadType `json:"load_type,omitempty" db:"classroom_load.load_type"`
-	MainTeacher string                  `json:"main_teacher,omitempty" db:"classroom_load.main_teacher"`
-	GroupName   string                  `json:"group_name,omitempty" db:"classroom_load.group_name"`
-	SubjectName string                  `json:"subject_name,omitempty" db:"classroom_load.subject_name"`
+	LoadID      uuid.UUID `json:"load_id,omitempty" db:"classroom_load.load_id"`
+	Hours       int32     `json:"hours,omitempty" db:"classroom_load.hours"`
+	LoadType    string    `json:"load_type,omitempty" db:"classroom_load.load_type"`
+	MainTeacher string    `json:"main_teacher,omitempty" db:"classroom_load.main_teacher"`
+	GroupName   string    `json:"group_name,omitempty" db:"classroom_load.group_name"`
+	SubjectName string    `json:"subject_name,omitempty" db:"classroom_load.subject_name"`
 }
 
 type IndividualStudentsLoad struct {
@@ -34,7 +32,7 @@ type TeachingLoad struct {
 	LoadsID                uuid.UUID              `json:"loads_id,omitempty" db:"teaching_load.loads_id"`
 	StudentID              uuid.UUID              `json:"student_id,omitempty" db:"teaching_load.student_id"`
 	Semester               int                    `json:"semester,omitempty" db:"teaching_load.semester"`
-	ApprovalStatus         model.ApprovalStatus   `json:"approval_status,omitempty" db:"teaching_load.approval_status"`
+	ApprovalStatus         string                 `json:"approval_status,omitempty" db:"teaching_load.approval_status"`
 	UpdatedAt              time.Time              `json:"updated_at" db:"teaching_load.updated_at"`
 	AcceptedAt             *time.Time             `json:"accepted_at,omitempty" db:"teaching_load.accepted_at"`
 	ClassroomLoad          ClassroomLoad          `json:"classroom_load"`
