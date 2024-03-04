@@ -9,6 +9,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// AllToStatus
+//
+//	@Summary		Проставление статуса для всего для аспиранта
+//	@Tags			Supervisor
+//	@Description	Проставление статуса для всего для аспиранта
+//	@Success		200
+//	@Param			token	path		string								true	"Токен пользователя"
+//
+//	@Param			input	body		request_models.AllToStatusRequest	true	"Запрос"
+//
+//	@Failure		401		{string}	string								"Токен протух"
+//	@Failure		204		{string}	string								"Нет записей в БД"
+//	@Failure		500		{string}	string								"Ошибка на стороне сервера"
+//	@Router			/supervisors/student/review/{token} [post]
 func (h *SupervisorHandler) AllToStatus(ctx *gin.Context) {
 	_, err := h.authenticate(ctx)
 	if err != nil {

@@ -83,11 +83,6 @@ func MapSemesterProgressToDomain(progresses []SemesterProgressRequest, status mo
 
 func MapPublicationsToDomain(publications []Publication, workID uuid.UUID) (dPublicationsInsert, dPublicationsUpdate []model.Publications, err error) {
 	for _, publication := range publications {
-		var index model.WorkIndex = ""
-		if err := index.Scan(strings.TrimSpace(lo.FromPtr(publication.Index))); err != nil {
-			return nil, nil, ErrInvalidEnumValue
-		}
-
 		var status model.PublicationStatus = ""
 		if err := status.Scan(strings.TrimSpace(lo.FromPtr(publication.Status))); err != nil {
 			return nil, nil, ErrInvalidEnumValue
@@ -96,7 +91,9 @@ func MapPublicationsToDomain(publications []Publication, workID uuid.UUID) (dPub
 		dPublication := model.Publications{
 			WorksID:    workID,
 			Name:       lo.FromPtr(publication.Name),
-			Index:      index,
+			Scopus:     publication.Scopus,
+			Rinc:       publication.Rinc,
+			Wac:        publication.Wac,
 			Impact:     lo.FromPtr(publication.Impact),
 			Status:     status,
 			OutputData: publication.OutputData,
@@ -118,11 +115,6 @@ func MapPublicationsToDomain(publications []Publication, workID uuid.UUID) (dPub
 
 func MapConferencesToDomain(conferences []Conference, workID uuid.UUID) (dConferencesInsert, dConferencesUpdate []model.Conferences, err error) {
 	for _, conf := range conferences {
-		var index model.WorkIndex = ""
-		if err := index.Scan(strings.TrimSpace(lo.FromPtr(conf.Index))); err != nil {
-			return nil, nil, ErrInvalidEnumValue
-		}
-
 		var status model.ConferenceStatus = ""
 		if err := status.Scan(strings.TrimSpace(lo.FromPtr(conf.Status))); err != nil {
 			return nil, nil, ErrInvalidEnumValue
@@ -131,7 +123,9 @@ func MapConferencesToDomain(conferences []Conference, workID uuid.UUID) (dConfer
 		dConf := model.Conferences{
 			WorksID:        workID,
 			Status:         status,
-			Index:          index,
+			Scopus:         conf.Scopus,
+			Rinc:           conf.Rinc,
+			Wac:            conf.Wac,
 			ConferenceName: lo.FromPtr(conf.ConferenceName),
 			ReportName:     lo.FromPtr(conf.ReportName),
 			Location:       lo.FromPtr(conf.Location),

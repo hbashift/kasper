@@ -31,9 +31,9 @@ func main() {
 			table.ResearchProjects.AllColumns.Except(table.ResearchProjects.WorksID),
 		).
 		FROM(table.ScientificWorksStatus.
-			INNER_JOIN(table.Publications, table.ScientificWorksStatus.WorksID.EQ(table.Publications.WorksID)).
-			INNER_JOIN(table.Conferences, table.ScientificWorksStatus.WorksID.EQ(table.Conferences.WorksID)).
-			INNER_JOIN(table.ResearchProjects, table.ScientificWorksStatus.WorksID.EQ(table.ResearchProjects.WorksID)),
+			LEFT_JOIN(table.Publications, table.ScientificWorksStatus.WorksID.EQ(table.Publications.WorksID)).
+			LEFT_JOIN(table.Conferences, table.ScientificWorksStatus.WorksID.EQ(table.Conferences.WorksID)).
+			LEFT_JOIN(table.ResearchProjects, table.ScientificWorksStatus.WorksID.EQ(table.ResearchProjects.WorksID)),
 		).
 		WHERE(table.ScientificWorksStatus.StudentID.EQ(postgres.UUID(uuid.New()))).
 		Sql()

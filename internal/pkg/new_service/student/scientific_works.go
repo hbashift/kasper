@@ -33,7 +33,7 @@ func (s *Service) GetScientificWorks(ctx context.Context, studentID uuid.UUID) (
 
 func (s *Service) UpsertPublications(ctx context.Context, studentID, workID uuid.UUID, semester int32, publications []models.Publication) error {
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
-		student, err := s.studRepo.GetStudentStatusTx(ctx, tx, studentID)
+		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
 		if err != nil {
 			return err
 		}
@@ -74,7 +74,7 @@ func (s *Service) UpsertPublications(ctx context.Context, studentID, workID uuid
 
 func (s *Service) UpsertConferences(ctx context.Context, studentID, workID uuid.UUID, semester int32, conferences []models.Conference) error {
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
-		student, err := s.studRepo.GetStudentStatusTx(ctx, tx, studentID)
+		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
 		if err != nil {
 			return err
 		}
@@ -115,7 +115,7 @@ func (s *Service) UpsertConferences(ctx context.Context, studentID, workID uuid.
 
 func (s *Service) UpsertResearchProjects(ctx context.Context, studentID, workID uuid.UUID, semester int32, projects []models.ResearchProject) error {
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
-		student, err := s.studRepo.GetStudentStatusTx(ctx, tx, studentID)
+		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
 		if err != nil {
 			return err
 		}
@@ -152,7 +152,7 @@ func (s *Service) UpsertResearchProjects(ctx context.Context, studentID, workID 
 
 func (s *Service) DeletePublications(ctx context.Context, studentID uuid.UUID, semester int32, loads []uuid.UUID) error {
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
-		student, err := s.studRepo.GetStudentStatusTx(ctx, tx, studentID)
+		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
 		if err != nil {
 			return err
 		}
@@ -183,7 +183,7 @@ func (s *Service) DeletePublications(ctx context.Context, studentID uuid.UUID, s
 
 func (s *Service) DeleteConferences(ctx context.Context, studentID uuid.UUID, semester int32, loads []uuid.UUID) error {
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
-		student, err := s.studRepo.GetStudentStatusTx(ctx, tx, studentID)
+		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
 		if err != nil {
 			return err
 		}
@@ -214,7 +214,7 @@ func (s *Service) DeleteConferences(ctx context.Context, studentID uuid.UUID, se
 
 func (s *Service) DeleteResearchProjects(ctx context.Context, studentID uuid.UUID, semester int32, loads []uuid.UUID) error {
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
-		student, err := s.studRepo.GetStudentStatusTx(ctx, tx, studentID)
+		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
 		if err != nil {
 			return err
 		}

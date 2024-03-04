@@ -8,6 +8,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// GetStudentsList
+//
+//	@Summary		Получение списка аспирантов научного руководителя
+//	@Tags			Supervisor
+//	@Description	Получение списка аспирантов научного руководителя
+//	@Success		200	{object}	[]models.Student	"Данные"
+//
+//	@Produce		json
+//	@Param			token	path		string	true	"Токен пользователя"
+//
+//	@Failure		401		{string}	string	"Токен протух"
+//	@Failure		204		{string}	string	"Нет записей в БД"
+//	@Failure		500		{string}	string	"Ошибка на стороне сервера"
+//	@Router			/supervisors/student/list/{token} [put]
 func (h *SupervisorHandler) GetStudentsList(ctx *gin.Context) {
 	user, err := h.authenticate(ctx)
 	if err != nil {

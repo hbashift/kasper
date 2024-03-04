@@ -50,7 +50,7 @@ func (s *Service) GetDissertationPage(ctx context.Context, studentID uuid.UUID) 
 
 func (s *Service) UpsertSemesterProgress(ctx context.Context, studentID uuid.UUID, progress []models.SemesterProgressRequest) error {
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
-		student, err := s.studRepo.GetStudentStatusTx(ctx, tx, studentID)
+		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
 		if err != nil {
 			return err
 		}
@@ -84,7 +84,7 @@ func (s *Service) UpsertDissertationInfo(ctx context.Context, studentID uuid.UUI
 	// TODO сделать загрузку файла на диск
 
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
-		student, err := s.studRepo.GetStudentStatusTx(ctx, tx, studentID)
+		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
 		if err != nil {
 			return err
 		}
@@ -115,7 +115,7 @@ func (s *Service) UpsertDissertationInfo(ctx context.Context, studentID uuid.UUI
 
 func (s *Service) UpsertDissertationTitle(ctx context.Context, studentID uuid.UUID, title string) error {
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
-		student, err := s.studRepo.GetStudentStatusTx(ctx, tx, studentID)
+		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
 		if err != nil {
 			return err
 		}

@@ -10,8 +10,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (s *Service) GetStudentList(ctx context.Context, supervisorID uuid.UUID) ([]models.StudentList, error) {
-	response := make([]models.StudentList, 0)
+func (s *Service) GetStudentList(ctx context.Context, supervisorID uuid.UUID) ([]models.Student, error) {
+	response := make([]models.Student, 0)
 
 	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
 		list, err := s.client.GetSupervisorsStudentsTx(ctx, tx, supervisorID)

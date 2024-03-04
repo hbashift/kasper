@@ -20,7 +20,9 @@ type publicationsTable struct {
 	PublicationID postgres.ColumnString
 	WorksID       postgres.ColumnString
 	Name          postgres.ColumnString
-	Index         postgres.ColumnString
+	Scopus        postgres.ColumnBool
+	Rinc          postgres.ColumnBool
+	Wac           postgres.ColumnBool
 	Impact        postgres.ColumnFloat
 	Status        postgres.ColumnString
 	OutputData    postgres.ColumnString
@@ -59,14 +61,16 @@ func newPublicationsTableImpl(schemaName, tableName, alias string) publicationsT
 		PublicationIDColumn = postgres.StringColumn("publication_id")
 		WorksIDColumn       = postgres.StringColumn("works_id")
 		NameColumn          = postgres.StringColumn("name")
-		IndexColumn         = postgres.StringColumn("index")
+		ScopusColumn        = postgres.BoolColumn("scopus")
+		RincColumn          = postgres.BoolColumn("rinc")
+		WacColumn           = postgres.BoolColumn("wac")
 		ImpactColumn        = postgres.FloatColumn("impact")
 		StatusColumn        = postgres.StringColumn("status")
 		OutputDataColumn    = postgres.StringColumn("output_data")
 		CoAuthorsColumn     = postgres.StringColumn("co_authors")
 		VolumeColumn        = postgres.IntegerColumn("volume")
-		allColumns          = postgres.ColumnList{PublicationIDColumn, WorksIDColumn, NameColumn, IndexColumn, ImpactColumn, StatusColumn, OutputDataColumn, CoAuthorsColumn, VolumeColumn}
-		mutableColumns      = postgres.ColumnList{WorksIDColumn, NameColumn, IndexColumn, ImpactColumn, StatusColumn, OutputDataColumn, CoAuthorsColumn, VolumeColumn}
+		allColumns          = postgres.ColumnList{PublicationIDColumn, WorksIDColumn, NameColumn, ScopusColumn, RincColumn, WacColumn, ImpactColumn, StatusColumn, OutputDataColumn, CoAuthorsColumn, VolumeColumn}
+		mutableColumns      = postgres.ColumnList{WorksIDColumn, NameColumn, ScopusColumn, RincColumn, WacColumn, ImpactColumn, StatusColumn, OutputDataColumn, CoAuthorsColumn, VolumeColumn}
 	)
 
 	return publicationsTable{
@@ -76,7 +80,9 @@ func newPublicationsTableImpl(schemaName, tableName, alias string) publicationsT
 		PublicationID: PublicationIDColumn,
 		WorksID:       WorksIDColumn,
 		Name:          NameColumn,
-		Index:         IndexColumn,
+		Scopus:        ScopusColumn,
+		Rinc:          RincColumn,
+		Wac:           WacColumn,
 		Impact:        ImpactColumn,
 		Status:        StatusColumn,
 		OutputData:    OutputDataColumn,

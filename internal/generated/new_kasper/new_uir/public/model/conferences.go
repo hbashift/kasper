@@ -16,7 +16,9 @@ type Conferences struct {
 	ConferenceID   uuid.UUID `sql:"primary_key"`
 	WorksID        uuid.UUID
 	Status         ConferenceStatus
-	Index          WorkIndex
+	Scopus         bool
+	Rinc           bool
+	Wac            bool
 	ConferenceName string
 	ReportName     string
 	Location       string

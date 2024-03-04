@@ -3,7 +3,6 @@ package student
 import (
 	"context"
 
-	"uir_draft/internal/generated/new_kasper/new_uir/public/model"
 	"uir_draft/internal/pkg/models"
 
 	"github.com/google/uuid"
@@ -13,13 +12,9 @@ import (
 
 func (s *Service) AllToStatus(ctx context.Context, studentID uuid.UUID, status string) error {
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
-		student, err := s.studRepo.GetStudentStatusTx(ctx, tx, studentID)
+		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
 		if err != nil {
 			return err
-		}
-
-		if student.Status == model.ApprovalStatus_OnReview || student.Status == model.ApprovalStatus_Approved {
-			return models.ErrNonMutableStatus
 		}
 
 		dStatus, err := models.MapApprovalStatusToDomain(status)
@@ -64,4 +59,23 @@ func (s *Service) AllToStatus(ctx context.Context, studentID uuid.UUID, status s
 	}
 
 	return nil
+}
+
+func (s *Service) GetStudentStatus(ctx context.Context, studentID uuid.UUID) (models.Student, error) {
+	var student models.Student
+
+	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
+		var err error
+		student, err = s.studRepo.GetStudentStatusTx(ctx, tx, studentID)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+	if err != nil {
+		return models.Student{}, errors.Wrap(err, "GetStudentStatus()")
+	}
+
+	return student, nil
 }

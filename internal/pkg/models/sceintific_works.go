@@ -11,8 +11,12 @@ type Publication struct {
 	PublicationID *uuid.UUID `json:"publication_id,omitempty" db:"publications.publication_id" format:"uuid"`
 	// Название научной публикации
 	Name *string `json:"name,omitempty" db:"publications.name"`
-	// Индекс научной работы
-	Index *string `json:"index,omitempty" db:"publications.index" enums:"scopus,rinc,wac,unknown"`
+	// Индекс РИНЦ
+	Rinc bool `json:"rinc" db:"publications.rinc"`
+	// Индекс Scopus
+	Scopus bool `json:"scopus" db:"publications.scopus"`
+	// Индекс WaC
+	Wac bool `json:"wac" db:"publications.wac"`
 	// Влияние
 	Impact *float64 `json:"impact,omitempty" db:"publications.impact" format:"float"`
 	// Статус прогресса публикации
@@ -30,8 +34,12 @@ type Conference struct {
 	ConferenceID *uuid.UUID `json:"conference_id,omitempty" db:"conferences.conference_id" format:"uuid"`
 	// Статус прогресса научной конференции
 	Status *string `json:"status,omitempty" db:"conferences.status" enums:"registered,performed"`
-	// Индекс конференции
-	Index *string `json:"index,omitempty" db:"conferences.index" enums:"scopus,rinc,wac,unknown"`
+	// Индекс РИНЦ
+	Rinc bool `json:"rinc" db:"conferences.rinc"`
+	// Индекс Scopus
+	Scopus bool `json:"scopus" db:"conferences.scopus"`
+	// Индекс WaC
+	Wac bool `json:"wac" db:"conferences.wac"`
 	// Название конференции
 	ConferenceName *string `json:"conference_name,omitempty" db:"conferences.conference_name"`
 	// Название доклада

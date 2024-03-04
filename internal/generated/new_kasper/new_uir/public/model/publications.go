@@ -15,7 +15,9 @@ type Publications struct {
 	PublicationID uuid.UUID `sql:"primary_key"`
 	WorksID       uuid.UUID
 	Name          string
-	Index         WorkIndex
+	Scopus        bool
+	Rinc          bool
+	Wac           bool
 	Impact        float64
 	Status        PublicationStatus
 	OutputData    *string

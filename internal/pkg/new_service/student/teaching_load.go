@@ -33,7 +33,7 @@ func (s *Service) GetTeachingLoad(ctx context.Context, studentID uuid.UUID) ([]m
 
 func (s *Service) UpsertClassroomLoad(ctx context.Context, studentID, tLoadID uuid.UUID, semester int32, loads []models.ClassroomLoad) error {
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
-		student, err := s.studRepo.GetStudentStatusTx(ctx, tx, studentID)
+		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
 		if err != nil {
 			return err
 		}
@@ -74,7 +74,7 @@ func (s *Service) UpsertClassroomLoad(ctx context.Context, studentID, tLoadID uu
 
 func (s *Service) UpsertIndividualLoad(ctx context.Context, studentID, tLoadID uuid.UUID, semester int32, loads []models.IndividualStudentsLoad) error {
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
-		student, err := s.studRepo.GetStudentStatusTx(ctx, tx, studentID)
+		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
 		if err != nil {
 			return err
 		}
@@ -115,7 +115,7 @@ func (s *Service) UpsertIndividualLoad(ctx context.Context, studentID, tLoadID u
 
 func (s *Service) UpsertAdditionalLoad(ctx context.Context, studentID, tLoadID uuid.UUID, semester int32, loads []models.AdditionalLoad) error {
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
-		student, err := s.studRepo.GetStudentStatusTx(ctx, tx, studentID)
+		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
 		if err != nil {
 			return err
 		}
@@ -152,7 +152,7 @@ func (s *Service) UpsertAdditionalLoad(ctx context.Context, studentID, tLoadID u
 
 func (s *Service) DeleteClassroomLoad(ctx context.Context, studentID uuid.UUID, semester int32, loads []uuid.UUID) error {
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
-		student, err := s.studRepo.GetStudentStatusTx(ctx, tx, studentID)
+		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
 		if err != nil {
 			return err
 		}
@@ -183,7 +183,7 @@ func (s *Service) DeleteClassroomLoad(ctx context.Context, studentID uuid.UUID, 
 
 func (s *Service) DeleteIndividualLoad(ctx context.Context, studentID uuid.UUID, semester int32, loads []uuid.UUID) error {
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
-		student, err := s.studRepo.GetStudentStatusTx(ctx, tx, studentID)
+		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
 		if err != nil {
 			return err
 		}
@@ -214,7 +214,7 @@ func (s *Service) DeleteIndividualLoad(ctx context.Context, studentID uuid.UUID,
 
 func (s *Service) DeleteAdditionalLoad(ctx context.Context, studentID uuid.UUID, semester int32, loads []uuid.UUID) error {
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
-		student, err := s.studRepo.GetStudentStatusTx(ctx, tx, studentID)
+		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
 		if err != nil {
 			return err
 		}

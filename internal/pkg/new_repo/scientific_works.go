@@ -20,6 +20,34 @@ func NewScientificRepository() *ScientificRepository {
 	return &ScientificRepository{}
 }
 
+func (r *ScientificRepository) InitScientificWorkStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) error {
+	works := make([]model.ScientificWorksStatus, 0, 8)
+
+	for i := 1; i < 9; i++ {
+		work := model.ScientificWorksStatus{
+			WorksID:    uuid.New(),
+			StudentID:  studentID,
+			Semester:   int32(i),
+			Status:     model.ApprovalStatus_Empty,
+			UpdatedAt:  time.Now(),
+			AcceptedAt: nil,
+		}
+
+		works = append(works, work)
+	}
+
+	stmt, args := table.ScientificWorksStatus.
+		INSERT().
+		MODELS(works).
+		Sql()
+
+	if _, err := tx.Exec(ctx, stmt, args...); err != nil {
+		return errors.Wrap(err, "InitScientificWorkStatusTx()")
+	}
+
+	return nil
+}
+
 func (r *ScientificRepository) SetScientificWorkStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID, status model.ApprovalStatus, semester int32, acceptedAt *time.Time) error {
 	stmt, args := table.ScientificWorksStatus.
 		UPDATE(
@@ -112,7 +140,9 @@ func (r *ScientificRepository) UpdatePublicationsTx(ctx context.Context, tx pgx.
 		stmt, args := table.Publications.
 			UPDATE(
 				table.Publications.Name,
-				table.Publications.Index,
+				table.Publications.Scopus,
+				table.Publications.Rinc,
+				table.Publications.Wac,
 				table.Publications.Impact,
 				table.Publications.Status,
 				table.Publications.OutputData,
@@ -121,7 +151,9 @@ func (r *ScientificRepository) UpdatePublicationsTx(ctx context.Context, tx pgx.
 			).
 			SET(
 				publication.Name,
-				publication.Index,
+				publication.Scopus,
+				publication.Rinc,
+				publication.Wac,
 				publication.Impact,
 				publication.Status,
 				publication.OutputData,
@@ -180,7 +212,9 @@ func (r *ScientificRepository) UpdateConferencesTx(ctx context.Context, tx pgx.T
 			UPDATE(
 				table.Conferences.ConferenceID,
 				table.Conferences.Status,
-				table.Conferences.Index,
+				table.Conferences.Scopus,
+				table.Conferences.Rinc,
+				table.Conferences.Wac,
 				table.Conferences.ConferenceName,
 				table.Conferences.ReportName,
 				table.Conferences.Location,
@@ -189,7 +223,9 @@ func (r *ScientificRepository) UpdateConferencesTx(ctx context.Context, tx pgx.T
 			SET(
 				conference.ConferenceID,
 				conference.Status,
-				conference.Index,
+				conference.Scopus,
+				conference.Rinc,
+				conference.Wac,
 				conference.ConferenceName,
 				conference.ReportName,
 				conference.Location,
@@ -351,7 +387,9 @@ func scanScientificWork(row pgx.Row, target *models.ScientificWork) error {
 		&target.AcceptedAt,
 		&target.Publication.PublicationID,
 		&target.Publication.Name,
-		&target.Publication.Index,
+		&target.Publication.Scopus,
+		&target.Publication.Rinc,
+		&target.Publication.Wac,
 		&target.Publication.Impact,
 		&target.Publication.Status,
 		&target.Publication.OutputData,
@@ -359,7 +397,9 @@ func scanScientificWork(row pgx.Row, target *models.ScientificWork) error {
 		&target.Publication.Volume,
 		&target.Conference.ConferenceID,
 		&target.Conference.Status,
-		&target.Conference.Index,
+		&target.Conference.Scopus,
+		&target.Conference.Rinc,
+		&target.Conference.Wac,
 		&target.Conference.ConferenceName,
 		&target.Conference.ReportName,
 		&target.Conference.Location,
@@ -377,7 +417,9 @@ func scanPublication(row pgx.Row, target *models.Publication) error {
 	return row.Scan(
 		&target.PublicationID,
 		&target.Name,
-		&target.Index,
+		&target.Scopus,
+		&target.Rinc,
+		&target.Wac,
 		&target.Impact,
 		&target.Status,
 		&target.OutputData,
@@ -390,7 +432,9 @@ func scanConference(row pgx.Row, target *models.Conference) error {
 	return row.Scan(
 		&target.ConferenceID,
 		&target.Status,
-		&target.Index,
+		&target.Scopus,
+		&target.Rinc,
+		&target.Wac,
 		&target.ConferenceName,
 		&target.ReportName,
 		&target.Location,

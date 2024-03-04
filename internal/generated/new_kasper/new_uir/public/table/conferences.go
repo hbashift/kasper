@@ -20,7 +20,9 @@ type conferencesTable struct {
 	ConferenceID   postgres.ColumnString
 	WorksID        postgres.ColumnString
 	Status         postgres.ColumnString
-	Index          postgres.ColumnString
+	Scopus         postgres.ColumnBool
+	Rinc           postgres.ColumnBool
+	Wac            postgres.ColumnBool
 	ConferenceName postgres.ColumnString
 	ReportName     postgres.ColumnString
 	Location       postgres.ColumnString
@@ -58,13 +60,15 @@ func newConferencesTableImpl(schemaName, tableName, alias string) conferencesTab
 		ConferenceIDColumn   = postgres.StringColumn("conference_id")
 		WorksIDColumn        = postgres.StringColumn("works_id")
 		StatusColumn         = postgres.StringColumn("status")
-		IndexColumn          = postgres.StringColumn("index")
+		ScopusColumn         = postgres.BoolColumn("scopus")
+		RincColumn           = postgres.BoolColumn("rinc")
+		WacColumn            = postgres.BoolColumn("wac")
 		ConferenceNameColumn = postgres.StringColumn("conference_name")
 		ReportNameColumn     = postgres.StringColumn("report_name")
 		LocationColumn       = postgres.StringColumn("location")
 		ReportedAtColumn     = postgres.TimestampzColumn("reported_at")
-		allColumns           = postgres.ColumnList{ConferenceIDColumn, WorksIDColumn, StatusColumn, IndexColumn, ConferenceNameColumn, ReportNameColumn, LocationColumn, ReportedAtColumn}
-		mutableColumns       = postgres.ColumnList{WorksIDColumn, StatusColumn, IndexColumn, ConferenceNameColumn, ReportNameColumn, LocationColumn, ReportedAtColumn}
+		allColumns           = postgres.ColumnList{ConferenceIDColumn, WorksIDColumn, StatusColumn, ScopusColumn, RincColumn, WacColumn, ConferenceNameColumn, ReportNameColumn, LocationColumn, ReportedAtColumn}
+		mutableColumns       = postgres.ColumnList{WorksIDColumn, StatusColumn, ScopusColumn, RincColumn, WacColumn, ConferenceNameColumn, ReportNameColumn, LocationColumn, ReportedAtColumn}
 	)
 
 	return conferencesTable{
@@ -74,7 +78,9 @@ func newConferencesTableImpl(schemaName, tableName, alias string) conferencesTab
 		ConferenceID:   ConferenceIDColumn,
 		WorksID:        WorksIDColumn,
 		Status:         StatusColumn,
-		Index:          IndexColumn,
+		Scopus:         ScopusColumn,
+		Rinc:           RincColumn,
+		Wac:            WacColumn,
 		ConferenceName: ConferenceNameColumn,
 		ReportName:     ReportNameColumn,
 		Location:       LocationColumn,

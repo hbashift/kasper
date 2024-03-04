@@ -26,8 +26,10 @@ type (
 	}
 
 	StudentRepository interface {
-		GetStudentStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) (model.Students, error)
+		GetStudentTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) (model.Students, error)
 		SetStudentStatusTx(ctx context.Context, tx pgx.Tx, status model.ApprovalStatus, studentID uuid.UUID) error
+		GetStudentStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) (models.Student, error)
+		InsertStudentTx(ctx context.Context, tx pgx.Tx, student model.Students) error
 	}
 
 	DissertationRepository interface {

@@ -12,6 +12,11 @@ import (
 )
 
 type (
+	StudentRepository interface {
+		// GetStudentStatus - возвращает статус студента
+		GetStudentStatus(ctx context.Context, studentID uuid.UUID) (models.Student, error)
+	}
+
 	DissertationService interface {
 		AllToStatus(ctx context.Context, studentID uuid.UUID, status string) error
 		// GetDissertationPage - возвращает всю информацию для отрисовки страницы диссертации
@@ -64,6 +69,7 @@ type (
 )
 
 type StudentHandler struct {
+	student       StudentRepository
 	dissertation  DissertationService
 	scientific    ScientificWorksService
 	load          TeachingLoadService

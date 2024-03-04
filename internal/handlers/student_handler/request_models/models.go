@@ -1,6 +1,8 @@
 package request_models
 
 import (
+	"mime/multipart"
+
 	"uir_draft/internal/pkg/models"
 
 	"github.com/google/uuid"
@@ -69,4 +71,15 @@ type UpsertResearchProjectsRequest struct {
 
 type UpsertProgressRequest struct {
 	Progresses []models.SemesterProgressRequest `json:"progresses"`
+}
+
+type DownloadDissertationRequest struct {
+	// Семестр
+	Semester int32 `json:"semester,omitempty"`
+}
+
+type UploadDissertationRequest struct {
+	// Семестр
+	Semester int32                 `form:"semester" binding:"required"`
+	File     *multipart.FileHeader `form:"upload" binding:"required" swaggerignore:"true"`
 }

@@ -1,5 +1,33 @@
 basePath: /api/v1
 definitions:
+  model.ApprovalStatus:
+    enum:
+    - todo
+    - approved
+    - on review
+    - in progress
+    - empty
+    - failed
+    type: string
+    x-enum-varnames:
+    - ApprovalStatus_Todo
+    - ApprovalStatus_Approved
+    - ApprovalStatus_OnReview
+    - ApprovalStatus_InProgress
+    - ApprovalStatus_Empty
+    - ApprovalStatus_Failed
+  model.StudentStatus:
+    enum:
+    - academic
+    - graduated
+    - studying
+    - expelled
+    type: string
+    x-enum-varnames:
+    - StudentStatus_Academic
+    - StudentStatus_Graduated
+    - StudentStatus_Studying
+    - StudentStatus_Expelled
   models.AdditionalLoad:
     properties:
       comment:
@@ -51,14 +79,6 @@ definitions:
       conference_name:
         description: Название конференции
         type: string
-      index:
-        description: Индекс конференции
-        enum:
-        - scopus
-        - rinc
-        - wac
-        - unknown
-        type: string
       location:
         description: Место проведения
         type: string
@@ -69,12 +89,21 @@ definitions:
         description: Дата доклада
         format: date-time
         type: string
+      rinc:
+        description: Индекс РИНЦ
+        type: boolean
+      scopus:
+        description: Индекс Scopus
+        type: boolean
       status:
         description: Статус прогресса научной конференции
         enum:
         - registered
         - performed
         type: string
+      wac:
+        description: Индекс WaC
+        type: boolean
     type: object
   models.DissertationPageResponse:
     properties:
@@ -168,6 +197,15 @@ definitions:
         description: Дата последнего обновления
         type: string
     type: object
+  models.FeedbackRequest:
+    properties:
+      dissertation_id:
+        type: string
+      feedback:
+        type: string
+      semester:
+        type: integer
+    type: object
   models.FeedbackResponse:
     properties:
       created_at:
@@ -226,14 +264,6 @@ definitions:
         description: Влияние
         format: float
         type: number
-      index:
-        description: Индекс научной работы
-        enum:
-        - scopus
-        - rinc
-        - wac
-        - unknown
-        type: string
       name:
         description: Название научной публикации
         type: string
@@ -244,6 +274,12 @@ definitions:
         description: ID научной публикации
         format: uuid
         type: string
+      rinc:
+        description: Индекс РИНЦ
+        type: boolean
+      scopus:
+        description: Индекс Scopus
+        type: boolean
       status:
         description: Статус прогресса публикации
         enum:
@@ -254,6 +290,9 @@ definitions:
       volume:
         description: Объем написанной работы
         type: integer
+      wac:
+        description: Индекс WaC
+        type: boolean
     type: object
   models.ResearchProject:
     properties:
@@ -423,6 +462,50 @@ definitions:
         format: date-time
         type: string
     type: object
+  models.Student:
+    properties:
+      actual_semester:
+        description: Актуальный семестр
+        type: integer
+      can_edit:
+        description: Флаг о возможности редактировать всю информацию
+        type: boolean
+      department:
+        description: Кафедра
+        type: string
+      full_name:
+        description: Полное имя
+        type: string
+      group_name:
+        description: Название группы
+        type: string
+      specialization:
+        description: Специализация
+        type: string
+      start_date:
+        description: Дата начала обучения
+        type: string
+      status:
+        allOf:
+        - $ref: '#/definitions/model.ApprovalStatus'
+        description: Статус проверки и подтверждения
+      student_id:
+        description: ID студента
+        format: uuid
+        type: string
+      studying_status:
+        allOf:
+        - $ref: '#/definitions/model.StudentStatus'
+        description: Статус обучения
+        enum:
+        - academic
+        - graduated
+        - studying
+        - expelled
+      years:
+        description: Количество лет обучения
+        type: integer
+    type: object
   models.TeachingLoad:
     properties:
       accepted_at:
@@ -463,6 +546,13 @@ definitions:
         description: Дата последнего обновления
         type: string
     type: object
+  request_models.AllToStatusRequest:
+    properties:
+      status:
+        type: string
+      student_id:
+        type: string
+    type: object
   request_models.DeleteIDs:
     properties:
       ids:
@@ -471,6 +561,17 @@ definitions:
         type: array
       semester:
         type: integer
+    type: object
+  request_models.DownloadDissertationRequest:
+    properties:
+      semester:
+        description: Семестр
+        type: integer
+    type: object
+  request_models.GetByStudentID:
+    properties:
+      student_id:
+        type: string
     type: object
   request_models.UpsertAdditionalLoadRequest:
     properties:
@@ -521,6 +622,13 @@ definitions:
       work_id:
         description: ID совокупности всех научных работ за семестр
         format: uuid
+        type: string
+    type: object
+  request_models.UpsertFeedbackRequest:
+    properties:
+      feedback:
+        $ref: '#/definitions/models.FeedbackRequest'
+      student_id:
         type: string
     type: object
   request_models.UpsertIndividualLoadRequest:
@@ -620,6 +728,47 @@ paths:
       summary: Получение данных для страницы диссертации
       tags:
       - Student.Dissertation
+  /students/dissertation/file/{token}:
+    put:
+      consumes:
+      - application/json
+      description: Скачивание файла диссертации
+      parameters:
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      - description: Данные
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.DownloadDissertationRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Файл
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Скачивание файла диссертации
+      tags:
+      - Student
   /students/dissertation/progress/{token}:
     post:
       consumes:
@@ -659,11 +808,11 @@ paths:
       summary: Обновление прогресса написания диссертации
       tags:
       - Student.Dissertation
-  /students/load/{token}:
+  /students/info/{token}:
     get:
       consumes:
       - application/json
-      description: Получение данных для страницы педагогической нагрузки
+      description: Получение данных о студенте (статус студента)
       parameters:
       - description: Токен пользователя
         in: path
@@ -676,9 +825,7 @@ paths:
         "200":
           description: Данные
           schema:
-            items:
-              $ref: '#/definitions/models.TeachingLoad'
-            type: array
+            $ref: '#/definitions/models.Student'
         "204":
           description: Нет записей в БД
           schema:
@@ -695,9 +842,52 @@ paths:
           description: Ошибка на стороне сервера
           schema:
             type: string
-      summary: Получение данных для страницы педагогической нагрузки
+      summary: Получение данных о студенте (статус студента)
       tags:
-      - Student.TeachingLoad
+      - Student
+  /students/load/{token}:
+    get:
+      consumes:
+      - multipart/form-data
+      description: Загрузка файла диссертации
+      parameters:
+      - description: Семестр
+        in: formData
+        name: semester
+        required: true
+        type: integer
+      - description: Файл
+        in: formData
+        name: file
+        required: true
+        type: file
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Загрузка файла диссертации
+      tags:
+      - Student
   /students/load/additional/{token}:
     delete:
       consumes:
@@ -1227,4 +1417,222 @@ paths:
       summary: Добавление или обновление научных публикаций
       tags:
       - Student.ScientificWorks
+  /supervisors/student/dissertation/{token}:
+    put:
+      consumes:
+      - application/json
+      description: Получение страницы информации для страницы диссертации аспиранта
+      parameters:
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      - description: Запрос
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.GetByStudentID'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Данные
+          schema:
+            $ref: '#/definitions/models.DissertationPageResponse'
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Получение страницы информации для страницы диссертации аспиранта
+      tags:
+      - Supervisor.Dissertation
+  /supervisors/student/list/{token}:
+    put:
+      description: Получение списка аспирантов научного руководителя
+      parameters:
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Данные
+          schema:
+            items:
+              $ref: '#/definitions/models.Student'
+            type: array
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Получение списка аспирантов научного руководителя
+      tags:
+      - Supervisor
+  /supervisors/student/load/{token}:
+    post:
+      consumes:
+      - application/json
+      description: Получение страницы информации для страницы научных работ аспиранта
+      parameters:
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      - description: Запрос
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.UpsertFeedbackRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Получение страницы информации для страницы научных работ аспиранта
+      tags:
+      - Supervisor.Dissertation
+    put:
+      consumes:
+      - application/json
+      description: Получение страницы информации для страницы научных работ аспиранта
+      parameters:
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      - description: Запрос
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.GetByStudentID'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Данные
+          schema:
+            items:
+              $ref: '#/definitions/models.TeachingLoad'
+            type: array
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Получение страницы информации для страницы научных работ аспиранта
+      tags:
+      - Supervisor.TeachingLoad
+  /supervisors/student/review/{token}:
+    post:
+      description: Проставление статуса для всего для аспиранта
+      parameters:
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      - description: Запрос
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.AllToStatusRequest'
+      responses:
+        "200":
+          description: OK
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Проставление статуса для всего для аспиранта
+      tags:
+      - Supervisor
+  /supervisors/student/works/{token}:
+    put:
+      consumes:
+      - application/json
+      description: Получение страницы информации для страницы научных работ аспиранта
+      parameters:
+      - description: Запрос
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.GetByStudentID'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Данные
+          schema:
+            items:
+              $ref: '#/definitions/models.ScientificWork'
+            type: array
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Получение страницы информации для страницы научных работ аспиранта
+      tags:
+      - Supervisor.ScientificWorks
 swagger: "2.0"

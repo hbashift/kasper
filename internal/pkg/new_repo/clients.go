@@ -19,7 +19,7 @@ func NewClientRepository() *ClientRepository {
 	return &ClientRepository{}
 }
 
-func (r *ClientRepository) GetStudentStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) (model.Students, error) {
+func (r *ClientRepository) GetStudentTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) (model.Students, error) {
 	stmt, args := table.Students.
 		SELECT(table.Students.AllColumns).
 		WHERE(table.Students.StudentID.EQ(postgres.UUID(studentID))).
@@ -29,7 +29,30 @@ func (r *ClientRepository) GetStudentStatusTx(ctx context.Context, tx pgx.Tx, st
 	student := model.Students{}
 
 	if err := scanStudent(row, &student); err != nil {
-		return model.Students{}, errors.Wrap(err, "GetStudentStatusTx()")
+		return model.Students{}, errors.Wrap(err, "GetStudentTx()")
+	}
+
+	return student, nil
+}
+
+func (r *ClientRepository) GetStudentStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) (models.Student, error) {
+	stmt, args := table.Students.
+		SELECT(
+			table.Students.AllColumns.Except(table.Students.UserID, table.Students.SpecID, table.Students.GroupID),
+			table.Specializations.Title,
+			table.Groups.GroupName,
+		).
+		FROM(table.Students.
+			INNER_JOIN(table.Groups, table.Students.GroupID.EQ(table.Groups.GroupID)).
+			INNER_JOIN(table.Specializations, table.Students.SpecID.EQ(table.Specializations.SpecID)),
+		).
+		WHERE(table.Students.StudentID.EQ(postgres.UUID(studentID))).
+		Sql()
+
+	row := tx.QueryRow(ctx, stmt, args...)
+	student := models.Student{}
+	if err := scanStudentList(row, &student); err != nil {
+		return models.Student{}, errors.Wrap(err, "GetStudentStatusTx()")
 	}
 
 	return student, nil
@@ -62,10 +85,10 @@ func (r *ClientRepository) SetStudentStatusTx(ctx context.Context, tx pgx.Tx, st
 	return nil
 }
 
-func (r *ClientRepository) GetSupervisorsStudentsTx(ctx context.Context, tx pgx.Tx, supervisorID uuid.UUID) ([]models.StudentList, error) {
+func (r *ClientRepository) GetSupervisorsStudentsTx(ctx context.Context, tx pgx.Tx, supervisorID uuid.UUID) ([]models.Student, error) {
 	stmt, args := table.Students.
 		SELECT(
-			table.Students.AllColumns.Except(table.Students.UserID, table.Students.CanEdit, table.Students.SpecID, table.Students.GroupID),
+			table.Students.AllColumns.Except(table.Students.UserID, table.Students.SpecID, table.Students.GroupID),
 			table.Specializations.Title,
 			table.Groups.GroupName,
 		).
@@ -83,10 +106,10 @@ func (r *ClientRepository) GetSupervisorsStudentsTx(ctx context.Context, tx pgx.
 	}
 	defer rows.Close()
 
-	list := make([]models.StudentList, 0, 0)
+	list := make([]models.Student, 0, 0)
 
 	for rows.Next() {
-		el := models.StudentList{}
+		el := models.Student{}
 		if err = scanStudentList(rows, &el); err != nil {
 			return nil, errors.Wrap(err, "GetSupervisorsStudentsTx(): scanning rows")
 		}
@@ -116,7 +139,7 @@ func scanStudent(row pgx.Row, target *model.Students) error {
 	)
 }
 
-func scanStudentList(row pgx.Row, target *models.StudentList) error {
+func scanStudentList(row pgx.Row, target *models.Student) error {
 	return row.Scan(
 		&target.StudentID,
 		&target.FullName,
@@ -126,6 +149,7 @@ func scanStudentList(row pgx.Row, target *models.StudentList) error {
 		&target.StartDate,
 		&target.StudyingStatus,
 		&target.Status,
+		&target.CanEdit,
 		&target.Specialization,
 		&target.GroupName,
 	)

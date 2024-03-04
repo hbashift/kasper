@@ -15,6 +15,68 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/students/dissertation/file/{token}": {
+            "put": {
+                "description": "Скачивание файла диссертации",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Student"
+                ],
+                "summary": "Скачивание файла диссертации",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Данные",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.DownloadDissertationRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Файл"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/students/dissertation/progress/{token}": {
             "post": {
                 "description": "Обновление прогресса написания диссертации",
@@ -101,6 +163,62 @@ const docTemplate = `{
                         "description": "Данные",
                         "schema": {
                             "$ref": "#/definitions/models.DissertationPageResponse"
+                        }
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/students/info/{token}": {
+            "get": {
+                "description": "Получение данных о студенте (статус студента)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Student"
+                ],
+                "summary": "Получение данных о студенте (статус студента)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Данные",
+                        "schema": {
+                            "$ref": "#/definitions/models.Student"
                         }
                     },
                     "204": {
@@ -480,18 +598,29 @@ const docTemplate = `{
         },
         "/students/load/{token}": {
             "get": {
-                "description": "Получение данных для страницы педагогической нагрузки",
+                "description": "Загрузка файла диссертации",
                 "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "tags": [
-                    "Student.TeachingLoad"
+                    "Student"
                 ],
-                "summary": "Получение данных для страницы педагогической нагрузки",
+                "summary": "Загрузка файла диссертации",
                 "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Семестр",
+                        "name": "semester",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Файл",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Токен пользователя",
@@ -502,13 +631,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Данные",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.TeachingLoad"
-                            }
-                        }
+                        "description": "OK"
                     },
                     "204": {
                         "description": "Нет записей в БД",
@@ -984,9 +1107,373 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/supervisors/student/dissertation/{token}": {
+            "put": {
+                "description": "Получение страницы информации для страницы диссертации аспиранта",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Supervisor.Dissertation"
+                ],
+                "summary": "Получение страницы информации для страницы диссертации аспиранта",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Запрос",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.GetByStudentID"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Данные",
+                        "schema": {
+                            "$ref": "#/definitions/models.DissertationPageResponse"
+                        }
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/supervisors/student/list/{token}": {
+            "put": {
+                "description": "Получение списка аспирантов научного руководителя",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Supervisor"
+                ],
+                "summary": "Получение списка аспирантов научного руководителя",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Данные",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Student"
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/supervisors/student/load/{token}": {
+            "put": {
+                "description": "Получение страницы информации для страницы научных работ аспиранта",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Supervisor.TeachingLoad"
+                ],
+                "summary": "Получение страницы информации для страницы научных работ аспиранта",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Запрос",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.GetByStudentID"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Данные",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.TeachingLoad"
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Получение страницы информации для страницы научных работ аспиранта",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Supervisor.Dissertation"
+                ],
+                "summary": "Получение страницы информации для страницы научных работ аспиранта",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Запрос",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.UpsertFeedbackRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/supervisors/student/review/{token}": {
+            "post": {
+                "description": "Проставление статуса для всего для аспиранта",
+                "tags": [
+                    "Supervisor"
+                ],
+                "summary": "Проставление статуса для всего для аспиранта",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Запрос",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.AllToStatusRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/supervisors/student/works/{token}": {
+            "put": {
+                "description": "Получение страницы информации для страницы научных работ аспиранта",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Supervisor.ScientificWorks"
+                ],
+                "summary": "Получение страницы информации для страницы научных работ аспиранта",
+                "parameters": [
+                    {
+                        "description": "Запрос",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.GetByStudentID"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Данные",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.ScientificWork"
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "model.ApprovalStatus": {
+            "type": "string",
+            "enum": [
+                "todo",
+                "approved",
+                "on review",
+                "in progress",
+                "empty",
+                "failed"
+            ],
+            "x-enum-varnames": [
+                "ApprovalStatus_Todo",
+                "ApprovalStatus_Approved",
+                "ApprovalStatus_OnReview",
+                "ApprovalStatus_InProgress",
+                "ApprovalStatus_Empty",
+                "ApprovalStatus_Failed"
+            ]
+        },
+        "model.StudentStatus": {
+            "type": "string",
+            "enum": [
+                "academic",
+                "graduated",
+                "studying",
+                "expelled"
+            ],
+            "x-enum-varnames": [
+                "StudentStatus_Academic",
+                "StudentStatus_Graduated",
+                "StudentStatus_Studying",
+                "StudentStatus_Expelled"
+            ]
+        },
         "models.AdditionalLoad": {
             "type": "object",
             "properties": {
@@ -1056,16 +1543,6 @@ const docTemplate = `{
                     "description": "Название конференции",
                     "type": "string"
                 },
-                "index": {
-                    "description": "Индекс конференции",
-                    "type": "string",
-                    "enum": [
-                        "scopus",
-                        "rinc",
-                        "wac",
-                        "unknown"
-                    ]
-                },
                 "location": {
                     "description": "Место проведения",
                     "type": "string"
@@ -1079,6 +1556,14 @@ const docTemplate = `{
                     "type": "string",
                     "format": "date-time"
                 },
+                "rinc": {
+                    "description": "Индекс РИНЦ",
+                    "type": "boolean"
+                },
+                "scopus": {
+                    "description": "Индекс Scopus",
+                    "type": "boolean"
+                },
                 "status": {
                     "description": "Статус прогресса научной конференции",
                     "type": "string",
@@ -1086,6 +1571,10 @@ const docTemplate = `{
                         "registered",
                         "performed"
                     ]
+                },
+                "wac": {
+                    "description": "Индекс WaC",
+                    "type": "boolean"
                 }
             }
         },
@@ -1210,6 +1699,20 @@ const docTemplate = `{
                 }
             }
         },
+        "models.FeedbackRequest": {
+            "type": "object",
+            "properties": {
+                "dissertation_id": {
+                    "type": "string"
+                },
+                "feedback": {
+                    "type": "string"
+                },
+                "semester": {
+                    "type": "integer"
+                }
+            }
+        },
         "models.FeedbackResponse": {
             "type": "object",
             "properties": {
@@ -1287,16 +1790,6 @@ const docTemplate = `{
                     "type": "number",
                     "format": "float"
                 },
-                "index": {
-                    "description": "Индекс научной работы",
-                    "type": "string",
-                    "enum": [
-                        "scopus",
-                        "rinc",
-                        "wac",
-                        "unknown"
-                    ]
-                },
                 "name": {
                     "description": "Название научной публикации",
                     "type": "string"
@@ -1310,6 +1803,14 @@ const docTemplate = `{
                     "type": "string",
                     "format": "uuid"
                 },
+                "rinc": {
+                    "description": "Индекс РИНЦ",
+                    "type": "boolean"
+                },
+                "scopus": {
+                    "description": "Индекс Scopus",
+                    "type": "boolean"
+                },
                 "status": {
                     "description": "Статус прогресса публикации",
                     "type": "string",
@@ -1322,6 +1823,10 @@ const docTemplate = `{
                 "volume": {
                     "description": "Объем написанной работы",
                     "type": "integer"
+                },
+                "wac": {
+                    "description": "Индекс WaC",
+                    "type": "boolean"
                 }
             }
         },
@@ -1552,6 +2057,70 @@ const docTemplate = `{
                 }
             }
         },
+        "models.Student": {
+            "type": "object",
+            "properties": {
+                "actual_semester": {
+                    "description": "Актуальный семестр",
+                    "type": "integer"
+                },
+                "can_edit": {
+                    "description": "Флаг о возможности редактировать всю информацию",
+                    "type": "boolean"
+                },
+                "department": {
+                    "description": "Кафедра",
+                    "type": "string"
+                },
+                "full_name": {
+                    "description": "Полное имя",
+                    "type": "string"
+                },
+                "group_name": {
+                    "description": "Название группы",
+                    "type": "string"
+                },
+                "specialization": {
+                    "description": "Специализация",
+                    "type": "string"
+                },
+                "start_date": {
+                    "description": "Дата начала обучения",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "Статус проверки и подтверждения",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/model.ApprovalStatus"
+                        }
+                    ]
+                },
+                "student_id": {
+                    "description": "ID студента",
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "studying_status": {
+                    "description": "Статус обучения",
+                    "enum": [
+                        "academic",
+                        "graduated",
+                        "studying",
+                        "expelled"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/model.StudentStatus"
+                        }
+                    ]
+                },
+                "years": {
+                    "description": "Количество лет обучения",
+                    "type": "integer"
+                }
+            }
+        },
         "models.TeachingLoad": {
             "type": "object",
             "properties": {
@@ -1613,6 +2182,17 @@ const docTemplate = `{
                 }
             }
         },
+        "request_models.AllToStatusRequest": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string"
+                },
+                "student_id": {
+                    "type": "string"
+                }
+            }
+        },
         "request_models.DeleteIDs": {
             "type": "object",
             "properties": {
@@ -1624,6 +2204,23 @@ const docTemplate = `{
                 },
                 "semester": {
                     "type": "integer"
+                }
+            }
+        },
+        "request_models.DownloadDissertationRequest": {
+            "type": "object",
+            "properties": {
+                "semester": {
+                    "description": "Семестр",
+                    "type": "integer"
+                }
+            }
+        },
+        "request_models.GetByStudentID": {
+            "type": "object",
+            "properties": {
+                "student_id": {
+                    "type": "string"
                 }
             }
         },
@@ -1687,6 +2284,17 @@ const docTemplate = `{
                     "description": "ID совокупности всех научных работ за семестр",
                     "type": "string",
                     "format": "uuid"
+                }
+            }
+        },
+        "request_models.UpsertFeedbackRequest": {
+            "type": "object",
+            "properties": {
+                "feedback": {
+                    "$ref": "#/definitions/models.FeedbackRequest"
+                },
+                "student_id": {
+                    "type": "string"
                 }
             }
         },

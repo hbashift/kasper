@@ -9,6 +9,23 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// GetDissertationPage
+//
+//	@Summary		Получение страницы информации для страницы диссертации аспиранта
+//	@Tags			Supervisor.Dissertation
+//	@Description	Получение страницы информации для страницы диссертации аспиранта
+//	@Success		200	{object}	models.DissertationPageResponse	"Данные"
+//	@Accept			json
+//
+//	@Produce		json
+//	@Param			token	path		string							true	"Токен пользователя"
+//
+//	@Param			input	body		request_models.GetByStudentID	true	"Запрос"
+//
+//	@Failure		401		{string}	string							"Токен протух"
+//	@Failure		204		{string}	string							"Нет записей в БД"
+//	@Failure		500		{string}	string							"Ошибка на стороне сервера"
+//	@Router			/supervisors/student/dissertation/{token} [put]
 func (h *SupervisorHandler) GetDissertationPage(ctx *gin.Context) {
 	_, err := h.authenticate(ctx)
 	if err != nil {

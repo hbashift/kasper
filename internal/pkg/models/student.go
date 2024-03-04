@@ -26,15 +26,27 @@ type IDs struct {
 	Semester int       `db:"semester"`
 }
 
-type StudentList struct {
-	StudentID      uuid.UUID            `db:"students.student_id" json:"student_id,omitempty"`
-	FullName       string               `db:"students.full_name" json:"full_name,omitempty"`
-	Department     string               `db:"students.department" json:"department,omitempty"`
-	ActualSemester int32                `db:"students.actual_semester" json:"actual_semester,omitempty"`
-	Years          int32                `db:"students.years" json:"years,omitempty"`
-	StartDate      time.Time            `db:"students.start_date" json:"start_date"`
-	StudyingStatus model.StudentStatus  `db:"students.studying_status" json:"studying_status,omitempty"`
-	Status         model.ApprovalStatus `db:"students.status" json:"status,omitempty"`
-	Specialization string               `db:"specializations.title" json:"specialization,omitempty"`
-	GroupName      string               `db:"groups.group_name" json:"group_name,omitempty"`
+type Student struct {
+	// ID студента
+	StudentID uuid.UUID `db:"students.student_id" json:"student_id,omitempty" format:"uuid"`
+	// Полное имя
+	FullName string `db:"students.full_name" json:"full_name,omitempty"`
+	// Кафедра
+	Department string `db:"students.department" json:"department,omitempty"`
+	// Актуальный семестр
+	ActualSemester int32 `db:"students.actual_semester" json:"actual_semester,omitempty"`
+	// Количество лет обучения
+	Years int32 `db:"students.years" json:"years,omitempty"`
+	// Дата начала обучения
+	StartDate time.Time `db:"students.start_date" json:"start_date"`
+	// Статус обучения
+	StudyingStatus model.StudentStatus `db:"students.studying_status" json:"studying_status,omitempty" enums:"academic,graduated,studying,expelled"`
+	// Статус проверки и подтверждения
+	Status model.ApprovalStatus `db:"students.status" json:"status,omitempty"`
+	// Специализация
+	Specialization string `db:"specializations.title" json:"specialization,omitempty"`
+	// Название группы
+	GroupName string `db:"groups.group_name" json:"group_name,omitempty"`
+	// Флаг о возможности редактировать всю информацию
+	CanEdit bool `db:"students.can_edit" json:"can_edit,omitempty"`
 }

@@ -20,6 +20,34 @@ func NewTeachingLoadStatusRepository() *TeachingLoadRepository {
 	return &TeachingLoadRepository{}
 }
 
+func (r *TeachingLoadRepository) InitTeachingLoadsStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) error {
+	loads := make([]model.TeachingLoadStatus, 0, 8)
+
+	for i := 1; i < 9; i++ {
+		load := model.TeachingLoadStatus{
+			LoadsID:    uuid.New(),
+			StudentID:  studentID,
+			Semester:   int32(i),
+			Status:     model.ApprovalStatus_Empty,
+			UpdatedAt:  time.Now(),
+			AcceptedAt: nil,
+		}
+
+		loads = append(loads, load)
+	}
+
+	stmt, args := table.TeachingLoadStatus.
+		INSERT().
+		MODELS(loads).
+		Sql()
+
+	if _, err := tx.Exec(ctx, stmt, args...); err != nil {
+		return errors.Wrap(err, "InitTeachingLoadsStatusTx()")
+	}
+
+	return nil
+}
+
 func (r *TeachingLoadRepository) SetTeachingLoadStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID, status model.ApprovalStatus, semester int32, acceptedAt *time.Time) error {
 	stmt, args := table.TeachingLoadStatus.
 		UPDATE(

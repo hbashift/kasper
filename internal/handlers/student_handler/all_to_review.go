@@ -10,15 +10,16 @@ import (
 )
 
 // AllToReview
-// @Summary		Отправка на проверку
-// @Tags			Student
-// @Description	Переводит научные работы, пед нагрузку и диссертацию в статус 'in_review', который является блокирующим
-// @Success		200
-// @Param			token	path		string	true	"Токен пользователя"
-// @Failure		401		{string}	string	"Токен протух"
-// @Failure		204		{string}	string	"Нет записей в БД"
-// @Failure		500		{string}	string	"Ошибка на стороне сервера"
-// @Router			/students/review/{token} [post]
+//
+//	@Summary		Отправка на проверку
+//	@Tags			Student
+//	@Description	Переводит научные работы, пед нагрузку и диссертацию в статус 'in_review', который является блокирующим
+//	@Success		200
+//	@Param			token	path		string	true	"Токен пользователя"
+//	@Failure		401		{string}	string	"Токен протух"
+//	@Failure		204		{string}	string	"Нет записей в БД"
+//	@Failure		500		{string}	string	"Ошибка на стороне сервера"
+//	@Router			/students/review/{token} [post]
 func (h *StudentHandler) AllToReview(ctx *gin.Context) {
 	user, err := h.authenticate(ctx)
 	if err != nil {

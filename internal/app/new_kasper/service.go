@@ -11,9 +11,12 @@ import (
 
 type StudentHandler interface {
 	AllToReview(ctx *gin.Context)
+	GetStudentStatus(ctx *gin.Context)
 
 	GetDissertationPage(ctx *gin.Context)
 	UpsertSemesterProgress(ctx *gin.Context)
+	DownloadDissertation(ctx *gin.Context)
+	UploadDissertation(ctx *gin.Context)
 
 	GetTeachingLoad(ctx *gin.Context)
 	UpsertAdditionalLoads(ctx *gin.Context)
@@ -73,9 +76,12 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 
 	// StudentHandlers init
 	r.POST("/students/review/:token", h.student.AllToReview)
+	r.GET("/students/info/:token", h.student.GetStudentStatus)
 
 	r.GET("/students/dissertation/:token", h.student.GetDissertationPage)
 	r.POST("/students/dissertation/progress/:token", h.student.UpsertSemesterProgress)
+	r.PUT("/students/dissertation/file/:token", h.student.DownloadDissertation)
+	r.POST("/students/dissertation/file/:token", h.student.UploadDissertation)
 
 	r.GET("/students/load/:token", h.student.GetTeachingLoad)
 	r.POST("/students/load/classroom/:token", h.student.UpsertClassroomLoads)
@@ -94,15 +100,15 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 	r.DELETE("/students/works/projects/:token", h.student.DeleteProjects)
 
 	// SupervisorHandler init
-	r.GET("/supervisors/student/list/:token", h.supervisor.GetStudentsList)
+	r.PUT("/supervisors/student/list/:token", h.supervisor.GetStudentsList)
 
 	r.POST("/supervisors/student/review/:token", h.supervisor.AllToStatus)
 
-	r.GET("/supervisors/student/dissertation/:token", h.supervisor.GetDissertationPage)
+	r.PUT("/supervisors/student/dissertation/:token", h.supervisor.GetDissertationPage)
 	r.POST("/supervisors/student/dissertation/feedback/:token", h.supervisor.UpsertFeedback)
 
-	r.GET("/supervisors/student/load/:token", h.supervisor.GetTeachingLoad)
-	r.GET("/supervisors/student/works/:token", h.supervisor.GetScientificWorks)
+	r.PUT("/supervisors/student/load/:token", h.supervisor.GetTeachingLoad)
+	r.PUT("/supervisors/student/works/:token", h.supervisor.GetScientificWorks)
 
 	return r
 }
