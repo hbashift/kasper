@@ -1,33 +1,5 @@
 basePath: /api/v1
 definitions:
-  model.ApprovalStatus:
-    enum:
-    - todo
-    - approved
-    - on review
-    - in progress
-    - empty
-    - failed
-    type: string
-    x-enum-varnames:
-    - ApprovalStatus_Todo
-    - ApprovalStatus_Approved
-    - ApprovalStatus_OnReview
-    - ApprovalStatus_InProgress
-    - ApprovalStatus_Empty
-    - ApprovalStatus_Failed
-  model.StudentStatus:
-    enum:
-    - academic
-    - graduated
-    - studying
-    - expelled
-    type: string
-    x-enum-varnames:
-    - StudentStatus_Academic
-    - StudentStatus_Graduated
-    - StudentStatus_Studying
-    - StudentStatus_Expelled
   models.AdditionalLoad:
     properties:
       comment:
@@ -103,6 +75,9 @@ definitions:
         type: string
       wac:
         description: Индекс WaC
+        type: boolean
+      wos:
+        description: Индекс WoS
         type: boolean
     type: object
   models.DissertationPageResponse:
@@ -292,6 +267,9 @@ definitions:
         type: integer
       wac:
         description: Индекс WaC
+        type: boolean
+      wos:
+        description: Индекс WoS
         type: boolean
     type: object
   models.ResearchProject:
@@ -486,25 +464,43 @@ definitions:
         description: Дата начала обучения
         type: string
       status:
-        allOf:
-        - $ref: '#/definitions/model.ApprovalStatus'
         description: Статус проверки и подтверждения
+        type: string
       student_id:
         description: ID студента
         format: uuid
         type: string
       studying_status:
-        allOf:
-        - $ref: '#/definitions/model.StudentStatus'
         description: Статус обучения
         enum:
         - academic
         - graduated
         - studying
         - expelled
+        type: string
       years:
         description: Количество лет обучения
         type: integer
+    type: object
+  models.StudentSupervisorPair:
+    properties:
+      student:
+        allOf:
+        - $ref: '#/definitions/models.Student'
+        description: Информация о студенте в паре
+      supervisor:
+        allOf:
+        - $ref: '#/definitions/models.Supervisor'
+        description: Информация о научном руководителе в паре
+    type: object
+  models.Supervisor:
+    properties:
+      full_name:
+        description: Полное имя руководителя
+        type: string
+      supervisor_id:
+        description: ID научного руководителя
+        type: string
     type: object
   models.TeachingLoad:
     properties:
@@ -546,12 +542,15 @@ definitions:
         description: Дата последнего обновления
         type: string
     type: object
-  request_models.AllToStatusRequest:
+  request_models.ChangeSupervisorRequest:
     properties:
-      status:
-        type: string
       student_id:
         type: string
+      supervisor_id:
+        type: string
+    required:
+    - student_id
+    - supervisor_id
     type: object
   request_models.DeleteIDs:
     properties:
@@ -568,8 +567,41 @@ definitions:
         description: Семестр
         type: integer
     type: object
+  request_models.DownloadDissertationRequestSup:
+    properties:
+      semester:
+        description: Семестр
+        type: integer
+      student_id:
+        description: ID студента
+        type: string
+    type: object
   request_models.GetByStudentID:
     properties:
+      student_id:
+        type: string
+    type: object
+  request_models.SetStudentStudyingStatusRequest:
+    properties:
+      status:
+        enum:
+        - academic
+        - graduated
+        - studying
+        - expelled
+        type: string
+      student_id:
+        type: string
+    type: object
+  request_models.ToReviewRequest:
+    properties:
+      semester:
+        type: integer
+    type: object
+  request_models.ToStatusRequest:
+    properties:
+      status:
+        type: string
       student_id:
         type: string
     type: object
@@ -622,6 +654,11 @@ definitions:
       work_id:
         description: ID совокупности всех научных работ за семестр
         format: uuid
+        type: string
+    type: object
+  request_models.UpsertDissertationTitleRequest:
+    properties:
+      title:
         type: string
     type: object
   request_models.UpsertFeedbackRequest:
@@ -691,6 +728,193 @@ info:
   title: Сервис Kasper
   version: 0.1.2
 paths:
+  /administrator/pairs/{token}:
+    get:
+      description: Ручка для получения пар аспирант/руководитель
+      parameters:
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.StudentSupervisorPair'
+            type: array
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Получение пар аспирант/руководитель
+      tags:
+      - Admin
+  /administrator/student/change/{token}:
+    post:
+      consumes:
+      - application/json
+      description: Изменение научного руководителя у студента
+      parameters:
+      - description: Данные
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.ChangeSupervisorRequest'
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Изменение научного руководителя у студента
+      tags:
+      - Admin
+  /administrator/student/status/{token}:
+    post:
+      consumes:
+      - application/json
+      description: Изменение статуса обучения у аспиранта
+      parameters:
+      - description: Данные
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.SetStudentStudyingStatusRequest'
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Изменение статуса обучения у аспиранта
+      tags:
+      - Admin
+  /administrator/supervisors/list/{token}:
+    get:
+      description: Получения списка научных руководителей
+      parameters:
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Supervisor'
+            type: array
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Получения списка научных руководителей
+      tags:
+      - Admin
+  /student/dissertation_title/{token}:
+    post:
+      consumes:
+      - application/json
+      description: Обновление названия диссертации
+      parameters:
+      - description: Данные
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.UpsertDissertationTitleRequest'
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Обновление названия диссертации
+      tags:
+      - Student.Dissertation
   /students/dissertation/{token}:
     get:
       consumes:
@@ -729,6 +953,48 @@ paths:
       tags:
       - Student.Dissertation
   /students/dissertation/file/{token}:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Загрузка файла диссертации
+      parameters:
+      - description: Семестр
+        in: formData
+        name: semester
+        required: true
+        type: integer
+      - description: Файл
+        in: formData
+        name: file
+        required: true
+        type: file
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Загрузка файла диссертации
+      tags:
+      - Student
     put:
       consumes:
       - application/json
@@ -808,6 +1074,84 @@ paths:
       summary: Обновление прогресса написания диссертации
       tags:
       - Student.Dissertation
+  /students/dissertation/review/{token}:
+    post:
+      consumes:
+      - application/json
+      description: Отправление на проверку диссертации
+      parameters:
+      - description: Данные
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.ToReviewRequest'
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Отправление на проверку диссертации
+      tags:
+      - Student.Dissertation
+  /students/dissertation_title/review/{token}:
+    post:
+      consumes:
+      - application/json
+      description: Отправление на проверку названия диссертации
+      parameters:
+      - description: Данные
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.ToReviewRequest'
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Отправление на проверку названия диссертации
+      tags:
+      - Student.Dissertation
   /students/info/{token}:
     get:
       consumes:
@@ -848,27 +1192,23 @@ paths:
   /students/load/{token}:
     get:
       consumes:
-      - multipart/form-data
-      description: Загрузка файла диссертации
+      - application/json
+      description: Получение данных для страницы педагогической нагрузки
       parameters:
-      - description: Семестр
-        in: formData
-        name: semester
-        required: true
-        type: integer
-      - description: Файл
-        in: formData
-        name: file
-        required: true
-        type: file
       - description: Токен пользователя
         in: path
         name: token
         required: true
         type: string
+      produces:
+      - application/json
       responses:
         "200":
-          description: OK
+          description: Данные
+          schema:
+            items:
+              $ref: '#/definitions/models.TeachingLoad'
+            type: array
         "204":
           description: Нет записей в БД
           schema:
@@ -885,9 +1225,9 @@ paths:
           description: Ошибка на стороне сервера
           schema:
             type: string
-      summary: Загрузка файла диссертации
+      summary: Получение данных для страницы педагогической нагрузки
       tags:
-      - Student
+      - Student.TeachingLoad
   /students/load/additional/{token}:
     delete:
       consumes:
@@ -1119,6 +1459,45 @@ paths:
       summary: Добавление или обновление индивидуальных нагрузок
       tags:
       - Student.TeachingLoad
+  /students/load/review/{token}:
+    post:
+      consumes:
+      - application/json
+      description: Отправление на проверку пед нагрузки
+      parameters:
+      - description: Данные
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.ToReviewRequest'
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Отправление на проверку пед нагрузки
+      tags:
+      - Student.ScientificWorks
   /students/review/{token}:
     post:
       description: Переводит научные работы, пед нагрузку и диссертацию в статус 'in_review',
@@ -1417,6 +1796,86 @@ paths:
       summary: Добавление или обновление научных публикаций
       tags:
       - Student.ScientificWorks
+  /students/works/review/{token}:
+    post:
+      consumes:
+      - application/json
+      description: Отправление на проверку научных работ
+      parameters:
+      - description: Данные
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.ToReviewRequest'
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Отправление на проверку научных работ
+      tags:
+      - Student.ScientificWorks
+  /supervisors/dissertation/file/{token}:
+    put:
+      consumes:
+      - application/json
+      description: Скачивание файла диссертации
+      parameters:
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      - description: Данные
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.DownloadDissertationRequestSup'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Файл
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Скачивание файла диссертации
+      tags:
+      - Supervisor.Dissertation
   /supervisors/student/dissertation/{token}:
     put:
       consumes:
@@ -1580,7 +2039,7 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/request_models.AllToStatusRequest'
+          $ref: '#/definitions/request_models.ToStatusRequest'
       responses:
         "200":
           description: OK
@@ -1605,6 +2064,11 @@ paths:
       - application/json
       description: Получение страницы информации для страницы научных работ аспиранта
       parameters:
+      - description: Токе пользователя
+        in: path
+        name: token
+        required: true
+        type: string
       - description: Запрос
         in: body
         name: input

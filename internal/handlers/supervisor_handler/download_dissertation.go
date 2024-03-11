@@ -1,11 +1,11 @@
-package student_handler
+package supervisor_handler
 
 import (
 	"fmt"
 	"net/http"
 	"os"
 
-	"uir_draft/internal/handlers/student_handler/request_models"
+	"uir_draft/internal/handlers/supervisor_handler/request_models"
 	"uir_draft/internal/pkg/models"
 
 	"github.com/gin-gonic/gin"
@@ -18,33 +18,33 @@ import (
 //
 //	@Description	Скачивание файла диссертации
 //
-//	@Tags			Student
+//	@Tags			Supervisor.Dissertation
 //	@Accept			json
 //
 //	@Produce		json
 //
 //	@Success		200		"Файл"
-//	@Param			token	path		string										true	"Токен пользователя"
-//	@Param			input	body		request_models.DownloadDissertationRequest	true	"Данные"
-//	@Failure		400		{string}	string										"Неверный формат данных"
-//	@Failure		401		{string}	string										"Токен протух"
-//	@Failure		204		{string}	string										"Нет записей в БД"
-//	@Failure		500		{string}	string										"Ошибка на стороне сервера"
-//	@Router			/students/dissertation/file/{token} [put]
-func (h *StudentHandler) DownloadDissertation(ctx *gin.Context) {
-	user, err := h.authenticate(ctx)
+//	@Param			token	path		string											true	"Токен пользователя"
+//	@Param			input	body		request_models.DownloadDissertationRequestSup	true	"Данные"
+//	@Failure		400		{string}	string											"Неверный формат данных"
+//	@Failure		401		{string}	string											"Токен протух"
+//	@Failure		204		{string}	string											"Нет записей в БД"
+//	@Failure		500		{string}	string											"Ошибка на стороне сервера"
+//	@Router			/supervisors/dissertation/file/{token} [put]
+func (h *SupervisorHandler) DownloadDissertation(ctx *gin.Context) {
+	_, err := h.authenticate(ctx)
 	if err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)
 		return
 	}
 
-	reqBody := request_models.DownloadDissertationRequest{}
+	reqBody := request_models.DownloadDissertationRequestSup{}
 	if err = ctx.ShouldBindJSON(&reqBody); err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
-	dissertation, err := h.dissertation.GetDissertationData(ctx, user.KasperID, reqBody.Semester)
+	dissertation, err := h.dissertation.GetDissertationData(ctx, reqBody.StudentID, reqBody.Semester)
 	if err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)
 		return

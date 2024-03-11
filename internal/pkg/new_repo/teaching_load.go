@@ -16,7 +16,7 @@ import (
 
 type TeachingLoadRepository struct{}
 
-func NewTeachingLoadStatusRepository() *TeachingLoadRepository {
+func NewTeachingLoadRepository() *TeachingLoadRepository {
 	return &TeachingLoadRepository{}
 }
 

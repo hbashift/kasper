@@ -18,6 +18,7 @@ type Publications struct {
 	Scopus        bool
 	Rinc          bool
 	Wac           bool
+	Wos           bool
 	Impact        float64
 	Status        PublicationStatus
 	OutputData    *string

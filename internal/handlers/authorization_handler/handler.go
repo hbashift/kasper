@@ -15,3 +15,7 @@ type (
 type AuthorizationHandler struct {
 	authenticator Authenticator
 }
+
+func NewHandler(authenticator Authenticator) *AuthorizationHandler {
+	return &AuthorizationHandler{authenticator: authenticator}
+}

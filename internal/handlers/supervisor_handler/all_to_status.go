@@ -15,13 +15,13 @@ import (
 //	@Tags			Supervisor
 //	@Description	Проставление статуса для всего для аспиранта
 //	@Success		200
-//	@Param			token	path		string								true	"Токен пользователя"
+//	@Param			token	path		string							true	"Токен пользователя"
 //
-//	@Param			input	body		request_models.AllToStatusRequest	true	"Запрос"
+//	@Param			input	body		request_models.ToStatusRequest	true	"Запрос"
 //
-//	@Failure		401		{string}	string								"Токен протух"
-//	@Failure		204		{string}	string								"Нет записей в БД"
-//	@Failure		500		{string}	string								"Ошибка на стороне сервера"
+//	@Failure		401		{string}	string							"Токен протух"
+//	@Failure		204		{string}	string							"Нет записей в БД"
+//	@Failure		500		{string}	string							"Ошибка на стороне сервера"
 //	@Router			/supervisors/student/review/{token} [post]
 func (h *SupervisorHandler) AllToStatus(ctx *gin.Context) {
 	_, err := h.authenticate(ctx)
@@ -30,7 +30,7 @@ func (h *SupervisorHandler) AllToStatus(ctx *gin.Context) {
 		return
 	}
 
-	reqBody := request_models.AllToStatusRequest{}
+	reqBody := request_models.ToStatusRequest{}
 	if err = ctx.ShouldBindJSON(&reqBody); err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return

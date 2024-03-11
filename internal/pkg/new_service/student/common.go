@@ -3,6 +3,7 @@ package student
 import (
 	"context"
 
+	"uir_draft/internal/generated/new_kasper/new_uir/public/model"
 	"uir_draft/internal/pkg/models"
 
 	"github.com/google/uuid"
@@ -47,7 +48,7 @@ func (s *Service) AllToStatus(ctx context.Context, studentID uuid.UUID, status s
 			return err
 		}
 
-		err = s.studRepo.SetStudentStatusTx(ctx, tx, dStatus, student.StudentID)
+		err = s.studRepo.SetStudentStatusTx(ctx, tx, dStatus, student.StudyingStatus, student.StudentID)
 		if err != nil {
 			return err
 		}
@@ -78,4 +79,23 @@ func (s *Service) GetStudentStatus(ctx context.Context, studentID uuid.UUID) (mo
 	}
 
 	return student, nil
+}
+
+func (s *Service) SetStudentStatus(ctx context.Context, studentID uuid.UUID, status model.ApprovalStatus) error {
+	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
+		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
+		if err != nil {
+			return err
+		}
+
+		if err = s.studRepo.SetStudentStatusTx(ctx, tx, status, student.StudyingStatus, studentID); err != nil {
+			return err
+		}
+
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "SetStudentStatus()")
+	}
+
+	return nil
 }

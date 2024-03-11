@@ -17,6 +17,8 @@ type Publication struct {
 	Scopus bool `json:"scopus" db:"publications.scopus"`
 	// Индекс WaC
 	Wac bool `json:"wac" db:"publications.wac"`
+	// Индекс WoS
+	Wos bool `json:"wos" db:"publications.wos"`
 	// Влияние
 	Impact *float64 `json:"impact,omitempty" db:"publications.impact" format:"float"`
 	// Статус прогресса публикации
@@ -40,6 +42,8 @@ type Conference struct {
 	Scopus bool `json:"scopus" db:"conferences.scopus"`
 	// Индекс WaC
 	Wac bool `json:"wac" db:"conferences.wac"`
+	// Индекс WoS
+	Wos bool `json:"wos" db:"conferences.wos"`
 	// Название конференции
 	ConferenceName *string `json:"conference_name,omitempty" db:"conferences.conference_name"`
 	// Название доклада

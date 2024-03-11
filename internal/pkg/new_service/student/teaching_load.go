@@ -31,6 +31,39 @@ func (s *Service) GetTeachingLoad(ctx context.Context, studentID uuid.UUID) ([]m
 	return teachingLoads, nil
 }
 
+func (s *Service) TeachingLoadToStatus(ctx context.Context, studentID uuid.UUID, status model.ApprovalStatus, semester int32) error {
+	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
+		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
+		if err != nil {
+			return err
+		}
+
+		if student.Status == model.ApprovalStatus_OnReview || student.Status == model.ApprovalStatus_Approved {
+			return models.ErrNonMutableStatus
+		}
+
+		if student.ActualSemester != semester && !student.CanEdit {
+			return models.ErrNotActualSemester
+		}
+
+		err = s.loadRepo.SetTeachingLoadStatusTx(ctx, tx, studentID, status, semester, nil)
+		if err != nil {
+			return err
+		}
+
+		err = s.studRepo.SetStudentStatusTx(ctx, tx, status, student.StudyingStatus, studentID)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "TeachingLoadToStatus()")
+	}
+
+	return nil
+}
+
 func (s *Service) UpsertClassroomLoad(ctx context.Context, studentID, tLoadID uuid.UUID, semester int32, loads []models.ClassroomLoad) error {
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
 		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
@@ -62,7 +95,11 @@ func (s *Service) UpsertClassroomLoad(ctx context.Context, studentID, tLoadID uu
 		}
 
 		err = s.loadRepo.SetTeachingLoadStatusTx(ctx, tx, student.StudentID, model.ApprovalStatus_InProgress, semester, nil)
+		if err != nil {
+			return err
+		}
 
+		err = s.studRepo.SetStudentStatusTx(ctx, tx, model.ApprovalStatus_InProgress, student.StudyingStatus, student.StudentID)
 		return err
 	})
 	if err != nil {
@@ -103,7 +140,11 @@ func (s *Service) UpsertIndividualLoad(ctx context.Context, studentID, tLoadID u
 		}
 
 		err = s.loadRepo.SetTeachingLoadStatusTx(ctx, tx, student.StudentID, model.ApprovalStatus_InProgress, semester, nil)
+		if err != nil {
+			return err
+		}
 
+		err = s.studRepo.SetStudentStatusTx(ctx, tx, model.ApprovalStatus_InProgress, student.StudyingStatus, student.StudentID)
 		return err
 	})
 	if err != nil {
@@ -140,7 +181,11 @@ func (s *Service) UpsertAdditionalLoad(ctx context.Context, studentID, tLoadID u
 		}
 
 		err = s.loadRepo.SetTeachingLoadStatusTx(ctx, tx, student.StudentID, model.ApprovalStatus_InProgress, semester, nil)
+		if err != nil {
+			return err
+		}
 
+		err = s.studRepo.SetStudentStatusTx(ctx, tx, model.ApprovalStatus_InProgress, student.StudyingStatus, student.StudentID)
 		return err
 	})
 	if err != nil {
@@ -171,7 +216,11 @@ func (s *Service) DeleteClassroomLoad(ctx context.Context, studentID uuid.UUID, 
 		}
 
 		err = s.loadRepo.SetTeachingLoadStatusTx(ctx, tx, student.StudentID, model.ApprovalStatus_InProgress, semester, nil)
+		if err != nil {
+			return err
+		}
 
+		err = s.studRepo.SetStudentStatusTx(ctx, tx, model.ApprovalStatus_InProgress, student.StudyingStatus, student.StudentID)
 		return err
 	})
 	if err != nil {
@@ -202,7 +251,11 @@ func (s *Service) DeleteIndividualLoad(ctx context.Context, studentID uuid.UUID,
 		}
 
 		err = s.loadRepo.SetTeachingLoadStatusTx(ctx, tx, student.StudentID, model.ApprovalStatus_InProgress, semester, nil)
+		if err != nil {
+			return err
+		}
 
+		err = s.studRepo.SetStudentStatusTx(ctx, tx, model.ApprovalStatus_InProgress, student.StudyingStatus, student.StudentID)
 		return err
 	})
 	if err != nil {
@@ -233,7 +286,11 @@ func (s *Service) DeleteAdditionalLoad(ctx context.Context, studentID uuid.UUID,
 		}
 
 		err = s.loadRepo.SetTeachingLoadStatusTx(ctx, tx, student.StudentID, model.ApprovalStatus_InProgress, semester, nil)
+		if err != nil {
+			return err
+		}
 
+		err = s.studRepo.SetStudentStatusTx(ctx, tx, model.ApprovalStatus_InProgress, student.StudyingStatus, student.StudentID)
 		return err
 	})
 	if err != nil {

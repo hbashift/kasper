@@ -1,4 +1,4 @@
-package student
+package admin
 
 import (
 	"context"
@@ -25,7 +25,10 @@ type (
 		GetStudentMarksTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]model.Marks, error)
 	}
 
-	StudentRepository interface {
+	ClientsRepository interface {
+		GetSupervisorsTx(ctx context.Context, tx pgx.Tx) ([]models.Supervisor, error)
+		SetNewSupervisorTx(ctx context.Context, tx pgx.Tx, studentID, supervisorID uuid.UUID) error
+		GetStudentSupervisorPairsTx(ctx context.Context, tx pgx.Tx) ([]models.StudentSupervisorPair, error)
 		GetStudentTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) (model.Students, error)
 		SetStudentStatusTx(ctx context.Context, tx pgx.Tx, status model.ApprovalStatus, studyingStatus model.StudentStatus, studentID uuid.UUID) error
 		GetStudentStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) (models.Student, error)
@@ -98,12 +101,12 @@ type Service struct {
 	loadRepo         TeachingLoadRepository
 	scienceRepo      ScientificRepository
 	marksRepo        MarksRepository
-	studRepo         StudentRepository
+	clientRepo       ClientsRepository
 	tokenRepo        TokenRepository
 	userRepo         UsersRepository
 	db               *pgxpool.Pool
 }
 
-func NewService(dissertationRepo DissertationRepository, loadRepo TeachingLoadRepository, scienceRepo ScientificRepository, marksRepo MarksRepository, studRepo StudentRepository, tokenRepo TokenRepository, userRepo UsersRepository, db *pgxpool.Pool) *Service {
-	return &Service{dissertationRepo: dissertationRepo, loadRepo: loadRepo, scienceRepo: scienceRepo, marksRepo: marksRepo, studRepo: studRepo, tokenRepo: tokenRepo, userRepo: userRepo, db: db}
+func NewService(dissertationRepo DissertationRepository, loadRepo TeachingLoadRepository, scienceRepo ScientificRepository, marksRepo MarksRepository, clientRepo ClientsRepository, tokenRepo TokenRepository, userRepo UsersRepository, db *pgxpool.Pool) *Service {
+	return &Service{dissertationRepo: dissertationRepo, loadRepo: loadRepo, scienceRepo: scienceRepo, marksRepo: marksRepo, clientRepo: clientRepo, tokenRepo: tokenRepo, userRepo: userRepo, db: db}
 }

@@ -1,9 +1,20 @@
 package main
 
 import (
+	"context"
 	"fmt"
 
+	"uir_draft/internal/app/new_kasper"
 	"uir_draft/internal/generated/new_kasper/new_uir/public/table"
+	"uir_draft/internal/handlers/administator_handler"
+	"uir_draft/internal/handlers/student_handler"
+	"uir_draft/internal/handlers/supervisor_handler"
+	"uir_draft/internal/pkg/configs"
+	"uir_draft/internal/pkg/new_repo"
+	"uir_draft/internal/pkg/new_service/admin"
+	"uir_draft/internal/pkg/new_service/authentication"
+	"uir_draft/internal/pkg/new_service/student"
+	"uir_draft/internal/pkg/new_service/supervisor"
 
 	"github.com/go-jet/jet/v2/postgres"
 	"github.com/google/uuid"
@@ -18,44 +29,55 @@ import (
 //	@BasePath	/api/v1
 
 func main() {
-	stmt, args := table.ScientificWorksStatus.
-		SELECT(
-			table.ScientificWorksStatus.WorksID,
-			table.ScientificWorksStatus.Semester,
-			table.ScientificWorksStatus.StudentID,
-			table.ScientificWorksStatus.Status.AS("scientific_works.approval_status"),
-			table.ScientificWorksStatus.UpdatedAt,
-			table.ScientificWorksStatus.AcceptedAt,
-			table.Publications.AllColumns.Except(table.Publications.WorksID),
-			table.Conferences.AllColumns.Except(table.Conferences.WorksID),
-			table.ResearchProjects.AllColumns.Except(table.ResearchProjects.WorksID),
-		).
-		FROM(table.ScientificWorksStatus.
-			LEFT_JOIN(table.Publications, table.ScientificWorksStatus.WorksID.EQ(table.Publications.WorksID)).
-			LEFT_JOIN(table.Conferences, table.ScientificWorksStatus.WorksID.EQ(table.Conferences.WorksID)).
-			LEFT_JOIN(table.ResearchProjects, table.ScientificWorksStatus.WorksID.EQ(table.ResearchProjects.WorksID)),
-		).
-		WHERE(table.ScientificWorksStatus.StudentID.EQ(postgres.UUID(uuid.New()))).
+	stmt, _ := table.Users.
+		DELETE().
+		WHERE(table.Users.UserID.EQ(postgres.UUID(uuid.New()))).
 		Sql()
 
-	fmt.Println(stmt, args)
+	fmt.Println(stmt, uuid.New())
 
-	//err := initConfig()
-	//ctx := context.Background()
-	//
-	//db, err := configs.InitPostgresDB(ctx, configs.Config{
-	//	Host:     viper.GetString("db.host"),
-	//	Port:     viper.GetString("db.port"),
-	//	Username: viper.GetString("db.username"),
-	//	Password: viper.GetString("db.password"),
-	//	DBName:   viper.GetString("db.dbname"),
-	//	SSLMode:  viper.GetString("db.sslmode"),
-	//})
-	//
-	//if err != nil {
-	//	panic(err)
-	//}
-	//
+	err := initConfig()
+	ctx := context.Background()
+
+	db, err := configs.InitPostgresDB(ctx, configs.Config{
+		Host:     viper.GetString("db.host"),
+		Port:     viper.GetString("db.port"),
+		Username: viper.GetString("db.username"),
+		Password: viper.GetString("db.password"),
+		DBName:   viper.GetString("db.dbname"),
+		SSLMode:  viper.GetString("db.sslmode"),
+	})
+
+	if err != nil {
+		panic(err)
+	}
+
+	clientRepo := new_repo.NewClientRepository()
+	dissertationRepo := new_repo.NewDissertationRepository()
+	marksRepo := new_repo.NewMarksRepository()
+	scienceRepo := new_repo.NewScientificRepository()
+	loadRepo := new_repo.NewTeachingLoadRepository()
+	//enumRepo := new_repo.NewEnumRepository()
+	usersRepo := new_repo.NewUsersRepository()
+	tokenRepo := new_repo.NewTokenRepository()
+
+	studentService := student.NewService(dissertationRepo, loadRepo, scienceRepo, marksRepo, clientRepo, tokenRepo, usersRepo, db)
+	adminService := admin.NewService(dissertationRepo, loadRepo, scienceRepo, marksRepo, clientRepo, tokenRepo, usersRepo, db)
+	supervisorService := supervisor.NewService(dissertationRepo, tokenRepo, usersRepo, clientRepo, db)
+	authenticationService := authentication.NewService(tokenRepo, usersRepo, db)
+
+	studentHandler := student_handler.NewHandler(studentService, studentService, studentService, studentService, authenticationService)
+	supervisorHandler := supervisor_handler.NewHandler(studentService, studentService, studentService, authenticationService, supervisorService)
+	adminHandler := administator_handler.NewHandler(adminService, authenticationService)
+
+	server := new_kasper.NewHTTPServer(studentHandler, supervisorHandler, adminHandler)
+	r := server.InitRouter()
+
+	err = r.Run(":8080")
+	if err != nil {
+		panic(err)
+	}
+
 	//studRepo := repositories.NewStudentRepository(db)
 	//tokenRepo := repositories.NewTokenRepository(db)
 	//dRepo := repositories.NewDissertationRepository(db)

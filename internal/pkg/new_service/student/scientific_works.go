@@ -31,6 +31,39 @@ func (s *Service) GetScientificWorks(ctx context.Context, studentID uuid.UUID) (
 	return scientificWorks, nil
 }
 
+func (s *Service) ScientificWorksToStatus(ctx context.Context, studentID uuid.UUID, status model.ApprovalStatus, semester int32) error {
+	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
+		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
+		if err != nil {
+			return err
+		}
+
+		if student.Status == model.ApprovalStatus_OnReview || student.Status == model.ApprovalStatus_Approved {
+			return models.ErrNonMutableStatus
+		}
+
+		if student.ActualSemester != semester && !student.CanEdit {
+			return models.ErrNotActualSemester
+		}
+
+		err = s.scienceRepo.SetScientificWorkStatusTx(ctx, tx, studentID, status, semester, nil)
+		if err != nil {
+			return err
+		}
+
+		err = s.studRepo.SetStudentStatusTx(ctx, tx, status, student.StudyingStatus, studentID)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "ScientificWorksToStatus()")
+	}
+
+	return nil
+}
+
 func (s *Service) UpsertPublications(ctx context.Context, studentID, workID uuid.UUID, semester int32, publications []models.Publication) error {
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
 		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
@@ -62,7 +95,11 @@ func (s *Service) UpsertPublications(ctx context.Context, studentID, workID uuid
 		}
 
 		err = s.scienceRepo.SetScientificWorkStatusTx(ctx, tx, student.StudentID, model.ApprovalStatus_InProgress, semester, nil)
+		if err != nil {
+			return err
+		}
 
+		err = s.studRepo.SetStudentStatusTx(ctx, tx, model.ApprovalStatus_InProgress, student.StudyingStatus, student.StudentID)
 		return err
 	})
 	if err != nil {
@@ -103,7 +140,11 @@ func (s *Service) UpsertConferences(ctx context.Context, studentID, workID uuid.
 		}
 
 		err = s.scienceRepo.SetScientificWorkStatusTx(ctx, tx, student.StudentID, model.ApprovalStatus_InProgress, semester, nil)
+		if err != nil {
+			return err
+		}
 
+		err = s.studRepo.SetStudentStatusTx(ctx, tx, model.ApprovalStatus_InProgress, student.StudyingStatus, student.StudentID)
 		return err
 	})
 	if err != nil {
@@ -140,7 +181,11 @@ func (s *Service) UpsertResearchProjects(ctx context.Context, studentID, workID 
 		}
 
 		err = s.scienceRepo.SetScientificWorkStatusTx(ctx, tx, student.StudentID, model.ApprovalStatus_InProgress, semester, nil)
+		if err != nil {
+			return err
+		}
 
+		err = s.studRepo.SetStudentStatusTx(ctx, tx, model.ApprovalStatus_InProgress, student.StudyingStatus, student.StudentID)
 		return err
 	})
 	if err != nil {
@@ -171,7 +216,11 @@ func (s *Service) DeletePublications(ctx context.Context, studentID uuid.UUID, s
 		}
 
 		err = s.scienceRepo.SetScientificWorkStatusTx(ctx, tx, student.StudentID, model.ApprovalStatus_InProgress, semester, nil)
+		if err != nil {
+			return err
+		}
 
+		err = s.studRepo.SetStudentStatusTx(ctx, tx, model.ApprovalStatus_InProgress, student.StudyingStatus, student.StudentID)
 		return err
 	})
 	if err != nil {
@@ -202,7 +251,11 @@ func (s *Service) DeleteConferences(ctx context.Context, studentID uuid.UUID, se
 		}
 
 		err = s.scienceRepo.SetScientificWorkStatusTx(ctx, tx, student.StudentID, model.ApprovalStatus_InProgress, semester, nil)
+		if err != nil {
+			return err
+		}
 
+		err = s.studRepo.SetStudentStatusTx(ctx, tx, model.ApprovalStatus_InProgress, student.StudyingStatus, student.StudentID)
 		return err
 	})
 	if err != nil {
@@ -233,7 +286,11 @@ func (s *Service) DeleteResearchProjects(ctx context.Context, studentID uuid.UUI
 		}
 
 		err = s.scienceRepo.SetScientificWorkStatusTx(ctx, tx, student.StudentID, model.ApprovalStatus_InProgress, semester, nil)
+		if err != nil {
+			return err
+		}
 
+		err = s.studRepo.SetStudentStatusTx(ctx, tx, model.ApprovalStatus_InProgress, student.StudyingStatus, student.StudentID)
 		return err
 	})
 	if err != nil {

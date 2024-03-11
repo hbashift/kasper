@@ -15,7 +15,14 @@ type GetByStudentID struct {
 	StudentID uuid.UUID `json:"student_id,omitempty"`
 }
 
-type AllToStatusRequest struct {
+type ToStatusRequest struct {
 	StudentID uuid.UUID `json:"student_id,omitempty"`
 	Status    string    `json:"status,omitempty"`
+}
+
+type DownloadDissertationRequestSup struct {
+	// ID студента
+	StudentID uuid.UUID `json:"student_id,omitempty"`
+	// Семестр
+	Semester int32 `json:"semester,omitempty"`
 }

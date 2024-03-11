@@ -23,6 +23,7 @@ type conferencesTable struct {
 	Scopus         postgres.ColumnBool
 	Rinc           postgres.ColumnBool
 	Wac            postgres.ColumnBool
+	Wos            postgres.ColumnBool
 	ConferenceName postgres.ColumnString
 	ReportName     postgres.ColumnString
 	Location       postgres.ColumnString
@@ -63,12 +64,13 @@ func newConferencesTableImpl(schemaName, tableName, alias string) conferencesTab
 		ScopusColumn         = postgres.BoolColumn("scopus")
 		RincColumn           = postgres.BoolColumn("rinc")
 		WacColumn            = postgres.BoolColumn("wac")
+		WosColumn            = postgres.BoolColumn("wos")
 		ConferenceNameColumn = postgres.StringColumn("conference_name")
 		ReportNameColumn     = postgres.StringColumn("report_name")
 		LocationColumn       = postgres.StringColumn("location")
 		ReportedAtColumn     = postgres.TimestampzColumn("reported_at")
-		allColumns           = postgres.ColumnList{ConferenceIDColumn, WorksIDColumn, StatusColumn, ScopusColumn, RincColumn, WacColumn, ConferenceNameColumn, ReportNameColumn, LocationColumn, ReportedAtColumn}
-		mutableColumns       = postgres.ColumnList{WorksIDColumn, StatusColumn, ScopusColumn, RincColumn, WacColumn, ConferenceNameColumn, ReportNameColumn, LocationColumn, ReportedAtColumn}
+		allColumns           = postgres.ColumnList{ConferenceIDColumn, WorksIDColumn, StatusColumn, ScopusColumn, RincColumn, WacColumn, WosColumn, ConferenceNameColumn, ReportNameColumn, LocationColumn, ReportedAtColumn}
+		mutableColumns       = postgres.ColumnList{WorksIDColumn, StatusColumn, ScopusColumn, RincColumn, WacColumn, WosColumn, ConferenceNameColumn, ReportNameColumn, LocationColumn, ReportedAtColumn}
 	)
 
 	return conferencesTable{
@@ -81,6 +83,7 @@ func newConferencesTableImpl(schemaName, tableName, alias string) conferencesTab
 		Scopus:         ScopusColumn,
 		Rinc:           RincColumn,
 		Wac:            WacColumn,
+		Wos:            WosColumn,
 		ConferenceName: ConferenceNameColumn,
 		ReportName:     ReportNameColumn,
 		Location:       LocationColumn,

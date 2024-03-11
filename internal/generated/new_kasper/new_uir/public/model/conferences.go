@@ -19,6 +19,7 @@ type Conferences struct {
 	Scopus         bool
 	Rinc           bool
 	Wac            bool
+	Wos            bool
 	ConferenceName string
 	ReportName     string
 	Location       string

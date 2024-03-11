@@ -9,53 +9,70 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-type StudentHandler interface {
-	AllToReview(ctx *gin.Context)
-	GetStudentStatus(ctx *gin.Context)
+type (
+	StudentHandler interface {
+		AllToReview(ctx *gin.Context)
+		GetStudentStatus(ctx *gin.Context)
 
-	GetDissertationPage(ctx *gin.Context)
-	UpsertSemesterProgress(ctx *gin.Context)
-	DownloadDissertation(ctx *gin.Context)
-	UploadDissertation(ctx *gin.Context)
+		GetDissertationPage(ctx *gin.Context)
+		UpsertSemesterProgress(ctx *gin.Context)
+		DownloadDissertation(ctx *gin.Context)
+		UploadDissertation(ctx *gin.Context)
+		DissertationTitleToReview(ctx *gin.Context)
+		UpsertDissertationTitle(ctx *gin.Context)
+		DissertationToReview(ctx *gin.Context)
 
-	GetTeachingLoad(ctx *gin.Context)
-	UpsertAdditionalLoads(ctx *gin.Context)
-	UpsertClassroomLoads(ctx *gin.Context)
-	UpsertIndividualLoads(ctx *gin.Context)
-	DeleteAdditionalLoads(ctx *gin.Context)
-	DeleteClassroomLoads(ctx *gin.Context)
-	DeleteIndividualLoads(ctx *gin.Context)
+		GetTeachingLoad(ctx *gin.Context)
+		UpsertAdditionalLoads(ctx *gin.Context)
+		UpsertClassroomLoads(ctx *gin.Context)
+		UpsertIndividualLoads(ctx *gin.Context)
+		DeleteAdditionalLoads(ctx *gin.Context)
+		DeleteClassroomLoads(ctx *gin.Context)
+		DeleteIndividualLoads(ctx *gin.Context)
+		TeachingLoadToReview(ctx *gin.Context)
 
-	GetScientificWorks(ctx *gin.Context)
-	UpsertResearchProjects(ctx *gin.Context)
-	UpsertPublications(ctx *gin.Context)
-	UpsertConferences(ctx *gin.Context)
-	DeleteProjects(ctx *gin.Context)
-	DeletePublications(ctx *gin.Context)
-	DeleteConferences(ctx *gin.Context)
-}
+		GetScientificWorks(ctx *gin.Context)
+		UpsertResearchProjects(ctx *gin.Context)
+		UpsertPublications(ctx *gin.Context)
+		UpsertConferences(ctx *gin.Context)
+		DeleteProjects(ctx *gin.Context)
+		DeletePublications(ctx *gin.Context)
+		DeleteConferences(ctx *gin.Context)
+		ScientificWorksToReview(ctx *gin.Context)
+	}
 
-type SupervisorHandler interface {
-	GetStudentsList(ctx *gin.Context)
+	SupervisorHandler interface {
+		GetStudentsList(ctx *gin.Context)
 
-	AllToStatus(ctx *gin.Context)
+		AllToStatus(ctx *gin.Context)
 
-	GetDissertationPage(ctx *gin.Context)
-	UpsertFeedback(ctx *gin.Context)
+		GetDissertationPage(ctx *gin.Context)
+		UpsertFeedback(ctx *gin.Context)
+		DownloadDissertation(ctx *gin.Context)
 
-	GetTeachingLoad(ctx *gin.Context)
-	GetScientificWorks(ctx *gin.Context)
-}
+		GetTeachingLoad(ctx *gin.Context)
+		GetScientificWorks(ctx *gin.Context)
+	}
+
+	AdministratorHandler interface {
+		ChangeSupervisor(ctx *gin.Context)
+		GetPairs(ctx *gin.Context)
+		SetStudentStudyingStatus(ctx *gin.Context)
+		GetSupervisors(ctx *gin.Context)
+	}
+)
 
 type HTTPServer struct {
-	student    StudentHandler
-	supervisor SupervisorHandler
+	student       StudentHandler
+	supervisor    SupervisorHandler
+	administrator AdministratorHandler
 }
 
-func NewHTTPServer(studentHandler StudentHandler, supervisorHandler SupervisorHandler) *HTTPServer {
+func NewHTTPServer(studentHandler StudentHandler, supervisorHandler SupervisorHandler, adminHandler AdministratorHandler) *HTTPServer {
 	return &HTTPServer{
-		student:    studentHandler,
-		supervisor: supervisorHandler,
+		student:       studentHandler,
+		supervisor:    supervisorHandler,
+		administrator: adminHandler,
 	}
 }
 
@@ -82,6 +99,9 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 	r.POST("/students/dissertation/progress/:token", h.student.UpsertSemesterProgress)
 	r.PUT("/students/dissertation/file/:token", h.student.DownloadDissertation)
 	r.POST("/students/dissertation/file/:token", h.student.UploadDissertation)
+	r.POST("/students/dissertation_title/review/:token", h.student.DissertationTitleToReview)
+	r.POST("/students/dissertation_title/:token", h.student.UpsertDissertationTitle)
+	r.POST("/students/dissertation/review/:token", h.student.DissertationToReview)
 
 	r.GET("/students/load/:token", h.student.GetTeachingLoad)
 	r.POST("/students/load/classroom/:token", h.student.UpsertClassroomLoads)
@@ -90,6 +110,7 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 	r.DELETE("/students/load/individual/:token", h.student.DeleteIndividualLoads)
 	r.POST("/students/load/additional/:token", h.student.UpsertAdditionalLoads)
 	r.DELETE("/students/load/additional/:token", h.student.DeleteAdditionalLoads)
+	r.POST("/student/load/review/:token", h.student.TeachingLoadToReview)
 
 	r.GET("/students/works/:token", h.student.GetScientificWorks)
 	r.POST("/students/works/publications/:token", h.student.UpsertPublications)
@@ -98,6 +119,7 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 	r.DELETE("/students/works/conferences/:token", h.student.DeleteConferences)
 	r.POST("/students/works/projects/:token", h.student.UpsertResearchProjects)
 	r.DELETE("/students/works/projects/:token", h.student.DeleteProjects)
+	r.POST("/students/works/review/:token", h.student.ScientificWorksToReview)
 
 	// SupervisorHandler init
 	r.PUT("/supervisors/student/list/:token", h.supervisor.GetStudentsList)
@@ -106,9 +128,18 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 
 	r.PUT("/supervisors/student/dissertation/:token", h.supervisor.GetDissertationPage)
 	r.POST("/supervisors/student/dissertation/feedback/:token", h.supervisor.UpsertFeedback)
+	r.PUT("/supervisors/student/dissertation/file/:token", h.supervisor.DownloadDissertation)
 
 	r.PUT("/supervisors/student/load/:token", h.supervisor.GetTeachingLoad)
 	r.PUT("/supervisors/student/works/:token", h.supervisor.GetScientificWorks)
+
+	// AdministratorHandler init
+	r.POST("/administrator/student/change/:token", h.administrator.ChangeSupervisor)
+
+	r.GET("/administrator/pairs/:token", h.administrator.GetPairs)
+	r.POST("/administrator/student/status/:token", h.administrator.SetStudentStudyingStatus)
+
+	r.GET("/administrator/supervisors/list/:token", h.administrator.GetSupervisors)
 
 	return r
 }

@@ -48,6 +48,39 @@ func (s *Service) GetDissertationPage(ctx context.Context, studentID uuid.UUID) 
 	return page, nil
 }
 
+func (s *Service) DissertationToStatus(ctx context.Context, studentID uuid.UUID, status model.ApprovalStatus, semester int32) error {
+	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
+		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
+		if err != nil {
+			return err
+		}
+
+		if student.Status == model.ApprovalStatus_OnReview || student.Status == model.ApprovalStatus_Approved {
+			return models.ErrNonMutableStatus
+		}
+
+		if student.ActualSemester != semester && !student.CanEdit {
+			return models.ErrNotActualSemester
+		}
+
+		err = s.dissertationRepo.SetDissertationStatusTx(ctx, tx, studentID, status, semester)
+		if err != nil {
+			return err
+		}
+
+		err = s.studRepo.SetStudentStatusTx(ctx, tx, status, student.StudyingStatus, studentID)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "DissertationToStatus()")
+	}
+
+	return nil
+}
+
 func (s *Service) UpsertSemesterProgress(ctx context.Context, studentID uuid.UUID, progress []models.SemesterProgressRequest) error {
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
 		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
@@ -69,7 +102,7 @@ func (s *Service) UpsertSemesterProgress(ctx context.Context, studentID uuid.UUI
 			return err
 		}
 
-		err = s.studRepo.SetStudentStatusTx(ctx, tx, model.ApprovalStatus_InProgress, studentID)
+		err = s.studRepo.SetStudentStatusTx(ctx, tx, model.ApprovalStatus_InProgress, student.StudyingStatus, studentID)
 
 		return err
 	})
@@ -81,8 +114,6 @@ func (s *Service) UpsertSemesterProgress(ctx context.Context, studentID uuid.UUI
 }
 
 func (s *Service) UpsertDissertationInfo(ctx context.Context, studentID uuid.UUID, semester int32) error {
-	// TODO сделать загрузку файла на диск
-
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
 		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
 		if err != nil {
@@ -103,7 +134,11 @@ func (s *Service) UpsertDissertationInfo(ctx context.Context, studentID uuid.UUI
 		}
 
 		err = s.dissertationRepo.UpsertDissertationTx(ctx, tx, dissertationStatus)
-		err = s.studRepo.SetStudentStatusTx(ctx, tx, model.ApprovalStatus_InProgress, student.StudentID)
+		if err != nil {
+			return err
+		}
+
+		err = s.studRepo.SetStudentStatusTx(ctx, tx, model.ApprovalStatus_InProgress, student.StudyingStatus, student.StudentID)
 		return err
 	})
 	if err != nil {
@@ -133,6 +168,11 @@ func (s *Service) UpsertDissertationTitle(ctx context.Context, studentID uuid.UU
 			AcceptedAt: nil,
 			Semester:   student.ActualSemester,
 		})
+		if err != nil {
+			return err
+		}
+
+		err = s.studRepo.SetStudentStatusTx(ctx, tx, model.ApprovalStatus_InProgress, student.StudyingStatus, student.StudentID)
 
 		return err
 	})
@@ -161,18 +201,4 @@ func (s *Service) GetDissertationData(ctx context.Context, studentID uuid.UUID, 
 	}
 
 	return dissertation, nil
-}
-
-func (s *Service) getUserInfo(ctx context.Context, tx pgx.Tx, token string) (model.Users, error) {
-	userID, err := s.tokenRepo.GetUserIDByTokenTx(ctx, tx, token)
-	if err != nil {
-		return model.Users{}, errors.Wrap(err, "getting user_id by token")
-	}
-
-	user, err := s.userRepo.GetUserTx(ctx, tx, userID)
-	if err != nil {
-		return model.Users{}, errors.Wrap(err, "getting user info")
-	}
-
-	return user, nil
 }

@@ -3,8 +3,6 @@ package models
 import (
 	"time"
 
-	"uir_draft/internal/generated/new_kasper/new_uir/public/model"
-
 	"github.com/google/uuid"
 )
 
@@ -40,13 +38,27 @@ type Student struct {
 	// Дата начала обучения
 	StartDate time.Time `db:"students.start_date" json:"start_date"`
 	// Статус обучения
-	StudyingStatus model.StudentStatus `db:"students.studying_status" json:"studying_status,omitempty" enums:"academic,graduated,studying,expelled"`
+	StudyingStatus string `db:"students.studying_status" json:"studying_status,omitempty" enums:"academic,graduated,studying,expelled"`
 	// Статус проверки и подтверждения
-	Status model.ApprovalStatus `db:"students.status" json:"status,omitempty"`
+	Status string `db:"students.status" json:"status,omitempty"`
 	// Специализация
 	Specialization string `db:"specializations.title" json:"specialization,omitempty"`
 	// Название группы
 	GroupName string `db:"groups.group_name" json:"group_name,omitempty"`
 	// Флаг о возможности редактировать всю информацию
 	CanEdit bool `db:"students.can_edit" json:"can_edit,omitempty"`
+}
+
+type Supervisor struct {
+	// ID научного руководителя
+	SupervisorID uuid.UUID `db:"supervisor_id" json:"supervisor_id,omitempty"`
+	// Полное имя руководителя
+	FullName string `db:"full_name" json:"full_name,omitempty"`
+}
+
+type StudentSupervisorPair struct {
+	// Информация о студенте в паре
+	Student Student `json:"student"`
+	// Информация о научном руководителе в паре
+	Supervisor Supervisor `json:"supervisor"`
 }

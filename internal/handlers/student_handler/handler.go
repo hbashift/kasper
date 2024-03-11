@@ -12,23 +12,32 @@ import (
 )
 
 type (
-	StudentRepository interface {
+	StudentService interface {
+		// SetStudentStatus - проставляет аспиранту статус подтверждения
+		SetStudentStatus(ctx context.Context, studentID uuid.UUID, status model.ApprovalStatus) error
 		// GetStudentStatus - возвращает статус студента
 		GetStudentStatus(ctx context.Context, studentID uuid.UUID) (models.Student, error)
 	}
 
 	DissertationService interface {
+		// DissertationToStatus - проставляет статус для диссертации
+		DissertationToStatus(ctx context.Context, studentID uuid.UUID, status model.ApprovalStatus, semester int32) error
+		// AllToStatus - проставляет статус для всего
 		AllToStatus(ctx context.Context, studentID uuid.UUID, status string) error
 		// GetDissertationPage - возвращает всю информацию для отрисовки страницы диссертации
 		GetDissertationPage(ctx context.Context, studentID uuid.UUID) (models.DissertationPageResponse, error)
 		// UpsertSemesterProgress - обновляет план подготовки диссертации
 		UpsertSemesterProgress(ctx context.Context, studentID uuid.UUID, progress []models.SemesterProgressRequest) error
+		// UpsertDissertationInfo - обновляет информацию о диссертации (файле)
 		UpsertDissertationInfo(ctx context.Context, studentID uuid.UUID, semester int32) error
 		UpsertDissertationTitle(ctx context.Context, studentID uuid.UUID, title string) error
+		// GetDissertationData - возвращает информацию о диссертации (файле)
 		GetDissertationData(ctx context.Context, studentID uuid.UUID, semester int32) (model.Dissertations, error)
 	}
 
 	ScientificWorksService interface {
+		// ScientificWorksToStatus - ставит статус для научных работ
+		ScientificWorksToStatus(ctx context.Context, studentID uuid.UUID, status model.ApprovalStatus, semester int32) error
 		// GetScientificWorks - возвращает все научные работы студента
 		GetScientificWorks(ctx context.Context, studentID uuid.UUID) ([]models.ScientificWork, error)
 		// UpsertPublications - добавляет или обновляет научные публикации
@@ -46,6 +55,8 @@ type (
 	}
 
 	TeachingLoadService interface {
+		// TeachingLoadToStatus - ставит статус для пед нагрузки
+		TeachingLoadToStatus(ctx context.Context, studentID uuid.UUID, status model.ApprovalStatus, semester int32) error
 		// GetTeachingLoad - возвращает всю педагогическую нагрузку студента
 		GetTeachingLoad(ctx context.Context, studentID uuid.UUID) ([]models.TeachingLoad, error)
 		// UpsertClassroomLoad - добавляет или обновляет аудиторную педагогическую нагрузку
@@ -69,11 +80,15 @@ type (
 )
 
 type StudentHandler struct {
-	student       StudentRepository
+	student       StudentService
 	dissertation  DissertationService
 	scientific    ScientificWorksService
 	load          TeachingLoadService
 	authenticator Authenticator
+}
+
+func NewHandler(student StudentService, dissertation DissertationService, scientific ScientificWorksService, load TeachingLoadService, authenticator Authenticator) *StudentHandler {
+	return &StudentHandler{student: student, dissertation: dissertation, scientific: scientific, load: load, authenticator: authenticator}
 }
 
 func (h *StudentHandler) authenticate(ctx *gin.Context) (*model.Users, error) {

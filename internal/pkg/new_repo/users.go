@@ -75,6 +75,19 @@ func (r *UsersRepository) ChangeUsersPasswordTx(ctx context.Context, tx pgx.Tx, 
 	return nil
 }
 
+func (r *UsersRepository) DeleteUserCascadeTx(ctx context.Context, tx pgx.Tx, userID uuid.UUID) error {
+	stmt, args := table.Users.
+		DELETE().
+		WHERE(table.Users.UserID.EQ(postgres.UUID(userID))).
+		Sql()
+
+	if _, err := tx.Exec(ctx, stmt, args...); err != nil {
+		return errors.Wrap(err, "DeleteUserCascadeTx()")
+	}
+
+	return nil
+}
+
 func (r *UsersRepository) GetUserByEmailTx(ctx context.Context, tx pgx.Tx, email string) (model.Users, error) {
 	stmt, args := table.Users.
 		SELECT(table.Users.AllColumns).

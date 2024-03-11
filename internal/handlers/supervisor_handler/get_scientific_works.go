@@ -19,6 +19,8 @@ import (
 //
 //	@Produce		json
 //
+//	@Param			token	path		string							true	"Токе пользователя"
+//
 //	@Param			input	body		request_models.GetByStudentID	true	"Запрос"
 //
 //	@Failure		401		{string}	string							"Токен протух"

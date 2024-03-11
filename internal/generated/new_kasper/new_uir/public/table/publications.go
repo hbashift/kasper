@@ -23,6 +23,7 @@ type publicationsTable struct {
 	Scopus        postgres.ColumnBool
 	Rinc          postgres.ColumnBool
 	Wac           postgres.ColumnBool
+	Wos           postgres.ColumnBool
 	Impact        postgres.ColumnFloat
 	Status        postgres.ColumnString
 	OutputData    postgres.ColumnString
@@ -64,13 +65,14 @@ func newPublicationsTableImpl(schemaName, tableName, alias string) publicationsT
 		ScopusColumn        = postgres.BoolColumn("scopus")
 		RincColumn          = postgres.BoolColumn("rinc")
 		WacColumn           = postgres.BoolColumn("wac")
+		WosColumn           = postgres.BoolColumn("wos")
 		ImpactColumn        = postgres.FloatColumn("impact")
 		StatusColumn        = postgres.StringColumn("status")
 		OutputDataColumn    = postgres.StringColumn("output_data")
 		CoAuthorsColumn     = postgres.StringColumn("co_authors")
 		VolumeColumn        = postgres.IntegerColumn("volume")
-		allColumns          = postgres.ColumnList{PublicationIDColumn, WorksIDColumn, NameColumn, ScopusColumn, RincColumn, WacColumn, ImpactColumn, StatusColumn, OutputDataColumn, CoAuthorsColumn, VolumeColumn}
-		mutableColumns      = postgres.ColumnList{WorksIDColumn, NameColumn, ScopusColumn, RincColumn, WacColumn, ImpactColumn, StatusColumn, OutputDataColumn, CoAuthorsColumn, VolumeColumn}
+		allColumns          = postgres.ColumnList{PublicationIDColumn, WorksIDColumn, NameColumn, ScopusColumn, RincColumn, WacColumn, WosColumn, ImpactColumn, StatusColumn, OutputDataColumn, CoAuthorsColumn, VolumeColumn}
+		mutableColumns      = postgres.ColumnList{WorksIDColumn, NameColumn, ScopusColumn, RincColumn, WacColumn, WosColumn, ImpactColumn, StatusColumn, OutputDataColumn, CoAuthorsColumn, VolumeColumn}
 	)
 
 	return publicationsTable{
@@ -83,6 +85,7 @@ func newPublicationsTableImpl(schemaName, tableName, alias string) publicationsT
 		Scopus:        ScopusColumn,
 		Rinc:          RincColumn,
 		Wac:           WacColumn,
+		Wos:           WosColumn,
 		Impact:        ImpactColumn,
 		Status:        StatusColumn,
 		OutputData:    OutputDataColumn,

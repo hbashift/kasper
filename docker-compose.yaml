@@ -10,4 +10,5 @@ services:
     volumes:
       - ./dissertations:/usr/src/app/dissertations
     extra_hosts:
-      - "database:79.174.84.44"
+      #- "database:HOST_ADDRESS"
+      - "host.docker.internal:host-gateway"

@@ -83,3 +83,11 @@ type UploadDissertationRequest struct {
 	Semester int32                 `form:"semester" binding:"required"`
 	File     *multipart.FileHeader `form:"upload" binding:"required" swaggerignore:"true"`
 }
+
+type ToReviewRequest struct {
+	Semester int32 `json:"semester"`
+}
+
+type UpsertDissertationTitleRequest struct {
+	Title string `json:"title,omitempty"`
+}

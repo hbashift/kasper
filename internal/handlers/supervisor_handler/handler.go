@@ -51,6 +51,10 @@ type SupervisorHandler struct {
 	supervisor    SupervisorService
 }
 
+func NewHandler(dissertation DissertationService, scientific ScientificWorksService, load TeachingLoadService, authenticator Authenticator, supervisor SupervisorService) *SupervisorHandler {
+	return &SupervisorHandler{dissertation: dissertation, scientific: scientific, load: load, authenticator: authenticator, supervisor: supervisor}
+}
+
 func (h *SupervisorHandler) authenticate(ctx *gin.Context) (*model.Users, error) {
 	token := helpers.GetToken(ctx)
 
