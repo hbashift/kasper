@@ -40,7 +40,7 @@ type Student struct {
 	// Статус обучения
 	StudyingStatus string `db:"students.studying_status" json:"studying_status,omitempty" enums:"academic,graduated,studying,expelled"`
 	// Статус проверки и подтверждения
-	Status string `db:"students.status" json:"status,omitempty"`
+	Status string `db:"students.status" json:"status,omitempty" enums:"todo,approved,on review,in progress,empty,failed"`
 	// Специализация
 	Specialization string `db:"specializations.title" json:"specialization,omitempty"`
 	// Название группы

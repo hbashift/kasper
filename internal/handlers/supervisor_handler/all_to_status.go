@@ -24,7 +24,7 @@ import (
 //	@Failure		500		{string}	string							"Ошибка на стороне сервера"
 //	@Router			/supervisors/student/review/{token} [post]
 func (h *SupervisorHandler) AllToStatus(ctx *gin.Context) {
-	_, err := h.authenticate(ctx)
+	user, err := h.authenticate(ctx)
 	if err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)
 		return
@@ -37,6 +37,12 @@ func (h *SupervisorHandler) AllToStatus(ctx *gin.Context) {
 	}
 
 	err = h.dissertation.AllToStatus(ctx, reqBody.StudentID, reqBody.Status)
+	if err != nil {
+		ctx.AbortWithError(models.MapErrorToCode(err), err)
+		return
+	}
+
+	err = h.email.SendSupervisorEmail(ctx, reqBody.StudentID, user.KasperID, "path", "работам", reqBody.Status)
 	if err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)
 		return

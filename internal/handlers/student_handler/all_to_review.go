@@ -33,5 +33,11 @@ func (h *StudentHandler) AllToReview(ctx *gin.Context) {
 		return
 	}
 
+	err = h.email.SendStudentEmail(ctx, user.KasperID, "path", "Работы")
+	if err != nil {
+		ctx.AbortWithError(models.MapErrorToCode(err), err)
+		return
+	}
+
 	ctx.Status(http.StatusOK)
 }

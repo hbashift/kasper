@@ -16,7 +16,7 @@ import (
 //
 //	@Description	Отправление на проверку пед нагрузки
 //
-//	@Tags			Student.ScientificWorks
+//	@Tags			Student.TeachingLoad
 //	@Accept			json
 //	@Param			input body request_models.ToReviewRequest true "Данные"
 //	@Success		200
@@ -40,6 +40,12 @@ func (h *StudentHandler) TeachingLoadToReview(ctx *gin.Context) {
 	}
 
 	if err = h.load.TeachingLoadToStatus(ctx, user.KasperID, model.ApprovalStatus_OnReview, reqBody.Semester); err != nil {
+		ctx.AbortWithError(models.MapErrorToCode(err), err)
+		return
+	}
+
+	err = h.email.SendStudentEmail(ctx, user.KasperID, "path", "Педагогическая нагрузка")
+	if err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)
 		return
 	}

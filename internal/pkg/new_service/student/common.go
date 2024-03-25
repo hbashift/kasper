@@ -28,10 +28,10 @@ func (s *Service) AllToStatus(ctx context.Context, studentID uuid.UUID, status s
 			return err
 		}
 
-		err = s.dissertationRepo.SetDissertationTitleStatusTx(ctx, tx, student.StudentID, dStatus, student.ActualSemester, nil)
-		if err != nil {
-			return err
-		}
+		//err = s.dissertationRepo.SetDissertationTitleStatusTx(ctx, tx, student.StudentID, dStatus, student.ActualSemester, nil)
+		//if err != nil {
+		//	return err
+		//}
 
 		err = s.dissertationRepo.SetSemesterProgressStatusTx(ctx, tx, student.StudentID, dStatus, nil)
 		if err != nil {

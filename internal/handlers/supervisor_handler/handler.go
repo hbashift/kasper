@@ -41,6 +41,10 @@ type (
 
 		GetStudentList(ctx context.Context, supervisorID uuid.UUID) ([]models.Student, error)
 	}
+
+	EmailService interface {
+		SendSupervisorEmail(ctx context.Context, studentID, supervisorID uuid.UUID, templatePath, tt, status string) error
+	}
 )
 
 type SupervisorHandler struct {
@@ -49,10 +53,11 @@ type SupervisorHandler struct {
 	load          TeachingLoadService
 	authenticator Authenticator
 	supervisor    SupervisorService
+	email         EmailService
 }
 
-func NewHandler(dissertation DissertationService, scientific ScientificWorksService, load TeachingLoadService, authenticator Authenticator, supervisor SupervisorService) *SupervisorHandler {
-	return &SupervisorHandler{dissertation: dissertation, scientific: scientific, load: load, authenticator: authenticator, supervisor: supervisor}
+func NewHandler(dissertation DissertationService, scientific ScientificWorksService, load TeachingLoadService, authenticator Authenticator, supervisor SupervisorService, email EmailService) *SupervisorHandler {
+	return &SupervisorHandler{dissertation: dissertation, scientific: scientific, load: load, authenticator: authenticator, supervisor: supervisor, email: email}
 }
 
 func (h *SupervisorHandler) authenticate(ctx *gin.Context) (*model.Users, error) {

@@ -227,6 +227,46 @@ func (r *ClientRepository) GetSupervisorsTx(ctx context.Context, tx pgx.Tx) ([]m
 	return supervisors, nil
 }
 
+func (r *ClientRepository) GetStudentsActualSupervisorTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) (models.Supervisor, error) {
+	stmt, args := table.Supervisors.
+		SELECT(
+			table.Supervisors.SupervisorID,
+			table.Supervisors.FullName,
+		).
+		FROM(
+			table.StudentsSupervisors.INNER_JOIN(table.Supervisors, table.StudentsSupervisors.SupervisorID.EQ(table.Supervisors.SupervisorID)),
+		).
+		WHERE(table.StudentsSupervisors.StudentID.EQ(postgres.UUID(studentID)).
+			AND(table.StudentsSupervisors.EndAt.IS_NULL())).
+		Sql()
+
+	row := tx.QueryRow(ctx, stmt, args...)
+	supervisor := models.Supervisor{}
+	if err := scanSupervisor(row, &supervisor); err != nil {
+		return models.Supervisor{}, errors.Wrap(err, "GetStudentsActualSupervisorTx()")
+	}
+
+	return supervisor, nil
+}
+
+func (r *ClientRepository) GetSupervisorTx(ctx context.Context, tx pgx.Tx, supervisorID uuid.UUID) (models.Supervisor, error) {
+	stmt, args := table.Supervisors.
+		SELECT(
+			table.Supervisors.SupervisorID,
+			table.Supervisors.FullName,
+		).
+		WHERE(table.Supervisors.SupervisorID.EQ(postgres.UUID(supervisorID))).
+		Sql()
+
+	row := tx.QueryRow(ctx, stmt, args...)
+	supervisor := models.Supervisor{}
+	if err := scanSupervisor(row, &supervisor); err != nil {
+		return models.Supervisor{}, errors.Wrap(err, "GetSupervisorTx()")
+	}
+
+	return supervisor, nil
+}
+
 // TODO доделать для аспера и научника
 
 func scanStudent(row pgx.Row, target *model.Students) error {

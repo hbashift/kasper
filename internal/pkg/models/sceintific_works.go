@@ -12,13 +12,13 @@ type Publication struct {
 	// Название научной публикации
 	Name *string `json:"name,omitempty" db:"publications.name"`
 	// Индекс РИНЦ
-	Rinc bool `json:"rinc" db:"publications.rinc"`
+	Rinc *bool `json:"rinc" db:"publications.rinc"`
 	// Индекс Scopus
-	Scopus bool `json:"scopus" db:"publications.scopus"`
+	Scopus *bool `json:"scopus" db:"publications.scopus"`
 	// Индекс WaC
-	Wac bool `json:"wac" db:"publications.wac"`
+	Wac *bool `json:"wac" db:"publications.wac"`
 	// Индекс WoS
-	Wos bool `json:"wos" db:"publications.wos"`
+	Wos *bool `json:"wos" db:"publications.wos"`
 	// Влияние
 	Impact *float64 `json:"impact,omitempty" db:"publications.impact" format:"float"`
 	// Статус прогресса публикации
@@ -37,13 +37,13 @@ type Conference struct {
 	// Статус прогресса научной конференции
 	Status *string `json:"status,omitempty" db:"conferences.status" enums:"registered,performed"`
 	// Индекс РИНЦ
-	Rinc bool `json:"rinc" db:"conferences.rinc"`
+	Rinc *bool `json:"rinc" db:"conferences.rinc"`
 	// Индекс Scopus
-	Scopus bool `json:"scopus" db:"conferences.scopus"`
+	Scopus *bool `json:"scopus" db:"conferences.scopus"`
 	// Индекс WaC
-	Wac bool `json:"wac" db:"conferences.wac"`
+	Wac *bool `json:"wac" db:"conferences.wac"`
 	// Индекс WoS
-	Wos bool `json:"wos" db:"conferences.wos"`
+	Wos *bool `json:"wos" db:"conferences.wos"`
 	// Название конференции
 	ConferenceName *string `json:"conference_name,omitempty" db:"conferences.conference_name"`
 	// Название доклада

@@ -77,6 +77,10 @@ type (
 		// Authenticate - проводит аутентификацию пользователя
 		Authenticate(ctx context.Context, token, userType string) (*model.Users, error)
 	}
+
+	EmailService interface {
+		SendStudentEmail(ctx context.Context, studentID uuid.UUID, templatePath, tt string) error
+	}
 )
 
 type StudentHandler struct {
@@ -85,10 +89,11 @@ type StudentHandler struct {
 	scientific    ScientificWorksService
 	load          TeachingLoadService
 	authenticator Authenticator
+	email         EmailService
 }
 
-func NewHandler(student StudentService, dissertation DissertationService, scientific ScientificWorksService, load TeachingLoadService, authenticator Authenticator) *StudentHandler {
-	return &StudentHandler{student: student, dissertation: dissertation, scientific: scientific, load: load, authenticator: authenticator}
+func NewHandler(student StudentService, dissertation DissertationService, scientific ScientificWorksService, load TeachingLoadService, authenticator Authenticator, email EmailService) *StudentHandler {
+	return &StudentHandler{student: student, dissertation: dissertation, scientific: scientific, load: load, authenticator: authenticator, email: email}
 }
 
 func (h *StudentHandler) authenticate(ctx *gin.Context) (*model.Users, error) {
