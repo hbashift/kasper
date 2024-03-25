@@ -16,6 +16,16 @@ definitions:
         description: Объем
         type: string
     type: object
+  models.ChangeSupervisor:
+    properties:
+      student_id:
+        type: string
+      supervisor_id:
+        type: string
+    required:
+    - student_id
+    - supervisor_id
+    type: object
   models.ClassroomLoad:
     properties:
       group_name:
@@ -465,6 +475,13 @@ definitions:
         type: string
       status:
         description: Статус проверки и подтверждения
+        enum:
+        - todo
+        - approved
+        - on review
+        - in progress
+        - empty
+        - failed
         type: string
       student_id:
         description: ID студента
@@ -544,13 +561,12 @@ definitions:
     type: object
   request_models.ChangeSupervisorRequest:
     properties:
-      student_id:
-        type: string
-      supervisor_id:
-        type: string
+      pairs:
+        items:
+          $ref: '#/definitions/models.ChangeSupervisor'
+        type: array
     required:
-    - student_id
-    - supervisor_id
+    - pairs
     type: object
   request_models.DeleteIDs:
     properties:
@@ -1497,7 +1513,7 @@ paths:
             type: string
       summary: Отправление на проверку пед нагрузки
       tags:
-      - Student.ScientificWorks
+      - Student.TeachingLoad
   /students/review/{token}:
     post:
       description: Переводит научные работы, пед нагрузку и диссертацию в статус 'in_review',

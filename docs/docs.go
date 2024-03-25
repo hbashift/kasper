@@ -1066,7 +1066,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Student.ScientificWorks"
+                    "Student.TeachingLoad"
                 ],
                 "summary": "Отправление на проверку пед нагрузки",
                 "parameters": [
@@ -2107,6 +2107,21 @@ const docTemplate = `{
                 }
             }
         },
+        "models.ChangeSupervisor": {
+            "type": "object",
+            "required": [
+                "student_id",
+                "supervisor_id"
+            ],
+            "properties": {
+                "student_id": {
+                    "type": "string"
+                },
+                "supervisor_id": {
+                    "type": "string"
+                }
+            }
+        },
         "models.ClassroomLoad": {
             "type": "object",
             "properties": {
@@ -2709,7 +2724,15 @@ const docTemplate = `{
                 },
                 "status": {
                     "description": "Статус проверки и подтверждения",
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                        "todo",
+                        "approved",
+                        "on review",
+                        "in progress",
+                        "empty",
+                        "failed"
+                    ]
                 },
                 "student_id": {
                     "description": "ID студента",
@@ -2830,15 +2853,14 @@ const docTemplate = `{
         "request_models.ChangeSupervisorRequest": {
             "type": "object",
             "required": [
-                "student_id",
-                "supervisor_id"
+                "pairs"
             ],
             "properties": {
-                "student_id": {
-                    "type": "string"
-                },
-                "supervisor_id": {
-                    "type": "string"
+                "pairs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ChangeSupervisor"
+                    }
                 }
             }
         },
