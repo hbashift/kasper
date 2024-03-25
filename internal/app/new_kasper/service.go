@@ -120,7 +120,7 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 
 	r.GET("/students/load/:token", h.student.GetTeachingLoad)
 	r.POST("/students/load/classroom/:token", h.student.UpsertClassroomLoads)
-	r.DELETE("/students/load/classroom/:token", h.student.DeleteClassroomLoads)
+	r.PUT("/students/load/classroom/:token", h.student.DeleteClassroomLoads)
 	r.POST("/students/load/individual/:token", h.student.UpsertIndividualLoads)
 	r.DELETE("/students/load/individual/:token", h.student.DeleteIndividualLoads)
 	r.POST("/students/load/additional/:token", h.student.UpsertAdditionalLoads)
