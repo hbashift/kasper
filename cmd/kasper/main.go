@@ -29,8 +29,11 @@ import (
 
 func main() {
 	err := initConfig()
-	ctx := context.Background()
+	if err != nil {
+		panic(err)
+	}
 
+	ctx := context.Background()
 	db, err := configs.InitPostgresDB(ctx, configs.Config{
 		Host:     viper.GetString("db.host"),
 		Port:     viper.GetString("db.port"),
@@ -39,7 +42,6 @@ func main() {
 		DBName:   viper.GetString("db.dbname"),
 		SSLMode:  viper.GetString("db.sslmode"),
 	})
-
 	if err != nil {
 		panic(err)
 	}
