@@ -16,6 +16,32 @@ definitions:
         description: Объем
         type: string
     type: object
+  models.AuthorizeRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  models.AuthorizeResponse:
+    properties:
+      registered:
+        type: boolean
+      token:
+        type: string
+      user_type:
+        type: string
+    type: object
+  models.ChangeSupervisor:
+    properties:
+      student_id:
+        type: string
+      supervisor_id:
+        type: string
+    required:
+    - student_id
+    - supervisor_id
+    type: object
   models.ClassroomLoad:
     properties:
       group_name:
@@ -208,6 +234,13 @@ definitions:
       updated_at:
         description: Дата последнего обновления
         format: date-time
+        type: string
+    type: object
+  models.Group:
+    properties:
+      group_id:
+        type: integer
+      name:
         type: string
     type: object
   models.IndividualStudentsLoad:
@@ -440,6 +473,13 @@ definitions:
         format: date-time
         type: string
     type: object
+  models.Specialization:
+    properties:
+      name:
+        type: string
+      specialization_id:
+        type: integer
+    type: object
   models.Student:
     properties:
       actual_semester:
@@ -465,6 +505,13 @@ definitions:
         type: string
       status:
         description: Статус проверки и подтверждения
+        enum:
+        - todo
+        - approved
+        - on review
+        - in progress
+        - empty
+        - failed
         type: string
       student_id:
         description: ID студента
@@ -542,15 +589,28 @@ definitions:
         description: Дата последнего обновления
         type: string
     type: object
+  request_models.AddGroupsRequest:
+    properties:
+      groups:
+        items:
+          $ref: '#/definitions/models.Group'
+        type: array
+    type: object
+  request_models.AddSpecializationsRequest:
+    properties:
+      specs:
+        items:
+          $ref: '#/definitions/models.Specialization'
+        type: array
+    type: object
   request_models.ChangeSupervisorRequest:
     properties:
-      student_id:
-        type: string
-      supervisor_id:
-        type: string
+      pairs:
+        items:
+          $ref: '#/definitions/models.ChangeSupervisor'
+        type: array
     required:
-    - student_id
-    - supervisor_id
+    - pairs
     type: object
   request_models.DeleteIDs:
     properties:
@@ -574,6 +634,23 @@ definitions:
         type: integer
       student_id:
         description: ID студента
+        type: string
+    type: object
+  request_models.FirstStudentRegistry:
+    properties:
+      actual_semester:
+        type: integer
+      department:
+        type: string
+      full_name:
+        type: string
+      group_number:
+        type: integer
+      number_of_years:
+        type: integer
+      specialization_id:
+        type: integer
+      start_date:
         type: string
     type: object
   request_models.GetByStudentID:
@@ -728,6 +805,162 @@ info:
   title: Сервис Kasper
   version: 0.1.2
 paths:
+  /administrator/enum/AddSpecializations/{token}:
+    post:
+      consumes:
+      - application/json
+      description: Добавление групп
+      parameters:
+      - description: Данные
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.AddSpecializationsRequest'
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Добавление групп
+      tags:
+      - Admin
+  /administrator/enum/group/{token}:
+    post:
+      consumes:
+      - application/json
+      description: Добавление групп
+      parameters:
+      - description: Данные
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.AddGroupsRequest'
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Добавление групп
+      tags:
+      - Admin
+  /administrator/enum/groups/{token}:
+    get:
+      consumes:
+      - application/json
+      description: Получение списка всех групп
+      parameters:
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Данные
+          schema:
+            items:
+              $ref: '#/definitions/models.Group'
+            type: array
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Получение списка всех групп
+      tags:
+      - Admin
+  /administrator/enum/specializations/{token}:
+    get:
+      consumes:
+      - application/json
+      description: Получение списка всех групп
+      parameters:
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Данные
+          schema:
+            items:
+              $ref: '#/definitions/models.Specialization'
+            type: array
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Получение списка всех групп
+      tags:
+      - Admin
   /administrator/pairs/{token}:
     get:
       description: Ручка для получения пар аспирант/руководитель
@@ -876,6 +1109,85 @@ paths:
       summary: Получения списка научных руководителей
       tags:
       - Admin
+  /authorize:
+    post:
+      consumes:
+      - application/json
+      description: Авторизация в сервисе
+      parameters:
+      - description: Данные
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.AuthorizeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Данные
+          schema:
+            $ref: '#/definitions/models.AuthorizeResponse'
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Авторизация в сервисе
+      tags:
+      - Authorization
+  /authorize/registration/student/{token}:
+    post:
+      consumes:
+      - application/json
+      description: Первичная регистрация студента
+      parameters:
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      - description: Данные
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.FirstStudentRegistry'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Первичная регистрация студента
+      tags:
+      - Authorization
   /student/dissertation_title/{token}:
     post:
       consumes:
@@ -915,6 +1227,84 @@ paths:
       summary: Обновление названия диссертации
       tags:
       - Student.Dissertation
+  /student/enum/groups/{token}:
+    get:
+      consumes:
+      - application/json
+      description: Получение списка всех групп
+      parameters:
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Данные
+          schema:
+            items:
+              $ref: '#/definitions/models.Group'
+            type: array
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Получение списка всех групп
+      tags:
+      - Student.Enum
+  /student/enum/specializations/{token}:
+    get:
+      consumes:
+      - application/json
+      description: Получение списка всех групп
+      parameters:
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Данные
+          schema:
+            items:
+              $ref: '#/definitions/models.Specialization'
+            type: array
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Получение списка всех групп
+      tags:
+      - Student.Enum
   /students/dissertation/{token}:
     get:
       consumes:
@@ -1497,7 +1887,7 @@ paths:
             type: string
       summary: Отправление на проверку пед нагрузки
       tags:
-      - Student.ScientificWorks
+      - Student.TeachingLoad
   /students/review/{token}:
     post:
       description: Переводит научные работы, пед нагрузку и диссертацию в статус 'in_review',

@@ -61,8 +61,27 @@ func (r *ClientRepository) GetStudentStatusTx(ctx context.Context, tx pgx.Tx, st
 
 func (r *ClientRepository) InsertStudentTx(ctx context.Context, tx pgx.Tx, student model.Students) error {
 	stmt, args := table.Students.
-		INSERT().
-		MODEL(student).
+		INSERT(
+			table.Students.AllColumns.
+				Except(
+					table.Students.StudyingStatus,
+					table.Students.Status,
+					table.Students.CanEdit,
+				),
+		).
+		VALUES(
+			student.StudentID,
+			student.UserID,
+			student.FullName,
+			student.Department,
+			student.SpecID,
+			student.ActualSemester,
+			student.Years,
+			student.StartDate,
+			student.StudyingStatus,
+			student.GroupID,
+			student.Status,
+		).
 		Sql()
 
 	if _, err := tx.Exec(ctx, stmt, args...); err != nil {

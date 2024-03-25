@@ -2,8 +2,10 @@ package student
 
 import (
 	"context"
+	"time"
 
 	"uir_draft/internal/generated/new_kasper/new_uir/public/model"
+	"uir_draft/internal/handlers/authorization_handler/request_models"
 	"uir_draft/internal/pkg/models"
 
 	"github.com/google/uuid"
@@ -95,6 +97,82 @@ func (s *Service) SetStudentStatus(ctx context.Context, studentID uuid.UUID, sta
 		return nil
 	}); err != nil {
 		return errors.Wrap(err, "SetStudentStatus()")
+	}
+
+	return nil
+}
+
+func (s *Service) InitStudent(ctx context.Context, user model.Users, req request_models.FirstStudentRegistry) error {
+	startDate, err := time.Parse(time.DateOnly, req.StartDate)
+	if err != nil {
+		return errors.Wrap(err, "InitStudent()")
+	}
+
+	student := model.Students{
+		StudentID:      user.KasperID,
+		UserID:         user.UserID,
+		FullName:       req.FullName,
+		Department:     req.Department,
+		SpecID:         req.SpecializationID,
+		ActualSemester: req.ActualSemester,
+		Years:          req.NumberOfYears,
+		StartDate:      startDate,
+		GroupID:        req.GroupID,
+	}
+
+	var progresses []model.SemesterProgress
+	progressTypes := []model.ProgressType{
+		model.ProgressType_Intro,
+		model.ProgressType_Ch1,
+		model.ProgressType_Ch2,
+		model.ProgressType_Ch3,
+		model.ProgressType_Ch4,
+		model.ProgressType_Ch5,
+		model.ProgressType_Ch6,
+		model.ProgressType_End,
+		model.ProgressType_Literature,
+		model.ProgressType_Abstract,
+	}
+
+	for _, progressType := range progressTypes {
+		progress := model.SemesterProgress{
+			ProgressID:   uuid.New(),
+			StudentID:    user.KasperID,
+			ProgressType: progressType,
+			First:        false,
+			Second:       false,
+			Third:        false,
+			Forth:        false,
+			Fifth:        false,
+			Sixth:        false,
+			Seventh:      false,
+			Eighth:       false,
+			UpdatedAt:    time.Now(),
+			Status:       model.ApprovalStatus_Empty,
+			AcceptedAt:   nil,
+		}
+
+		progresses = append(progresses, progress)
+	}
+
+	err = s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
+		if err = s.studRepo.InsertStudentTx(ctx, tx, student); err != nil {
+			return err
+		}
+
+		if err = s.dissertationRepo.UpsertSemesterProgressTx(ctx, tx, progresses); err != nil {
+			return err
+		}
+
+		if err = s.userRepo.SetUserRegisteredTx(ctx, tx, user.UserID); err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return errors.Wrap(err, "InitStudent()")
 	}
 
 	return nil

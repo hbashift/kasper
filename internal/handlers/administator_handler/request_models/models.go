@@ -14,3 +14,11 @@ type SetStudentStudyingStatusRequest struct {
 	StudentID      uuid.UUID `json:"student_id,omitempty"`
 	StudyingStatus string    `json:"status,omitempty" enums:"academic,graduated,studying,expelled"`
 }
+
+type AddGroupsRequest struct {
+	Groups []models.Group `json:"groups,omitempty"`
+}
+
+type AddSpecializationsRequest struct {
+	Specs []models.Specialization `json:"specs,omitempty"`
+}

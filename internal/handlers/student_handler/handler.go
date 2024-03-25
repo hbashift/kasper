@@ -81,6 +81,11 @@ type (
 	EmailService interface {
 		SendStudentEmail(ctx context.Context, studentID uuid.UUID, templatePath, tt string) error
 	}
+
+	EnumService interface {
+		GetSpecializations(ctx context.Context) ([]models.Specialization, error)
+		GetGroups(ctx context.Context) ([]models.Group, error)
+	}
 )
 
 type StudentHandler struct {
@@ -90,6 +95,7 @@ type StudentHandler struct {
 	load          TeachingLoadService
 	authenticator Authenticator
 	email         EmailService
+	enum          EnumService
 }
 
 func NewHandler(student StudentService, dissertation DissertationService, scientific ScientificWorksService, load TeachingLoadService, authenticator Authenticator, email EmailService) *StudentHandler {

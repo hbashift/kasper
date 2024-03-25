@@ -19,6 +19,7 @@ type (
 
 	UsersRepository interface {
 		GetUserTx(ctx context.Context, tx pgx.Tx, userID uuid.UUID) (model.Users, error)
+		SetUserRegisteredTx(ctx context.Context, tx pgx.Tx, userID uuid.UUID) error
 	}
 
 	MarksRepository interface {

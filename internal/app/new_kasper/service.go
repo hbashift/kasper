@@ -39,6 +39,9 @@ type (
 		DeletePublications(ctx *gin.Context)
 		DeleteConferences(ctx *gin.Context)
 		ScientificWorksToReview(ctx *gin.Context)
+
+		GetSpecializations(ctx *gin.Context)
+		GetGroups(ctx *gin.Context)
 	}
 
 	SupervisorHandler interface {
@@ -59,13 +62,25 @@ type (
 		GetPairs(ctx *gin.Context)
 		SetStudentStudyingStatus(ctx *gin.Context)
 		GetSupervisors(ctx *gin.Context)
+
+		GetSpecializations(ctx *gin.Context)
+		GetGroups(ctx *gin.Context)
+
+		AddSpecializations(ctx *gin.Context)
+		AddGroups(ctx *gin.Context)
+	}
+
+	AuthenticationHandler interface {
+		Authorize(ctx *gin.Context)
+		FirstStudentRegistry(ctx *gin.Context)
 	}
 )
 
 type HTTPServer struct {
-	student       StudentHandler
-	supervisor    SupervisorHandler
-	administrator AdministratorHandler
+	student        StudentHandler
+	supervisor     SupervisorHandler
+	administrator  AdministratorHandler
+	authentication AuthenticationHandler
 }
 
 func NewHTTPServer(studentHandler StudentHandler, supervisorHandler SupervisorHandler, adminHandler AdministratorHandler) *HTTPServer {
@@ -121,6 +136,9 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 	r.DELETE("/students/works/projects/:token", h.student.DeleteProjects)
 	r.POST("/students/works/review/:token", h.student.ScientificWorksToReview)
 
+	r.GET("/student/enum/specializations/:token", h.student.GetSpecializations)
+	r.GET("/student/enum/groups/:token", h.student.GetGroups)
+
 	// SupervisorHandler init
 	r.PUT("/supervisors/student/list/:token", h.supervisor.GetStudentsList)
 
@@ -140,6 +158,17 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 	r.POST("/administrator/student/status/:token", h.administrator.SetStudentStudyingStatus)
 
 	r.GET("/administrator/supervisors/list/:token", h.administrator.GetSupervisors)
+
+	r.GET("/administrator/enum/specializations/:token", h.administrator.GetSpecializations)
+	r.GET("/administrator/enum/groups/:token", h.administrator.GetGroups)
+
+	r.POST("/administrator/enum/specializations/:token", h.administrator.AddSpecializations)
+	r.POST("/administrator/enum/group/:token", h.administrator.AddGroups)
+
+	// AuthenticationHandler init
+	r.POST("/authorize", h.authentication.Authorize)
+
+	r.POST("/student/registry/:token", h.authentication.FirstStudentRegistry)
 
 	return r
 }
