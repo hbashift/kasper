@@ -5,6 +5,7 @@ import (
 
 	"uir_draft/internal/app/new_kasper"
 	"uir_draft/internal/handlers/administator_handler"
+	"uir_draft/internal/handlers/authorization_handler"
 	"uir_draft/internal/handlers/student_handler"
 	"uir_draft/internal/handlers/supervisor_handler"
 	"uir_draft/internal/pkg/configs"
@@ -12,6 +13,7 @@ import (
 	"uir_draft/internal/pkg/new_service/admin"
 	"uir_draft/internal/pkg/new_service/authentication"
 	"uir_draft/internal/pkg/new_service/email"
+	"uir_draft/internal/pkg/new_service/enum"
 	"uir_draft/internal/pkg/new_service/student"
 	"uir_draft/internal/pkg/new_service/supervisor"
 
@@ -47,7 +49,7 @@ func main() {
 	marksRepo := new_repo.NewMarksRepository()
 	scienceRepo := new_repo.NewScientificRepository()
 	loadRepo := new_repo.NewTeachingLoadRepository()
-	//enumRepo := new_repo.NewEnumRepository()
+	enumRepo := new_repo.NewEnumRepository()
 	usersRepo := new_repo.NewUsersRepository()
 	tokenRepo := new_repo.NewTokenRepository()
 
@@ -56,12 +58,14 @@ func main() {
 	supervisorService := supervisor.NewService(dissertationRepo, tokenRepo, usersRepo, clientRepo, db)
 	authenticationService := authentication.NewService(tokenRepo, usersRepo, db)
 	emailService := email.NewService("SENDER", "PASSWORD", "smtp.gmail.com", db, usersRepo, clientRepo)
+	enumService := enum.NewService(enumRepo, db)
 
-	studentHandler := student_handler.NewHandler(studentService, studentService, studentService, studentService, authenticationService, emailService)
+	studentHandler := student_handler.NewHandler(studentService, studentService, studentService, studentService, authenticationService, emailService, enumService)
 	supervisorHandler := supervisor_handler.NewHandler(studentService, studentService, studentService, authenticationService, supervisorService, emailService)
-	adminHandler := administator_handler.NewHandler(adminService, authenticationService)
+	adminHandler := administator_handler.NewHandler(adminService, authenticationService, enumService)
+	authenticationHandler := authorization_handler.NewHandler(authenticationService, studentService)
 
-	server := new_kasper.NewHTTPServer(studentHandler, supervisorHandler, adminHandler)
+	server := new_kasper.NewHTTPServer(studentHandler, supervisorHandler, adminHandler, authenticationHandler)
 	r := server.InitRouter()
 
 	err = r.Run(":8080")

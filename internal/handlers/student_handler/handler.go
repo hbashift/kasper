@@ -98,8 +98,8 @@ type StudentHandler struct {
 	enum          EnumService
 }
 
-func NewHandler(student StudentService, dissertation DissertationService, scientific ScientificWorksService, load TeachingLoadService, authenticator Authenticator, email EmailService) *StudentHandler {
-	return &StudentHandler{student: student, dissertation: dissertation, scientific: scientific, load: load, authenticator: authenticator, email: email}
+func NewHandler(student StudentService, dissertation DissertationService, scientific ScientificWorksService, load TeachingLoadService, authenticator Authenticator, email EmailService, enum EnumService) *StudentHandler {
+	return &StudentHandler{student: student, dissertation: dissertation, scientific: scientific, load: load, authenticator: authenticator, email: email, enum: enum}
 }
 
 func (h *StudentHandler) authenticate(ctx *gin.Context) (*model.Users, error) {

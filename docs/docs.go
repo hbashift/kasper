@@ -15,124 +15,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/administrator/enum/AddSpecializations/{token}": {
-            "post": {
-                "description": "Добавление групп",
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "Добавление групп",
-                "parameters": [
-                    {
-                        "description": "Данные",
-                        "name": "input",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request_models.AddSpecializationsRequest"
-                        }
-                    },
-                    {
-                        "type": "string",
-                        "description": "Токен пользователя",
-                        "name": "token",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "204": {
-                        "description": "Нет записей в БД",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "Неверный формат данных",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "401": {
-                        "description": "Токен протух",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Ошибка на стороне сервера",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/administrator/enum/group/{token}": {
-            "post": {
-                "description": "Добавление групп",
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "Добавление групп",
-                "parameters": [
-                    {
-                        "description": "Данные",
-                        "name": "input",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request_models.AddGroupsRequest"
-                        }
-                    },
-                    {
-                        "type": "string",
-                        "description": "Токен пользователя",
-                        "name": "token",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "204": {
-                        "description": "Нет записей в БД",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "Неверный формат данных",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "401": {
-                        "description": "Токен протух",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Ошибка на стороне сервера",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/administrator/enum/groups/{token}": {
             "get": {
                 "description": "Получение списка всех групп",
@@ -164,6 +46,120 @@ const docTemplate = `{
                                 "$ref": "#/definitions/models.Group"
                             }
                         }
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Удаление групп",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Удаление групп",
+                "parameters": [
+                    {
+                        "description": "Данные",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.DeleteEnumRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Добавление групп",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Добавление групп",
+                "parameters": [
+                    {
+                        "description": "Данные",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.AddGroupsRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
                     },
                     "204": {
                         "description": "Нет записей в БД",
@@ -223,6 +219,120 @@ const docTemplate = `{
                                 "$ref": "#/definitions/models.Specialization"
                             }
                         }
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Удаление специализаций",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Удаление специализаций",
+                "parameters": [
+                    {
+                        "description": "Данные",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.DeleteEnumRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Добавление групп",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Добавление групп",
+                "parameters": [
+                    {
+                        "description": "Данные",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.AddSpecializationsRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
                     },
                     "204": {
                         "description": "Нет записей в БД",
@@ -1186,6 +1296,63 @@ const docTemplate = `{
             }
         },
         "/students/load/additional/{token}": {
+            "put": {
+                "description": "Удаление дополнительной нагрузки по ID нагрузки",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Student.TeachingLoad"
+                ],
+                "summary": "Удаление дополнительной педнагрузки",
+                "parameters": [
+                    {
+                        "description": "ID нагрузок и семестр",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.DeleteIDs"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Добавление или обновление дополнительной нагрузки",
                 "consumes": [
@@ -1242,16 +1409,18 @@ const docTemplate = `{
                         }
                     }
                 }
-            },
-            "delete": {
-                "description": "Удаление дополнительной нагрузки по ID нагрузки",
+            }
+        },
+        "/students/load/classroom/{token}": {
+            "put": {
+                "description": "Удаление аудиторной нагрузки по ID нагрузки",
                 "consumes": [
                     "application/json"
                 ],
                 "tags": [
                     "Student.TeachingLoad"
                 ],
-                "summary": "Удаление дополнительной педнагрузки",
+                "summary": "Удаление аудиторной педнагрузки",
                 "parameters": [
                     {
                         "description": "ID нагрузок и семестр",
@@ -1299,9 +1468,7 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/students/load/classroom/{token}": {
+            },
             "post": {
                 "description": "Добавление или обновление аудиторной нагрузки",
                 "consumes": [
@@ -1358,16 +1525,18 @@ const docTemplate = `{
                         }
                     }
                 }
-            },
-            "delete": {
-                "description": "Удаление аудиторной нагрузки по ID нагрузки",
+            }
+        },
+        "/students/load/individual/{token}": {
+            "put": {
+                "description": "Удаление индивидуальных педнагрузок по ID нагрузок",
                 "consumes": [
                     "application/json"
                 ],
                 "tags": [
                     "Student.TeachingLoad"
                 ],
-                "summary": "Удаление аудиторной педнагрузки",
+                "summary": "Удаление индивидуальных педагогических нагрузок",
                 "parameters": [
                     {
                         "description": "ID нагрузок и семестр",
@@ -1415,9 +1584,7 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/students/load/individual/{token}": {
+            },
             "post": {
                 "description": "Добавление или обновление индивидуальных нагрузок",
                 "consumes": [
@@ -1435,63 +1602,6 @@ const docTemplate = `{
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/request_models.UpsertIndividualLoadRequest"
-                        }
-                    },
-                    {
-                        "type": "string",
-                        "description": "Токен пользователя",
-                        "name": "token",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "204": {
-                        "description": "Нет записей в БД",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "Неверный формат данных",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "401": {
-                        "description": "Токен протух",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Ошибка на стороне сервера",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "Удаление индивидуальных педнагрузок по ID нагрузок",
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Student.TeachingLoad"
-                ],
-                "summary": "Удаление индивидуальных педагогических нагрузок",
-                "parameters": [
-                    {
-                        "description": "ID нагрузок и семестр",
-                        "name": "input",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request_models.DeleteIDs"
                         }
                     },
                     {
@@ -1693,6 +1803,63 @@ const docTemplate = `{
             }
         },
         "/students/works/conferences/{token}": {
+            "put": {
+                "description": "Удаление научных конференций по ID конференций",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Student.ScientificWorks"
+                ],
+                "summary": "Удаление научных конференций",
+                "parameters": [
+                    {
+                        "description": "ID работ и семестр",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.DeleteIDs"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Добавление или обновление научных конференций",
                 "consumes": [
@@ -1749,16 +1916,18 @@ const docTemplate = `{
                         }
                     }
                 }
-            },
-            "delete": {
-                "description": "Удаление научных конференций по ID конференций",
+            }
+        },
+        "/students/works/projects/{token}": {
+            "put": {
+                "description": "Удаление научных исследований по ID этих исследований",
                 "consumes": [
                     "application/json"
                 ],
                 "tags": [
                     "Student.ScientificWorks"
                 ],
-                "summary": "Удаление научных конференций",
+                "summary": "Удаление научных исследований",
                 "parameters": [
                     {
                         "description": "ID работ и семестр",
@@ -1806,9 +1975,7 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/students/works/projects/{token}": {
+            },
             "post": {
                 "description": "Добавление или обновление научных проектов",
                 "consumes": [
@@ -1865,16 +2032,18 @@ const docTemplate = `{
                         }
                     }
                 }
-            },
-            "delete": {
-                "description": "Удаление научных исследований по ID этих исследований",
+            }
+        },
+        "/students/works/publications/{token}": {
+            "put": {
+                "description": "Удаление научных публикаций по ID публикаций",
                 "consumes": [
                     "application/json"
                 ],
                 "tags": [
                     "Student.ScientificWorks"
                 ],
-                "summary": "Удаление научных исследований",
+                "summary": "Удаление научных публикаций",
                 "parameters": [
                     {
                         "description": "ID работ и семестр",
@@ -1922,9 +2091,7 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/students/works/publications/{token}": {
+            },
             "post": {
                 "description": "Добавление или обновление научных публикаций",
                 "consumes": [
@@ -1942,63 +2109,6 @@ const docTemplate = `{
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/request_models.UpsertPublicationsRequest"
-                        }
-                    },
-                    {
-                        "type": "string",
-                        "description": "Токен пользователя",
-                        "name": "token",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "204": {
-                        "description": "Нет записей в БД",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "Неверный формат данных",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "401": {
-                        "description": "Токен протух",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Ошибка на стороне сервера",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "Удаление научных публикаций по ID публикаций",
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Student.ScientificWorks"
-                ],
-                "summary": "Удаление научных публикаций",
-                "parameters": [
-                    {
-                        "description": "ID работ и семестр",
-                        "name": "input",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request_models.DeleteIDs"
                         }
                     },
                     {
@@ -3403,6 +3513,17 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/models.ChangeSupervisor"
+                    }
+                }
+            }
+        },
+        "request_models.DeleteEnumRequest": {
+            "type": "object",
+            "properties": {
+                "ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
                     }
                 }
             }

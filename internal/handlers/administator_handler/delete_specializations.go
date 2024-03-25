@@ -9,36 +9,36 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// AddSpecializations
+// DeleteSpecializations
 //
-//	@Summary		Добавление групп
+//	@Summary		Удаление специализаций
 //
-//	@Description	Добавление групп
+//	@Description	Удаление специализаций
 //
 //	@Tags			Admin
 //	@Accept			json
-//	@Param			input body request_models.AddSpecializationsRequest true "Данные"
+//	@Param			input body request_models.DeleteEnumRequest true "Данные"
 //	@Success		200
 //	@Param			token	path		string	true	"Токен пользователя"
 //	@Failure		400		{string}	string	"Неверный формат данных"
 //	@Failure		401		{string}	string	"Токен протух"
 //	@Failure		204		{string}	string	"Нет записей в БД"
 //	@Failure		500		{string}	string	"Ошибка на стороне сервера"
-//	@Router			/administrator/enum/specializations/{token} [post]
-func (h *AdministratorHandler) AddSpecializations(ctx *gin.Context) {
+//	@Router			/administrator/enum/specializations/{token} [put]
+func (h *AdministratorHandler) DeleteSpecializations(ctx *gin.Context) {
 	_, err := h.authenticate(ctx)
 	if err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)
 		return
 	}
 
-	reqBody := request_models.AddSpecializationsRequest{}
+	reqBody := request_models.DeleteEnumRequest{}
 	if err = ctx.ShouldBindJSON(&reqBody); err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
-	if err = h.enum.InsertSpecializations(ctx, reqBody.Specs); err != nil {
+	if err = h.enum.DeleteSpecializations(ctx, reqBody.IDs); err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)
 		return
 	}

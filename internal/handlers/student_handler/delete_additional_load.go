@@ -28,7 +28,7 @@ import (
 //	@Failure		204		{string}	string	"Нет записей в БД"
 //	@Failure		500		{string}	string	"Ошибка на стороне сервера"
 //
-//	@Router			/students/load/additional/{token} [delete]
+//	@Router			/students/load/additional/{token} [put]
 func (h *StudentHandler) DeleteAdditionalLoads(ctx *gin.Context) {
 	user, err := h.authenticate(ctx)
 	if err != nil {

@@ -30,6 +30,10 @@ type Service struct {
 	db   *pgxpool.Pool
 }
 
+func NewService(repo EnumRepository, db *pgxpool.Pool) *Service {
+	return &Service{repo: repo, db: db}
+}
+
 func (s *Service) GetSpecializations(ctx context.Context) ([]models.Specialization, error) {
 	domainSpecs := make([]model.Specializations, 0)
 

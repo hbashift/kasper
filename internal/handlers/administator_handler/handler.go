@@ -43,8 +43,8 @@ type AdministratorHandler struct {
 	enum          EnumService
 }
 
-func NewHandler(user UserService, authenticator Authenticator) *AdministratorHandler {
-	return &AdministratorHandler{user: user, authenticator: authenticator}
+func NewHandler(user UserService, authenticator Authenticator, enum EnumService) *AdministratorHandler {
+	return &AdministratorHandler{user: user, authenticator: authenticator, enum: enum}
 }
 
 func (h *AdministratorHandler) authenticate(ctx *gin.Context) (*model.Users, error) {

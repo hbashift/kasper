@@ -22,3 +22,7 @@ type AddGroupsRequest struct {
 type AddSpecializationsRequest struct {
 	Specs []models.Specialization `json:"specs,omitempty"`
 }
+
+type DeleteEnumRequest struct {
+	IDs []int32 `json:"ids"`
+}

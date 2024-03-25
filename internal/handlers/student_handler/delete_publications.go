@@ -26,7 +26,7 @@ import (
 //	@Failure		401		{string}	string	"Токен протух"
 //	@Failure		204		{string}	string	"Нет записей в БД"
 //	@Failure		500		{string}	string	"Ошибка на стороне сервера"
-//	@Router			/students/works/publications/{token} [delete]
+//	@Router			/students/works/publications/{token} [put]
 func (h *StudentHandler) DeletePublications(ctx *gin.Context) {
 	user, err := h.authenticate(ctx)
 	if err != nil {

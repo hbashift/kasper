@@ -83,11 +83,12 @@ type HTTPServer struct {
 	authentication AuthenticationHandler
 }
 
-func NewHTTPServer(studentHandler StudentHandler, supervisorHandler SupervisorHandler, adminHandler AdministratorHandler) *HTTPServer {
+func NewHTTPServer(studentHandler StudentHandler, supervisorHandler SupervisorHandler, adminHandler AdministratorHandler, authenticationHandler AuthenticationHandler) *HTTPServer {
 	return &HTTPServer{
-		student:       studentHandler,
-		supervisor:    supervisorHandler,
-		administrator: adminHandler,
+		student:        studentHandler,
+		supervisor:     supervisorHandler,
+		administrator:  adminHandler,
+		authentication: authenticationHandler,
 	}
 }
 
@@ -122,18 +123,18 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 	r.POST("/students/load/classroom/:token", h.student.UpsertClassroomLoads)
 	r.PUT("/students/load/classroom/:token", h.student.DeleteClassroomLoads)
 	r.POST("/students/load/individual/:token", h.student.UpsertIndividualLoads)
-	r.DELETE("/students/load/individual/:token", h.student.DeleteIndividualLoads)
+	r.PUT("/students/load/individual/:token", h.student.DeleteIndividualLoads)
 	r.POST("/students/load/additional/:token", h.student.UpsertAdditionalLoads)
-	r.DELETE("/students/load/additional/:token", h.student.DeleteAdditionalLoads)
+	r.PUT("/students/load/additional/:token", h.student.DeleteAdditionalLoads)
 	r.POST("/student/load/review/:token", h.student.TeachingLoadToReview)
 
 	r.GET("/students/works/:token", h.student.GetScientificWorks)
 	r.POST("/students/works/publications/:token", h.student.UpsertPublications)
-	r.DELETE("/students/works/publications/:token", h.student.DeletePublications)
+	r.PUT("/students/works/publications/:token", h.student.DeletePublications)
 	r.POST("/students/works/conferences/:token", h.student.UpsertConferences)
-	r.DELETE("/students/works/conferences/:token", h.student.DeleteConferences)
+	r.PUT("/students/works/conferences/:token", h.student.DeleteConferences)
 	r.POST("/students/works/projects/:token", h.student.UpsertResearchProjects)
-	r.DELETE("/students/works/projects/:token", h.student.DeleteProjects)
+	r.PUT("/students/works/projects/:token", h.student.DeleteProjects)
 	r.POST("/students/works/review/:token", h.student.ScientificWorksToReview)
 
 	r.GET("/student/enum/specializations/:token", h.student.GetSpecializations)
@@ -163,7 +164,7 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 	r.GET("/administrator/enum/groups/:token", h.administrator.GetGroups)
 
 	r.POST("/administrator/enum/specializations/:token", h.administrator.AddSpecializations)
-	r.POST("/administrator/enum/group/:token", h.administrator.AddGroups)
+	r.POST("/administrator/enum/groups/:token", h.administrator.AddGroups)
 
 	// AuthenticationHandler init
 	r.POST("/authorize", h.authentication.Authorize)

@@ -27,7 +27,7 @@ type AuthorizationHandler struct {
 	student       StudentService
 }
 
-func NewAuthorizationHandler(authenticator Authenticator, student StudentService) *AuthorizationHandler {
+func NewHandler(authenticator Authenticator, student StudentService) *AuthorizationHandler {
 	return &AuthorizationHandler{authenticator: authenticator, student: student}
 }
 
