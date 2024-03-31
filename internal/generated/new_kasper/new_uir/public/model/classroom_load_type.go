@@ -15,6 +15,7 @@ const (
 	ClassroomLoadType_Practice   ClassroomLoadType = "practice"
 	ClassroomLoadType_Lectures   ClassroomLoadType = "lectures"
 	ClassroomLoadType_Laboratory ClassroomLoadType = "laboratory"
+	ClassroomLoadType_Exam       ClassroomLoadType = "exam"
 )
 
 func (e *ClassroomLoadType) Scan(value interface{}) error {
@@ -35,6 +36,8 @@ func (e *ClassroomLoadType) Scan(value interface{}) error {
 		*e = ClassroomLoadType_Lectures
 	case "laboratory":
 		*e = ClassroomLoadType_Laboratory
+	case "exam":
+		*e = ClassroomLoadType_Exam
 	default:
 		return errors.New("jet: Invalid scan value '" + enumValue + "' for ClassroomLoadType enum")
 	}

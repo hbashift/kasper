@@ -62,7 +62,7 @@ func main() {
 	emailService := email.NewService("SENDER", "PASSWORD", "smtp.gmail.com", db, usersRepo, clientRepo)
 	enumService := enum.NewService(enumRepo, db)
 
-	studentHandler := student_handler.NewHandler(studentService, studentService, studentService, studentService, authenticationService, emailService, enumService)
+	studentHandler := student_handler.NewHandler(studentService, studentService, studentService, studentService, authenticationService, emailService, enumService, adminService)
 	supervisorHandler := supervisor_handler.NewHandler(studentService, studentService, studentService, authenticationService, supervisorService, emailService)
 	adminHandler := administator_handler.NewHandler(adminService, authenticationService, enumService)
 	authenticationHandler := authorization_handler.NewHandler(authenticationService, studentService)

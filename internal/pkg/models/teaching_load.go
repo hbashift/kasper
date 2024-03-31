@@ -12,7 +12,7 @@ type ClassroomLoad struct {
 	// Кол-во часов
 	Hours *int32 `json:"hours,omitempty" db:"classroom_load.hours"`
 	// Тип аудиторной нагрузки
-	LoadType *string `json:"load_type,omitempty" db:"classroom_load.load_type" enums:"practice,lectures,laboratory"`
+	LoadType *string `json:"load_type,omitempty" db:"classroom_load.load_type" enums:"practice,lectures,laboratory,exam"`
 	// Основное учитель
 	MainTeacher *string `json:"main_teacher,omitempty" db:"classroom_load.main_teacher"`
 	// Название группы

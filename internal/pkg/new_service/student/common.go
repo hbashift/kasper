@@ -11,6 +11,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4"
 	"github.com/pkg/errors"
+	"github.com/samber/lo"
 )
 
 func (s *Service) AllToStatus(ctx context.Context, studentID uuid.UUID, status string) error {
@@ -161,6 +162,10 @@ func (s *Service) InitStudent(ctx context.Context, user model.Users, req request
 		}
 
 		if err = s.dissertationRepo.UpsertSemesterProgressTx(ctx, tx, progresses); err != nil {
+			return err
+		}
+
+		if err = s.studRepo.SetNewSupervisorTx(ctx, tx, user.KasperID, lo.FromPtr(req.SupervisorID)); err != nil {
 			return err
 		}
 

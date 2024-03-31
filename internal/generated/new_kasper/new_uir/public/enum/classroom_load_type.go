@@ -13,8 +13,10 @@ var ClassroomLoadType = &struct {
 	Practice   postgres.StringExpression
 	Lectures   postgres.StringExpression
 	Laboratory postgres.StringExpression
+	Exam       postgres.StringExpression
 }{
 	Practice:   postgres.NewEnumValue("practice"),
 	Lectures:   postgres.NewEnumValue("lectures"),
 	Laboratory: postgres.NewEnumValue("laboratory"),
+	Exam:       postgres.NewEnumValue("exam"),
 }

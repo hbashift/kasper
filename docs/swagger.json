@@ -875,6 +875,59 @@
                 }
             }
         },
+        "/student/supervisors/list/{token}": {
+            "get": {
+                "description": "Получения списка научных руководителей",
+                "tags": [
+                    "Student"
+                ],
+                "summary": "Получения списка научных руководителей",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Supervisor"
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/students/dissertation/file/{token}": {
             "put": {
                 "description": "Скачивание файла диссертации",
@@ -2746,7 +2799,8 @@
                     "enum": [
                         "practice",
                         "lectures",
-                        "laboratory"
+                        "laboratory",
+                        "exam"
                     ]
                 },
                 "main_teacher": {
@@ -3579,6 +3633,9 @@
                     "type": "integer"
                 },
                 "start_date": {
+                    "type": "string"
+                },
+                "supervisor_id": {
                     "type": "string"
                 }
             }

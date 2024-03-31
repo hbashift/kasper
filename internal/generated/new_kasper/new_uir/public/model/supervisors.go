@@ -13,6 +13,6 @@ import (
 
 type Supervisors struct {
 	SupervisorID uuid.UUID `sql:"primary_key"`
-	UserID       *uuid.UUID
+	UserID       uuid.UUID
 	FullName     *string
 }

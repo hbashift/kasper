@@ -60,6 +60,7 @@ definitions:
         - practice
         - lectures
         - laboratory
+        - exam
         type: string
       main_teacher:
         description: Основное учитель
@@ -658,6 +659,8 @@ definitions:
       specialization_id:
         type: integer
       start_date:
+        type: string
+      supervisor_id:
         type: string
     type: object
   request_models.GetByStudentID:
@@ -1386,6 +1389,41 @@ paths:
       summary: Получение списка всех групп
       tags:
       - Student.Enum
+  /student/supervisors/list/{token}:
+    get:
+      description: Получения списка научных руководителей
+      parameters:
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Supervisor'
+            type: array
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Получения списка научных руководителей
+      tags:
+      - Student
   /students/dissertation/{token}:
     get:
       consumes:

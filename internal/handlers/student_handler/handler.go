@@ -86,6 +86,10 @@ type (
 		GetSpecializations(ctx context.Context) ([]models.Specialization, error)
 		GetGroups(ctx context.Context) ([]models.Group, error)
 	}
+
+	AdminService interface {
+		GetSupervisors(ctx context.Context) ([]models.Supervisor, error)
+	}
 )
 
 type StudentHandler struct {
@@ -96,10 +100,11 @@ type StudentHandler struct {
 	authenticator Authenticator
 	email         EmailService
 	enum          EnumService
+	admin         AdminService
 }
 
-func NewHandler(student StudentService, dissertation DissertationService, scientific ScientificWorksService, load TeachingLoadService, authenticator Authenticator, email EmailService, enum EnumService) *StudentHandler {
-	return &StudentHandler{student: student, dissertation: dissertation, scientific: scientific, load: load, authenticator: authenticator, email: email, enum: enum}
+func NewHandler(student StudentService, dissertation DissertationService, scientific ScientificWorksService, load TeachingLoadService, authenticator Authenticator, email EmailService, enum EnumService, admin AdminService) *StudentHandler {
+	return &StudentHandler{student: student, dissertation: dissertation, scientific: scientific, load: load, authenticator: authenticator, email: email, enum: enum, admin: admin}
 }
 
 func (h *StudentHandler) authenticate(ctx *gin.Context) (*model.Users, error) {
