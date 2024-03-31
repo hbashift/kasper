@@ -2,37 +2,183 @@ package student
 
 import (
 	"context"
+	"time"
 
-	"uir_draft/internal/generated/kasper/uir_draft/public/model"
-	"uir_draft/internal/pkg/service/student/mapping"
+	"uir_draft/internal/generated/new_kasper/new_uir/public/model"
+	"uir_draft/internal/handlers/authorization_handler/request_models"
+	"uir_draft/internal/pkg/models"
 
+	"github.com/google/uuid"
+	"github.com/jackc/pgx/v4"
 	"github.com/pkg/errors"
+	"github.com/samber/lo"
 )
 
-var ErrNonValidToken = errors.New("token is expired")
+func (s *Service) AllToStatus(ctx context.Context, studentID uuid.UUID, status string) error {
+	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
+		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
+		if err != nil {
+			return err
+		}
 
-func (s *Service) grepFromDBScientificWorks(ctx context.Context, session *model.AuthorizationToken) ([]*mapping.ScientificWork, error) {
-	scientificWorks, err := s.scienceRepo.GetScientificWorks(ctx, s.db, session.KasperID)
+		dStatus, err := models.MapApprovalStatusToDomain(status)
+		if err != nil {
+			return errors.Wrap(err, "AllToStatus()")
+		}
+
+		err = s.dissertationRepo.SetDissertationStatusTx(ctx, tx, student.StudentID, dStatus, student.ActualSemester)
+		if err != nil {
+			return err
+		}
+
+		//err = s.dissertationRepo.SetDissertationTitleStatusTx(ctx, tx, student.StudentID, dStatus, student.ActualSemester, nil)
+		//if err != nil {
+		//	return err
+		//}
+
+		err = s.dissertationRepo.SetSemesterProgressStatusTx(ctx, tx, student.StudentID, dStatus, nil)
+		if err != nil {
+			return err
+		}
+
+		err = s.scienceRepo.SetScientificWorkStatusTx(ctx, tx, student.StudentID, dStatus, student.ActualSemester, nil)
+		if err != nil {
+			return err
+		}
+
+		err = s.loadRepo.SetTeachingLoadStatusTx(ctx, tx, student.StudentID, dStatus, student.ActualSemester, nil)
+		if err != nil {
+			return err
+		}
+
+		err = s.studRepo.SetStudentStatusTx(ctx, tx, dStatus, student.StudyingStatus, student.StudentID)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
 	if err != nil {
-		return nil, errors.Wrap(err, "[Student]")
+		return errors.Wrap(err, "AllToStatus()")
 	}
 
-	var jsonWorks []*mapping.ScientificWork
-	for _, work := range scientificWorks {
-		jsonWork := mapping.MapScientificWorkFromDomain(work)
-
-		jsonWorks = append(jsonWorks, jsonWork)
-	}
-
-	return jsonWorks, nil
+	return nil
 }
 
-func (s *Service) grepFromDBTeachingLoad(ctx context.Context, session *model.AuthorizationToken) (*mapping.TeachingLoad, error) {
-	loads, err := s.loadRepo.GetStudentsTeachingLoad(ctx, s.db, session.KasperID)
+func (s *Service) GetStudentStatus(ctx context.Context, studentID uuid.UUID) (models.Student, error) {
+	var student models.Student
+
+	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
+		var err error
+		student, err = s.studRepo.GetStudentStatusTx(ctx, tx, studentID)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
 	if err != nil {
-		return nil, err
+		return models.Student{}, errors.Wrap(err, "GetStudentStatus()")
 	}
 
-	domainLoads := mapping.MapTeachingLoadFromDomain(loads)
-	return &domainLoads, nil
+	return student, nil
+}
+
+func (s *Service) SetStudentStatus(ctx context.Context, studentID uuid.UUID, status model.ApprovalStatus) error {
+	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
+		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
+		if err != nil {
+			return err
+		}
+
+		if err = s.studRepo.SetStudentStatusTx(ctx, tx, status, student.StudyingStatus, studentID); err != nil {
+			return err
+		}
+
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "SetStudentStatus()")
+	}
+
+	return nil
+}
+
+func (s *Service) InitStudent(ctx context.Context, user model.Users, req request_models.FirstStudentRegistry) error {
+	startDate, err := time.Parse(time.DateOnly, req.StartDate)
+	if err != nil {
+		return errors.Wrap(err, "InitStudent()")
+	}
+
+	student := model.Students{
+		StudentID:      user.KasperID,
+		UserID:         user.UserID,
+		FullName:       req.FullName,
+		Department:     req.Department,
+		SpecID:         req.SpecializationID,
+		ActualSemester: req.ActualSemester,
+		Years:          req.NumberOfYears,
+		StartDate:      startDate,
+		GroupID:        req.GroupID,
+	}
+
+	var progresses []model.SemesterProgress
+	progressTypes := []model.ProgressType{
+		model.ProgressType_Intro,
+		model.ProgressType_Ch1,
+		model.ProgressType_Ch2,
+		model.ProgressType_Ch3,
+		model.ProgressType_Ch4,
+		model.ProgressType_Ch5,
+		model.ProgressType_Ch6,
+		model.ProgressType_End,
+		model.ProgressType_Literature,
+		model.ProgressType_Abstract,
+	}
+
+	for _, progressType := range progressTypes {
+		progress := model.SemesterProgress{
+			ProgressID:   uuid.New(),
+			StudentID:    user.KasperID,
+			ProgressType: progressType,
+			First:        false,
+			Second:       false,
+			Third:        false,
+			Forth:        false,
+			Fifth:        false,
+			Sixth:        false,
+			Seventh:      false,
+			Eighth:       false,
+			UpdatedAt:    time.Now(),
+			Status:       model.ApprovalStatus_Empty,
+			AcceptedAt:   nil,
+		}
+
+		progresses = append(progresses, progress)
+	}
+
+	err = s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
+		if err = s.studRepo.InsertStudentTx(ctx, tx, student); err != nil {
+			return err
+		}
+
+		if err = s.dissertationRepo.UpsertSemesterProgressTx(ctx, tx, progresses); err != nil {
+			return err
+		}
+
+		if err = s.studRepo.SetNewSupervisorTx(ctx, tx, user.KasperID, lo.FromPtr(req.SupervisorID)); err != nil {
+			return err
+		}
+
+		if err = s.userRepo.SetUserRegisteredTx(ctx, tx, user.UserID); err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return errors.Wrap(err, "InitStudent()")
+	}
+
+	return nil
 }

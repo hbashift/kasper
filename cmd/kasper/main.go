@@ -3,19 +3,19 @@ package main
 import (
 	"context"
 
-	"uir_draft/internal/app/new_kasper"
+	"uir_draft/internal/app/kasper"
 	"uir_draft/internal/handlers/administator_handler"
 	"uir_draft/internal/handlers/authorization_handler"
 	"uir_draft/internal/handlers/student_handler"
 	"uir_draft/internal/handlers/supervisor_handler"
 	"uir_draft/internal/pkg/configs"
-	"uir_draft/internal/pkg/new_repo"
-	"uir_draft/internal/pkg/new_service/admin"
-	"uir_draft/internal/pkg/new_service/authentication"
-	"uir_draft/internal/pkg/new_service/email"
-	"uir_draft/internal/pkg/new_service/enum"
-	"uir_draft/internal/pkg/new_service/student"
-	"uir_draft/internal/pkg/new_service/supervisor"
+	"uir_draft/internal/pkg/repository"
+	"uir_draft/internal/pkg/service/admin"
+	"uir_draft/internal/pkg/service/authentication"
+	"uir_draft/internal/pkg/service/email"
+	"uir_draft/internal/pkg/service/enum"
+	"uir_draft/internal/pkg/service/student"
+	"uir_draft/internal/pkg/service/supervisor"
 
 	"github.com/spf13/viper"
 )
@@ -46,14 +46,14 @@ func main() {
 		panic(err)
 	}
 
-	clientRepo := new_repo.NewClientRepository()
-	dissertationRepo := new_repo.NewDissertationRepository()
-	marksRepo := new_repo.NewMarksRepository()
-	scienceRepo := new_repo.NewScientificRepository()
-	loadRepo := new_repo.NewTeachingLoadRepository()
-	enumRepo := new_repo.NewEnumRepository()
-	usersRepo := new_repo.NewUsersRepository()
-	tokenRepo := new_repo.NewTokenRepository()
+	clientRepo := repository.NewClientRepository()
+	dissertationRepo := repository.NewDissertationRepository()
+	marksRepo := repository.NewMarksRepository()
+	scienceRepo := repository.NewScientificRepository()
+	loadRepo := repository.NewTeachingLoadRepository()
+	enumRepo := repository.NewEnumRepository()
+	usersRepo := repository.NewUsersRepository()
+	tokenRepo := repository.NewTokenRepository()
 
 	studentService := student.NewService(dissertationRepo, loadRepo, scienceRepo, marksRepo, clientRepo, tokenRepo, usersRepo, db)
 	adminService := admin.NewService(dissertationRepo, loadRepo, scienceRepo, marksRepo, clientRepo, tokenRepo, usersRepo, db)
@@ -67,7 +67,7 @@ func main() {
 	adminHandler := administator_handler.NewHandler(adminService, authenticationService, enumService)
 	authenticationHandler := authorization_handler.NewHandler(authenticationService, studentService)
 
-	server := new_kasper.NewHTTPServer(studentHandler, supervisorHandler, adminHandler, authenticationHandler)
+	server := kasper.NewHTTPServer(studentHandler, supervisorHandler, adminHandler, authenticationHandler)
 	r := server.InitRouter()
 
 	err = r.Run(":8080")

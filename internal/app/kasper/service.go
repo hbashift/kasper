@@ -5,59 +5,97 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-type StudentHandler interface {
-	GetDissertationPage(ctx *gin.Context)
-	UpsertSemesterProgress(ctx *gin.Context)
-	GetScientificWorks(ctx *gin.Context)
-	InsertScientificWorks(ctx *gin.Context)
-	UpdateScientificWorks(ctx *gin.Context)
-	DeleteScientificWork(ctx *gin.Context)
-	GetTeachingLoad(ctx *gin.Context)
-	UpsertTeachingLoad(ctx *gin.Context)
-	DeleteTeachingLoad(ctx *gin.Context)
-	UploadDissertation(ctx *gin.Context)
-	DownloadDissertation(ctx *gin.Context)
-	GetSupervisors(ctx *gin.Context)
-	FirstRegistry(ctx *gin.Context)
-	SetTheme(ctx *gin.Context)
+type (
+	StudentHandler interface {
+		AllToReview(ctx *gin.Context)
+		GetStudentStatus(ctx *gin.Context)
+
+		GetDissertationPage(ctx *gin.Context)
+		UpsertSemesterProgress(ctx *gin.Context)
+		DownloadDissertation(ctx *gin.Context)
+		UploadDissertation(ctx *gin.Context)
+		DissertationTitleToReview(ctx *gin.Context)
+		UpsertDissertationTitle(ctx *gin.Context)
+		DissertationToReview(ctx *gin.Context)
+
+		GetTeachingLoad(ctx *gin.Context)
+		UpsertAdditionalLoads(ctx *gin.Context)
+		UpsertClassroomLoads(ctx *gin.Context)
+		UpsertIndividualLoads(ctx *gin.Context)
+		DeleteAdditionalLoads(ctx *gin.Context)
+		DeleteClassroomLoads(ctx *gin.Context)
+		DeleteIndividualLoads(ctx *gin.Context)
+		TeachingLoadToReview(ctx *gin.Context)
+
+		GetScientificWorks(ctx *gin.Context)
+		UpsertResearchProjects(ctx *gin.Context)
+		UpsertPublications(ctx *gin.Context)
+		UpsertConferences(ctx *gin.Context)
+		DeleteProjects(ctx *gin.Context)
+		DeletePublications(ctx *gin.Context)
+		DeleteConferences(ctx *gin.Context)
+		ScientificWorksToReview(ctx *gin.Context)
+
+		GetSpecializations(ctx *gin.Context)
+		GetGroups(ctx *gin.Context)
+	}
+
+	SupervisorHandler interface {
+		GetStudentsList(ctx *gin.Context)
+
+		AllToStatus(ctx *gin.Context)
+
+		GetDissertationPage(ctx *gin.Context)
+		UpsertFeedback(ctx *gin.Context)
+		DownloadDissertation(ctx *gin.Context)
+
+		GetTeachingLoad(ctx *gin.Context)
+		GetScientificWorks(ctx *gin.Context)
+	}
+
+	AdministratorHandler interface {
+		ChangeSupervisor(ctx *gin.Context)
+		GetPairs(ctx *gin.Context)
+		SetStudentStudyingStatus(ctx *gin.Context)
+		GetSupervisors(ctx *gin.Context)
+
+		GetSpecializations(ctx *gin.Context)
+		GetGroups(ctx *gin.Context)
+
+		AddSpecializations(ctx *gin.Context)
+		AddGroups(ctx *gin.Context)
+	}
+
+	AuthenticationHandler interface {
+		Authorize(ctx *gin.Context)
+		FirstStudentRegistry(ctx *gin.Context)
+	}
+)
+
+type HTTPServer struct {
+	student        StudentHandler
+	supervisor     SupervisorHandler
+	administrator  AdministratorHandler
+	authentication AuthenticationHandler
 }
 
-type SupervisorHandler interface {
-	GetListOfStudents(ctx *gin.Context)
-	GetStudentsDissertationPage(ctx *gin.Context)
-	DownloadDissertation(ctx *gin.Context)
-	SetStatus(ctx *gin.Context)
-	UpdateFeedback(ctx *gin.Context)
-	GetScientificWorks(ctx *gin.Context)
-	GetTeachingLoad(ctx *gin.Context)
+func NewHTTPServer(studentHandler StudentHandler, supervisorHandler SupervisorHandler, adminHandler AdministratorHandler, authenticationHandler AuthenticationHandler) *HTTPServer {
+	return &HTTPServer{
+		student:        studentHandler,
+		supervisor:     supervisorHandler,
+		administrator:  adminHandler,
+		authentication: authenticationHandler,
+	}
 }
 
-type AuthorizationHandler interface {
-	Authorize(ctx *gin.Context)
-	ChangePassword(ctx *gin.Context)
-	HealthCheck(ctx *gin.Context)
-}
+func (h *HTTPServer) InitRouter() *gin.Engine {
+	r := gin.Default()
 
-type AdministratorHandler interface {
-	SetAcademicLeave(ctx *gin.Context)
-	UpdateStudentCommonInfo(ctx *gin.Context)
-	ChangeSupervisor(ctx *gin.Context)
-	GetPairs(ctx *gin.Context)
-	GetScientificWorks(ctx *gin.Context)
-	GetStudentsDissertationPage(ctx *gin.Context)
-	GetTeachingLoad(ctx *gin.Context)
-	GetSupervisorsStudents(ctx *gin.Context)
-}
-
-func InitRoutes(student StudentHandler,
-	supervisor SupervisorHandler,
-	authorization AuthorizationHandler,
-	adminHandler AdministratorHandler) *gin.Engine {
-	router := gin.Default()
-
-	router.Use(cors.New(cors.Config{
+	r.Use(cors.New(cors.Config{
 		AllowMethods:     []string{"PUT", "PATCH", "POST", "GET", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Authorization", "Content-Type", "Accept-Encoding", "StudentID"},
 		ExposeHeaders:    []string{"Content-Length", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials", "Access-Control-Allow-Headers", "Access-Control-Allow-Methods", "Content-Disposition"},
@@ -66,42 +104,72 @@ func InitRoutes(student StudentHandler,
 		MaxAge:           12 * time.Hour,
 	}))
 
-	router.GET("/students/dissertation/:id", student.GetDissertationPage)
-	router.POST("/students/dissertation/progress/:id", student.UpsertSemesterProgress)
-	router.GET("/students/scientific_works/:id", student.GetScientificWorks)
-	router.POST("/students/scientific_works/:id", student.InsertScientificWorks)
-	router.PATCH("/students/scientific_works/:id", student.UpdateScientificWorks)
-	router.DELETE("/students/scientific_works/:id", student.DeleteScientificWork)
-	router.GET("/students/teaching_load/:id", student.GetTeachingLoad)
-	router.POST("/students/teaching_load/:id", student.UpsertTeachingLoad)
-	router.DELETE("/students/teaching_load/:id", student.DeleteTeachingLoad)
-	router.POST("/students/dissertation/file/:id", student.UploadDissertation)
-	router.PUT("/students/dissertation/file/:id", student.DownloadDissertation)
-	router.GET("/students/supervisors/:id", student.GetSupervisors)
-	router.POST("/students/registration/:id", student.FirstRegistry)
-	router.POST("/students/dissertation/theme/:id", student.SetTheme)
+	// Swagger documentation
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	router.GET("/supervisors/list_of_students/:id", supervisor.GetListOfStudents)
-	router.PUT("/supervisors/student/:id", supervisor.GetStudentsDissertationPage)
-	router.PUT("/supervisor/students/dissertation/:id", supervisor.DownloadDissertation)
-	router.POST("/supervisor/students/set_status/:id", supervisor.SetStatus)
-	router.POST("/supervisor/students/feedback/:id", supervisor.UpdateFeedback)
-	router.PUT("/supervisor/students/scientific_works/:id", supervisor.GetScientificWorks)
-	router.PUT("/supervisor/students/teaching_load/:id", supervisor.GetTeachingLoad)
-	router.POST("/supervisor/students/common_info/:id", adminHandler.UpdateStudentCommonInfo)
+	// StudentHandlers init
+	r.POST("/students/review/:token", h.student.AllToReview)
+	r.GET("/students/info/:token", h.student.GetStudentStatus)
 
-	router.POST("/authorization/authorize", authorization.Authorize)
-	router.POST("/authorization/change_password/:id", authorization.ChangePassword)
-	router.GET("/authorization/check/:id", authorization.HealthCheck)
+	r.GET("/students/dissertation/:token", h.student.GetDissertationPage)
+	r.POST("/students/dissertation/progress/:token", h.student.UpsertSemesterProgress)
+	r.PUT("/students/dissertation/file/:token", h.student.DownloadDissertation)
+	r.POST("/students/dissertation/file/:token", h.student.UploadDissertation)
+	r.POST("/students/dissertation_title/review/:token", h.student.DissertationTitleToReview)
+	r.POST("/students/dissertation_title/:token", h.student.UpsertDissertationTitle)
+	r.POST("/students/dissertation/review/:token", h.student.DissertationToReview)
 
-	router.POST("/admin/students/set_academic/:id", adminHandler.SetAcademicLeave)
-	router.POST("/admin/students/common_info/:id", adminHandler.UpdateStudentCommonInfo)
-	router.POST("/admin/pairs/:id", adminHandler.ChangeSupervisor)
-	router.GET("/admin/pairs/:id", adminHandler.GetPairs)
-	router.PUT("/admin/students/scientific/:id", adminHandler.GetScientificWorks)
-	router.PUT("/admin/students/load/:id", adminHandler.GetTeachingLoad)
-	router.PUT("/admin/students/dissertation/:id", adminHandler.GetStudentsDissertationPage)
-	router.PUT("/admin/supervisor/students/:id", adminHandler.GetSupervisorsStudents)
+	r.GET("/students/load/:token", h.student.GetTeachingLoad)
+	r.POST("/students/load/classroom/:token", h.student.UpsertClassroomLoads)
+	r.PUT("/students/load/classroom/:token", h.student.DeleteClassroomLoads)
+	r.POST("/students/load/individual/:token", h.student.UpsertIndividualLoads)
+	r.PUT("/students/load/individual/:token", h.student.DeleteIndividualLoads)
+	r.POST("/students/load/additional/:token", h.student.UpsertAdditionalLoads)
+	r.PUT("/students/load/additional/:token", h.student.DeleteAdditionalLoads)
+	r.POST("/student/load/review/:token", h.student.TeachingLoadToReview)
 
-	return router
+	r.GET("/students/works/:token", h.student.GetScientificWorks)
+	r.POST("/students/works/publications/:token", h.student.UpsertPublications)
+	r.PUT("/students/works/publications/:token", h.student.DeletePublications)
+	r.POST("/students/works/conferences/:token", h.student.UpsertConferences)
+	r.PUT("/students/works/conferences/:token", h.student.DeleteConferences)
+	r.POST("/students/works/projects/:token", h.student.UpsertResearchProjects)
+	r.PUT("/students/works/projects/:token", h.student.DeleteProjects)
+	r.POST("/students/works/review/:token", h.student.ScientificWorksToReview)
+
+	r.GET("/student/enum/specializations/:token", h.student.GetSpecializations)
+	r.GET("/student/enum/groups/:token", h.student.GetGroups)
+
+	// SupervisorHandler init
+	r.PUT("/supervisors/student/list/:token", h.supervisor.GetStudentsList)
+
+	r.POST("/supervisors/student/review/:token", h.supervisor.AllToStatus)
+
+	r.PUT("/supervisors/student/dissertation/:token", h.supervisor.GetDissertationPage)
+	r.POST("/supervisors/student/dissertation/feedback/:token", h.supervisor.UpsertFeedback)
+	r.PUT("/supervisors/student/dissertation/file/:token", h.supervisor.DownloadDissertation)
+
+	r.PUT("/supervisors/student/load/:token", h.supervisor.GetTeachingLoad)
+	r.PUT("/supervisors/student/works/:token", h.supervisor.GetScientificWorks)
+
+	// AdministratorHandler init
+	r.POST("/administrator/student/change/:token", h.administrator.ChangeSupervisor)
+
+	r.GET("/administrator/pairs/:token", h.administrator.GetPairs)
+	r.POST("/administrator/student/status/:token", h.administrator.SetStudentStudyingStatus)
+
+	r.GET("/administrator/supervisors/list/:token", h.administrator.GetSupervisors)
+
+	r.GET("/administrator/enum/specializations/:token", h.administrator.GetSpecializations)
+	r.GET("/administrator/enum/groups/:token", h.administrator.GetGroups)
+
+	r.POST("/administrator/enum/specializations/:token", h.administrator.AddSpecializations)
+	r.POST("/administrator/enum/groups/:token", h.administrator.AddGroups)
+
+	// AuthenticationHandler init
+	r.POST("/authorize", h.authentication.Authorize)
+
+	r.POST("/student/registry/:token", h.authentication.FirstStudentRegistry)
+
+	return r
 }

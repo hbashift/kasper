@@ -2,67 +2,111 @@ package admin
 
 import (
 	"context"
+	"time"
 
-	"uir_draft/internal/generated/kasper/uir_draft/public/model"
+	"uir_draft/internal/generated/new_kasper/new_uir/public/model"
 	"uir_draft/internal/pkg/models"
-	adminmap "uir_draft/internal/pkg/service/admin/mapping"
-	"uir_draft/internal/pkg/service/student/mapping"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
-	"github.com/pkg/errors"
 )
 
-var ErrNonValidToken = errors.New("token is expired")
+type (
+	TokenRepository interface {
+		GetUserIDByTokenTx(ctx context.Context, tx pgx.Tx, token string) (uuid.UUID, error)
+	}
 
-type StudentRepository interface {
-	GetPairs(ctx context.Context, tx *pgxpool.Pool) ([]*adminmap.StudentSupervisorPair, error)
-	ChangeSupervisor(ctx context.Context, tx *pgxpool.Pool, pairs []*adminmap.ChangeSupervisor) error
-	GetNumberOfYears(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) (int32, error)
-	SetAcademicLeave(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID, isAcademicLeave bool) error
-	UpdateFeedback(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID, feedback string) error
-	GetStudentCommonInfo(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) (*models.StudentCommonInformation, error)
-	GetListOfStudents(ctx context.Context, tx *pgxpool.Pool, supervisorID *uuid.UUID) ([]*model.Students, error)
-	UpdateStudentCommonInfo(ctx context.Context, tx *pgxpool.Pool, student model.Students) error
-}
+	UsersRepository interface {
+		GetUserTx(ctx context.Context, tx pgx.Tx, userID uuid.UUID) (model.Users, error)
+	}
 
-type SemesterRepository interface {
-	GetStudentDissertationPlan(ctx context.Context, tx *pgxpool.Pool, clientID uuid.UUID) ([]*models.StudentDissertationPlan, error)
-}
+	MarksRepository interface {
+		GetStudentMarksTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]model.Marks, error)
+	}
 
-type TokenRepository interface {
-	Authenticate(ctx context.Context, token string, db *pgxpool.Pool) (*model.AuthorizationToken, error)
-}
+	ClientsRepository interface {
+		GetSupervisorsTx(ctx context.Context, tx pgx.Tx) ([]models.Supervisor, error)
+		SetNewSupervisorTx(ctx context.Context, tx pgx.Tx, studentID, supervisorID uuid.UUID) error
+		GetStudentSupervisorPairsTx(ctx context.Context, tx pgx.Tx) ([]models.StudentSupervisorPair, error)
+		GetStudentTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) (model.Students, error)
+		SetStudentStatusTx(ctx context.Context, tx pgx.Tx, status model.ApprovalStatus, studyingStatus model.StudentStatus, studentID uuid.UUID) error
+		GetStudentStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) (models.Student, error)
+		InsertStudentTx(ctx context.Context, tx pgx.Tx, student model.Students) error
+	}
 
-type DissertationRepository interface {
-	GetStatuses(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) ([]*mapping.DissertationStatus, error)
-	GetDissertationData(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID, semester int32) (*model.Dissertation, error)
-}
+	DissertationRepository interface {
+		SetSemesterProgressStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID, status model.ApprovalStatus, acceptedAt *time.Time) error
+		SetDissertationStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID, status model.ApprovalStatus, semester int32) error
+		SetDissertationTitleStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID, status model.ApprovalStatus, semester int32, acceptedAt *time.Time) error
 
-type ScientificWorksRepository interface {
-	GetScientificWorks(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) ([]*model.ScientificWork, error)
-}
+		GetSemesterProgressTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]model.SemesterProgress, error)
+		UpsertSemesterProgressTx(ctx context.Context, tx pgx.Tx, progresses []model.SemesterProgress) error
 
-type TeachingLoadRepo interface {
-	GetStudentsTeachingLoad(ctx context.Context, tx *pgxpool.Pool, studentID uuid.UUID) ([]*model.TeachingLoad, error)
-}
+		GetActualDissertationData(ctx context.Context, tx pgx.Tx, studentID uuid.UUID, semester int32) (model.Dissertations, error)
+		GetDissertationsTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]model.Dissertations, error)
+		UpsertDissertationTx(ctx context.Context, tx pgx.Tx, model model.Dissertations) error
 
-type SupervisorRepository interface {
-	GetSupervisors(ctx context.Context, tx *pgxpool.Pool) ([]*model.Supervisors, error)
-}
+		GetDissertationTitlesTx(ctx context.Context, tx pgx.Tx, dissertationID uuid.UUID) ([]model.DissertationTitles, error)
+		InsertDissertationTitleTx(ctx context.Context, tx pgx.Tx, title model.DissertationTitles) error
+
+		GetFeedbackTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]model.Feedback, error)
+	}
+
+	ScientificRepository interface {
+		SetScientificWorkStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID, status model.ApprovalStatus, semester int32, acceptedAt *time.Time) error
+
+		GetScientificWorksStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]model.ScientificWorksStatus, error)
+		UpdateScientificWorksStatusTx(ctx context.Context, tx pgx.Tx, works model.ScientificWorksStatus) error
+
+		InsertPublicationsTx(ctx context.Context, tx pgx.Tx, publications []model.Publications) error
+		UpdatePublicationsTx(ctx context.Context, tx pgx.Tx, publications []model.Publications) error
+		DeletePublicationsTx(ctx context.Context, tx pgx.Tx, publicationsIDs []uuid.UUID) error
+
+		InsertConferencesTx(ctx context.Context, tx pgx.Tx, conferences []model.Conferences) error
+		UpdateConferencesTx(ctx context.Context, tx pgx.Tx, conferences []model.Conferences) error
+		DeleteConferencesTx(ctx context.Context, tx pgx.Tx, conferencesIDs []uuid.UUID) error
+
+		InsertResearchProjectsTx(ctx context.Context, tx pgx.Tx, projects []model.ResearchProjects) error
+		UpdateResearchProjectsTx(ctx context.Context, tx pgx.Tx, projects []model.ResearchProjects) error
+		DeleteResearchProjectsTx(ctx context.Context, tx pgx.Tx, projectsIDs []uuid.UUID) error
+
+		GetScientificWorksTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]models.ScientificWork, error)
+	}
+
+	TeachingLoadRepository interface {
+		SetTeachingLoadStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID, status model.ApprovalStatus, semester int32, acceptedAt *time.Time) error
+
+		GetTeachingLoadStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]model.TeachingLoadStatus, error)
+		UpdateTeachingLoadStatusTx(ctx context.Context, tx pgx.Tx, loads []model.TeachingLoadStatus) error
+
+		InsertClassroomLoadsTx(ctx context.Context, tx pgx.Tx, loads []model.ClassroomLoad) error
+		UpdateClassroomLoadsTx(ctx context.Context, tx pgx.Tx, loads []model.ClassroomLoad) error
+		DeleteClassroomLoadsTx(ctx context.Context, tx pgx.Tx, classroomsIDs []uuid.UUID) error
+
+		InsertIndividualLoadsTx(ctx context.Context, tx pgx.Tx, loads []model.IndividualStudentsLoad) error
+		UpdateIndividualLoadsTx(ctx context.Context, tx pgx.Tx, loads []model.IndividualStudentsLoad) error
+		DeleteIndividualStudentsLoadsTx(ctx context.Context, tx pgx.Tx, individualsIDs []uuid.UUID) error
+
+		InsertAdditionalLoadsTx(ctx context.Context, tx pgx.Tx, loads []model.AdditionalLoad) error
+		UpdateAdditionalLoadsTx(ctx context.Context, tx pgx.Tx, loads []model.AdditionalLoad) error
+		DeleteAdditionalLoadsTx(ctx context.Context, tx pgx.Tx, additionalIDs []uuid.UUID) error
+
+		GetTeachingLoadsTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]models.TeachingLoad, error)
+	}
+)
 
 type Service struct {
-	studRepo     StudentRepository
-	tokenRepo    TokenRepository
-	semesterRepo SemesterRepository
-	dRepo        DissertationRepository
-	scienceRepo  ScientificWorksRepository
-	loadRepo     TeachingLoadRepo
-	supRepo      SupervisorRepository
-
-	db *pgxpool.Pool
+	dissertationRepo DissertationRepository
+	loadRepo         TeachingLoadRepository
+	scienceRepo      ScientificRepository
+	marksRepo        MarksRepository
+	clientRepo       ClientsRepository
+	tokenRepo        TokenRepository
+	userRepo         UsersRepository
+	db               *pgxpool.Pool
 }
 
-func NewService(studRepo StudentRepository, tokenRepo TokenRepository, semesterRepo SemesterRepository, dRepo DissertationRepository, scienceRepo ScientificWorksRepository, loadRepo TeachingLoadRepo, supRepo SupervisorRepository, db *pgxpool.Pool) *Service {
-	return &Service{studRepo: studRepo, tokenRepo: tokenRepo, semesterRepo: semesterRepo, dRepo: dRepo, scienceRepo: scienceRepo, loadRepo: loadRepo, supRepo: supRepo, db: db}
+func NewService(dissertationRepo DissertationRepository, loadRepo TeachingLoadRepository, scienceRepo ScientificRepository, marksRepo MarksRepository, clientRepo ClientsRepository, tokenRepo TokenRepository, userRepo UsersRepository, db *pgxpool.Pool) *Service {
+	return &Service{dissertationRepo: dissertationRepo, loadRepo: loadRepo, scienceRepo: scienceRepo, marksRepo: marksRepo, clientRepo: clientRepo, tokenRepo: tokenRepo, userRepo: userRepo, db: db}
 }
