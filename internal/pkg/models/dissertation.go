@@ -10,29 +10,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-type StudentDissertationPlan struct {
-	Name    string `db:"name" json:"name,omitempty"`
-	First   bool   `db:"first" json:"id1,omitempty"`
-	Second  bool   `db:"second" json:"id2,omitempty"`
-	Third   bool   `db:"third" json:"id3,omitempty"`
-	Forth   bool   `db:"forth" json:"id4,omitempty"`
-	Fifth   bool   `db:"fifth" json:"id5,omitempty"`
-	Sixth   bool   `db:"sixth" json:"id6,omitempty"`
-	Seventh bool   `db:"seventh" json:"id7,omitempty"`
-	Eighth  bool   `db:"eighth" json:"id8,omitempty"`
-}
-
-type DissertationPageRequest struct {
-	// Прогресс написания диссертации
-	SemesterProgress []SemesterProgressResponse
-	// Статусы диссертаций
-	DissertationsStatuses []DissertationsResponse
-	// Названия диссертаций
-	DissertationTitles []DissertationTitlesResponse
-	// Обратная связь по каждой из диссертации
-	Feedback []FeedbackResponse
-}
-
 type SemesterProgressRequest struct {
 	// Тип прогресса написания диссертации
 	ProgressType string `json:"progress_type,omitempty" enums:"intro,ch. 1,ch. 2,ch. 3,ch. 4,ch. 5,ch. 6,end,literature,abstract"`
