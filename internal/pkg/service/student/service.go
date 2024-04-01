@@ -32,6 +32,7 @@ type (
 		GetStudentStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) (models.Student, error)
 		InsertStudentTx(ctx context.Context, tx pgx.Tx, student model.Students) error
 		SetNewSupervisorTx(ctx context.Context, tx pgx.Tx, studentID, supervisorID uuid.UUID) error
+		GetAllStudentsSupervisors(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]models.SupervisorFull, error)
 	}
 
 	DissertationRepository interface {

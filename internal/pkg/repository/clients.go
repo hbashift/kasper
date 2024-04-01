@@ -253,7 +253,8 @@ func (r *ClientRepository) GetStudentsActualSupervisorTx(ctx context.Context, tx
 			table.Supervisors.FullName,
 		).
 		FROM(
-			table.StudentsSupervisors.INNER_JOIN(table.Supervisors, table.StudentsSupervisors.SupervisorID.EQ(table.Supervisors.SupervisorID)),
+			table.StudentsSupervisors.
+				INNER_JOIN(table.Supervisors, table.StudentsSupervisors.SupervisorID.EQ(table.Supervisors.SupervisorID)),
 		).
 		WHERE(table.StudentsSupervisors.StudentID.EQ(postgres.UUID(studentID)).
 			AND(table.StudentsSupervisors.EndAt.IS_NULL())).
@@ -284,6 +285,38 @@ func (r *ClientRepository) GetSupervisorTx(ctx context.Context, tx pgx.Tx, super
 	}
 
 	return supervisor, nil
+}
+
+func (r *ClientRepository) GetAllStudentsSupervisors(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]models.SupervisorFull, error) {
+	stmt, args := table.Supervisors.
+		SELECT(
+			table.Supervisors.SupervisorID,
+			table.Supervisors.FullName,
+			table.StudentsSupervisors.StartAt,
+			table.StudentsSupervisors.EndAt,
+		).
+		FROM(table.Supervisors.
+			INNER_JOIN(table.Supervisors, table.Supervisors.SupervisorID.EQ(table.StudentsSupervisors.SupervisorID))).
+		WHERE(table.StudentsSupervisors.StudentID.EQ(postgres.UUID(studentID))).
+		Sql()
+
+	rows, err := tx.Query(ctx, stmt, args...)
+	if err != nil {
+		return nil, errors.Wrap(err, "GetAllStudentsSupervisors()")
+	}
+
+	supervisors := make([]models.SupervisorFull, 0)
+
+	for rows.Next() {
+		supervisor := models.SupervisorFull{}
+		if err := scanSupervisorFull(rows, &supervisor); err != nil {
+			return nil, errors.Wrap(err, "GetAllStudentsSupervisors(): scanning")
+		}
+
+		supervisors = append(supervisors, supervisor)
+	}
+
+	return supervisors, nil
 }
 
 // TODO доделать для аспера и научника
@@ -343,5 +376,14 @@ func scanSupervisor(row pgx.Row, target *models.Supervisor) error {
 	return row.Scan(
 		&target.SupervisorID,
 		&target.FullName,
+	)
+}
+
+func scanSupervisorFull(row pgx.Row, target *models.SupervisorFull) error {
+	return row.Scan(
+		&target.SupervisorID,
+		&target.FullName,
+		&target.StartAt,
+		&target.EndAt,
 	)
 }

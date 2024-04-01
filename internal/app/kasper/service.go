@@ -55,6 +55,8 @@ type (
 
 		GetTeachingLoad(ctx *gin.Context)
 		GetScientificWorks(ctx *gin.Context)
+
+		GetStudentStatus(ctx *gin.Context)
 	}
 
 	AdministratorHandler interface {
@@ -151,6 +153,8 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 
 	r.PUT("/supervisors/student/load/:token", h.supervisor.GetTeachingLoad)
 	r.PUT("/supervisors/student/works/:token", h.supervisor.GetScientificWorks)
+
+	r.PUT("/supervisors/student/info/:token", h.supervisor.GetStudentStatus)
 
 	// AdministratorHandler init
 	r.POST("/administrator/student/change/:token", h.administrator.ChangeSupervisor)

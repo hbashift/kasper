@@ -30,7 +30,7 @@ type (
 		UpsertSemesterProgress(ctx context.Context, studentID uuid.UUID, progress []models.SemesterProgressRequest) error
 		// UpsertDissertationInfo - обновляет информацию о диссертации (файле)
 		UpsertDissertationInfo(ctx context.Context, studentID uuid.UUID, semester int32) error
-		UpsertDissertationTitle(ctx context.Context, studentID uuid.UUID, title string) error
+		UpsertDissertationTitle(ctx context.Context, studentID uuid.UUID, title, object, order string) error
 		// GetDissertationData - возвращает информацию о диссертации (файле)
 		GetDissertationData(ctx context.Context, studentID uuid.UUID, semester int32) (model.Dissertations, error)
 	}

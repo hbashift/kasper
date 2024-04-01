@@ -89,5 +89,7 @@ type ToReviewRequest struct {
 }
 
 type UpsertDissertationTitleRequest struct {
-	Title string `json:"title,omitempty"`
+	Title          string `json:"title,omitempty"`
+	ResearchObject string `json:"research_object"`
+	ResearchOrder  string `json:"research_order"`
 }

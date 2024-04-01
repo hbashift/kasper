@@ -142,6 +142,8 @@ type DissertationPageResponse struct {
 	DissertationTitles []DissertationTitlesResponse `json:"dissertation_titles,omitempty" format:"array"`
 	// Массив обратной связи по каждой из диссертаций (за каждый семестр)
 	Feedback []FeedbackResponse `json:"feedback,omitempty" format:"array"`
+	// Список научных руководителей
+	Supervisors []SupervisorFull `json:"supervisors,omitempty" format:"array"`
 }
 
 type SemesterProgressResponse struct {
@@ -253,6 +255,10 @@ type DissertationTitlesResponse struct {
 	AcceptedAt *time.Time `json:"accepted_at,omitempty" format:"date-time"`
 	// Семестр
 	Semester int32 `json:"semester,omitempty"`
+	// Объект исследования
+	ResearchObject string `json:"research_object"`
+	// Приказ исследования
+	ResearchOrder string `json:"research_order"`
 }
 
 func (d *DissertationTitlesResponse) SetDomainData(titles model.DissertationTitles) {
@@ -263,6 +269,8 @@ func (d *DissertationTitlesResponse) SetDomainData(titles model.DissertationTitl
 	d.Status = titles.Status.String()
 	d.AcceptedAt = titles.AcceptedAt
 	d.Semester = titles.Semester
+	d.ResearchObject = titles.ResearchObject
+	d.ResearchOrder = titles.ResearchOrder
 }
 
 //func (d *DissertationTitlesResponse) ToDomain() model.DissertationTitles {

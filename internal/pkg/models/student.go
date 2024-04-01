@@ -51,9 +51,20 @@ type Student struct {
 
 type Supervisor struct {
 	// ID научного руководителя
-	SupervisorID uuid.UUID `db:"supervisor_id" json:"supervisor_id,omitempty"`
+	SupervisorID uuid.UUID `db:"supervisor_id" json:"supervisor_id" format:"uuid"`
 	// Полное имя руководителя
-	FullName string `db:"full_name" json:"full_name,omitempty"`
+	FullName string `db:"full_name" json:"full_name"`
+}
+
+type SupervisorFull struct {
+	// ID научного руководителя
+	SupervisorID uuid.UUID `db:"supervisor_id" json:"supervisor_id" format:"uuid"`
+	// Полное имя руководителя
+	FullName string `db:"full_name" json:"full_name"`
+	// Дата начала
+	StartAt time.Time `db:"start_at" json:"start_at" format:"date-time"`
+	// Дата окончания (пустое, если руководитель актуальный)
+	EndAt *time.Time `db:"end_at" json:"end_at,omitempty" format:"date-time"`
 }
 
 type StudentSupervisorPair struct {

@@ -133,6 +133,12 @@ definitions:
           $ref: '#/definitions/models.SemesterProgressResponse'
           format: array
         type: array
+      supervisors:
+        description: Список научных руководителей
+        items:
+          $ref: '#/definitions/models.SupervisorFull'
+          format: array
+        type: array
     type: object
   models.DissertationTitlesResponse:
     properties:
@@ -143,6 +149,12 @@ definitions:
       created_at:
         description: Дата создания
         format: date-time
+        type: string
+      research_object:
+        description: Объект исследования
+        type: string
+      research_order:
+        description: Приказ исследования
         type: string
       semester:
         description: Семестр
@@ -548,6 +560,25 @@ definitions:
         type: string
       supervisor_id:
         description: ID научного руководителя
+        format: uuid
+        type: string
+    type: object
+  models.SupervisorFull:
+    properties:
+      end_at:
+        description: Дата окончания (пустое, если руководитель актуальный)
+        format: date-time
+        type: string
+      full_name:
+        description: Полное имя руководителя
+        type: string
+      start_at:
+        description: Дата начала
+        format: date-time
+        type: string
+      supervisor_id:
+        description: ID научного руководителя
+        format: uuid
         type: string
     type: object
   models.TeachingLoad:
@@ -745,6 +776,10 @@ definitions:
     type: object
   request_models.UpsertDissertationTitleRequest:
     properties:
+      research_object:
+        type: string
+      research_order:
+        type: string
       title:
         type: string
     type: object
@@ -2424,6 +2459,49 @@ paths:
       summary: Получение страницы информации для страницы диссертации аспиранта
       tags:
       - Supervisor.Dissertation
+  /supervisors/student/info/{token}:
+    put:
+      consumes:
+      - application/json
+      description: Получение данных о студенте (статус студента)
+      parameters:
+      - description: Запрос
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.GetByStudentID'
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Данные
+          schema:
+            $ref: '#/definitions/models.Student'
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Получение данных о студенте (статус студента)
+      tags:
+      - Supervisor
   /supervisors/student/list/{token}:
     put:
       description: Получение списка аспирантов научного руководителя

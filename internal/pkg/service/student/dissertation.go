@@ -37,7 +37,13 @@ func (s *Service) GetDissertationPage(ctx context.Context, studentID uuid.UUID) 
 			return err
 		}
 
+		supervisors, err := s.studRepo.GetAllStudentsSupervisors(ctx, tx, studentID)
+		if err != nil {
+			return err
+		}
+
 		page = models.MapDissertationPageFromDomain(semesterProgress, dissertationsStatuses, disTitles, feedback)
+		page.Supervisors = supervisors
 
 		return nil
 	})
@@ -148,7 +154,7 @@ func (s *Service) UpsertDissertationInfo(ctx context.Context, studentID uuid.UUI
 	return nil
 }
 
-func (s *Service) UpsertDissertationTitle(ctx context.Context, studentID uuid.UUID, title string) error {
+func (s *Service) UpsertDissertationTitle(ctx context.Context, studentID uuid.UUID, title, object, order string) error {
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
 		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
 		if err != nil {
@@ -160,13 +166,15 @@ func (s *Service) UpsertDissertationTitle(ctx context.Context, studentID uuid.UU
 		}
 
 		err = s.dissertationRepo.InsertDissertationTitleTx(ctx, tx, model.DissertationTitles{
-			TitleID:    uuid.New(),
-			StudentID:  student.StudentID,
-			Title:      title,
-			CreatedAt:  time.Now(),
-			Status:     model.ApprovalStatus_InProgress,
-			AcceptedAt: nil,
-			Semester:   student.ActualSemester,
+			TitleID:        uuid.New(),
+			StudentID:      student.StudentID,
+			Title:          title,
+			CreatedAt:      time.Now(),
+			Status:         model.ApprovalStatus_InProgress,
+			AcceptedAt:     nil,
+			Semester:       student.ActualSemester,
+			ResearchObject: object,
+			ResearchOrder:  order,
 		})
 		if err != nil {
 			return err

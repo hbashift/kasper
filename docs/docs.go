@@ -2442,6 +2442,71 @@ const docTemplate = `{
                 }
             }
         },
+        "/supervisors/student/info/{token}": {
+            "put": {
+                "description": "Получение данных о студенте (статус студента)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Supervisor"
+                ],
+                "summary": "Получение данных о студенте (статус студента)",
+                "parameters": [
+                    {
+                        "description": "Запрос",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.GetByStudentID"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Данные",
+                        "schema": {
+                            "$ref": "#/definitions/models.Student"
+                        }
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/supervisors/student/list/{token}": {
             "put": {
                 "description": "Получение списка аспирантов научного руководителя",
@@ -2905,6 +2970,14 @@ const docTemplate = `{
                         "format": "array",
                         "$ref": "#/definitions/models.SemesterProgressResponse"
                     }
+                },
+                "supervisors": {
+                    "description": "Список научных руководителей",
+                    "type": "array",
+                    "items": {
+                        "format": "array",
+                        "$ref": "#/definitions/models.SupervisorFull"
+                    }
                 }
             }
         },
@@ -2920,6 +2993,14 @@ const docTemplate = `{
                     "description": "Дата создания",
                     "type": "string",
                     "format": "date-time"
+                },
+                "research_object": {
+                    "description": "Объект исследования",
+                    "type": "string"
+                },
+                "research_order": {
+                    "description": "Приказ исследования",
+                    "type": "string"
                 },
                 "semester": {
                     "description": "Семестр",
@@ -3470,7 +3551,32 @@ const docTemplate = `{
                 },
                 "supervisor_id": {
                     "description": "ID научного руководителя",
+                    "type": "string",
+                    "format": "uuid"
+                }
+            }
+        },
+        "models.SupervisorFull": {
+            "type": "object",
+            "properties": {
+                "end_at": {
+                    "description": "Дата окончания (пустое, если руководитель актуальный)",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "full_name": {
+                    "description": "Полное имя руководителя",
                     "type": "string"
+                },
+                "start_at": {
+                    "description": "Дата начала",
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "supervisor_id": {
+                    "description": "ID научного руководителя",
+                    "type": "string",
+                    "format": "uuid"
                 }
             }
         },
@@ -3757,6 +3863,12 @@ const docTemplate = `{
         "request_models.UpsertDissertationTitleRequest": {
             "type": "object",
             "properties": {
+                "research_object": {
+                    "type": "string"
+                },
+                "research_order": {
+                    "type": "string"
+                },
                 "title": {
                     "type": "string"
                 }

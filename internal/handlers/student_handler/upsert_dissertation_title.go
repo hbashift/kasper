@@ -38,7 +38,13 @@ func (h *StudentHandler) UpsertDissertationTitle(ctx *gin.Context) {
 		return
 	}
 
-	if err = h.dissertation.UpsertDissertationTitle(ctx, user.KasperID, reqBody.Title); err != nil {
+	if err = h.dissertation.UpsertDissertationTitle(
+		ctx,
+		user.KasperID,
+		reqBody.Title,
+		reqBody.ResearchObject,
+		reqBody.ResearchOrder,
+	); err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)
 		return
 	}
