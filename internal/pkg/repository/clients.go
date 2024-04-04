@@ -73,14 +73,12 @@ func (r *ClientRepository) InsertStudentTx(ctx context.Context, tx pgx.Tx, stude
 			student.StudentID,
 			student.UserID,
 			student.FullName,
-			student.Department,
+			//student.Department,
 			student.SpecID,
 			student.ActualSemester,
 			student.Years,
 			student.StartDate,
-			student.StudyingStatus,
 			student.GroupID,
-			student.Status,
 		).
 		Sql()
 
@@ -326,7 +324,7 @@ func scanStudent(row pgx.Row, target *model.Students) error {
 		&target.StudentID,
 		&target.UserID,
 		&target.FullName,
-		&target.Department,
+		//&target.Department,
 		&target.SpecID,
 		&target.ActualSemester,
 		&target.Years,
@@ -342,7 +340,7 @@ func scanStudentList(row pgx.Row, target *models.Student) error {
 	return row.Scan(
 		&target.StudentID,
 		&target.FullName,
-		&target.Department,
+		//&target.Department,
 		&target.ActualSemester,
 		&target.Years,
 		&target.StartDate,
@@ -358,7 +356,7 @@ func scanStudentSupervisorPair(row pgx.Row, target *models.StudentSupervisorPair
 	return row.Scan(
 		&target.Student.StudentID,
 		&target.Student.FullName,
-		&target.Student.Department,
+		//&target.Student.Department,
 		&target.Student.ActualSemester,
 		&target.Student.Years,
 		&target.Student.StartDate,

@@ -3468,10 +3468,6 @@ const docTemplate = `{
                     "description": "Флаг о возможности редактировать всю информацию",
                     "type": "boolean"
                 },
-                "department": {
-                    "description": "Кафедра",
-                    "type": "string"
-                },
                 "full_name": {
                     "description": "Полное имя",
                     "type": "string"
@@ -3730,9 +3726,6 @@ const docTemplate = `{
                 "actual_semester": {
                     "type": "integer"
                 },
-                "department": {
-                    "type": "string"
-                },
                 "full_name": {
                     "type": "string"
                 },
@@ -3743,6 +3736,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "specialization_id": {
+                    "description": "Department       string     ` + "`" + `json:\"department,omitempty\"` + "`" + `",
                     "type": "integer"
                 },
                 "start_date": {

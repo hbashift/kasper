@@ -99,10 +99,10 @@ func (s *Service) FirstStudentRegistry(ctx context.Context, userID, studentID uu
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
 		// TODO map values from registry page
 		m := model.Students{
-			StudentID:      studentID,
-			UserID:         userID,
-			FullName:       "",
-			Department:     "",
+			StudentID: studentID,
+			UserID:    userID,
+			FullName:  "",
+			//Department:     "",
 			SpecID:         0,
 			ActualSemester: 0,
 			Years:          0,

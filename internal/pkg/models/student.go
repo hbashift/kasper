@@ -11,8 +11,6 @@ type Student struct {
 	StudentID uuid.UUID `db:"students.student_id" json:"student_id,omitempty" format:"uuid"`
 	// Полное имя
 	FullName string `db:"students.full_name" json:"full_name,omitempty"`
-	// Кафедра
-	Department string `db:"students.department" json:"department,omitempty"`
 	// Актуальный семестр
 	ActualSemester int32 `db:"students.actual_semester" json:"actual_semester,omitempty"`
 	// Количество лет обучения

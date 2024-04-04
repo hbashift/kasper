@@ -20,7 +20,6 @@ type studentsTable struct {
 	StudentID      postgres.ColumnString
 	UserID         postgres.ColumnString
 	FullName       postgres.ColumnString
-	Department     postgres.ColumnString
 	SpecID         postgres.ColumnInteger
 	ActualSemester postgres.ColumnInteger
 	Years          postgres.ColumnInteger
@@ -62,7 +61,6 @@ func newStudentsTableImpl(schemaName, tableName, alias string) studentsTable {
 		StudentIDColumn      = postgres.StringColumn("student_id")
 		UserIDColumn         = postgres.StringColumn("user_id")
 		FullNameColumn       = postgres.StringColumn("full_name")
-		DepartmentColumn     = postgres.StringColumn("department")
 		SpecIDColumn         = postgres.IntegerColumn("spec_id")
 		ActualSemesterColumn = postgres.IntegerColumn("actual_semester")
 		YearsColumn          = postgres.IntegerColumn("years")
@@ -71,8 +69,8 @@ func newStudentsTableImpl(schemaName, tableName, alias string) studentsTable {
 		GroupIDColumn        = postgres.IntegerColumn("group_id")
 		StatusColumn         = postgres.StringColumn("status")
 		CanEditColumn        = postgres.BoolColumn("can_edit")
-		allColumns           = postgres.ColumnList{StudentIDColumn, UserIDColumn, FullNameColumn, DepartmentColumn, SpecIDColumn, ActualSemesterColumn, YearsColumn, StartDateColumn, StudyingStatusColumn, GroupIDColumn, StatusColumn, CanEditColumn}
-		mutableColumns       = postgres.ColumnList{UserIDColumn, FullNameColumn, DepartmentColumn, SpecIDColumn, ActualSemesterColumn, YearsColumn, StartDateColumn, StudyingStatusColumn, GroupIDColumn, StatusColumn, CanEditColumn}
+		allColumns           = postgres.ColumnList{StudentIDColumn, UserIDColumn, FullNameColumn, SpecIDColumn, ActualSemesterColumn, YearsColumn, StartDateColumn, StudyingStatusColumn, GroupIDColumn, StatusColumn, CanEditColumn}
+		mutableColumns       = postgres.ColumnList{UserIDColumn, FullNameColumn, SpecIDColumn, ActualSemesterColumn, YearsColumn, StartDateColumn, StudyingStatusColumn, GroupIDColumn, StatusColumn, CanEditColumn}
 	)
 
 	return studentsTable{
@@ -82,7 +80,6 @@ func newStudentsTableImpl(schemaName, tableName, alias string) studentsTable {
 		StudentID:      StudentIDColumn,
 		UserID:         UserIDColumn,
 		FullName:       FullNameColumn,
-		Department:     DepartmentColumn,
 		SpecID:         SpecIDColumn,
 		ActualSemester: ActualSemesterColumn,
 		Years:          YearsColumn,

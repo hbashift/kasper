@@ -110,10 +110,10 @@ func (s *Service) InitStudent(ctx context.Context, user model.Users, req request
 	}
 
 	student := model.Students{
-		StudentID:      user.KasperID,
-		UserID:         user.UserID,
-		FullName:       req.FullName,
-		Department:     req.Department,
+		StudentID: user.KasperID,
+		UserID:    user.UserID,
+		FullName:  req.FullName,
+		//Department:     req.Department,
 		SpecID:         req.SpecializationID,
 		ActualSemester: req.ActualSemester,
 		Years:          req.NumberOfYears,

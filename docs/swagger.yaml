@@ -501,9 +501,6 @@ definitions:
       can_edit:
         description: Флаг о возможности редактировать всю информацию
         type: boolean
-      department:
-        description: Кафедра
-        type: string
       full_name:
         description: Полное имя
         type: string
@@ -679,8 +676,6 @@ definitions:
     properties:
       actual_semester:
         type: integer
-      department:
-        type: string
       full_name:
         type: string
       group_number:
@@ -688,6 +683,7 @@ definitions:
       number_of_years:
         type: integer
       specialization_id:
+        description: Department       string     `json:"department,omitempty"`
         type: integer
       start_date:
         type: string

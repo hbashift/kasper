@@ -16,7 +16,6 @@ type Students struct {
 	StudentID      uuid.UUID `sql:"primary_key"`
 	UserID         uuid.UUID
 	FullName       string
-	Department     string
 	SpecID         int32
 	ActualSemester int32
 	Years          int32

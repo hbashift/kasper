@@ -5,8 +5,8 @@ import (
 )
 
 type FirstStudentRegistry struct {
-	FullName         string     `json:"full_name,omitempty"`
-	Department       string     `json:"department,omitempty"`
+	FullName string `json:"full_name,omitempty"`
+	//Department       string     `json:"department,omitempty"`
 	SpecializationID int32      `json:"specialization_id,omitempty"`
 	ActualSemester   int32      `json:"actual_semester,omitempty"`
 	NumberOfYears    int32      `json:"number_of_years,omitempty"`
