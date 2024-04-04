@@ -62,7 +62,7 @@ func (h *StudentHandler) UploadDissertation(ctx *gin.Context) {
 		return
 	}
 
-	err = h.dissertation.UpsertDissertationInfo(ctx, user.KasperID, reqBody.Semester)
+	err = h.dissertation.UpsertDissertationInfo(ctx, user.KasperID, reqBody.Semester, reqBody.File.Filename)
 	if err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)
 		return

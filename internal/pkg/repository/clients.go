@@ -229,6 +229,7 @@ func (r *ClientRepository) GetSupervisorsTx(ctx context.Context, tx pgx.Tx) ([]m
 	if err != nil {
 		return nil, errors.Wrap(err, "GetSupervisorsTx()")
 	}
+	defer rows.Close()
 
 	supervisors := make([]models.Supervisor, 0)
 
@@ -302,6 +303,7 @@ func (r *ClientRepository) GetAllStudentsSupervisors(ctx context.Context, tx pgx
 	if err != nil {
 		return nil, errors.Wrap(err, "GetAllStudentsSupervisors()")
 	}
+	defer rows.Close()
 
 	supervisors := make([]models.SupervisorFull, 0)
 

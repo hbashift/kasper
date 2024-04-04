@@ -119,7 +119,7 @@ func (s *Service) UpsertSemesterProgress(ctx context.Context, studentID uuid.UUI
 	return nil
 }
 
-func (s *Service) UpsertDissertationInfo(ctx context.Context, studentID uuid.UUID, semester int32) error {
+func (s *Service) UpsertDissertationInfo(ctx context.Context, studentID uuid.UUID, semester int32, fileName string) error {
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
 		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
 		if err != nil {
@@ -137,6 +137,7 @@ func (s *Service) UpsertDissertationInfo(ctx context.Context, studentID uuid.UUI
 			CreatedAt:      lo.ToPtr(time.Now()),
 			UpdatedAt:      lo.ToPtr(time.Now()),
 			Semester:       semester,
+			FileName:       lo.ToPtr(fileName),
 		}
 
 		err = s.dissertationRepo.UpsertDissertationTx(ctx, tx, dissertationStatus)

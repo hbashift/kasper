@@ -151,7 +151,7 @@ func (r *DissertationRepository) UpsertDissertationTx(ctx context.Context, tx pg
 		ON_CONFLICT(table.Dissertations.StudentID, table.Dissertations.Semester).
 		DO_UPDATE(postgres.
 			SET(
-				table.Dissertations.Status.SET(postgres.String(model.Status.String())),
+				table.Dissertations.Status.SET(postgres.NewEnumValue(model.Status.String())),
 				table.Dissertations.UpdatedAt.SET(postgres.NOW()),
 			),
 		).
@@ -244,7 +244,7 @@ func (r *DissertationRepository) GetDissertationTitlesTx(ctx context.Context, tx
 	}
 	defer rows.Close()
 
-	titles := make([]model.DissertationTitles, 0, 4)
+	titles := make([]model.DissertationTitles, 0)
 
 	for rows.Next() {
 		title := model.DissertationTitles{}
