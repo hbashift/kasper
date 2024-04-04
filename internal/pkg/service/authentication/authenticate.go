@@ -63,6 +63,8 @@ func (s *Service) Authorize(ctx context.Context, request models.AuthorizeRequest
 			return nil
 		}
 
+		isAuthorized = true
+
 		token := model.AuthorizationToken{
 			UserID:      user.UserID,
 			IsActive:    true,
