@@ -176,7 +176,7 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 	// AuthenticationHandler init
 	r.POST("/authorize", h.authentication.Authorize)
 
-	r.POST("/student/registry/:token", h.authentication.FirstStudentRegistry)
+	r.POST("/authorize/registration/student/:token", h.authentication.FirstStudentRegistry)
 
 	return r
 }

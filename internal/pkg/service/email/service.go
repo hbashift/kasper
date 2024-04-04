@@ -16,8 +16,6 @@ import (
 	"gopkg.in/gomail.v2"
 )
 
-// yrrq hvtz jhob solr
-
 type (
 	UsersRepository interface {
 		GetUserByKasperIDTx(ctx context.Context, tx pgx.Tx, kasperID uuid.UUID) (model.Users, error)
