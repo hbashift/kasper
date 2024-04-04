@@ -2,6 +2,7 @@ package student_handler
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 
@@ -49,6 +50,9 @@ func (h *StudentHandler) DownloadDissertation(ctx *gin.Context) {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)
 		return
 	}
+
+	log.Printf("download dissertation info: %v", dissertation)
+	log.Printf("download dissertation file_name: %v", lo.FromPtr(dissertation.FileName))
 
 	if dissertation.FileName == nil {
 		ctx.Status(http.StatusNoContent)
