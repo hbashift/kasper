@@ -42,6 +42,8 @@ type (
 
 		GetSpecializations(ctx *gin.Context)
 		GetGroups(ctx *gin.Context)
+
+		GetSupervisors(ctx *gin.Context)
 	}
 
 	SupervisorHandler interface {
@@ -141,6 +143,7 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 
 	r.GET("/student/enum/specializations/:token", h.student.GetSpecializations)
 	r.GET("/student/enum/groups/:token", h.student.GetGroups)
+	r.GET("/student/supervisors/list/:token", h.student.GetSupervisors)
 
 	// SupervisorHandler init
 	r.PUT("/supervisors/student/list/:token", h.supervisor.GetStudentsList)
