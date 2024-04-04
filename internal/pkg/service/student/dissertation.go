@@ -2,6 +2,7 @@ package student
 
 import (
 	"context"
+	"log"
 	"time"
 
 	"uir_draft/internal/generated/new_kasper/new_uir/public/model"
@@ -102,6 +103,8 @@ func (s *Service) UpsertSemesterProgress(ctx context.Context, studentID uuid.UUI
 		if err != nil {
 			return err
 		}
+
+		log.Printf("semester progresses for update: %v", dProgress)
 
 		err = s.dissertationRepo.UpsertSemesterProgressTx(ctx, tx, dProgress)
 		if err != nil {

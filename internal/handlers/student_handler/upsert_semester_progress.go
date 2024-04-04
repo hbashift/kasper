@@ -1,6 +1,7 @@
 package student_handler
 
 import (
+	"log"
 	"net/http"
 
 	"uir_draft/internal/handlers/student_handler/request_models"
@@ -37,6 +38,8 @@ func (h *StudentHandler) UpsertSemesterProgress(ctx *gin.Context) {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
+
+	log.Printf("UpsertSemesterProgress() request body: %v", reqBody)
 
 	err = h.dissertation.UpsertSemesterProgress(ctx, user.KasperID, reqBody.Progresses)
 	if err != nil {
