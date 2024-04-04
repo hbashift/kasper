@@ -294,7 +294,7 @@ func (r *ClientRepository) GetAllStudentsSupervisors(ctx context.Context, tx pgx
 			table.StudentsSupervisors.EndAt,
 		).
 		FROM(table.Supervisors.
-			INNER_JOIN(table.Supervisors, table.Supervisors.SupervisorID.EQ(table.StudentsSupervisors.SupervisorID))).
+			INNER_JOIN(table.StudentsSupervisors, table.Supervisors.SupervisorID.EQ(table.StudentsSupervisors.SupervisorID))).
 		WHERE(table.StudentsSupervisors.StudentID.EQ(postgres.UUID(studentID))).
 		Sql()
 

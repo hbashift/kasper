@@ -1,12 +1,14 @@
 package authorization_handler
 
 import (
+	"log"
 	"net/http"
 
 	"uir_draft/internal/handlers/authorization_handler/request_models"
 	"uir_draft/internal/pkg/models"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 // FirstStudentRegistry
@@ -40,6 +42,12 @@ func (h *AuthorizationHandler) FirstStudentRegistry(ctx *gin.Context) {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
+
+	if reqBody.SupervisorID == nil {
+		reqBody.SupervisorID = &uuid.Nil
+	}
+
+	log.Printf("first_student_registry request body: %v", reqBody)
 
 	if err = h.student.InitStudent(ctx, *user, reqBody); err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)

@@ -2,7 +2,6 @@ package student
 
 import (
 	"context"
-	"log"
 	"time"
 
 	"uir_draft/internal/generated/new_kasper/new_uir/public/model"
@@ -136,6 +135,8 @@ func (s *Service) InitStudent(ctx context.Context, user model.Users, req request
 		model.ProgressType_Abstract,
 	}
 
+	updatedAt := time.Now()
+
 	for _, progressType := range progressTypes {
 		progress := model.SemesterProgress{
 			ProgressID:   uuid.New(),
@@ -149,7 +150,7 @@ func (s *Service) InitStudent(ctx context.Context, user model.Users, req request
 			Sixth:        false,
 			Seventh:      false,
 			Eighth:       false,
-			UpdatedAt:    time.Now(),
+			UpdatedAt:    updatedAt,
 			Status:       model.ApprovalStatus_Empty,
 			AcceptedAt:   nil,
 		}
@@ -165,7 +166,7 @@ func (s *Service) InitStudent(ctx context.Context, user model.Users, req request
 		if err = s.dissertationRepo.UpsertSemesterProgressTx(ctx, tx, progresses); err != nil {
 			return err
 		}
-		log.Printf("supervisor_id: %v", lo.FromPtr(req.SupervisorID))
+
 		if err = s.studRepo.SetNewSupervisorTx(ctx, tx, user.KasperID, lo.FromPtr(req.SupervisorID)); err != nil {
 			return err
 		}
