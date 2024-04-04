@@ -2,6 +2,7 @@ package student
 
 import (
 	"context"
+	"log"
 	"time"
 
 	"uir_draft/internal/generated/new_kasper/new_uir/public/model"
@@ -164,7 +165,7 @@ func (s *Service) InitStudent(ctx context.Context, user model.Users, req request
 		if err = s.dissertationRepo.UpsertSemesterProgressTx(ctx, tx, progresses); err != nil {
 			return err
 		}
-
+		log.Printf("supervisor_id: %v", lo.FromPtr(req.SupervisorID))
 		if err = s.studRepo.SetNewSupervisorTx(ctx, tx, user.KasperID, lo.FromPtr(req.SupervisorID)); err != nil {
 			return err
 		}
