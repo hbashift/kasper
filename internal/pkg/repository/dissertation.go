@@ -115,7 +115,7 @@ func (r *DissertationRepository) UpsertSemesterProgressTx(ctx context.Context, t
 			table.SemesterProgress.Seventh.SET(postgres.Bool(semester.Seventh)),
 			table.SemesterProgress.Eighth.SET(postgres.Bool(semester.Eighth)),
 			table.SemesterProgress.UpdatedAt.SET(postgres.NOW()),
-			table.SemesterProgress.Status.SET(postgres.String(semester.Status.String())),
+			table.SemesterProgress.Status.SET(postgres.NewEnumValue(semester.Status.String())),
 		}
 
 		if semester.Status == model.ApprovalStatus_Approved {
