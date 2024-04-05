@@ -12,6 +12,9 @@ definitions:
       name:
         description: Название нагрузки
         type: string
+      t_load_id:
+        description: ID совокупности нагрузок за семестр
+        type: string
       volume:
         description: Объем
         type: string
@@ -68,6 +71,9 @@ definitions:
       subject_name:
         description: Название предмета
         type: string
+      t_load_id:
+        description: ID совокупности нагрузок за семестр
+        type: string
     type: object
   models.Conference:
     properties:
@@ -103,6 +109,10 @@ definitions:
       wac:
         description: Индекс WaC
         type: boolean
+      works_id:
+        description: ID Совокупности научных работ за семестр
+        format: uuid
+        type: string
       wos:
         description: Индекс WoS
         type: boolean
@@ -275,6 +285,9 @@ definitions:
       students_amount:
         description: Количество студентов
         type: integer
+      t_load_id:
+        description: ID совокупности нагрузок за семестр
+        type: string
     type: object
   models.Publication:
     properties:
@@ -314,6 +327,10 @@ definitions:
       wac:
         description: Индекс WaC
         type: boolean
+      works_id:
+        description: ID Совокупности научных работ за семестр
+        format: uuid
+        type: string
       wos:
         description: Индекс WoS
         type: boolean
@@ -340,6 +357,10 @@ definitions:
       start_at:
         description: Дата начала проекта
         format: date-time
+        type: string
+      works_id:
+        description: ID Совокупности научных работ за семестр
+        format: uuid
         type: string
     type: object
   models.ScientificWork:
@@ -370,10 +391,6 @@ definitions:
       updated_at:
         description: Дата последнего обновления
         format: date-time
-        type: string
-      works_id:
-        description: ID Совокупности научных работ за семестр
-        format: uuid
         type: string
       works_status:
         description: Статус проверки и подтверждения
@@ -605,9 +622,6 @@ definitions:
         allOf:
         - $ref: '#/definitions/models.IndividualStudentsLoad'
         description: Объект, описывающий индивидуальную работу со студентами
-      loads_id:
-        description: ID совокупности нагрузок за семестр
-        type: string
       semester:
         description: Семестр
         type: integer
@@ -731,10 +745,6 @@ definitions:
       semester:
         description: Семестр
         type: integer
-      t_load_id:
-        description: ID совокупности всех нагрузок за семестр
-        format: uuid
-        type: string
     type: object
   request_models.UpsertClassroomLoadRequest:
     properties:
@@ -748,10 +758,6 @@ definitions:
       semester:
         description: Семестр
         type: integer
-      t_load_id:
-        description: ID совокупности всех нагрузок за семестр
-        format: uuid
-        type: string
     type: object
   request_models.UpsertConferencesRequest:
     properties:
@@ -765,10 +771,6 @@ definitions:
       semester:
         description: Семестр
         type: integer
-      work_id:
-        description: ID совокупности всех научных работ за семестр
-        format: uuid
-        type: string
     type: object
   request_models.UpsertDissertationTitleRequest:
     properties:
@@ -797,9 +799,6 @@ definitions:
         type: array
       semester:
         type: integer
-      t_load_id:
-        format: uuid
-        type: string
     type: object
   request_models.UpsertProgressRequest:
     properties:
@@ -819,10 +818,6 @@ definitions:
         type: array
       semester:
         type: integer
-      work_id:
-        description: ID совокупности всех научных работ за семестр
-        format: uuid
-        type: string
     type: object
   request_models.UpsertResearchProjectsRequest:
     properties:
@@ -835,10 +830,6 @@ definitions:
         type: array
       semester:
         type: integer
-      work_id:
-        description: ID совокупности всех научных работ за семестр
-        format: uuid
-        type: string
     type: object
 host: localhost:8080
 info:

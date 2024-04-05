@@ -38,7 +38,7 @@ func (h *StudentHandler) UpsertClassroomLoads(ctx *gin.Context) {
 		return
 	}
 
-	err = h.load.UpsertClassroomLoad(ctx, user.KasperID, reqBody.TLoadID, reqBody.Semester, reqBody.Loads)
+	err = h.load.UpsertClassroomLoad(ctx, user.KasperID, reqBody.Semester, reqBody.Loads)
 	if err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)
 		return

@@ -38,7 +38,7 @@ func (h *StudentHandler) UpsertPublications(ctx *gin.Context) {
 		return
 	}
 
-	err = h.scientific.UpsertPublications(ctx, user.KasperID, reqBody.WorkID, reqBody.Semester, reqBody.Publications)
+	err = h.scientific.UpsertPublications(ctx, user.KasperID, reqBody.Semester, reqBody.Publications)
 	if err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)
 		return

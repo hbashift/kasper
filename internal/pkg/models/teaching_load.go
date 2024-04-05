@@ -7,6 +7,8 @@ import (
 )
 
 type ClassroomLoad struct {
+	// ID совокупности нагрузок за семестр
+	TLoadID uuid.UUID `json:"t_load_id,omitempty" db:"classroom_load.t_load_id"`
 	// ID аудиторной нагрузки
 	LoadID *uuid.UUID `json:"load_id,omitempty" db:"classroom_load.load_id" format:"uuid"`
 	// Кол-во часов
@@ -22,6 +24,8 @@ type ClassroomLoad struct {
 }
 
 type IndividualStudentsLoad struct {
+	// ID совокупности нагрузок за семестр
+	TLoadID uuid.UUID `json:"t_load_id,omitempty" db:"individual_students_load.t_load_id"`
 	// ID индивидуальной работы со студентами
 	LoadID *uuid.UUID `json:"load_id,omitempty" db:"individual_students_load.load_id" format:"uuid"`
 	// Количество студентов
@@ -33,6 +37,8 @@ type IndividualStudentsLoad struct {
 }
 
 type AdditionalLoad struct {
+	// ID совокупности нагрузок за семестр
+	TLoadID uuid.UUID `json:"t_load_id,omitempty" db:"additional_load.t_load_id"`
 	// ID дополнительной нагрузки
 	LoadID *uuid.UUID `json:"load_id,omitempty" db:"additional_load.load_id" format:"uuid"`
 	// Название нагрузки
@@ -44,8 +50,6 @@ type AdditionalLoad struct {
 }
 
 type TeachingLoad struct {
-	// ID совокупности нагрузок за семестр
-	LoadsID uuid.UUID `json:"loads_id,omitempty" db:"teaching_load.loads_id"`
 	// ID студента
 	StudentID uuid.UUID `json:"student_id,omitempty" db:"teaching_load.student_id"`
 	// Семестр

@@ -2803,6 +2803,10 @@ const docTemplate = `{
                     "description": "Название нагрузки",
                     "type": "string"
                 },
+                "t_load_id": {
+                    "description": "ID совокупности нагрузок за семестр",
+                    "type": "string"
+                },
                 "volume": {
                     "description": "Объем",
                     "type": "string"
@@ -2882,6 +2886,10 @@ const docTemplate = `{
                 "subject_name": {
                     "description": "Название предмета",
                     "type": "string"
+                },
+                "t_load_id": {
+                    "description": "ID совокупности нагрузок за семестр",
+                    "type": "string"
                 }
             }
         },
@@ -2929,6 +2937,11 @@ const docTemplate = `{
                 "wac": {
                     "description": "Индекс WaC",
                     "type": "boolean"
+                },
+                "works_id": {
+                    "description": "ID Совокупности научных работ за семестр",
+                    "type": "string",
+                    "format": "uuid"
                 },
                 "wos": {
                     "description": "Индекс WoS",
@@ -3160,6 +3173,10 @@ const docTemplate = `{
                 "students_amount": {
                     "description": "Количество студентов",
                     "type": "integer"
+                },
+                "t_load_id": {
+                    "description": "ID совокупности нагрузок за семестр",
+                    "type": "string"
                 }
             }
         },
@@ -3213,6 +3230,11 @@ const docTemplate = `{
                     "description": "Индекс WaC",
                     "type": "boolean"
                 },
+                "works_id": {
+                    "description": "ID Совокупности научных работ за семестр",
+                    "type": "string",
+                    "format": "uuid"
+                },
                 "wos": {
                     "description": "Индекс WoS",
                     "type": "boolean"
@@ -3248,6 +3270,11 @@ const docTemplate = `{
                     "description": "Дата начала проекта",
                     "type": "string",
                     "format": "date-time"
+                },
+                "works_id": {
+                    "description": "ID Совокупности научных работ за семестр",
+                    "type": "string",
+                    "format": "uuid"
                 }
             }
         },
@@ -3296,11 +3323,6 @@ const docTemplate = `{
                     "description": "Дата последнего обновления",
                     "type": "string",
                     "format": "date-time"
-                },
-                "works_id": {
-                    "description": "ID Совокупности научных работ за семестр",
-                    "type": "string",
-                    "format": "uuid"
                 },
                 "works_status": {
                     "description": "Статус проверки и подтверждения",
@@ -3619,10 +3641,6 @@ const docTemplate = `{
                         }
                     ]
                 },
-                "loads_id": {
-                    "description": "ID совокупности нагрузок за семестр",
-                    "type": "string"
-                },
                 "semester": {
                     "description": "Семестр",
                     "type": "integer"
@@ -3804,11 +3822,6 @@ const docTemplate = `{
                 "semester": {
                     "description": "Семестр",
                     "type": "integer"
-                },
-                "t_load_id": {
-                    "description": "ID совокупности всех нагрузок за семестр",
-                    "type": "string",
-                    "format": "uuid"
                 }
             }
         },
@@ -3825,11 +3838,6 @@ const docTemplate = `{
                 "semester": {
                     "description": "Семестр",
                     "type": "integer"
-                },
-                "t_load_id": {
-                    "description": "ID совокупности всех нагрузок за семестр",
-                    "type": "string",
-                    "format": "uuid"
                 }
             }
         },
@@ -3846,11 +3854,6 @@ const docTemplate = `{
                 "semester": {
                     "description": "Семестр",
                     "type": "integer"
-                },
-                "work_id": {
-                    "description": "ID совокупности всех научных работ за семестр",
-                    "type": "string",
-                    "format": "uuid"
                 }
             }
         },
@@ -3891,10 +3894,6 @@ const docTemplate = `{
                 },
                 "semester": {
                     "type": "integer"
-                },
-                "t_load_id": {
-                    "type": "string",
-                    "format": "uuid"
                 }
             }
         },
@@ -3921,11 +3920,6 @@ const docTemplate = `{
                 },
                 "semester": {
                     "type": "integer"
-                },
-                "work_id": {
-                    "description": "ID совокупности всех научных работ за семестр",
-                    "type": "string",
-                    "format": "uuid"
                 }
             }
         },
@@ -3941,11 +3935,6 @@ const docTemplate = `{
                 },
                 "semester": {
                     "type": "integer"
-                },
-                "work_id": {
-                    "description": "ID совокупности всех научных работ за семестр",
-                    "type": "string",
-                    "format": "uuid"
                 }
             }
         }

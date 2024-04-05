@@ -331,15 +331,14 @@ func (r *ScientificRepository) DeleteResearchProjectsTx(ctx context.Context, tx 
 func (r *ScientificRepository) GetScientificWorksTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]models.ScientificWork, error) {
 	stmt, args := table.ScientificWorksStatus.
 		SELECT(
-			table.ScientificWorksStatus.WorksID,
 			table.ScientificWorksStatus.Semester,
 			table.ScientificWorksStatus.StudentID,
 			table.ScientificWorksStatus.Status.AS("scientific_works.approval_status"),
 			table.ScientificWorksStatus.UpdatedAt,
 			table.ScientificWorksStatus.AcceptedAt,
-			table.Publications.AllColumns.Except(table.Publications.WorksID),
-			table.Conferences.AllColumns.Except(table.Conferences.WorksID),
-			table.ResearchProjects.AllColumns.Except(table.ResearchProjects.WorksID),
+			table.Publications.AllColumns,
+			table.Conferences.AllColumns,
+			table.ResearchProjects.AllColumns,
 		).
 		FROM(table.ScientificWorksStatus.
 			LEFT_JOIN(table.Publications, table.ScientificWorksStatus.WorksID.EQ(table.Publications.WorksID)).
@@ -383,13 +382,13 @@ func scanScientificWorksStatusStatus(row pgx.Row, target *model.ScientificWorksS
 
 func scanScientificWork(row pgx.Row, target *models.ScientificWork) error {
 	return row.Scan(
-		&target.WorksID,
 		&target.Semester,
 		&target.StudentID,
 		&target.ApprovalStatus,
 		&target.UpdatedAt,
 		&target.AcceptedAt,
 		&target.Publication.PublicationID,
+		&target.Publication.WorksID,
 		&target.Publication.Name,
 		&target.Publication.Scopus,
 		&target.Publication.Rinc,
@@ -401,6 +400,7 @@ func scanScientificWork(row pgx.Row, target *models.ScientificWork) error {
 		&target.Publication.CoAuthors,
 		&target.Publication.Volume,
 		&target.Conference.ConferenceID,
+		&target.Conference.WorksID,
 		&target.Conference.Status,
 		&target.Conference.Scopus,
 		&target.Conference.Rinc,
@@ -411,6 +411,7 @@ func scanScientificWork(row pgx.Row, target *models.ScientificWork) error {
 		&target.Conference.Location,
 		&target.Conference.ReportedAt,
 		&target.ResearchProject.ProjectID,
+		&target.ResearchProject.WorksID,
 		&target.ResearchProject.ProjectName,
 		&target.ResearchProject.StartAt,
 		&target.ResearchProject.EndAt,

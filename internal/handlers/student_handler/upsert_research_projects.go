@@ -38,7 +38,7 @@ func (h *StudentHandler) UpsertResearchProjects(ctx *gin.Context) {
 		return
 	}
 
-	err = h.scientific.UpsertResearchProjects(ctx, user.KasperID, reqBody.WorkID, reqBody.Semester, reqBody.Projects)
+	err = h.scientific.UpsertResearchProjects(ctx, user.KasperID, reqBody.Semester, reqBody.Projects)
 	if err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)
 		return

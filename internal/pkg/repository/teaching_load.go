@@ -299,15 +299,14 @@ func (r *TeachingLoadRepository) DeleteAdditionalLoadsTx(ctx context.Context, tx
 func (r *TeachingLoadRepository) GetTeachingLoadsTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]models.TeachingLoad, error) {
 	stmt, args := table.TeachingLoadStatus.
 		SELECT(
-			table.TeachingLoadStatus.LoadsID,
 			table.TeachingLoadStatus.StudentID,
 			table.TeachingLoadStatus.Semester,
 			table.TeachingLoadStatus.Status.AS("teaching_load.approval_status"),
 			table.TeachingLoadStatus.UpdatedAt,
 			table.TeachingLoadStatus.AcceptedAt,
-			table.ClassroomLoad.AllColumns.Except(table.ClassroomLoad.TLoadID),
-			table.IndividualStudentsLoad.AllColumns.Except(table.IndividualStudentsLoad.TLoadID),
-			table.AdditionalLoad.AllColumns.Except(table.AdditionalLoad.TLoadID),
+			table.ClassroomLoad.AllColumns,
+			table.IndividualStudentsLoad.AllColumns,
+			table.AdditionalLoad.AllColumns,
 		).
 		FROM(table.TeachingLoadStatus.
 			LEFT_JOIN(table.ClassroomLoad, table.TeachingLoadStatus.LoadsID.EQ(table.ClassroomLoad.TLoadID)).
@@ -351,23 +350,25 @@ func scanTeachingLoadStatusStatus(row pgx.Row, target *model.TeachingLoadStatus)
 
 func scanTeachingLoadStatus(row pgx.Row, target *models.TeachingLoad) error {
 	return row.Scan(
-		&target.LoadsID,
 		&target.StudentID,
 		&target.Semester,
 		&target.ApprovalStatus,
 		&target.UpdatedAt,
 		&target.AcceptedAt,
 		&target.ClassroomLoad.LoadID,
+		&target.ClassroomLoad.TLoadID,
 		&target.ClassroomLoad.Hours,
 		&target.ClassroomLoad.LoadType,
 		&target.ClassroomLoad.MainTeacher,
 		&target.ClassroomLoad.GroupName,
 		&target.ClassroomLoad.SubjectName,
 		&target.IndividualStudentsLoad.LoadID,
+		&target.IndividualStudentsLoad.TLoadID,
 		&target.IndividualStudentsLoad.LoadType,
 		&target.IndividualStudentsLoad.StudentsAmount,
 		&target.IndividualStudentsLoad.Comment,
 		&target.AdditionalLoad.LoadID,
+		&target.AdditionalLoad.TLoadID,
 		&target.AdditionalLoad.Name,
 		&target.AdditionalLoad.Volume,
 		&target.AdditionalLoad.Comment,

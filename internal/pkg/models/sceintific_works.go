@@ -7,6 +7,8 @@ import (
 )
 
 type Publication struct {
+	// ID Совокупности научных работ за семестр
+	WorksID uuid.UUID `json:"works_id,omitempty" db:"publications.works_id" format:"uuid"`
 	// ID научной публикации
 	PublicationID *uuid.UUID `json:"publication_id,omitempty" db:"publications.publication_id" format:"uuid"`
 	// Название научной публикации
@@ -32,6 +34,8 @@ type Publication struct {
 }
 
 type Conference struct {
+	// ID Совокупности научных работ за семестр
+	WorksID uuid.UUID `json:"works_id,omitempty" db:"conferences.works_id" format:"uuid"`
 	// ID конференции
 	ConferenceID *uuid.UUID `json:"conference_id,omitempty" db:"conferences.conference_id" format:"uuid"`
 	// Статус прогресса научной конференции
@@ -55,6 +59,8 @@ type Conference struct {
 }
 
 type ResearchProject struct {
+	// ID Совокупности научных работ за семестр
+	WorksID uuid.UUID `json:"works_id,omitempty" db:"research_projects.works_id" format:"uuid"`
 	// ID научного проекта
 	ProjectID *uuid.UUID `json:"project_id,omitempty" db:"research_projects.project_id" format:"uuid"`
 	// Название проекта
@@ -70,8 +76,6 @@ type ResearchProject struct {
 }
 
 type ScientificWork struct {
-	// ID Совокупности научных работ за семестр
-	WorksID uuid.UUID `json:"works_id,omitempty" db:"scientific_works.works_id" format:"uuid"`
 	// Семестр, за который присылаются научные работы
 	Semester int `json:"semester,omitempty" db:"scientific_works.semester"`
 	// ID студента

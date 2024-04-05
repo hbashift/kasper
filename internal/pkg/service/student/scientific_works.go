@@ -64,7 +64,7 @@ func (s *Service) ScientificWorksToStatus(ctx context.Context, studentID uuid.UU
 	return nil
 }
 
-func (s *Service) UpsertPublications(ctx context.Context, studentID, workID uuid.UUID, semester int32, publications []models.Publication) error {
+func (s *Service) UpsertPublications(ctx context.Context, studentID uuid.UUID, semester int32, publications []models.Publication) error {
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
 		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
 		if err != nil {
@@ -79,7 +79,7 @@ func (s *Service) UpsertPublications(ctx context.Context, studentID, workID uuid
 			return models.ErrNotActualSemester
 		}
 
-		dPublicationsInsert, dPublicationsUpdate, err := models.MapPublicationsToDomain(publications, workID)
+		dPublicationsInsert, dPublicationsUpdate, err := models.MapPublicationsToDomain(publications)
 		if err != nil {
 			return err
 		}
@@ -109,7 +109,7 @@ func (s *Service) UpsertPublications(ctx context.Context, studentID, workID uuid
 	return nil
 }
 
-func (s *Service) UpsertConferences(ctx context.Context, studentID, workID uuid.UUID, semester int32, conferences []models.Conference) error {
+func (s *Service) UpsertConferences(ctx context.Context, studentID uuid.UUID, semester int32, conferences []models.Conference) error {
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
 		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
 		if err != nil {
@@ -124,7 +124,7 @@ func (s *Service) UpsertConferences(ctx context.Context, studentID, workID uuid.
 			return models.ErrNotActualSemester
 		}
 
-		insert, update, err := models.MapConferencesToDomain(conferences, workID)
+		insert, update, err := models.MapConferencesToDomain(conferences)
 		if err != nil {
 			return err
 		}
@@ -154,7 +154,7 @@ func (s *Service) UpsertConferences(ctx context.Context, studentID, workID uuid.
 	return nil
 }
 
-func (s *Service) UpsertResearchProjects(ctx context.Context, studentID, workID uuid.UUID, semester int32, projects []models.ResearchProject) error {
+func (s *Service) UpsertResearchProjects(ctx context.Context, studentID uuid.UUID, semester int32, projects []models.ResearchProject) error {
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
 		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
 		if err != nil {
@@ -169,7 +169,7 @@ func (s *Service) UpsertResearchProjects(ctx context.Context, studentID, workID 
 			return models.ErrNotActualSemester
 		}
 
-		insert, update := models.MapResearchProjectToDomain(projects, workID)
+		insert, update := models.MapResearchProjectToDomain(projects)
 		err = s.scienceRepo.InsertResearchProjectsTx(ctx, tx, insert)
 		if err != nil {
 			return err

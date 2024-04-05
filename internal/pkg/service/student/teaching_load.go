@@ -64,7 +64,7 @@ func (s *Service) TeachingLoadToStatus(ctx context.Context, studentID uuid.UUID,
 	return nil
 }
 
-func (s *Service) UpsertClassroomLoad(ctx context.Context, studentID, tLoadID uuid.UUID, semester int32, loads []models.ClassroomLoad) error {
+func (s *Service) UpsertClassroomLoad(ctx context.Context, studentID uuid.UUID, semester int32, loads []models.ClassroomLoad) error {
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
 		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
 		if err != nil {
@@ -79,7 +79,7 @@ func (s *Service) UpsertClassroomLoad(ctx context.Context, studentID, tLoadID uu
 			return models.ErrNotActualSemester
 		}
 
-		insert, update, err := models.MapClassroomLoadToDomain(loads, tLoadID)
+		insert, update, err := models.MapClassroomLoadToDomain(loads)
 		if err != nil {
 			return err
 		}
@@ -109,7 +109,7 @@ func (s *Service) UpsertClassroomLoad(ctx context.Context, studentID, tLoadID uu
 	return nil
 }
 
-func (s *Service) UpsertIndividualLoad(ctx context.Context, studentID, tLoadID uuid.UUID, semester int32, loads []models.IndividualStudentsLoad) error {
+func (s *Service) UpsertIndividualLoad(ctx context.Context, studentID uuid.UUID, semester int32, loads []models.IndividualStudentsLoad) error {
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
 		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
 		if err != nil {
@@ -124,7 +124,7 @@ func (s *Service) UpsertIndividualLoad(ctx context.Context, studentID, tLoadID u
 			return models.ErrNotActualSemester
 		}
 
-		insert, update, err := models.MapIndividualWorkToDomain(loads, tLoadID)
+		insert, update, err := models.MapIndividualWorkToDomain(loads)
 		if err != nil {
 			return errors.Wrap(err, "UpsertIndividualLoad()")
 		}
@@ -154,7 +154,7 @@ func (s *Service) UpsertIndividualLoad(ctx context.Context, studentID, tLoadID u
 	return nil
 }
 
-func (s *Service) UpsertAdditionalLoad(ctx context.Context, studentID, tLoadID uuid.UUID, semester int32, loads []models.AdditionalLoad) error {
+func (s *Service) UpsertAdditionalLoad(ctx context.Context, studentID uuid.UUID, semester int32, loads []models.AdditionalLoad) error {
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
 		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
 		if err != nil {
@@ -169,7 +169,7 @@ func (s *Service) UpsertAdditionalLoad(ctx context.Context, studentID, tLoadID u
 			return models.ErrNotActualSemester
 		}
 
-		insert, update := models.MapAdditionalLoadToDomain(loads, tLoadID)
+		insert, update := models.MapAdditionalLoadToDomain(loads)
 		err = s.loadRepo.InsertAdditionalLoadsTx(ctx, tx, insert)
 		if err != nil {
 			return err

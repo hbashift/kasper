@@ -41,11 +41,11 @@ type (
 		// GetScientificWorks - возвращает все научные работы студента
 		GetScientificWorks(ctx context.Context, studentID uuid.UUID) ([]models.ScientificWork, error)
 		// UpsertPublications - добавляет или обновляет научные публикации
-		UpsertPublications(ctx context.Context, studentID, workID uuid.UUID, semester int32, publications []models.Publication) error
+		UpsertPublications(ctx context.Context, studentID uuid.UUID, semester int32, publications []models.Publication) error
 		// UpsertConferences - добавляет или обновляет научные конференции
-		UpsertConferences(ctx context.Context, studentID, workID uuid.UUID, semester int32, conferences []models.Conference) error
+		UpsertConferences(ctx context.Context, studentID uuid.UUID, semester int32, conferences []models.Conference) error
 		// UpsertResearchProjects - добавляет или обновляет научные исследования
-		UpsertResearchProjects(ctx context.Context, studentID, workID uuid.UUID, semester int32, projects []models.ResearchProject) error
+		UpsertResearchProjects(ctx context.Context, studentID uuid.UUID, semester int32, projects []models.ResearchProject) error
 		// DeletePublications - удаляет научные публикации
 		DeletePublications(ctx context.Context, studentID uuid.UUID, semester int32, loads []uuid.UUID) error
 		// DeleteConferences - удаляет научные конференции
@@ -60,11 +60,11 @@ type (
 		// GetTeachingLoad - возвращает всю педагогическую нагрузку студента
 		GetTeachingLoad(ctx context.Context, studentID uuid.UUID) ([]models.TeachingLoad, error)
 		// UpsertClassroomLoad - добавляет или обновляет аудиторную педагогическую нагрузку
-		UpsertClassroomLoad(ctx context.Context, studentID, tLoadID uuid.UUID, semester int32, loads []models.ClassroomLoad) error
+		UpsertClassroomLoad(ctx context.Context, studentID uuid.UUID, semester int32, loads []models.ClassroomLoad) error
 		// UpsertIndividualLoad - добавляет или обновляет индивидуальную педагогическую нагрузку
-		UpsertIndividualLoad(ctx context.Context, studentID, tLoadID uuid.UUID, semester int32, loads []models.IndividualStudentsLoad) error
+		UpsertIndividualLoad(ctx context.Context, studentID uuid.UUID, semester int32, loads []models.IndividualStudentsLoad) error
 		// UpsertAdditionalLoad - добавляет или обновляет дополнительную педагогическую нагрузку
-		UpsertAdditionalLoad(ctx context.Context, studentID, tLoadID uuid.UUID, semester int32, loads []models.AdditionalLoad) error
+		UpsertAdditionalLoad(ctx context.Context, studentID uuid.UUID, semester int32, loads []models.AdditionalLoad) error
 		// DeleteClassroomLoad - удаляет аудиторную педагогическую нагрузку студента
 		DeleteClassroomLoad(ctx context.Context, studentID uuid.UUID, semester int32, loads []uuid.UUID) error
 		// DeleteIndividualLoad - удаляет индивидуальную педагогическую нагрузку студента
