@@ -20,12 +20,12 @@ import (
 //
 //	@Produce		json
 //	@Param			input	body		request_models.GetByStudentID	true	"Запрос"
-//	@Success		200		{object}	models.Student	"Данные"
-//	@Param			token	path		string			true	"Токен пользователя"
-//	@Failure		400		{string}	string			"Неверный формат данных"
-//	@Failure		401		{string}	string			"Токен протух"
-//	@Failure		204		{string}	string			"Нет записей в БД"
-//	@Failure		500		{string}	string			"Ошибка на стороне сервера"
+//	@Success		200		{object}	models.Student					"Данные"
+//	@Param			token	path		string							true	"Токен пользователя"
+//	@Failure		400		{string}	string							"Неверный формат данных"
+//	@Failure		401		{string}	string							"Токен протух"
+//	@Failure		204		{string}	string							"Нет записей в БД"
+//	@Failure		500		{string}	string							"Ошибка на стороне сервера"
 //	@Router			/supervisors/student/info/{token} [put]
 func (h *SupervisorHandler) GetStudentStatus(ctx *gin.Context) {
 	_, err := h.authenticate(ctx)

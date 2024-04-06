@@ -1,5 +1,16 @@
 basePath: /api/v1
 definitions:
+  authorization_handler.TokenCheckResponse:
+    properties:
+      registered:
+        type: boolean
+      user_type:
+        enum:
+        - admin
+        - student
+        - supervisor
+        type: string
+    type: object
   models.AdditionalLoad:
     properties:
       comment:
@@ -1292,6 +1303,41 @@ paths:
           schema:
             type: string
       summary: Первичная регистрация студента
+      tags:
+      - Authorization
+  /authorize/token/check/{token}:
+    get:
+      description: Проверка токена пользователя
+      parameters:
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Данные
+          schema:
+            $ref: '#/definitions/authorization_handler.TokenCheckResponse'
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Проверка токена пользователя
       tags:
       - Authorization
   /student/dissertation_title/{token}:

@@ -705,6 +705,59 @@ const docTemplate = `{
                 }
             }
         },
+        "/authorize/token/check/{token}": {
+            "get": {
+                "description": "Проверка токена пользователя",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authorization"
+                ],
+                "summary": "Проверка токена пользователя",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Данные",
+                        "schema": {
+                            "$ref": "#/definitions/authorization_handler.TokenCheckResponse"
+                        }
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/student/dissertation_title/{token}": {
             "post": {
                 "description": "Обновление названия диссертации",
@@ -2787,6 +2840,22 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "authorization_handler.TokenCheckResponse": {
+            "type": "object",
+            "properties": {
+                "registered": {
+                    "type": "boolean"
+                },
+                "user_type": {
+                    "type": "string",
+                    "enum": [
+                        "admin",
+                        "student",
+                        "supervisor"
+                    ]
+                }
+            }
+        },
         "models.AdditionalLoad": {
             "type": "object",
             "properties": {

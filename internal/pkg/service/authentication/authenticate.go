@@ -47,6 +47,32 @@ func (s *Service) Authenticate(ctx context.Context, token, userType string) (*mo
 	return &user, nil
 }
 
+func (s *Service) TokenCheck(ctx context.Context, token string) (*model.Users, error) {
+	var user model.Users
+
+	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
+		tokenModel, err := s.tokenRepo.GetByTokenNumberTx(ctx, tx, token)
+		if err != nil {
+			return errors.Wrap(err, "getting user_id by token")
+		}
+
+		if !tokenModel.IsActive {
+			return models.ErrTokenExpired
+		}
+
+		user, err = s.userRepo.GetUserTx(ctx, tx, tokenModel.UserID)
+		if err != nil {
+			return errors.Wrap(err, "getting user info")
+		}
+
+		return nil
+	}); err != nil {
+		return nil, errors.Wrap(err, "TokenCheck()")
+	}
+
+	return &user, nil
+}
+
 func (s *Service) Authorize(ctx context.Context, request models.AuthorizeRequest) (*models.AuthorizeResponse, bool, error) {
 	var response models.AuthorizeResponse
 	var isAuthorized bool

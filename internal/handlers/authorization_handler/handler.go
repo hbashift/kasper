@@ -15,6 +15,7 @@ type (
 	Authenticator interface {
 		Authorize(ctx context.Context, request models.AuthorizeRequest) (*models.AuthorizeResponse, bool, error)
 		Authenticate(ctx context.Context, token, userType string) (*model.Users, error)
+		TokenCheck(ctx context.Context, token string) (*model.Users, error)
 	}
 
 	StudentService interface {
