@@ -81,7 +81,7 @@ func MapSemesterProgressToDomain(progresses []SemesterProgressRequest, status mo
 	return dProgresses, nil
 }
 
-func MapPublicationsToDomain(publications []Publication) (dPublicationsInsert, dPublicationsUpdate []model.Publications, err error) {
+func MapPublicationsToDomain(publications []Publication, worksID uuid.UUID) (dPublicationsInsert, dPublicationsUpdate []model.Publications, err error) {
 	for _, publication := range publications {
 		var status model.PublicationStatus = ""
 		if err := status.Scan(strings.TrimSpace(lo.FromPtr(publication.Status))); err != nil {
@@ -89,7 +89,7 @@ func MapPublicationsToDomain(publications []Publication) (dPublicationsInsert, d
 		}
 
 		dPublication := model.Publications{
-			WorksID:    publication.WorksID,
+			WorksID:    worksID,
 			Name:       lo.FromPtr(publication.Name),
 			Scopus:     lo.FromPtr(publication.Scopus),
 			Rinc:       lo.FromPtr(publication.Rinc),
@@ -114,7 +114,7 @@ func MapPublicationsToDomain(publications []Publication) (dPublicationsInsert, d
 	return dPublicationsInsert, dPublicationsUpdate, nil
 }
 
-func MapConferencesToDomain(conferences []Conference) (dConferencesInsert, dConferencesUpdate []model.Conferences, err error) {
+func MapConferencesToDomain(conferences []Conference, worksID uuid.UUID) (dConferencesInsert, dConferencesUpdate []model.Conferences, err error) {
 	for _, conf := range conferences {
 		var status model.ConferenceStatus = ""
 		if err := status.Scan(strings.TrimSpace(lo.FromPtr(conf.Status))); err != nil {
@@ -122,7 +122,7 @@ func MapConferencesToDomain(conferences []Conference) (dConferencesInsert, dConf
 		}
 
 		dConf := model.Conferences{
-			WorksID:        conf.WorksID,
+			WorksID:        worksID,
 			Status:         status,
 			Scopus:         lo.FromPtr(conf.Scopus),
 			Rinc:           lo.FromPtr(conf.Rinc),
@@ -146,10 +146,10 @@ func MapConferencesToDomain(conferences []Conference) (dConferencesInsert, dConf
 	return dConferencesInsert, dConferencesUpdate, nil
 }
 
-func MapResearchProjectToDomain(projects []ResearchProject) (dResearchInsert, dResearchUpdate []model.ResearchProjects) {
+func MapResearchProjectToDomain(projects []ResearchProject, worksID uuid.UUID) (dResearchInsert, dResearchUpdate []model.ResearchProjects) {
 	for _, proj := range projects {
 		dProj := model.ResearchProjects{
-			WorksID:     proj.WorksID,
+			WorksID:     worksID,
 			ProjectName: lo.FromPtr(proj.ProjectName),
 			StartAt:     lo.FromPtr(proj.StartAt),
 			EndAt:       lo.FromPtr(proj.EndAt),
@@ -169,7 +169,7 @@ func MapResearchProjectToDomain(projects []ResearchProject) (dResearchInsert, dR
 	return dResearchInsert, dResearchUpdate
 }
 
-func MapClassroomLoadToDomain(loads []ClassroomLoad) (dLoadInsert, dLoadUpdate []model.ClassroomLoad, err error) {
+func MapClassroomLoadToDomain(loads []ClassroomLoad, tLoadID uuid.UUID) (dLoadInsert, dLoadUpdate []model.ClassroomLoad, err error) {
 	for _, load := range loads {
 		var loadType model.ClassroomLoadType
 		if err := loadType.Scan(strings.TrimSpace(lo.FromPtr(load.LoadType))); err != nil {
@@ -177,7 +177,7 @@ func MapClassroomLoadToDomain(loads []ClassroomLoad) (dLoadInsert, dLoadUpdate [
 		}
 
 		dLoad := model.ClassroomLoad{
-			TLoadID:     load.TLoadID,
+			TLoadID:     tLoadID,
 			Hours:       lo.FromPtr(load.Hours),
 			LoadType:    loadType,
 			MainTeacher: lo.FromPtr(load.MainTeacher),
@@ -196,10 +196,10 @@ func MapClassroomLoadToDomain(loads []ClassroomLoad) (dLoadInsert, dLoadUpdate [
 	return dLoadInsert, dLoadUpdate, nil
 }
 
-func MapIndividualWorkToDomain(loads []IndividualStudentsLoad) (dLoadInsert, dLoadUpdate []model.IndividualStudentsLoad, err error) {
+func MapIndividualWorkToDomain(loads []IndividualStudentsLoad, tLoadID uuid.UUID) (dLoadInsert, dLoadUpdate []model.IndividualStudentsLoad, err error) {
 	for _, load := range loads {
 		dLoad := model.IndividualStudentsLoad{
-			TLoadID:        load.TLoadID,
+			TLoadID:        tLoadID,
 			StudentsAmount: lo.FromPtr(load.StudentsAmount),
 			Comment:        load.Comment,
 		}
@@ -221,10 +221,10 @@ func MapIndividualWorkToDomain(loads []IndividualStudentsLoad) (dLoadInsert, dLo
 	return dLoadInsert, dLoadUpdate, nil
 }
 
-func MapAdditionalLoadToDomain(loads []AdditionalLoad) (dLoadInsert, dLoadUpdate []model.AdditionalLoad) {
+func MapAdditionalLoadToDomain(loads []AdditionalLoad, tLoadID uuid.UUID) (dLoadInsert, dLoadUpdate []model.AdditionalLoad) {
 	for _, load := range loads {
 		dLoad := model.AdditionalLoad{
-			TLoadID: load.TLoadID,
+			TLoadID: tLoadID,
 			Name:    lo.FromPtr(load.Name),
 			Volume:  load.Volume,
 			Comment: load.Comment,

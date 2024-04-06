@@ -98,6 +98,24 @@ func (r *ScientificRepository) GetScientificWorksStatusTx(ctx context.Context, t
 	return works, nil
 }
 
+func (r *ScientificRepository) GetScientificWorksStatusBySemesterTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID, semester int32) (model.ScientificWorksStatus, error) {
+	stmt, args := table.ScientificWorksStatus.
+		SELECT(table.ScientificWorksStatus.AllColumns).
+		WHERE(table.ScientificWorksStatus.StudentID.EQ(postgres.UUID(studentID)).
+			AND(table.ScientificWorksStatus.Semester.EQ(postgres.Int32(semester)))).
+		Sql()
+
+	row := tx.QueryRow(ctx, stmt, args...)
+
+	work := model.ScientificWorksStatus{}
+
+	if err := scanScientificWorksStatusStatus(row, &work); err != nil {
+		return model.ScientificWorksStatus{}, errors.Wrap(err, "GetScientificWorksStatusTx(): scanning row")
+	}
+
+	return work, nil
+}
+
 func (r *ScientificRepository) UpdateScientificWorksStatusTx(ctx context.Context, tx pgx.Tx, work model.ScientificWorksStatus) error {
 	stmt, args := table.ScientificWorksStatus.
 		UPDATE(

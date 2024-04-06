@@ -72,6 +72,8 @@ type (
 		DeleteResearchProjectsTx(ctx context.Context, tx pgx.Tx, projectsIDs []uuid.UUID) error
 
 		GetScientificWorksTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]models.ScientificWork, error)
+		InitScientificWorkStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) error
+		GetScientificWorksStatusBySemesterTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID, semester int32) (model.ScientificWorksStatus, error)
 	}
 
 	TeachingLoadRepository interface {
@@ -93,6 +95,8 @@ type (
 		DeleteAdditionalLoadsTx(ctx context.Context, tx pgx.Tx, additionalIDs []uuid.UUID) error
 
 		GetTeachingLoadsTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]models.TeachingLoad, error)
+		InitTeachingLoadsStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) error
+		GetTeachingLoadStatusBySemesterTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID, semester int32) (model.TeachingLoadStatus, error)
 	}
 )
 

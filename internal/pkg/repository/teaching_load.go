@@ -98,6 +98,23 @@ func (r *TeachingLoadRepository) GetTeachingLoadStatusTx(ctx context.Context, tx
 	return loads, nil
 }
 
+func (r *TeachingLoadRepository) GetTeachingLoadStatusBySemesterTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID, semester int32) (model.TeachingLoadStatus, error) {
+	stmt, args := table.TeachingLoadStatus.
+		SELECT(table.TeachingLoadStatus.AllColumns).
+		WHERE(table.TeachingLoadStatus.StudentID.EQ(postgres.UUID(studentID))).
+		Sql()
+
+	rows := tx.QueryRow(ctx, stmt, args...)
+
+	load := model.TeachingLoadStatus{}
+
+	if err := scanTeachingLoadStatusStatus(rows, &load); err != nil {
+		return model.TeachingLoadStatus{}, errors.Wrap(err, "GetTeachingLoadStatusTx()")
+	}
+
+	return load, nil
+}
+
 func (r *TeachingLoadRepository) UpdateTeachingLoadStatusTx(ctx context.Context, tx pgx.Tx, loads []model.TeachingLoadStatus) error {
 	for _, load := range loads {
 		stmt, args := table.TeachingLoadStatus.

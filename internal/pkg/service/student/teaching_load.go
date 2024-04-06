@@ -79,7 +79,12 @@ func (s *Service) UpsertClassroomLoad(ctx context.Context, studentID uuid.UUID, 
 			return models.ErrNotActualSemester
 		}
 
-		insert, update, err := models.MapClassroomLoadToDomain(loads)
+		loadsStatus, err := s.loadRepo.GetTeachingLoadStatusBySemesterTx(ctx, tx, studentID, semester)
+		if err != nil {
+			return err
+		}
+
+		insert, update, err := models.MapClassroomLoadToDomain(loads, loadsStatus.LoadsID)
 		if err != nil {
 			return err
 		}
@@ -124,7 +129,12 @@ func (s *Service) UpsertIndividualLoad(ctx context.Context, studentID uuid.UUID,
 			return models.ErrNotActualSemester
 		}
 
-		insert, update, err := models.MapIndividualWorkToDomain(loads)
+		loadsStatus, err := s.loadRepo.GetTeachingLoadStatusBySemesterTx(ctx, tx, studentID, semester)
+		if err != nil {
+			return err
+		}
+
+		insert, update, err := models.MapIndividualWorkToDomain(loads, loadsStatus.LoadsID)
 		if err != nil {
 			return errors.Wrap(err, "UpsertIndividualLoad()")
 		}
@@ -169,7 +179,12 @@ func (s *Service) UpsertAdditionalLoad(ctx context.Context, studentID uuid.UUID,
 			return models.ErrNotActualSemester
 		}
 
-		insert, update := models.MapAdditionalLoadToDomain(loads)
+		loadsStatus, err := s.loadRepo.GetTeachingLoadStatusBySemesterTx(ctx, tx, studentID, semester)
+		if err != nil {
+			return err
+		}
+
+		insert, update := models.MapAdditionalLoadToDomain(loads, loadsStatus.LoadsID)
 		err = s.loadRepo.InsertAdditionalLoadsTx(ctx, tx, insert)
 		if err != nil {
 			return err

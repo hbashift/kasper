@@ -80,7 +80,12 @@ func (s *Service) UpsertPublications(ctx context.Context, studentID uuid.UUID, s
 			return models.ErrNotActualSemester
 		}
 
-		dPublicationsInsert, dPublicationsUpdate, err := models.MapPublicationsToDomain(publications)
+		worksStatus, err := s.scienceRepo.GetScientificWorksStatusBySemesterTx(ctx, tx, studentID, semester)
+		if err != nil {
+			return err
+		}
+
+		dPublicationsInsert, dPublicationsUpdate, err := models.MapPublicationsToDomain(publications, worksStatus.WorksID)
 		if err != nil {
 			return err
 		}
@@ -88,14 +93,18 @@ func (s *Service) UpsertPublications(ctx context.Context, studentID uuid.UUID, s
 		log.Printf("insert public: %v", dPublicationsInsert)
 		log.Printf("update public: %v", dPublicationsUpdate)
 
-		err = s.scienceRepo.InsertPublicationsTx(ctx, tx, dPublicationsInsert)
-		if err != nil {
-			return err
+		if len(dPublicationsInsert) != 0 {
+			err = s.scienceRepo.InsertPublicationsTx(ctx, tx, dPublicationsInsert)
+			if err != nil {
+				return err
+			}
 		}
 
-		err = s.scienceRepo.UpdatePublicationsTx(ctx, tx, dPublicationsUpdate)
-		if err != nil {
-			return err
+		if len(dPublicationsUpdate) != 0 {
+			err = s.scienceRepo.UpdatePublicationsTx(ctx, tx, dPublicationsUpdate)
+			if err != nil {
+				return err
+			}
 		}
 
 		err = s.scienceRepo.SetScientificWorkStatusTx(ctx, tx, student.StudentID, model.ApprovalStatus_InProgress, semester, nil)
@@ -128,7 +137,12 @@ func (s *Service) UpsertConferences(ctx context.Context, studentID uuid.UUID, se
 			return models.ErrNotActualSemester
 		}
 
-		insert, update, err := models.MapConferencesToDomain(conferences)
+		worksStatus, err := s.scienceRepo.GetScientificWorksStatusBySemesterTx(ctx, tx, studentID, semester)
+		if err != nil {
+			return err
+		}
+
+		insert, update, err := models.MapConferencesToDomain(conferences, worksStatus.WorksID)
 		if err != nil {
 			return err
 		}
@@ -173,7 +187,12 @@ func (s *Service) UpsertResearchProjects(ctx context.Context, studentID uuid.UUI
 			return models.ErrNotActualSemester
 		}
 
-		insert, update := models.MapResearchProjectToDomain(projects)
+		worksStatus, err := s.scienceRepo.GetScientificWorksStatusBySemesterTx(ctx, tx, studentID, semester)
+		if err != nil {
+			return err
+		}
+
+		insert, update := models.MapResearchProjectToDomain(projects, worksStatus.WorksID)
 		err = s.scienceRepo.InsertResearchProjectsTx(ctx, tx, insert)
 		if err != nil {
 			return err
