@@ -359,9 +359,9 @@ func (r *ScientificRepository) GetScientificWorksTx(ctx context.Context, tx pgx.
 			table.ResearchProjects.AllColumns,
 		).
 		FROM(table.ScientificWorksStatus.
-			LEFT_JOIN(table.Publications, table.ScientificWorksStatus.WorksID.EQ(table.Publications.WorksID)).
-			LEFT_JOIN(table.Conferences, table.ScientificWorksStatus.WorksID.EQ(table.Conferences.WorksID)).
-			LEFT_JOIN(table.ResearchProjects, table.ScientificWorksStatus.WorksID.EQ(table.ResearchProjects.WorksID)),
+			INNER_JOIN(table.Publications, table.ScientificWorksStatus.WorksID.EQ(table.Publications.WorksID)).
+			INNER_JOIN(table.Conferences, table.ScientificWorksStatus.WorksID.EQ(table.Conferences.WorksID)).
+			INNER_JOIN(table.ResearchProjects, table.ScientificWorksStatus.WorksID.EQ(table.ResearchProjects.WorksID)),
 		).
 		WHERE(table.ScientificWorksStatus.StudentID.EQ(postgres.UUID(studentID))).
 		Sql()
@@ -438,9 +438,10 @@ func scanScientificWork(row pgx.Row, target *models.ScientificWork) error {
 	)
 }
 
-func scanPublication(row pgx.Row, target *models.Publication) error {
+func scanPublication(row pgx.Row, target *model.Publications) error {
 	return row.Scan(
 		&target.PublicationID,
+		&target.WorksID,
 		&target.Name,
 		&target.Scopus,
 		&target.Rinc,
@@ -454,9 +455,10 @@ func scanPublication(row pgx.Row, target *models.Publication) error {
 	)
 }
 
-func scanConference(row pgx.Row, target *models.Conference) error {
+func scanConference(row pgx.Row, target *model.Conferences) error {
 	return row.Scan(
 		&target.ConferenceID,
+		&target.WorksID,
 		&target.Status,
 		&target.Scopus,
 		&target.Rinc,
@@ -469,9 +471,10 @@ func scanConference(row pgx.Row, target *models.Conference) error {
 	)
 }
 
-func scanResearchProject(row pgx.Row, target *models.ResearchProject) error {
+func scanResearchProject(row pgx.Row, target *model.ResearchProjects) error {
 	return row.Scan(
 		&target.ProjectID,
+		&target.WorksID,
 		&target.ProjectName,
 		&target.StartAt,
 		&target.EndAt,
@@ -480,18 +483,10 @@ func scanResearchProject(row pgx.Row, target *models.ResearchProject) error {
 	)
 }
 
-//func (r *ScientificRepository) GetPublicationsTx(ctx context.Context, tx pgx.Tx, publicationIDs []uuid.UUID) ([]model.Publications, error) {
-//	idExpressions := make([]postgres.Expression, 0, len(publicationIDs))
-//
-//	for _, id := range publicationIDs {
-//		idExp := postgres.UUID(id)
-//
-//		idExpressions = append(idExpressions, idExp)
-//	}
-//
+//func (r *ScientificRepository) GetPublicationsTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]model.Publications, error) {
 //	stmt, args := table.Publications.
 //		SELECT(table.Publications.AllColumns).
-//		WHERE(table.Publications.PublicationID.IN(idExpressions...)).
+//		WHERE(table.Publications.WorksID.IN(idExpressions...)).
 //		Sql()
 //
 //	rows, err := tx.Query(ctx, stmt, args...)
@@ -512,7 +507,7 @@ func scanResearchProject(row pgx.Row, target *models.ResearchProject) error {
 //
 //	return publications, nil
 //}
-
+//
 //func (r *ScientificRepository) GetConferencesTx(ctx context.Context, tx pgx.Tx, conferenceIDs []uuid.UUID) ([]model.Conferences, error) {
 //	idExpressions := make([]postgres.Expression, 0, len(conferenceIDs))
 //
@@ -545,7 +540,7 @@ func scanResearchProject(row pgx.Row, target *models.ResearchProject) error {
 //
 //	return conferences, nil
 //}
-
+//
 //func (r *ScientificRepository) GetResearchProjectsTx(ctx context.Context, tx pgx.Tx, projectIDs []uuid.UUID) ([]model.ResearchProjects, error) {
 //	idExpressions := make([]postgres.Expression, 0, len(projectIDs))
 //

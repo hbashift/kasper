@@ -70,8 +70,6 @@ type (
 		InsertResearchProjectsTx(ctx context.Context, tx pgx.Tx, projects []model.ResearchProjects) error
 		UpdateResearchProjectsTx(ctx context.Context, tx pgx.Tx, projects []model.ResearchProjects) error
 		DeleteResearchProjectsTx(ctx context.Context, tx pgx.Tx, projectsIDs []uuid.UUID) error
-
-		GetScientificWorksTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]models.ScientificWork, error)
 	}
 
 	TeachingLoadRepository interface {
