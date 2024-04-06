@@ -2,6 +2,7 @@ package student
 
 import (
 	"context"
+	"log"
 
 	"uir_draft/internal/generated/new_kasper/new_uir/public/model"
 	"uir_draft/internal/pkg/models"
@@ -83,6 +84,9 @@ func (s *Service) UpsertPublications(ctx context.Context, studentID uuid.UUID, s
 		if err != nil {
 			return err
 		}
+
+		log.Printf("insert public: %v", dPublicationsInsert)
+		log.Printf("update public: %v", dPublicationsUpdate)
 
 		err = s.scienceRepo.InsertPublicationsTx(ctx, tx, dPublicationsInsert)
 		if err != nil {

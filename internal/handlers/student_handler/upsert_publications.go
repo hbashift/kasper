@@ -1,6 +1,7 @@
 package student_handler
 
 import (
+	"log"
 	"net/http"
 
 	"uir_draft/internal/handlers/student_handler/request_models"
@@ -37,6 +38,8 @@ func (h *StudentHandler) UpsertPublications(ctx *gin.Context) {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
+
+	log.Printf("upsert publications req body: %v", reqBody)
 
 	err = h.scientific.UpsertPublications(ctx, user.KasperID, reqBody.Semester, reqBody.Publications)
 	if err != nil {
