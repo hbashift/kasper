@@ -40,6 +40,11 @@ func (h *StudentHandler) DeleteProjects(ctx *gin.Context) {
 		return
 	}
 
+	if len(reqBody.IDs) == 0 {
+		ctx.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
 	err = h.scientific.DeleteResearchProjects(ctx, user.KasperID, reqBody.Semester, reqBody.IDs)
 	if err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)

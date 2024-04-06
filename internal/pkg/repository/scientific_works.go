@@ -336,7 +336,7 @@ func (r *ScientificRepository) DeleteResearchProjectsTx(ctx context.Context, tx 
 
 	stmt, args := table.ResearchProjects.
 		DELETE().
-		WHERE(table.Conferences.ConferenceID.IN(exps...)).
+		WHERE(table.ResearchProjects.ProjectID.IN(exps...)).
 		Sql()
 
 	if _, err := tx.Exec(ctx, stmt, args...); err != nil {
