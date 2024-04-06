@@ -758,65 +758,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/student/dissertation_title/{token}": {
-            "post": {
-                "description": "Обновление названия диссертации",
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Student.Dissertation"
-                ],
-                "summary": "Обновление названия диссертации",
-                "parameters": [
-                    {
-                        "description": "Данные",
-                        "name": "input",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request_models.UpsertDissertationTitleRequest"
-                        }
-                    },
-                    {
-                        "type": "string",
-                        "description": "Токен пользователя",
-                        "name": "token",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "204": {
-                        "description": "Нет записей в БД",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "Неверный формат данных",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "401": {
-                        "description": "Токен протух",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Ошибка на стороне сервера",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/student/enum/groups/{token}": {
             "get": {
                 "description": "Получение списка всех групп",
@@ -1304,6 +1245,65 @@ const docTemplate = `{
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/request_models.ToReviewRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/students/dissertation_title/{token}": {
+            "post": {
+                "description": "Обновление названия диссертации",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Student.Dissertation"
+                ],
+                "summary": "Обновление названия диссертации",
+                "parameters": [
+                    {
+                        "description": "Данные",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.UpsertDissertationTitleRequest"
                         }
                     },
                     {

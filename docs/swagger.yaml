@@ -1340,45 +1340,6 @@ paths:
       summary: Проверка токена пользователя
       tags:
       - Authorization
-  /student/dissertation_title/{token}:
-    post:
-      consumes:
-      - application/json
-      description: Обновление названия диссертации
-      parameters:
-      - description: Данные
-        in: body
-        name: input
-        required: true
-        schema:
-          $ref: '#/definitions/request_models.UpsertDissertationTitleRequest'
-      - description: Токен пользователя
-        in: path
-        name: token
-        required: true
-        type: string
-      responses:
-        "200":
-          description: OK
-        "204":
-          description: Нет записей в БД
-          schema:
-            type: string
-        "400":
-          description: Неверный формат данных
-          schema:
-            type: string
-        "401":
-          description: Токен протух
-          schema:
-            type: string
-        "500":
-          description: Ошибка на стороне сервера
-          schema:
-            type: string
-      summary: Обновление названия диссертации
-      tags:
-      - Student.Dissertation
   /student/enum/groups/{token}:
     get:
       consumes:
@@ -1688,6 +1649,45 @@ paths:
           schema:
             type: string
       summary: Отправление на проверку диссертации
+      tags:
+      - Student.Dissertation
+  /students/dissertation_title/{token}:
+    post:
+      consumes:
+      - application/json
+      description: Обновление названия диссертации
+      parameters:
+      - description: Данные
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.UpsertDissertationTitleRequest'
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Обновление названия диссертации
       tags:
       - Student.Dissertation
   /students/dissertation_title/review/{token}:

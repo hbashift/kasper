@@ -24,6 +24,8 @@ func MapErrorToCode(err error) int {
 		return http.StatusNoContent
 	case errors.Is(err, ErrNotActualSemester):
 		return http.StatusBadRequest
+	case errors.Is(err, ErrNonMutableStatus):
+		return http.StatusForbidden
 	}
 
 	return http.StatusInternalServerError
