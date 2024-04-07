@@ -25,7 +25,6 @@ import (
 // description Серверная часть Системы учета деятельности аспирантов
 
 //	@host		localhost:8080
-//	@BasePath	/api/v1
 
 func main() {
 	err := initConfig()

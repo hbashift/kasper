@@ -57,13 +57,13 @@ type TeachingLoad struct {
 	// Статус проверки и подтверждения
 	ApprovalStatus string `json:"approval_status,omitempty" db:"teaching_load.approval_status" enums:"todo,approved,on review,in progress,empty,failed"`
 	// Дата последнего обновления
-	UpdatedAt time.Time `json:"updated_at" db:"teaching_load.updated_at"`
+	UpdatedAt time.Time `json:"updated_at" db:"teaching_load.updated_at" format:"date-time"`
 	// Дата принятия научным руководителем
-	AcceptedAt *time.Time `json:"accepted_at,omitempty" db:"teaching_load.accepted_at"`
+	AcceptedAt *time.Time `json:"accepted_at,omitempty" db:"teaching_load.accepted_at" format:"date-time"`
 	// Объект, описывающий аудиторную нагрузку
-	ClassroomLoad ClassroomLoad `json:"classroom_load"`
+	ClassroomLoads []ClassroomLoad `json:"classroom_loads"`
 	// Объект, описывающий индивидуальную работу со студентами
-	IndividualStudentsLoad IndividualStudentsLoad `json:"individual_students_load"`
+	IndividualStudentsLoads []IndividualStudentsLoad `json:"individual_students_loads"`
 	// Объект, описывающий дополнительную нагрузку
-	AdditionalLoad AdditionalLoad `json:"additional_load"`
+	AdditionalLoads []AdditionalLoad `json:"additional_loads"`
 }

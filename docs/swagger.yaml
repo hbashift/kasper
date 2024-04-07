@@ -1,4 +1,3 @@
-basePath: /api/v1
 definitions:
   authorization_handler.TokenCheckResponse:
     properties:
@@ -380,18 +379,21 @@ definitions:
         description: Дата принятия научным руководителем
         format: date-time
         type: string
-      conference:
-        allOf:
-        - $ref: '#/definitions/models.Conference'
+      conferences:
         description: Объект, описывающий научную конференцию
-      publication:
-        allOf:
-        - $ref: '#/definitions/models.Publication'
+        items:
+          $ref: '#/definitions/models.Conference'
+        type: array
+      publications:
         description: Объект, описывающий научную публикацию
-      research_project:
-        allOf:
-        - $ref: '#/definitions/models.ResearchProject'
+        items:
+          $ref: '#/definitions/models.Publication'
+        type: array
+      research_projects:
         description: Объект, описывающий научно-исследовательский проект
+        items:
+          $ref: '#/definitions/models.ResearchProject'
+        type: array
       semester:
         description: Семестр, за который присылаются научные работы
         type: integer
@@ -610,11 +612,13 @@ definitions:
     properties:
       accepted_at:
         description: Дата принятия научным руководителем
+        format: date-time
         type: string
-      additional_load:
-        allOf:
-        - $ref: '#/definitions/models.AdditionalLoad'
+      additional_loads:
         description: Объект, описывающий дополнительную нагрузку
+        items:
+          $ref: '#/definitions/models.AdditionalLoad'
+        type: array
       approval_status:
         description: Статус проверки и подтверждения
         enum:
@@ -625,14 +629,16 @@ definitions:
         - empty
         - failed
         type: string
-      classroom_load:
-        allOf:
-        - $ref: '#/definitions/models.ClassroomLoad'
+      classroom_loads:
         description: Объект, описывающий аудиторную нагрузку
-      individual_students_load:
-        allOf:
-        - $ref: '#/definitions/models.IndividualStudentsLoad'
+        items:
+          $ref: '#/definitions/models.ClassroomLoad'
+        type: array
+      individual_students_loads:
         description: Объект, описывающий индивидуальную работу со студентами
+        items:
+          $ref: '#/definitions/models.IndividualStudentsLoad'
+        type: array
       semester:
         description: Семестр
         type: integer
@@ -641,6 +647,7 @@ definitions:
         type: string
       updated_at:
         description: Дата последнего обновления
+        format: date-time
         type: string
     type: object
   request_models.AddGroupsRequest:

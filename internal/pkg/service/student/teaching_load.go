@@ -12,21 +12,51 @@ import (
 )
 
 func (s *Service) GetTeachingLoad(ctx context.Context, studentID uuid.UUID) ([]models.TeachingLoad, error) {
-	teachingLoads := make([]models.TeachingLoad, 0, 10)
+	dLoads := make([]model.TeachingLoadStatus, 0, 10)
+	var (
+		classroom  []models.ClassroomLoad
+		additional []models.AdditionalLoad
+		individual []models.IndividualStudentsLoad
+	)
 
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
-		loads, err := s.loadRepo.GetTeachingLoadsTx(ctx, tx, studentID)
+		loads, err := s.loadRepo.GetTeachingLoadStatusTx(ctx, tx, studentID)
+		if err != nil {
+			return err
+		}
+		dLoads = loads
+
+		loadsIDs, err := s.loadRepo.GetTeachingLoadStatusIDs(ctx, tx, studentID)
 		if err != nil {
 			return err
 		}
 
-		teachingLoads = loads
+		dClassroom, err := s.loadRepo.GetClassroomLoadsTx(ctx, tx, loadsIDs)
+		if err != nil {
+			return err
+		}
+
+		dAdditional, err := s.loadRepo.GetAdditionalLoadsTx(ctx, tx, loadsIDs)
+		if err != nil {
+			return err
+		}
+
+		dIndividual, err := s.loadRepo.GetIndividualLoadsTx(ctx, tx, loadsIDs)
+		if err != nil {
+			return err
+		}
+
+		classroom = models.MapClassroomLoadFromDomain(dClassroom)
+		additional = models.MapAdditionalLoadFromDomain(dAdditional)
+		individual = models.MapIndividualWorkFromDomain(dIndividual)
 
 		return nil
 	})
 	if err != nil {
 		return nil, errors.Wrap(err, "GetTeachingLoad()")
 	}
+
+	teachingLoads := models.ConvertTeachingLoadsToResponse(studentID, dLoads, classroom, additional, individual)
 
 	return teachingLoads, nil
 }

@@ -3355,29 +3355,26 @@ const docTemplate = `{
                     "type": "string",
                     "format": "date-time"
                 },
-                "conference": {
+                "conferences": {
                     "description": "Объект, описывающий научную конференцию",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/models.Conference"
-                        }
-                    ]
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Conference"
+                    }
                 },
-                "publication": {
+                "publications": {
                     "description": "Объект, описывающий научную публикацию",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/models.Publication"
-                        }
-                    ]
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Publication"
+                    }
                 },
-                "research_project": {
+                "research_projects": {
                     "description": "Объект, описывающий научно-исследовательский проект",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/models.ResearchProject"
-                        }
-                    ]
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ResearchProject"
+                    }
                 },
                 "semester": {
                     "description": "Семестр, за который присылаются научные работы",
@@ -3672,15 +3669,15 @@ const docTemplate = `{
             "properties": {
                 "accepted_at": {
                     "description": "Дата принятия научным руководителем",
-                    "type": "string"
+                    "type": "string",
+                    "format": "date-time"
                 },
-                "additional_load": {
+                "additional_loads": {
                     "description": "Объект, описывающий дополнительную нагрузку",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/models.AdditionalLoad"
-                        }
-                    ]
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.AdditionalLoad"
+                    }
                 },
                 "approval_status": {
                     "description": "Статус проверки и подтверждения",
@@ -3694,21 +3691,19 @@ const docTemplate = `{
                         "failed"
                     ]
                 },
-                "classroom_load": {
+                "classroom_loads": {
                     "description": "Объект, описывающий аудиторную нагрузку",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/models.ClassroomLoad"
-                        }
-                    ]
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ClassroomLoad"
+                    }
                 },
-                "individual_students_load": {
+                "individual_students_loads": {
                     "description": "Объект, описывающий индивидуальную работу со студентами",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/models.IndividualStudentsLoad"
-                        }
-                    ]
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.IndividualStudentsLoad"
+                    }
                 },
                 "semester": {
                     "description": "Семестр",
@@ -3720,7 +3715,8 @@ const docTemplate = `{
                 },
                 "updated_at": {
                     "description": "Дата последнего обновления",
-                    "type": "string"
+                    "type": "string",
+                    "format": "date-time"
                 }
             }
         },
@@ -4014,7 +4010,7 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "0.1.2",
 	Host:             "localhost:8080",
-	BasePath:         "/api/v1",
+	BasePath:         "",
 	Schemes:          []string{},
 	Title:            "Сервис Kasper",
 	Description:      "",

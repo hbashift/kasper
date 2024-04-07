@@ -274,3 +274,212 @@ func MapApprovalStatusToDomain(status string) (model.ApprovalStatus, error) {
 		return "", ErrUnknownApprovalStatus
 	}
 }
+
+func MapPublicationsFromDomain(dPublications []model.Publications) []Publication {
+	publications := make([]Publication, 0, len(dPublications))
+
+	for _, dPublication := range dPublications {
+		publication := Publication{
+			WorksID:       dPublication.WorksID,
+			PublicationID: lo.ToPtr(dPublication.PublicationID),
+			Name:          lo.ToPtr(dPublication.Name),
+			Scopus:        lo.ToPtr(dPublication.Scopus),
+			Rinc:          lo.ToPtr(dPublication.Rinc),
+			Wac:           lo.ToPtr(dPublication.Wac),
+			Wos:           lo.ToPtr(dPublication.Wos),
+			Impact:        lo.ToPtr(dPublication.Impact),
+			Status:        lo.ToPtr(dPublication.Status.String()),
+			OutputData:    dPublication.OutputData,
+			CoAuthors:     dPublication.CoAuthors,
+			Volume:        dPublication.Volume,
+		}
+
+		publications = append(publications, publication)
+	}
+
+	return publications
+}
+
+func MapConferencesFromDomain(dConferences []model.Conferences) []Conference {
+	conferences := make([]Conference, 0, len(dConferences))
+
+	for _, dConf := range dConferences {
+		conf := Conference{
+			WorksID:        dConf.WorksID,
+			ConferenceID:   lo.ToPtr(dConf.ConferenceID),
+			Status:         lo.ToPtr(dConf.Status.String()),
+			Scopus:         lo.ToPtr(dConf.Scopus),
+			Rinc:           lo.ToPtr(dConf.Rinc),
+			Wac:            lo.ToPtr(dConf.Wac),
+			Wos:            lo.ToPtr(dConf.Wos),
+			ConferenceName: lo.ToPtr(dConf.ConferenceName),
+			ReportName:     lo.ToPtr(dConf.ReportName),
+			Location:       lo.ToPtr(dConf.Location),
+			ReportedAt:     lo.ToPtr(dConf.ReportedAt),
+		}
+
+		conferences = append(conferences, conf)
+	}
+
+	return conferences
+}
+
+func MapResearchProjectFromDomain(dProjects []model.ResearchProjects) []ResearchProject {
+	projects := make([]ResearchProject, 0, len(dProjects))
+
+	for _, dProj := range dProjects {
+		proj := ResearchProject{
+			WorksID:     dProj.WorksID,
+			ProjectID:   lo.ToPtr(dProj.ProjectID),
+			ProjectName: lo.ToPtr(dProj.ProjectName),
+			StartAt:     lo.ToPtr(dProj.StartAt),
+			EndAt:       lo.ToPtr(dProj.EndAt),
+			AddInfo:     dProj.AddInfo,
+			Grantee:     dProj.Grantee,
+		}
+
+		projects = append(projects, proj)
+	}
+
+	return projects
+}
+
+func MapClassroomLoadFromDomain(dLoads []model.ClassroomLoad) []ClassroomLoad {
+	loads := make([]ClassroomLoad, 0, len(dLoads))
+
+	for _, dLoad := range dLoads {
+		load := ClassroomLoad{
+			TLoadID:     dLoad.TLoadID,
+			LoadID:      lo.ToPtr(dLoad.LoadID),
+			Hours:       lo.ToPtr(dLoad.Hours),
+			LoadType:    lo.ToPtr(dLoad.LoadType.String()),
+			MainTeacher: lo.ToPtr(dLoad.MainTeacher),
+			GroupName:   lo.ToPtr(dLoad.GroupName),
+			SubjectName: lo.ToPtr(dLoad.SubjectName),
+		}
+
+		loads = append(loads, load)
+	}
+
+	return loads
+}
+
+func MapIndividualWorkFromDomain(dLoads []model.IndividualStudentsLoad) []IndividualStudentsLoad {
+	loads := make([]IndividualStudentsLoad, 0, len(dLoads))
+
+	for _, dLoad := range dLoads {
+		load := IndividualStudentsLoad{
+			TLoadID:        dLoad.TLoadID,
+			LoadID:         lo.ToPtr(dLoad.LoadID),
+			StudentsAmount: lo.ToPtr(dLoad.StudentsAmount),
+			LoadType:       lo.ToPtr(dLoad.LoadType.String()),
+			Comment:        dLoad.Comment,
+		}
+
+		loads = append(loads, load)
+	}
+
+	return loads
+}
+
+func MapAdditionalLoadFromDomain(dLoads []model.AdditionalLoad) []AdditionalLoad {
+	loads := make([]AdditionalLoad, 0, len(dLoads))
+
+	for _, dLoad := range dLoads {
+		load := AdditionalLoad{
+			TLoadID: dLoad.TLoadID,
+			LoadID:  lo.ToPtr(dLoad.LoadID),
+			Name:    lo.ToPtr(dLoad.Name),
+			Volume:  dLoad.Volume,
+			Comment: dLoad.Comment,
+		}
+
+		loads = append(loads, load)
+	}
+
+	return loads
+}
+
+func ConvertScientificWorksToResponse(
+	studentID uuid.UUID,
+	dWorks []model.ScientificWorksStatus,
+	publications []Publication,
+	conferences []Conference,
+	projects []ResearchProject,
+) []ScientificWork {
+	scientificWorks := make([]ScientificWork, 0, len(dWorks))
+
+	for i, work := range dWorks {
+		scientificWorks = append(scientificWorks, ScientificWork{
+			Semester:         int(work.Semester),
+			StudentID:        studentID,
+			ApprovalStatus:   work.Status.String(),
+			UpdatedAt:        work.UpdatedAt,
+			AcceptedAt:       work.AcceptedAt,
+			Publications:     []Publication{},
+			Conferences:      []Conference{},
+			ResearchProjects: []ResearchProject{},
+		})
+
+		for _, publication := range publications {
+			if publication.WorksID == work.WorksID {
+				scientificWorks[i].Publications = append(scientificWorks[i].Publications, publication)
+			}
+		}
+
+		for _, conference := range conferences {
+			if conference.WorksID == work.WorksID {
+				scientificWorks[i].Conferences = append(scientificWorks[i].Conferences, conference)
+			}
+		}
+
+		for _, project := range projects {
+			if project.WorksID == work.WorksID {
+				scientificWorks[i].ResearchProjects = append(scientificWorks[i].ResearchProjects, project)
+			}
+		}
+	}
+	return scientificWorks
+}
+
+func ConvertTeachingLoadsToResponse(
+	studentID uuid.UUID,
+	dLoads []model.TeachingLoadStatus,
+	classroom []ClassroomLoad,
+	additional []AdditionalLoad,
+	individual []IndividualStudentsLoad,
+) []TeachingLoad {
+	teachingLoads := make([]TeachingLoad, 0, len(dLoads))
+
+	for i, load := range dLoads {
+		teachingLoads = append(teachingLoads, TeachingLoad{
+			StudentID:               studentID,
+			Semester:                int(load.Semester),
+			ApprovalStatus:          load.Status.String(),
+			UpdatedAt:               load.UpdatedAt,
+			AcceptedAt:              load.AcceptedAt,
+			ClassroomLoads:          []ClassroomLoad{},
+			IndividualStudentsLoads: []IndividualStudentsLoad{},
+			AdditionalLoads:         []AdditionalLoad{},
+		})
+
+		for _, class := range classroom {
+			if class.TLoadID == load.LoadsID {
+				teachingLoads[i].ClassroomLoads = append(teachingLoads[i].ClassroomLoads, class)
+			}
+		}
+
+		for _, add := range additional {
+			if add.TLoadID == load.LoadsID {
+				teachingLoads[i].AdditionalLoads = append(teachingLoads[i].AdditionalLoads, add)
+			}
+		}
+
+		for _, ind := range individual {
+			if ind.TLoadID == load.LoadsID {
+				teachingLoads[i].IndividualStudentsLoads = append(teachingLoads[i].IndividualStudentsLoads, ind)
+			}
+		}
+	}
+	return teachingLoads
+}

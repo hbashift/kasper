@@ -2,7 +2,6 @@ package student
 
 import (
 	"context"
-	"log"
 
 	"uir_draft/internal/generated/new_kasper/new_uir/public/model"
 	"uir_draft/internal/pkg/models"
@@ -13,21 +12,50 @@ import (
 )
 
 func (s *Service) GetScientificWorks(ctx context.Context, studentID uuid.UUID) ([]models.ScientificWork, error) {
-	scientificWorks := make([]models.ScientificWork, 0, 10)
+	dWorks := make([]model.ScientificWorksStatus, 0, 10)
+	var (
+		publications []models.Publication
+		conferences  []models.Conference
+		projects     []models.ResearchProject
+	)
 
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
-		works, err := s.scienceRepo.GetScientificWorksTx(ctx, tx, studentID)
+		works, err := s.scienceRepo.GetScientificWorksStatusTx(ctx, tx, studentID)
+		if err != nil {
+			return err
+		}
+		dWorks = works
+
+		worksIDs, err := s.scienceRepo.GetScientificWorksStatusIDs(ctx, tx, studentID)
 		if err != nil {
 			return err
 		}
 
-		scientificWorks = works
+		dPublications, err := s.scienceRepo.GetPublicationsTx(ctx, tx, worksIDs)
+		if err != nil {
+			return err
+		}
+
+		dConferences, err := s.scienceRepo.GetConferencesTx(ctx, tx, worksIDs)
+		if err != nil {
+			return err
+		}
+		dProjects, err := s.scienceRepo.GetResearchProjectsTx(ctx, tx, worksIDs)
+		if err != nil {
+			return err
+		}
+
+		publications = models.MapPublicationsFromDomain(dPublications)
+		conferences = models.MapConferencesFromDomain(dConferences)
+		projects = models.MapResearchProjectFromDomain(dProjects)
 
 		return nil
 	})
 	if err != nil {
 		return nil, errors.Wrap(err, "GetScientificWorks()")
 	}
+
+	scientificWorks := models.ConvertScientificWorksToResponse(studentID, dWorks, publications, conferences, projects)
 
 	return scientificWorks, nil
 }
@@ -89,9 +117,6 @@ func (s *Service) UpsertPublications(ctx context.Context, studentID uuid.UUID, s
 		if err != nil {
 			return err
 		}
-
-		log.Printf("insert public: %v", dPublicationsInsert)
-		log.Printf("update public: %v", dPublicationsUpdate)
 
 		if len(dPublicationsInsert) != 0 {
 			err = s.scienceRepo.InsertPublicationsTx(ctx, tx, dPublicationsInsert)

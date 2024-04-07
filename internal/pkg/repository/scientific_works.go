@@ -6,7 +6,6 @@ import (
 
 	"uir_draft/internal/generated/new_kasper/new_uir/public/model"
 	"uir_draft/internal/generated/new_kasper/new_uir/public/table"
-	"uir_draft/internal/pkg/models"
 
 	"github.com/go-jet/jet/v2/postgres"
 	"github.com/google/uuid"
@@ -346,46 +345,46 @@ func (r *ScientificRepository) DeleteResearchProjectsTx(ctx context.Context, tx 
 	return nil
 }
 
-func (r *ScientificRepository) GetScientificWorksTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]models.ScientificWork, error) {
-	stmt, args := table.ScientificWorksStatus.
-		SELECT(
-			table.ScientificWorksStatus.Semester,
-			table.ScientificWorksStatus.StudentID,
-			table.ScientificWorksStatus.Status.AS("scientific_works.approval_status"),
-			table.ScientificWorksStatus.UpdatedAt,
-			table.ScientificWorksStatus.AcceptedAt,
-			table.Publications.AllColumns,
-			table.Conferences.AllColumns,
-			table.ResearchProjects.AllColumns,
-		).
-		FROM(table.ScientificWorksStatus.
-			INNER_JOIN(table.Publications, table.ScientificWorksStatus.WorksID.EQ(table.Publications.WorksID)).
-			INNER_JOIN(table.Conferences, table.ScientificWorksStatus.WorksID.EQ(table.Conferences.WorksID)).
-			INNER_JOIN(table.ResearchProjects, table.ScientificWorksStatus.WorksID.EQ(table.ResearchProjects.WorksID)),
-		).
-		WHERE(table.ScientificWorksStatus.StudentID.EQ(postgres.UUID(studentID))).
-		Sql()
-
-	rows, err := tx.Query(ctx, stmt, args...)
-	if err != nil {
-		return nil, errors.Wrap(err, "GetScientificWorksTx()")
-	}
-	defer rows.Close()
-
-	works := make([]models.ScientificWork, 0, 10)
-
-	for rows.Next() {
-		work := models.ScientificWork{}
-
-		if err := scanScientificWork(rows, &work); err != nil {
-			return nil, errors.Wrap(err, "GetScientificWorksTx(): scanning rows")
-		}
-
-		works = append(works, work)
-	}
-
-	return works, nil
-}
+//func (r *ScientificRepository) GetScientificWorksTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]models.ScientificWork, error) {
+//	stmt, args := table.ScientificWorksStatus.
+//		SELECT(
+//			table.ScientificWorksStatus.Semester,
+//			table.ScientificWorksStatus.StudentID,
+//			table.ScientificWorksStatus.Status.AS("scientific_works.approval_status"),
+//			table.ScientificWorksStatus.UpdatedAt,
+//			table.ScientificWorksStatus.AcceptedAt,
+//			table.Publications.AllColumns,
+//			table.Conferences.AllColumns,
+//			table.ResearchProjects.AllColumns,
+//		).
+//		FROM(table.ScientificWorksStatus.
+//			INNER_JOIN(table.Publications, table.ScientificWorksStatus.WorksID.EQ(table.Publications.WorksID)).
+//			INNER_JOIN(table.Conferences, table.ScientificWorksStatus.WorksID.EQ(table.Conferences.WorksID)).
+//			INNER_JOIN(table.ResearchProjects, table.ScientificWorksStatus.WorksID.EQ(table.ResearchProjects.WorksID)),
+//		).
+//		WHERE(table.ScientificWorksStatus.StudentID.EQ(postgres.UUID(studentID))).
+//		Sql()
+//
+//	rows, err := tx.Query(ctx, stmt, args...)
+//	if err != nil {
+//		return nil, errors.Wrap(err, "GetScientificWorksTx()")
+//	}
+//	defer rows.Close()
+//
+//	works := make([]models.ScientificWork, 0, 10)
+//
+//	for rows.Next() {
+//		work := models.ScientificWork{}
+//
+//		if err := scanScientificWork(rows, &work); err != nil {
+//			return nil, errors.Wrap(err, "GetScientificWorksTx(): scanning rows")
+//		}
+//
+//		works = append(works, work)
+//	}
+//
+//	return works, nil
+//}
 
 func scanScientificWorksStatusStatus(row pgx.Row, target *model.ScientificWorksStatus) error {
 	return row.Scan(
@@ -398,45 +397,45 @@ func scanScientificWorksStatusStatus(row pgx.Row, target *model.ScientificWorksS
 	)
 }
 
-func scanScientificWork(row pgx.Row, target *models.ScientificWork) error {
-	return row.Scan(
-		&target.Semester,
-		&target.StudentID,
-		&target.ApprovalStatus,
-		&target.UpdatedAt,
-		&target.AcceptedAt,
-		&target.Publication.PublicationID,
-		&target.Publication.WorksID,
-		&target.Publication.Name,
-		&target.Publication.Scopus,
-		&target.Publication.Rinc,
-		&target.Publication.Wac,
-		&target.Publication.Wos,
-		&target.Publication.Impact,
-		&target.Publication.Status,
-		&target.Publication.OutputData,
-		&target.Publication.CoAuthors,
-		&target.Publication.Volume,
-		&target.Conference.ConferenceID,
-		&target.Conference.WorksID,
-		&target.Conference.Status,
-		&target.Conference.Scopus,
-		&target.Conference.Rinc,
-		&target.Conference.Wac,
-		&target.Conference.Wos,
-		&target.Conference.ConferenceName,
-		&target.Conference.ReportName,
-		&target.Conference.Location,
-		&target.Conference.ReportedAt,
-		&target.ResearchProject.ProjectID,
-		&target.ResearchProject.WorksID,
-		&target.ResearchProject.ProjectName,
-		&target.ResearchProject.StartAt,
-		&target.ResearchProject.EndAt,
-		&target.ResearchProject.AddInfo,
-		&target.ResearchProject.Grantee,
-	)
-}
+//func scanScientificWork(row pgx.Row, target *models.ScientificWork) error {
+//	return row.Scan(
+//		&target.Semester,
+//		&target.StudentID,
+//		&target.ApprovalStatus,
+//		&target.UpdatedAt,
+//		&target.AcceptedAt,
+//		&target.Publication.PublicationID,
+//		&target.Publication.WorksID,
+//		&target.Publication.Name,
+//		&target.Publication.Scopus,
+//		&target.Publication.Rinc,
+//		&target.Publication.Wac,
+//		&target.Publication.Wos,
+//		&target.Publication.Impact,
+//		&target.Publication.Status,
+//		&target.Publication.OutputData,
+//		&target.Publication.CoAuthors,
+//		&target.Publication.Volume,
+//		&target.Conference.ConferenceID,
+//		&target.Conference.WorksID,
+//		&target.Conference.Status,
+//		&target.Conference.Scopus,
+//		&target.Conference.Rinc,
+//		&target.Conference.Wac,
+//		&target.Conference.Wos,
+//		&target.Conference.ConferenceName,
+//		&target.Conference.ReportName,
+//		&target.Conference.Location,
+//		&target.Conference.ReportedAt,
+//		&target.ResearchProject.ProjectID,
+//		&target.ResearchProject.WorksID,
+//		&target.ResearchProject.ProjectName,
+//		&target.ResearchProject.StartAt,
+//		&target.ResearchProject.EndAt,
+//		&target.ResearchProject.AddInfo,
+//		&target.ResearchProject.Grantee,
+//	)
+//}
 
 func scanPublication(row pgx.Row, target *model.Publications) error {
 	return row.Scan(
@@ -483,93 +482,126 @@ func scanResearchProject(row pgx.Row, target *model.ResearchProjects) error {
 	)
 }
 
-//func (r *ScientificRepository) GetPublicationsTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]model.Publications, error) {
-//	stmt, args := table.Publications.
-//		SELECT(table.Publications.AllColumns).
-//		WHERE(table.Publications.WorksID.IN(idExpressions...)).
-//		Sql()
-//
-//	rows, err := tx.Query(ctx, stmt, args...)
-//	if err != nil {
-//		return nil, errors.Wrap(err, "GetPublicationsTx()")
-//	}
-//
-//	publications := make([]model.Publications, 0, len(publicationIDs))
-//
-//	for rows.Next() {
-//		publication := model.Publications{}
-//		if err := scanPublication(rows, &publication); err != nil {
-//			return nil, errors.Wrap(err, "GetPublicationsTx()")
-//		}
-//
-//		publications = append(publications, publication)
-//	}
-//
-//	return publications, nil
-//}
-//
-//func (r *ScientificRepository) GetConferencesTx(ctx context.Context, tx pgx.Tx, conferenceIDs []uuid.UUID) ([]model.Conferences, error) {
-//	idExpressions := make([]postgres.Expression, 0, len(conferenceIDs))
-//
-//	for _, id := range conferenceIDs {
-//		idExp := postgres.UUID(id)
-//
-//		idExpressions = append(idExpressions, idExp)
-//	}
-//
-//	stmt, args := table.Conferences.
-//		SELECT(table.Conferences.AllColumns).
-//		WHERE(table.Conferences.ConferenceID.IN(idExpressions...)).
-//		Sql()
-//
-//	rows, err := tx.Query(ctx, stmt, args...)
-//	if err != nil {
-//		return nil, errors.Wrap(err, "GetPublicationsTx()")
-//	}
-//
-//	conferences := make([]model.Conferences, 0, len(conferenceIDs))
-//
-//	for rows.Next() {
-//		conference := model.Conferences{}
-//		if err := scanConference(rows, &conference); err != nil {
-//			return nil, errors.Wrap(err, "GetPublicationsTx()")
-//		}
-//
-//		conferences = append(conferences, conference)
-//	}
-//
-//	return conferences, nil
-//}
-//
-//func (r *ScientificRepository) GetResearchProjectsTx(ctx context.Context, tx pgx.Tx, projectIDs []uuid.UUID) ([]model.ResearchProjects, error) {
-//	idExpressions := make([]postgres.Expression, 0, len(projectIDs))
-//
-//	for _, id := range projectIDs {
-//		idExp := postgres.UUID(id)
-//
-//		idExpressions = append(idExpressions, idExp)
-//	}
-//
-//	stmt, args := table.Conferences.
-//		SELECT(table.Conferences.AllColumns).
-//		WHERE(table.Conferences.ConferenceID.IN(idExpressions...)).
-//		Sql()
-//
-//	rows, err := tx.Query(ctx, stmt, args...)
-//	if err != nil {
-//		return nil, errors.Wrap(err, "GetPublicationsTx()")
-//	}
-//
-//	projects := make([]model.ResearchProjects, 0, len(projectIDs))
-//
-//	for rows.Next() {
-//		project := model.ResearchProjects{}
-//		if err := scanResearchProject(rows, &project); err != nil {
-//			return nil, errors.Wrap(err, "GetPublicationsTx()")
-//		}
-//
-//		projects = append(projects, project)
-//	}
-//
-//	return projects, nil
-//}
+func (r *ScientificRepository) GetPublicationsTx(ctx context.Context, tx pgx.Tx, worksIDs []uuid.UUID) ([]model.Publications, error) {
+	idExpressions := make([]postgres.Expression, 0, len(worksIDs))
+
+	for _, id := range worksIDs {
+		idExp := postgres.UUID(id)
+
+		idExpressions = append(idExpressions, idExp)
+	}
+
+	stmt, args := table.Publications.
+		SELECT(table.Publications.AllColumns).
+		WHERE(table.Publications.WorksID.IN(idExpressions...)).
+		Sql()
+
+	rows, err := tx.Query(ctx, stmt, args...)
+	if err != nil {
+		return nil, errors.Wrap(err, "GetPublicationsTx()")
+	}
+
+	publications := make([]model.Publications, 0, len(worksIDs))
+
+	for rows.Next() {
+		publication := model.Publications{}
+		if err := scanPublication(rows, &publication); err != nil {
+			return nil, errors.Wrap(err, "GetPublicationsTx()")
+		}
+
+		publications = append(publications, publication)
+	}
+
+	return publications, nil
+}
+
+func (r *ScientificRepository) GetConferencesTx(ctx context.Context, tx pgx.Tx, worksIDs []uuid.UUID) ([]model.Conferences, error) {
+	idExpressions := make([]postgres.Expression, 0, len(worksIDs))
+
+	for _, id := range worksIDs {
+		idExp := postgres.UUID(id)
+
+		idExpressions = append(idExpressions, idExp)
+	}
+
+	stmt, args := table.Conferences.
+		SELECT(table.Conferences.AllColumns).
+		WHERE(table.Conferences.WorksID.IN(idExpressions...)).
+		Sql()
+
+	rows, err := tx.Query(ctx, stmt, args...)
+	if err != nil {
+		return nil, errors.Wrap(err, "GetConferencesTx()")
+	}
+
+	conferences := make([]model.Conferences, 0, len(worksIDs))
+
+	for rows.Next() {
+		conference := model.Conferences{}
+		if err := scanConference(rows, &conference); err != nil {
+			return nil, errors.Wrap(err, "GetConferencesTx()")
+		}
+
+		conferences = append(conferences, conference)
+	}
+
+	return conferences, nil
+}
+
+func (r *ScientificRepository) GetResearchProjectsTx(ctx context.Context, tx pgx.Tx, worksIDs []uuid.UUID) ([]model.ResearchProjects, error) {
+	idExpressions := make([]postgres.Expression, 0, len(worksIDs))
+
+	for _, id := range worksIDs {
+		idExp := postgres.UUID(id)
+
+		idExpressions = append(idExpressions, idExp)
+	}
+
+	stmt, args := table.ResearchProjects.
+		SELECT(table.ResearchProjects.AllColumns).
+		WHERE(table.ResearchProjects.WorksID.IN(idExpressions...)).
+		Sql()
+
+	rows, err := tx.Query(ctx, stmt, args...)
+	if err != nil {
+		return nil, errors.Wrap(err, "GetResearchProjectsTx()")
+	}
+
+	projects := make([]model.ResearchProjects, 0, len(worksIDs))
+
+	for rows.Next() {
+		project := model.ResearchProjects{}
+		if err := scanResearchProject(rows, &project); err != nil {
+			return nil, errors.Wrap(err, "GetResearchProjectsTx()")
+		}
+
+		projects = append(projects, project)
+	}
+
+	return projects, nil
+}
+
+func (r *ScientificRepository) GetScientificWorksStatusIDs(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]uuid.UUID, error) {
+	stmt, args := table.ScientificWorksStatus.
+		SELECT(table.ScientificWorksStatus.WorksID).
+		WHERE(table.ScientificWorksStatus.StudentID.EQ(postgres.UUID(studentID))).
+		Sql()
+
+	rows, err := tx.Query(ctx, stmt, args...)
+	if err != nil {
+		return nil, errors.Wrap(err, "GetScientificWorksStatusIDs()")
+	}
+
+	ids := make([]uuid.UUID, 0, 8)
+
+	for rows.Next() {
+		id := uuid.UUID{}
+		if err := rows.Scan(&id); err != nil {
+			return nil, errors.Wrap(err, "GetScientificWorksStatusIDs(): scanning row")
+		}
+
+		ids = append(ids, id)
+	}
+
+	return ids, nil
+}

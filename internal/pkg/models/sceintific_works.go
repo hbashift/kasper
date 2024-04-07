@@ -87,9 +87,9 @@ type ScientificWork struct {
 	// Дата принятия научным руководителем
 	AcceptedAt *time.Time `json:"accepted_at,omitempty" db:"scientific_works.accepted_at" format:"date-time"`
 	// Объект, описывающий научную публикацию
-	Publication Publication `json:"publication"`
+	Publications []Publication `json:"publications"`
 	// Объект, описывающий научную конференцию
-	Conference Conference `json:"conference"`
+	Conferences []Conference `json:"conferences"`
 	// Объект, описывающий научно-исследовательский проект
-	ResearchProject ResearchProject `json:"research_project"`
+	ResearchProjects []ResearchProject `json:"research_projects"`
 }
