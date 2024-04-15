@@ -197,7 +197,7 @@ func (s *Service) GetDissertationData(ctx context.Context, studentID uuid.UUID, 
 	var dissertation model.Dissertations
 
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
-		data, err := s.dissertationRepo.GetActualDissertationData(ctx, tx, studentID, semester)
+		data, err := s.dissertationRepo.GetDissertationDataBySemester(ctx, tx, studentID, semester)
 		if err != nil {
 			return err
 		}

@@ -43,7 +43,7 @@ type (
 		GetSemesterProgressTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]model.SemesterProgress, error)
 		UpsertSemesterProgressTx(ctx context.Context, tx pgx.Tx, progresses []model.SemesterProgress) error
 
-		GetActualDissertationData(ctx context.Context, tx pgx.Tx, studentID uuid.UUID, semester int32) (model.Dissertations, error)
+		GetDissertationDataBySemester(ctx context.Context, tx pgx.Tx, studentID uuid.UUID, semester int32) (model.Dissertations, error)
 		GetDissertationsTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]model.Dissertations, error)
 		UpsertDissertationTx(ctx context.Context, tx pgx.Tx, model model.Dissertations) error
 
@@ -57,7 +57,6 @@ type (
 		SetScientificWorkStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID, status model.ApprovalStatus, semester int32, acceptedAt *time.Time) error
 
 		GetScientificWorksStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]model.ScientificWorksStatus, error)
-		UpdateScientificWorksStatusTx(ctx context.Context, tx pgx.Tx, works model.ScientificWorksStatus) error
 
 		InsertPublicationsTx(ctx context.Context, tx pgx.Tx, publications []model.Publications) error
 		UpdatePublicationsTx(ctx context.Context, tx pgx.Tx, publications []model.Publications) error
@@ -84,7 +83,6 @@ type (
 		SetTeachingLoadStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID, status model.ApprovalStatus, semester int32, acceptedAt *time.Time) error
 
 		GetTeachingLoadStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]model.TeachingLoadStatus, error)
-		UpdateTeachingLoadStatusTx(ctx context.Context, tx pgx.Tx, loads []model.TeachingLoadStatus) error
 
 		InsertClassroomLoadsTx(ctx context.Context, tx pgx.Tx, loads []model.ClassroomLoad) error
 		UpdateClassroomLoadsTx(ctx context.Context, tx pgx.Tx, loads []model.ClassroomLoad) error

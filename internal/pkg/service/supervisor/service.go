@@ -20,23 +20,27 @@ type (
 		GetUserTx(ctx context.Context, tx pgx.Tx, userID uuid.UUID) (model.Users, error)
 	}
 
-	DissertationRepository interface {
+	FeedbackRepository interface {
 		UpsertFeedbackTx(ctx context.Context, tx pgx.Tx, feedback model.Feedback) error
 	}
 
 	ClientRepository interface {
 		GetSupervisorsStudentsTx(ctx context.Context, tx pgx.Tx, supervisorID uuid.UUID) ([]models.Student, error)
 	}
+
+	MarksRepository interface {
+		UpsertMarkTx(ctx context.Context, tx pgx.Tx, model model.Marks) error
+	}
 )
 
 type Service struct {
-	dissertationRepo DissertationRepository
+	dissertationRepo FeedbackRepository
 	tokenRepo        TokenRepository
 	userRepo         UsersRepository
 	client           ClientRepository
 	db               *pgxpool.Pool
 }
 
-func NewService(dissertationRepo DissertationRepository, tokenRepo TokenRepository, userRepo UsersRepository, client ClientRepository, db *pgxpool.Pool) *Service {
+func NewService(dissertationRepo FeedbackRepository, tokenRepo TokenRepository, userRepo UsersRepository, client ClientRepository, db *pgxpool.Pool) *Service {
 	return &Service{dissertationRepo: dissertationRepo, tokenRepo: tokenRepo, userRepo: userRepo, client: client, db: db}
 }

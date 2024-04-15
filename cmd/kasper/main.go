@@ -55,7 +55,7 @@ func main() {
 	tokenRepo := repository.NewTokenRepository()
 
 	studentService := student.NewService(dissertationRepo, loadRepo, scienceRepo, marksRepo, clientRepo, tokenRepo, usersRepo, db)
-	adminService := admin.NewService(dissertationRepo, loadRepo, scienceRepo, marksRepo, clientRepo, tokenRepo, usersRepo, db)
+	adminService := admin.NewService(clientRepo, db)
 	supervisorService := supervisor.NewService(dissertationRepo, tokenRepo, usersRepo, clientRepo, db)
 	authenticationService := authentication.NewService(tokenRepo, usersRepo, db)
 	emailService := email.NewService("SENDER", "PASSWORD", "smtp.gmail.com", db, usersRepo, clientRepo)

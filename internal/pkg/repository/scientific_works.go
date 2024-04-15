@@ -345,47 +345,6 @@ func (r *ScientificRepository) DeleteResearchProjectsTx(ctx context.Context, tx 
 	return nil
 }
 
-//func (r *ScientificRepository) GetScientificWorksTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]models.ScientificWork, error) {
-//	stmt, args := table.ScientificWorksStatus.
-//		SELECT(
-//			table.ScientificWorksStatus.Semester,
-//			table.ScientificWorksStatus.StudentID,
-//			table.ScientificWorksStatus.Status.AS("scientific_works.approval_status"),
-//			table.ScientificWorksStatus.UpdatedAt,
-//			table.ScientificWorksStatus.AcceptedAt,
-//			table.Publications.AllColumns,
-//			table.Conferences.AllColumns,
-//			table.ResearchProjects.AllColumns,
-//		).
-//		FROM(table.ScientificWorksStatus.
-//			INNER_JOIN(table.Publications, table.ScientificWorksStatus.WorksID.EQ(table.Publications.WorksID)).
-//			INNER_JOIN(table.Conferences, table.ScientificWorksStatus.WorksID.EQ(table.Conferences.WorksID)).
-//			INNER_JOIN(table.ResearchProjects, table.ScientificWorksStatus.WorksID.EQ(table.ResearchProjects.WorksID)),
-//		).
-//		WHERE(table.ScientificWorksStatus.StudentID.EQ(postgres.UUID(studentID))).
-//		Sql()
-//
-//	rows, err := tx.Query(ctx, stmt, args...)
-//	if err != nil {
-//		return nil, errors.Wrap(err, "GetScientificWorksTx()")
-//	}
-//	defer rows.Close()
-//
-//	works := make([]models.ScientificWork, 0, 10)
-//
-//	for rows.Next() {
-//		work := models.ScientificWork{}
-//
-//		if err := scanScientificWork(rows, &work); err != nil {
-//			return nil, errors.Wrap(err, "GetScientificWorksTx(): scanning rows")
-//		}
-//
-//		works = append(works, work)
-//	}
-//
-//	return works, nil
-//}
-
 func scanScientificWorksStatusStatus(row pgx.Row, target *model.ScientificWorksStatus) error {
 	return row.Scan(
 		&target.WorksID,
@@ -396,46 +355,6 @@ func scanScientificWorksStatusStatus(row pgx.Row, target *model.ScientificWorksS
 		&target.AcceptedAt,
 	)
 }
-
-//func scanScientificWork(row pgx.Row, target *models.ScientificWork) error {
-//	return row.Scan(
-//		&target.Semester,
-//		&target.StudentID,
-//		&target.ApprovalStatus,
-//		&target.UpdatedAt,
-//		&target.AcceptedAt,
-//		&target.Publication.PublicationID,
-//		&target.Publication.WorksID,
-//		&target.Publication.Name,
-//		&target.Publication.Scopus,
-//		&target.Publication.Rinc,
-//		&target.Publication.Wac,
-//		&target.Publication.Wos,
-//		&target.Publication.Impact,
-//		&target.Publication.Status,
-//		&target.Publication.OutputData,
-//		&target.Publication.CoAuthors,
-//		&target.Publication.Volume,
-//		&target.Conference.ConferenceID,
-//		&target.Conference.WorksID,
-//		&target.Conference.Status,
-//		&target.Conference.Scopus,
-//		&target.Conference.Rinc,
-//		&target.Conference.Wac,
-//		&target.Conference.Wos,
-//		&target.Conference.ConferenceName,
-//		&target.Conference.ReportName,
-//		&target.Conference.Location,
-//		&target.Conference.ReportedAt,
-//		&target.ResearchProject.ProjectID,
-//		&target.ResearchProject.WorksID,
-//		&target.ResearchProject.ProjectName,
-//		&target.ResearchProject.StartAt,
-//		&target.ResearchProject.EndAt,
-//		&target.ResearchProject.AddInfo,
-//		&target.ResearchProject.Grantee,
-//	)
-//}
 
 func scanPublication(row pgx.Row, target *model.Publications) error {
 	return row.Scan(

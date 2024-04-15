@@ -312,47 +312,6 @@ func (r *TeachingLoadRepository) DeleteAdditionalLoadsTx(ctx context.Context, tx
 	return nil
 }
 
-//func (r *TeachingLoadRepository) GetTeachingLoadsTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]models.TeachingLoad, error) {
-//	stmt, args := table.TeachingLoadStatus.
-//		SELECT(
-//			table.TeachingLoadStatus.StudentID,
-//			table.TeachingLoadStatus.Semester,
-//			table.TeachingLoadStatus.Status.AS("teaching_load.approval_status"),
-//			table.TeachingLoadStatus.UpdatedAt,
-//			table.TeachingLoadStatus.AcceptedAt,
-//			table.ClassroomLoad.AllColumns,
-//			table.IndividualStudentsLoad.AllColumns,
-//			table.AdditionalLoad.AllColumns,
-//		).
-//		FROM(table.TeachingLoadStatus.
-//			LEFT_JOIN(table.ClassroomLoad, table.TeachingLoadStatus.LoadsID.EQ(table.ClassroomLoad.TLoadID)).
-//			LEFT_JOIN(table.IndividualStudentsLoad, table.TeachingLoadStatus.LoadsID.EQ(table.IndividualStudentsLoad.TLoadID)).
-//			LEFT_JOIN(table.AdditionalLoad, table.TeachingLoadStatus.LoadsID.EQ(table.AdditionalLoad.TLoadID)),
-//		).
-//		WHERE(table.TeachingLoadStatus.StudentID.EQ(postgres.UUID(studentID))).
-//		Sql()
-//
-//	rows, err := tx.Query(ctx, stmt, args...)
-//	if err != nil {
-//		return nil, errors.Wrap(err, "GetTeachingLoadTx()")
-//	}
-//	defer rows.Close()
-//
-//	loads := make([]models.TeachingLoad, 0, 10)
-//
-//	for rows.Next() {
-//		load := models.TeachingLoad{}
-//
-//		if err := scanTeachingLoadStatus(rows, &load); err != nil {
-//			return nil, errors.Wrap(err, "GetTeachingLoadTx(): scanning row")
-//		}
-//
-//		loads = append(loads, load)
-//	}
-//
-//	return loads, nil
-//}
-
 func scanTeachingLoadStatusStatus(row pgx.Row, target *model.TeachingLoadStatus) error {
 	return row.Scan(
 		&target.LoadsID,
@@ -363,33 +322,6 @@ func scanTeachingLoadStatusStatus(row pgx.Row, target *model.TeachingLoadStatus)
 		&target.AcceptedAt,
 	)
 }
-
-//func scanTeachingLoadStatus(row pgx.Row, target *models.TeachingLoad) error {
-//	return row.Scan(
-//		&target.StudentID,
-//		&target.Semester,
-//		&target.ApprovalStatus,
-//		&target.UpdatedAt,
-//		&target.AcceptedAt,
-//		&target.ClassroomLoad.LoadID,
-//		&target.ClassroomLoad.TLoadID,
-//		&target.ClassroomLoad.Hours,
-//		&target.ClassroomLoad.LoadType,
-//		&target.ClassroomLoad.MainTeacher,
-//		&target.ClassroomLoad.GroupName,
-//		&target.ClassroomLoad.SubjectName,
-//		&target.IndividualStudentsLoad.LoadID,
-//		&target.IndividualStudentsLoad.TLoadID,
-//		&target.IndividualStudentsLoad.LoadType,
-//		&target.IndividualStudentsLoad.StudentsAmount,
-//		&target.IndividualStudentsLoad.Comment,
-//		&target.AdditionalLoad.LoadID,
-//		&target.AdditionalLoad.TLoadID,
-//		&target.AdditionalLoad.Name,
-//		&target.AdditionalLoad.Volume,
-//		&target.AdditionalLoad.Comment,
-//	)
-//}
 
 func (r *TeachingLoadRepository) GetClassroomLoadsTx(ctx context.Context, tx pgx.Tx, loadsIDs []uuid.UUID) ([]model.ClassroomLoad, error) {
 	idExpressions := make([]postgres.Expression, 0, len(loadsIDs))

@@ -190,7 +190,7 @@ func (r *DissertationRepository) GetDissertationsTx(ctx context.Context, tx pgx.
 	return dissertations, nil
 }
 
-func (r *DissertationRepository) GetActualDissertationData(ctx context.Context, tx pgx.Tx, studentID uuid.UUID, semester int32) (model.Dissertations, error) {
+func (r *DissertationRepository) GetDissertationDataBySemester(ctx context.Context, tx pgx.Tx, studentID uuid.UUID, semester int32) (model.Dissertations, error) {
 	stmt, args := table.Dissertations.
 		SELECT(table.Dissertations.AllColumns).
 		WHERE(table.Dissertations.StudentID.EQ(postgres.UUID(studentID)).
@@ -201,7 +201,7 @@ func (r *DissertationRepository) GetActualDissertationData(ctx context.Context, 
 	dissertation := model.Dissertations{}
 
 	if err := scanDissertation(row, &dissertation); err != nil {
-		return model.Dissertations{}, errors.Wrap(err, "GetActualDissertationTx")
+		return model.Dissertations{}, errors.Wrap(err, "GetDissertationDataBySemester")
 	}
 
 	return dissertation, nil
