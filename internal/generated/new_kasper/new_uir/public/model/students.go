@@ -13,15 +13,16 @@ import (
 )
 
 type Students struct {
-	StudentID      uuid.UUID `sql:"primary_key"`
-	UserID         uuid.UUID
-	FullName       string
-	SpecID         int32
-	ActualSemester int32
-	Years          int32
-	StartDate      time.Time
-	StudyingStatus StudentStatus
-	GroupID        int32
-	Status         ApprovalStatus
-	CanEdit        bool
+	StudentID       uuid.UUID `sql:"primary_key"`
+	UserID          uuid.UUID
+	FullName        string
+	SpecID          int32
+	ActualSemester  int32
+	Years           int32
+	StartDate       time.Time
+	StudyingStatus  StudentStatus
+	GroupID         int32
+	Status          ApprovalStatus
+	CanEdit         bool
+	Progressiveness int32
 }

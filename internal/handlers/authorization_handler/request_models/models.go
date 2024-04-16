@@ -14,3 +14,8 @@ type FirstStudentRegistry struct {
 	GroupID          int32      `json:"group_number,omitempty"`
 	SupervisorID     *uuid.UUID `json:"supervisor_id"`
 }
+
+type ChangePasswordRequest struct {
+	OldPassword string
+	NewPassword string
+}

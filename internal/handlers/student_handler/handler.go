@@ -17,6 +17,7 @@ type (
 		SetStudentStatus(ctx context.Context, studentID uuid.UUID, status model.ApprovalStatus) error
 		// GetStudentStatus - возвращает статус студента
 		GetStudentStatus(ctx context.Context, studentID uuid.UUID) (models.Student, error)
+		UpdateStudentsProgressiveness(ctx context.Context, studentID uuid.UUID, progress int32) error
 	}
 
 	DissertationService interface {
@@ -75,7 +76,7 @@ type (
 
 	Authenticator interface {
 		// Authenticate - проводит аутентификацию пользователя
-		Authenticate(ctx context.Context, token, userType string) (*model.Users, error)
+		AuthenticateWithUserType(ctx context.Context, token, userType string) (*model.Users, error)
 	}
 
 	EmailService interface {
@@ -110,7 +111,7 @@ func NewHandler(student StudentService, dissertation DissertationService, scient
 func (h *StudentHandler) authenticate(ctx *gin.Context) (*model.Users, error) {
 	token := helpers.GetToken(ctx)
 
-	user, err := h.authenticator.Authenticate(ctx, token, model.UserType_Student.String())
+	user, err := h.authenticator.AuthenticateWithUserType(ctx, token, model.UserType_Student.String())
 	if err != nil {
 		return user, err
 	}

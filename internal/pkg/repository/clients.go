@@ -52,7 +52,7 @@ func (r *ClientRepository) GetStudentStatusTx(ctx context.Context, tx pgx.Tx, st
 
 	row := tx.QueryRow(ctx, stmt, args...)
 	student := models.Student{}
-	if err := scanStudentList(row, &student); err != nil {
+	if err := scanStudentStatus(row, &student); err != nil {
 		return models.Student{}, errors.Wrap(err, "GetStudentStatusTx()")
 	}
 
@@ -67,6 +67,7 @@ func (r *ClientRepository) InsertStudentTx(ctx context.Context, tx pgx.Tx, stude
 					table.Students.StudyingStatus,
 					table.Students.Status,
 					table.Students.CanEdit,
+					table.Students.Progressiveness,
 				),
 		).
 		VALUES(
@@ -134,7 +135,7 @@ func (r *ClientRepository) GetSupervisorsStudentsTx(ctx context.Context, tx pgx.
 
 	for rows.Next() {
 		el := models.Student{}
-		if err = scanStudentList(rows, &el); err != nil {
+		if err = scanStudentStatus(rows, &el); err != nil {
 			return nil, errors.Wrap(err, "GetSupervisorsStudentsTx(): scanning rows")
 		}
 
@@ -319,7 +320,20 @@ func (r *ClientRepository) GetAllStudentsSupervisors(ctx context.Context, tx pgx
 	return supervisors, nil
 }
 
-// TODO доделать для аспера и научника
+func (r *ClientRepository) UpdateStudentsProgressiveness(ctx context.Context, tx pgx.Tx, studentID uuid.UUID, progress int32) error {
+	stmt, args := table.Students.
+		UPDATE(table.Students.Progressiveness).
+		SET(progress).
+		WHERE(table.Students.StudentID.EQ(postgres.UUID(studentID))).
+		Sql()
+
+	_, err := tx.Exec(ctx, stmt, args...)
+	if err != nil {
+		return errors.Wrap(err, "UpdateStudentsProgressiveness()")
+	}
+
+	return nil
+}
 
 func scanStudent(row pgx.Row, target *model.Students) error {
 	return row.Scan(
@@ -335,10 +349,11 @@ func scanStudent(row pgx.Row, target *model.Students) error {
 		&target.GroupID,
 		&target.Status,
 		&target.CanEdit,
+		&target.Progressiveness,
 	)
 }
 
-func scanStudentList(row pgx.Row, target *models.Student) error {
+func scanStudentStatus(row pgx.Row, target *models.Student) error {
 	return row.Scan(
 		&target.StudentID,
 		&target.FullName,
@@ -351,6 +366,7 @@ func scanStudentList(row pgx.Row, target *models.Student) error {
 		&target.CanEdit,
 		&target.Specialization,
 		&target.GroupName,
+		&target.Progressiveness,
 	)
 }
 

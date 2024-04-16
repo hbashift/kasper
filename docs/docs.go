@@ -643,6 +643,65 @@ const docTemplate = `{
                 }
             }
         },
+        "/authorize/password/change/{token}": {
+            "post": {
+                "description": "Изменение пароля пользователя",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Authorization"
+                ],
+                "summary": "Изменение пароля пользователя",
+                "parameters": [
+                    {
+                        "description": "Данные",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.ChangePasswordRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/authorize/registration/student/{token}": {
             "post": {
                 "description": "Первичная регистрация студента",
@@ -1013,6 +1072,65 @@ const docTemplate = `{
                         "name": "file",
                         "in": "formData",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/students/dissertation/progress/percent/{token}": {
+            "post": {
+                "description": "Обновление прогресса написания диссертации",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Student.Dissertation"
+                ],
+                "summary": "Обновление прогресса написания диссертации",
+                "parameters": [
+                    {
+                        "description": "Данные",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.UpdateProgressivenessRequest"
+                        }
                     },
                     {
                         "type": "string",
@@ -3053,6 +3171,14 @@ const docTemplate = `{
                         "$ref": "#/definitions/models.SemesterProgressResponse"
                     }
                 },
+                "student_status": {
+                    "description": "Информация о студенте",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.Student"
+                        }
+                    ]
+                },
                 "supervisors": {
                     "description": "Список научных руководителей",
                     "type": "array",
@@ -3564,6 +3690,10 @@ const docTemplate = `{
                     "description": "Название группы",
                     "type": "string"
                 },
+                "progress": {
+                    "description": "Процент выполнения диссертации",
+                    "type": "integer"
+                },
                 "specialization": {
                     "description": "Специализация",
                     "type": "string"
@@ -3742,6 +3872,17 @@ const docTemplate = `{
                 }
             }
         },
+        "request_models.ChangePasswordRequest": {
+            "type": "object",
+            "properties": {
+                "newPassword": {
+                    "type": "string"
+                },
+                "oldPassword": {
+                    "type": "string"
+                }
+            }
+        },
         "request_models.ChangeSupervisorRequest": {
             "type": "object",
             "required": [
@@ -3871,6 +4012,14 @@ const docTemplate = `{
                 },
                 "student_id": {
                     "type": "string"
+                }
+            }
+        },
+        "request_models.UpdateProgressivenessRequest": {
+            "type": "object",
+            "properties": {
+                "progress": {
+                    "type": "integer"
                 }
             }
         },

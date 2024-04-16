@@ -44,6 +44,7 @@ type (
 		GetGroups(ctx *gin.Context)
 
 		GetSupervisors(ctx *gin.Context)
+		UpdateProgressiveness(ctx *gin.Context)
 	}
 
 	SupervisorHandler interface {
@@ -77,6 +78,8 @@ type (
 	AuthenticationHandler interface {
 		Authorize(ctx *gin.Context)
 		FirstStudentRegistry(ctx *gin.Context)
+		ChangePassword(ctx *gin.Context)
+		TokenCheck(ctx *gin.Context)
 	}
 )
 
@@ -145,6 +148,8 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 	r.GET("/student/enum/groups/:token", h.student.GetGroups)
 	r.GET("/student/supervisors/list/:token", h.student.GetSupervisors)
 
+	r.POST("/students/dissertation/progress/percent/:token", h.student.UpdateProgressiveness)
+
 	// SupervisorHandler init
 	r.PUT("/supervisors/student/list/:token", h.supervisor.GetStudentsList)
 
@@ -177,6 +182,9 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 	r.POST("/authorize", h.authentication.Authorize)
 
 	r.POST("/authorize/registration/student/:token", h.authentication.FirstStudentRegistry)
+
+	r.POST("/authorize/password/change/:token", h.authentication.ChangePassword)
+	r.GET("/authorize/token/check/:token", h.authentication.TokenCheck)
 
 	return r
 }

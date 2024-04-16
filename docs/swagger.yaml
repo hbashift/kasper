@@ -153,6 +153,10 @@ definitions:
           $ref: '#/definitions/models.SemesterProgressResponse'
           format: array
         type: array
+      student_status:
+        allOf:
+        - $ref: '#/definitions/models.Student'
+        description: Информация о студенте
       supervisors:
         description: Список научных руководителей
         items:
@@ -537,6 +541,9 @@ definitions:
       group_name:
         description: Название группы
         type: string
+      progress:
+        description: Процент выполнения диссертации
+        type: integer
       specialization:
         description: Специализация
         type: string
@@ -664,6 +671,13 @@ definitions:
           $ref: '#/definitions/models.Specialization'
         type: array
     type: object
+  request_models.ChangePasswordRequest:
+    properties:
+      newPassword:
+        type: string
+      oldPassword:
+        type: string
+    type: object
   request_models.ChangeSupervisorRequest:
     properties:
       pairs:
@@ -750,6 +764,11 @@ definitions:
         type: string
       student_id:
         type: string
+    type: object
+  request_models.UpdateProgressivenessRequest:
+    properties:
+      progress:
+        type: integer
     type: object
   request_models.UpsertAdditionalLoadRequest:
     properties:
@@ -1271,6 +1290,45 @@ paths:
       summary: Авторизация в сервисе
       tags:
       - Authorization
+  /authorize/password/change/{token}:
+    post:
+      consumes:
+      - application/json
+      description: Изменение пароля пользователя
+      parameters:
+      - description: Данные
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.ChangePasswordRequest'
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Изменение пароля пользователя
+      tags:
+      - Authorization
   /authorize/registration/student/{token}:
     post:
       consumes:
@@ -1592,6 +1650,45 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/request_models.UpsertProgressRequest'
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Обновление прогресса написания диссертации
+      tags:
+      - Student.Dissertation
+  /students/dissertation/progress/percent/{token}:
+    post:
+      consumes:
+      - application/json
+      description: Обновление прогресса написания диссертации
+      parameters:
+      - description: Данные
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.UpdateProgressivenessRequest'
       - description: Токен пользователя
         in: path
         name: token

@@ -27,6 +27,8 @@ type Student struct {
 	GroupName string `db:"groups.group_name" json:"group_name,omitempty"`
 	// Флаг о возможности редактировать всю информацию
 	CanEdit bool `db:"students.can_edit" json:"can_edit,omitempty"`
+	// Процент выполнения диссертации
+	Progressiveness int32 `db:"students.progressiveness" json:"progress"`
 }
 
 type Supervisor struct {

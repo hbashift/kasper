@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"uir_draft/internal/generated/new_kasper/new_uir/public/model"
+	"uir_draft/internal/handlers/authorization_handler/request_models"
 	"uir_draft/internal/pkg/models"
 
 	"github.com/google/uuid"
@@ -14,7 +15,40 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func (s *Service) Authenticate(ctx context.Context, token, userType string) (*model.Users, error) {
+func (s *Service) AuthenticateWithUserType(ctx context.Context, token, userType string) (*model.Users, error) {
+	var user model.Users
+
+	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
+		tokenModel, err := s.tokenRepo.GetByTokenNumberTx(ctx, tx, token)
+		if err != nil {
+			return errors.Wrap(err, "getting user_id by token")
+		}
+
+		if !tokenModel.IsActive {
+			return models.ErrTokenExpired
+		}
+
+		user, err = s.userRepo.GetUserTx(ctx, tx, tokenModel.UserID)
+		if err != nil {
+			return errors.Wrap(err, "getting user info")
+		}
+
+		return nil
+	}); err != nil {
+		return nil, errors.Wrap(err, "AuthenticateWithUserType()")
+	}
+
+	if user.UserType.String() != userType {
+		if user.UserType == model.UserType_Admin && userType == model.UserType_Supervisor.String() {
+			return &user, nil
+		}
+		return nil, models.ErrWrongUserType
+	}
+
+	return &user, nil
+}
+
+func (s *Service) Authenticate(ctx context.Context, token string) (*model.Users, error) {
 	var user model.Users
 
 	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
@@ -35,13 +69,6 @@ func (s *Service) Authenticate(ctx context.Context, token, userType string) (*mo
 		return nil
 	}); err != nil {
 		return nil, errors.Wrap(err, "Authenticate()")
-	}
-
-	if user.UserType.String() != userType {
-		if user.UserType == model.UserType_Admin && userType == model.UserType_Supervisor.String() {
-			return &user, nil
-		}
-		return nil, models.ErrWrongUserType
 	}
 
 	return &user, nil
@@ -111,7 +138,7 @@ func (s *Service) Authorize(ctx context.Context, request models.AuthorizeRequest
 
 		return nil
 	}); err != nil {
-		return nil, false, errors.Wrap(err, "Authenticate()")
+		return nil, false, errors.Wrap(err, "AuthenticateWithUserType()")
 	}
 
 	if !isAuthorized {
@@ -119,4 +146,31 @@ func (s *Service) Authorize(ctx context.Context, request models.AuthorizeRequest
 	}
 
 	return &response, isAuthorized, nil
+}
+
+func (s *Service) ChangePassword(ctx context.Context, userID uuid.UUID, request request_models.ChangePasswordRequest) error {
+	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
+		user, err := s.userRepo.GetUserTx(ctx, tx, userID)
+		if err != nil {
+			return errors.Wrap(err, "getting user info")
+		}
+
+		err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(request.OldPassword))
+		if err != nil {
+			return models.ErrWrongPassword
+		}
+
+		newPassword, err := bcrypt.GenerateFromPassword([]byte(request.NewPassword), bcrypt.DefaultCost)
+		if err != nil {
+			return err
+		}
+
+		err = s.userRepo.ChangeUsersPasswordTx(ctx, tx, userID, string(newPassword))
+
+		return err
+	}); err != nil {
+		return errors.Wrap(err, "ChangePassword()")
+	}
+
+	return nil
 }

@@ -1,46 +1,44 @@
-package authorization_handler
+package student_handler
 
 import (
 	"net/http"
 
-	"uir_draft/internal/handlers/authorization_handler/request_models"
+	"uir_draft/internal/handlers/student_handler/request_models"
 	"uir_draft/internal/pkg/models"
 
 	"github.com/gin-gonic/gin"
 )
 
-// TODO
-
-// ChangePassword
+// UpdateProgressiveness
 //
-//	@Summary		Изменение пароля пользователя
+//	@Summary		Обновление прогресса написания диссертации
 //
-//	@Description	Изменение пароля пользователя
+//	@Description	Обновление прогресса написания диссертации
 //
-//	@Tags			Authorization
+//	@Tags			Student.Dissertation
 //	@Accept			json
-//	@Param			input	body	request_models.ChangePasswordRequest	true	"Данные"
+//	@Param			input body request_models.UpdateProgressivenessRequest true "Данные"
 //	@Success		200
 //	@Param			token	path		string	true	"Токен пользователя"
 //	@Failure		400		{string}	string	"Неверный формат данных"
 //	@Failure		401		{string}	string	"Токен протух"
 //	@Failure		204		{string}	string	"Нет записей в БД"
 //	@Failure		500		{string}	string	"Ошибка на стороне сервера"
-//	@Router			/authorize/password/change/{token} [post]
-func (h *AuthorizationHandler) ChangePassword(ctx *gin.Context) {
+//	@Router			/students/dissertation/progress/percent/{token} [post]
+func (h *StudentHandler) UpdateProgressiveness(ctx *gin.Context) {
 	user, err := h.authenticate(ctx)
 	if err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)
 		return
 	}
 
-	reqBody := request_models.ChangePasswordRequest{}
+	reqBody := request_models.UpdateProgressivenessRequest{}
 	if err = ctx.ShouldBindJSON(&reqBody); err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
-	if err = h.authenticator.ChangePassword(ctx, user.UserID, reqBody); err != nil {
+	if err = h.student.UpdateStudentsProgressiveness(ctx, user.KasperID, reqBody.Progress); err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)
 		return
 	}

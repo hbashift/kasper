@@ -82,3 +82,7 @@ type UpsertDissertationTitleRequest struct {
 	ResearchObject string `json:"research_object"`
 	ResearchOrder  string `json:"research_order"`
 }
+
+type UpdateProgressivenessRequest struct {
+	Progress int32 `json:"progress"`
+}

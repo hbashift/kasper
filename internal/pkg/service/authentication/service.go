@@ -19,6 +19,7 @@ type (
 	UsersRepository interface {
 		GetUserTx(ctx context.Context, tx pgx.Tx, userID uuid.UUID) (model.Users, error)
 		GetUserByEmailTx(ctx context.Context, tx pgx.Tx, email string) (model.Users, error)
+		ChangeUsersPasswordTx(ctx context.Context, tx pgx.Tx, userID uuid.UUID, password string) error
 	}
 )
 

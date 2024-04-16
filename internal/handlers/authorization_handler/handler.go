@@ -9,13 +9,16 @@ import (
 	"uir_draft/internal/pkg/models"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 type (
 	Authenticator interface {
 		Authorize(ctx context.Context, request models.AuthorizeRequest) (*models.AuthorizeResponse, bool, error)
-		Authenticate(ctx context.Context, token, userType string) (*model.Users, error)
+		AuthenticateWithUserType(ctx context.Context, token, userType string) (*model.Users, error)
+		Authenticate(ctx context.Context, token string) (*model.Users, error)
 		TokenCheck(ctx context.Context, token string) (*model.Users, error)
+		ChangePassword(ctx context.Context, userID uuid.UUID, request request_models.ChangePasswordRequest) error
 	}
 
 	StudentService interface {
@@ -35,7 +38,18 @@ func NewHandler(authenticator Authenticator, student StudentService) *Authorizat
 func (h *AuthorizationHandler) authenticateStudent(ctx *gin.Context) (*model.Users, error) {
 	token := helpers.GetToken(ctx)
 
-	user, err := h.authenticator.Authenticate(ctx, token, model.UserType_Student.String())
+	user, err := h.authenticator.AuthenticateWithUserType(ctx, token, model.UserType_Student.String())
+	if err != nil {
+		return user, err
+	}
+
+	return user, nil
+}
+
+func (h *AuthorizationHandler) authenticate(ctx *gin.Context) (*model.Users, error) {
+	token := helpers.GetToken(ctx)
+
+	user, err := h.authenticator.Authenticate(ctx, token)
 	if err != nil {
 		return user, err
 	}

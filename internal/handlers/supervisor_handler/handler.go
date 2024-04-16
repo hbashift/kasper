@@ -32,7 +32,7 @@ type (
 
 	Authenticator interface {
 		// Authenticate - проводит аутентификацию пользователя
-		Authenticate(ctx context.Context, token, userType string) (*model.Users, error)
+		AuthenticateWithUserType(ctx context.Context, token, userType string) (*model.Users, error)
 	}
 
 	SupervisorService interface {
@@ -68,7 +68,7 @@ func NewHandler(dissertation DissertationService, scientific ScientificWorksServ
 func (h *SupervisorHandler) authenticate(ctx *gin.Context) (*model.Users, error) {
 	token := helpers.GetToken(ctx)
 
-	user, err := h.authenticator.Authenticate(ctx, token, model.UserType_Supervisor.String())
+	user, err := h.authenticator.AuthenticateWithUserType(ctx, token, model.UserType_Supervisor.String())
 	if err != nil {
 		return user, err
 	}

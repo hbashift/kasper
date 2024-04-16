@@ -111,6 +111,8 @@ func (f *FeedbackRequest) ToDomain() model.Feedback {
 }
 
 type DissertationPageResponse struct {
+	// Информация о студенте
+	StudentStatus Student `json:"student_status"`
 	// Прогресс написания диссертации
 	SemesterProgress []SemesterProgressResponse `json:"semester_progress,omitempty" format:"array"`
 	// Статусы всех диссертаций (файлов)

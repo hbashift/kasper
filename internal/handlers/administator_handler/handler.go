@@ -23,7 +23,7 @@ type (
 
 	Authenticator interface {
 		// Authenticate - проводит аутентификацию пользователя
-		Authenticate(ctx context.Context, token, userType string) (*model.Users, error)
+		AuthenticateWithUserType(ctx context.Context, token, userType string) (*model.Users, error)
 	}
 
 	EnumService interface {
@@ -50,7 +50,7 @@ func NewHandler(user UserService, authenticator Authenticator, enum EnumService)
 func (h *AdministratorHandler) authenticate(ctx *gin.Context) (*model.Users, error) {
 	token := helpers.GetToken(ctx)
 
-	user, err := h.authenticator.Authenticate(ctx, token, model.UserType_Admin.String())
+	user, err := h.authenticator.AuthenticateWithUserType(ctx, token, model.UserType_Admin.String())
 	if err != nil {
 		return user, err
 	}

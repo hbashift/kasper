@@ -24,7 +24,7 @@ import (
 //	@version	0.1.2
 // description Серверная часть Системы учета деятельности аспирантов
 
-//	@host		localhost:8080
+//	@host	localhost:8080
 
 func main() {
 	err := initConfig()

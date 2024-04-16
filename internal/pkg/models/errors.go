@@ -14,6 +14,8 @@ var (
 	ErrWrongUserType         = errors.New("wrong user type")
 	ErrNotActualSemester     = errors.New("not actual semester")
 	ErrUnknownApprovalStatus = errors.New("unknown approval status")
+	ErrWrongPassword         = errors.New("wrong password")
+	ErrHigherValueExpected   = errors.New("expected higher value")
 )
 
 func MapErrorToCode(err error) int {
@@ -22,9 +24,9 @@ func MapErrorToCode(err error) int {
 		return http.StatusUnauthorized
 	case errors.Is(err, pgx.ErrNoRows):
 		return http.StatusNoContent
-	case errors.Is(err, ErrNotActualSemester):
+	case errors.Is(err, ErrNotActualSemester) || errors.Is(err, ErrHigherValueExpected):
 		return http.StatusBadRequest
-	case errors.Is(err, ErrNonMutableStatus):
+	case errors.Is(err, ErrNonMutableStatus) || errors.Is(err, ErrWrongPassword):
 		return http.StatusForbidden
 	}
 
