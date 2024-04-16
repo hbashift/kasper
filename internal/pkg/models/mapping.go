@@ -411,6 +411,7 @@ func ConvertScientificWorksToResponse(
 
 	for i, work := range dWorks {
 		scientificWorks = append(scientificWorks, ScientificWork{
+			WorksID:          work.WorksID,
 			Semester:         int(work.Semester),
 			StudentID:        studentID,
 			ApprovalStatus:   work.Status.String(),
@@ -453,6 +454,7 @@ func ConvertTeachingLoadsToResponse(
 
 	for i, load := range dLoads {
 		teachingLoads = append(teachingLoads, TeachingLoad{
+			TLoadID:                 load.LoadsID,
 			StudentID:               studentID,
 			Semester:                int(load.Semester),
 			ApprovalStatus:          load.Status.String(),

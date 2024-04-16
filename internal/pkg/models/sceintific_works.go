@@ -76,16 +76,17 @@ type ResearchProject struct {
 }
 
 type ScientificWork struct {
+	WorksID uuid.UUID `json:"works_id" db:"scientific_works_status.works_id"`
 	// Семестр, за который присылаются научные работы
-	Semester int `json:"semester,omitempty" db:"scientific_works.semester"`
+	Semester int `json:"semester,omitempty" db:"scientific_works_status.semester"`
 	// ID студента
-	StudentID uuid.UUID `json:"student_id,omitempty" db:"scientific_works.student_id" format:"uuid"`
+	StudentID uuid.UUID `json:"student_id,omitempty" db:"scientific_works_status.student_id" format:"uuid"`
 	// Статус проверки и подтверждения
-	ApprovalStatus string `json:"works_status,omitempty" db:"scientific_works.approval_status" enums:"todo,approved,on review,in progress,empty,failed"`
+	ApprovalStatus string `json:"works_status,omitempty" db:"scientific_works_status.approval_status" enums:"todo,approved,on review,in progress,empty,failed"`
 	// Дата последнего обновления
-	UpdatedAt time.Time `json:"updated_at" db:"scientific_works.updated_at" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" db:"scientific_works_status.updated_at" format:"date-time"`
 	// Дата принятия научным руководителем
-	AcceptedAt *time.Time `json:"accepted_at,omitempty" db:"scientific_works.accepted_at" format:"date-time"`
+	AcceptedAt *time.Time `json:"accepted_at,omitempty" db:"scientific_works_status.accepted_at" format:"date-time"`
 	// Объект, описывающий научную публикацию
 	Publications []Publication `json:"publications"`
 	// Объект, описывающий научную конференцию

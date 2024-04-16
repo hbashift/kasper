@@ -3516,6 +3516,9 @@ const docTemplate = `{
                     "type": "string",
                     "format": "date-time"
                 },
+                "works_id": {
+                    "type": "string"
+                },
                 "works_status": {
                     "description": "Статус проверки и подтверждения",
                     "type": "string",
@@ -3841,6 +3844,9 @@ const docTemplate = `{
                 },
                 "student_id": {
                     "description": "ID студента",
+                    "type": "string"
+                },
+                "t_load_id": {
                     "type": "string"
                 },
                 "updated_at": {

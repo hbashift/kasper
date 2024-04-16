@@ -409,6 +409,8 @@ definitions:
         description: Дата последнего обновления
         format: date-time
         type: string
+      works_id:
+        type: string
       works_status:
         description: Статус проверки и подтверждения
         enum:
@@ -651,6 +653,8 @@ definitions:
         type: integer
       student_id:
         description: ID студента
+        type: string
+      t_load_id:
         type: string
       updated_at:
         description: Дата последнего обновления

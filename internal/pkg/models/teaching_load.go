@@ -50,16 +50,17 @@ type AdditionalLoad struct {
 }
 
 type TeachingLoad struct {
+	TLoadID uuid.UUID `json:"t_load_id" db:"teaching_load_status.loads_id"`
 	// ID студента
-	StudentID uuid.UUID `json:"student_id,omitempty" db:"teaching_load.student_id"`
+	StudentID uuid.UUID `json:"student_id,omitempty" db:"teaching_load_status.student_id"`
 	// Семестр
-	Semester int `json:"semester,omitempty" db:"teaching_load.semester"`
+	Semester int `json:"semester,omitempty" db:"teaching_load_status.semester"`
 	// Статус проверки и подтверждения
-	ApprovalStatus string `json:"approval_status,omitempty" db:"teaching_load.approval_status" enums:"todo,approved,on review,in progress,empty,failed"`
+	ApprovalStatus string `json:"approval_status,omitempty" db:"teaching_load_status.approval_status" enums:"todo,approved,on review,in progress,empty,failed"`
 	// Дата последнего обновления
-	UpdatedAt time.Time `json:"updated_at" db:"teaching_load.updated_at" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" db:"teaching_load_status.updated_at" format:"date-time"`
 	// Дата принятия научным руководителем
-	AcceptedAt *time.Time `json:"accepted_at,omitempty" db:"teaching_load.accepted_at" format:"date-time"`
+	AcceptedAt *time.Time `json:"accepted_at,omitempty" db:"teaching_load_status.accepted_at" format:"date-time"`
 	// Объект, описывающий аудиторную нагрузку
 	ClassroomLoads []ClassroomLoad `json:"classroom_loads"`
 	// Объект, описывающий индивидуальную работу со студентами
