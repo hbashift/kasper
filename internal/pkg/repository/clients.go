@@ -381,6 +381,7 @@ func scanStudentSupervisorPair(row pgx.Row, target *models.StudentSupervisorPair
 		&target.Student.StudyingStatus,
 		&target.Student.Status,
 		&target.Student.CanEdit,
+		&target.Student.Progressiveness,
 		&target.Student.Specialization,
 		&target.Student.GroupName,
 		&target.Supervisor.SupervisorID,
