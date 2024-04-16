@@ -100,7 +100,8 @@ func (r *TeachingLoadRepository) GetTeachingLoadStatusTx(ctx context.Context, tx
 func (r *TeachingLoadRepository) GetTeachingLoadStatusBySemesterTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID, semester int32) (model.TeachingLoadStatus, error) {
 	stmt, args := table.TeachingLoadStatus.
 		SELECT(table.TeachingLoadStatus.AllColumns).
-		WHERE(table.TeachingLoadStatus.StudentID.EQ(postgres.UUID(studentID))).
+		WHERE(table.TeachingLoadStatus.StudentID.EQ(postgres.UUID(studentID)).
+			AND(table.TeachingLoadStatus.Semester.EQ(postgres.Int32(semester)))).
 		Sql()
 
 	rows := tx.QueryRow(ctx, stmt, args...)
