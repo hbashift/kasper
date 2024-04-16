@@ -204,7 +204,7 @@ func MapIndividualWorkToDomain(loads []IndividualStudentsLoad, tLoadID uuid.UUID
 			Comment:        load.Comment,
 		}
 
-		var loadType model.ApprovalStatus
+		var loadType model.IndividualStudentsLoadType
 		if err = loadType.Scan(load.LoadType); err != nil {
 			return nil, nil, errors.Wrap(err, "MapIndividualWorkToDomain()")
 		}
