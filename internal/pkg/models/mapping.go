@@ -198,15 +198,16 @@ func MapClassroomLoadToDomain(loads []ClassroomLoad, tLoadID uuid.UUID) (dLoadIn
 
 func MapIndividualWorkToDomain(loads []IndividualStudentsLoad, tLoadID uuid.UUID) (dLoadInsert, dLoadUpdate []model.IndividualStudentsLoad, err error) {
 	for _, load := range loads {
+		var loadType model.IndividualStudentsLoadType
+		if err = loadType.Scan(strings.TrimSpace(lo.FromPtr(load.LoadType))); err != nil {
+			return nil, nil, errors.Wrap(err, "MapIndividualWorkToDomain()")
+		}
+
 		dLoad := model.IndividualStudentsLoad{
 			TLoadID:        tLoadID,
 			StudentsAmount: lo.FromPtr(load.StudentsAmount),
 			Comment:        load.Comment,
-		}
-
-		var loadType model.IndividualStudentsLoadType
-		if err = loadType.Scan(strings.TrimSpace(lo.FromPtr(load.LoadType))); err != nil {
-			return nil, nil, errors.Wrap(err, "MapIndividualWorkToDomain()")
+			LoadType:       loadType,
 		}
 
 		if lo.FromPtr(load.LoadID) == uuid.Nil {
