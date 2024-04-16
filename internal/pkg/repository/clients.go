@@ -59,6 +59,36 @@ func (r *ClientRepository) GetStudentStatusTx(ctx context.Context, tx pgx.Tx, st
 	return student, nil
 }
 
+func (r *ClientRepository) GetStudentsList(ctx context.Context, tx pgx.Tx) ([]models.Student, error) {
+	stmt, args := table.Students.
+		SELECT(
+			table.Students.AllColumns.Except(table.Students.UserID, table.Students.SpecID, table.Students.GroupID),
+			table.Specializations.Title,
+			table.Groups.GroupName,
+		).
+		FROM(table.Students.
+			INNER_JOIN(table.Groups, table.Students.GroupID.EQ(table.Groups.GroupID)).
+			INNER_JOIN(table.Specializations, table.Students.SpecID.EQ(table.Specializations.SpecID)),
+		).
+		Sql()
+
+	rows, err := tx.Query(ctx, stmt, args...)
+	if err != nil {
+		return nil, err
+	}
+	students := make([]models.Student, 0)
+	for rows.Next() {
+		student := models.Student{}
+		if err := scanStudentStatus(rows, &student); err != nil {
+			return nil, errors.Wrap(err, "GetStudentStatusTx()")
+		}
+
+		students = append(students, student)
+	}
+
+	return students, nil
+}
+
 func (r *ClientRepository) InsertStudentTx(ctx context.Context, tx pgx.Tx, student model.Students) error {
 	stmt, args := table.Students.
 		INSERT(

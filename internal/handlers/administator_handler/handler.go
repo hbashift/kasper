@@ -19,6 +19,7 @@ type (
 		ChangeSupervisor(ctx context.Context, pairs []models.ChangeSupervisor) error
 		SetStudentStudyingStatus(ctx context.Context, studentID uuid.UUID, status string) error
 		GetSupervisors(ctx context.Context) ([]models.Supervisor, error)
+		GetStudentsList(ctx context.Context) ([]models.Student, error)
 	}
 
 	Authenticator interface {

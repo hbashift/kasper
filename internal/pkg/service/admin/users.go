@@ -89,3 +89,22 @@ func (s *Service) GetSupervisors(ctx context.Context) ([]models.Supervisor, erro
 
 	return sups, nil
 }
+
+func (s *Service) GetStudentsList(ctx context.Context) ([]models.Student, error) {
+	students := make([]models.Student, 0)
+
+	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
+		dStudents, err := s.clientRepo.GetStudentsList(ctx, tx)
+		if err != nil {
+			return err
+		}
+
+		students = dStudents
+
+		return nil
+	}); err != nil {
+		return nil, errors.Wrap(err, "GetStudentsList()")
+	}
+
+	return students, nil
+}

@@ -524,6 +524,65 @@
                 }
             }
         },
+        "/administrator/students/list/{token}": {
+            "get": {
+                "description": "Получение списка всех аспирантов",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Получение списка всех аспирантов",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Данные",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Student"
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/administrator/supervisors/list/{token}": {
             "get": {
                 "description": "Получения списка научных руководителей",

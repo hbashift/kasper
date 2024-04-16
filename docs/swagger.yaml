@@ -1221,6 +1221,45 @@ paths:
       summary: Изменение статуса обучения у аспиранта
       tags:
       - Admin
+  /administrator/students/list/{token}:
+    get:
+      consumes:
+      - application/json
+      description: Получение списка всех аспирантов
+      parameters:
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Данные
+          schema:
+            items:
+              $ref: '#/definitions/models.Student'
+            type: array
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Получение списка всех аспирантов
+      tags:
+      - Admin
   /administrator/supervisors/list/{token}:
     get:
       description: Получения списка научных руководителей

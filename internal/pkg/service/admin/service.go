@@ -17,6 +17,7 @@ type UsersRepository interface {
 	GetStudentSupervisorPairsTx(ctx context.Context, tx pgx.Tx) ([]models.StudentSupervisorPair, error)
 	GetStudentTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) (model.Students, error)
 	SetStudentStatusTx(ctx context.Context, tx pgx.Tx, status model.ApprovalStatus, studyingStatus model.StudentStatus, studentID uuid.UUID) error
+	GetStudentsList(ctx context.Context, tx pgx.Tx) ([]models.Student, error)
 }
 
 type Service struct {
