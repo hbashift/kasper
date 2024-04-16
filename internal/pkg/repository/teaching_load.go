@@ -425,7 +425,7 @@ func (r *TeachingLoadRepository) GetIndividualLoadsTx(ctx context.Context, tx pg
 func (r *TeachingLoadRepository) GetTeachingLoadStatusIDs(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]uuid.UUID, error) {
 	stmt, args := table.TeachingLoadStatus.
 		SELECT(table.TeachingLoadStatus.LoadsID).
-		WHERE(table.ScientificWorksStatus.StudentID.EQ(postgres.UUID(studentID))).
+		WHERE(table.TeachingLoadStatus.StudentID.EQ(postgres.UUID(studentID))).
 		Sql()
 
 	rows, err := tx.Query(ctx, stmt, args...)
