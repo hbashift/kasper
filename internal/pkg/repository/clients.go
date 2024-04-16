@@ -364,9 +364,9 @@ func scanStudentStatus(row pgx.Row, target *models.Student) error {
 		&target.StudyingStatus,
 		&target.Status,
 		&target.CanEdit,
+		&target.Progressiveness,
 		&target.Specialization,
 		&target.GroupName,
-		&target.Progressiveness,
 	)
 }
 
