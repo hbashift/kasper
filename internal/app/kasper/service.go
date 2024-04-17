@@ -81,6 +81,8 @@ type (
 
 		DeleteGroups(ctx *gin.Context)
 		DeleteSpecializations(ctx *gin.Context)
+
+		GetSupervisorProfile(ctx *gin.Context)
 	}
 
 	AuthenticationHandler interface {
@@ -195,6 +197,8 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 
 	r.PUT("/administrator/enum/specializations/:token", h.administrator.DeleteSpecializations)
 	r.PUT("/administrator/enum/groups/:token", h.administrator.DeleteGroups)
+
+	r.PUT("/administrator/supervisors/profile/:token", h.administrator.GetSupervisorProfile)
 
 	// AuthenticationHandler init
 	r.POST("/authorize", h.authentication.Authorize)

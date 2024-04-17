@@ -26,6 +26,6 @@ type DeleteEnumRequest struct {
 	IDs []int32 `json:"ids"`
 }
 
-type GetSupervisorsStudents struct {
+type GetBySupervisorID struct {
 	SupervisorID uuid.UUID `json:"supervisor_id"`
 }

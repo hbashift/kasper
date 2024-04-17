@@ -17,7 +17,7 @@ import (
 //	@Success		200	{object}	[]models.Student	"Данные"
 //
 //	@Accept			json
-//	@Param			input	body	request_models.GetSupervisorsStudents	true	"Данные"
+//	@Param			input	body	request_models.GetBySupervisorID	true	"Данные"
 //	@Produce		json
 //	@Param			token	path		string	true	"Токен пользователя"
 //
@@ -32,7 +32,7 @@ func (h *AdministratorHandler) GetSupervisorsStudents(ctx *gin.Context) {
 		return
 	}
 
-	reqBody := request_models.GetSupervisorsStudents{}
+	reqBody := request_models.GetBySupervisorID{}
 	if err = ctx.ShouldBind(&reqBody); err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return

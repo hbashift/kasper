@@ -603,7 +603,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request_models.GetSupervisorsStudents"
+                            "$ref": "#/definitions/request_models.GetBySupervisorID"
                         }
                     },
                     {
@@ -679,6 +679,62 @@
                     },
                     "400": {
                         "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/administrator/supervisors/profile/{token}": {
+            "put": {
+                "description": "Получение профиля научного руководителя",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Получение профиля научного руководителя",
+                "parameters": [
+                    {
+                        "description": "Данные",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.GetBySupervisorID"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Данные",
+                        "schema": {
+                            "$ref": "#/definitions/administator_handler.GetSupervisorProfileResponse"
+                        }
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
                         "schema": {
                             "type": "string"
                         }
@@ -3174,6 +3230,32 @@
         }
     },
     "definitions": {
+        "administator_handler.GetSupervisorProfileResponse": {
+            "type": "object",
+            "properties": {
+                "degree": {
+                    "type": "string"
+                },
+                "department": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "faculty": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "description": "Полное имя руководителя",
+                    "type": "string"
+                },
+                "supervisor_id": {
+                    "description": "ID научного руководителя",
+                    "type": "string",
+                    "format": "uuid"
+                }
+            }
+        },
         "authorization_handler.TokenCheckResponse": {
             "type": "object",
             "properties": {
@@ -4230,7 +4312,7 @@
                 }
             }
         },
-        "request_models.GetSupervisorsStudents": {
+        "request_models.GetBySupervisorID": {
             "type": "object",
             "properties": {
                 "supervisor_id": {

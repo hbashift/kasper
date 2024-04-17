@@ -1,4 +1,22 @@
 definitions:
+  administator_handler.GetSupervisorProfileResponse:
+    properties:
+      degree:
+        type: string
+      department:
+        type: string
+      email:
+        type: string
+      faculty:
+        type: string
+      full_name:
+        description: Полное имя руководителя
+        type: string
+      supervisor_id:
+        description: ID научного руководителя
+        format: uuid
+        type: string
+    type: object
   authorization_handler.TokenCheckResponse:
     properties:
       registered:
@@ -765,7 +783,7 @@ definitions:
       student_id:
         type: string
     type: object
-  request_models.GetSupervisorsStudents:
+  request_models.GetBySupervisorID:
     properties:
       supervisor_id:
         type: string
@@ -1360,7 +1378,7 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/request_models.GetSupervisorsStudents'
+          $ref: '#/definitions/request_models.GetBySupervisorID'
       - description: Токен пользователя
         in: path
         name: token
@@ -1423,6 +1441,43 @@ paths:
           schema:
             type: string
       summary: Получения списка научных руководителей
+      tags:
+      - Admin
+  /administrator/supervisors/profile/{token}:
+    put:
+      description: Получение профиля научного руководителя
+      parameters:
+      - description: Данные
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.GetBySupervisorID'
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Данные
+          schema:
+            $ref: '#/definitions/administator_handler.GetSupervisorProfileResponse'
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Получение профиля научного руководителя
       tags:
       - Admin
   /authorize:
