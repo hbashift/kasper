@@ -6,7 +6,19 @@ import (
 	"uir_draft/internal/pkg/models"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
+
+type GetSupervisorProfileResonse struct {
+	// ID научного руководителя
+	SupervisorID uuid.UUID `db:"supervisor_id" json:"supervisor_id" format:"uuid"`
+	// Полное имя руководителя
+	FullName   string  `db:"full_name" json:"full_name"`
+	Faculty    *string `db:"faculty" json:"faculty"`
+	Department *string `db:"department" json:"department"`
+	Degree     *string `db:"degree" json:"degree"`
+	Email      string  `json:"email"`
+}
 
 // GetSupervisorProfile
 //
@@ -35,5 +47,14 @@ func (h *SupervisorHandler) GetSupervisorProfile(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, super)
+	resp := GetSupervisorProfileResonse{
+		SupervisorID: super.SupervisorID,
+		FullName:     super.FullName,
+		Faculty:      super.Faculty,
+		Department:   super.Department,
+		Degree:       super.Degree,
+		Email:        user.Email,
+	}
+
+	ctx.JSON(http.StatusOK, resp)
 }
