@@ -167,21 +167,24 @@ func (s *Service) UpsertConferences(ctx context.Context, studentID uuid.UUID, se
 			return err
 		}
 
-		insert, update, err := models.MapConferencesToDomain(conferences, worksStatus.WorksID)
+		dConferencesInsert, dConferencesUpdate, err := models.MapConferencesToDomain(conferences, worksStatus.WorksID)
 		if err != nil {
 			return err
 		}
 
-		err = s.scienceRepo.InsertConferencesTx(ctx, tx, insert)
-		if err != nil {
-			return err
+		if len(dConferencesInsert) != 0 {
+			err = s.scienceRepo.InsertConferencesTx(ctx, tx, dConferencesInsert)
+			if err != nil {
+				return err
+			}
 		}
 
-		err = s.scienceRepo.UpdateConferencesTx(ctx, tx, update)
-		if err != nil {
-			return err
+		if len(dConferencesUpdate) != 0 {
+			err = s.scienceRepo.UpdateConferencesTx(ctx, tx, dConferencesUpdate)
+			if err != nil {
+				return err
+			}
 		}
-
 		err = s.scienceRepo.SetScientificWorkStatusTx(ctx, tx, student.StudentID, model.ApprovalStatus_InProgress, semester, nil)
 		if err != nil {
 			return err
@@ -217,15 +220,20 @@ func (s *Service) UpsertResearchProjects(ctx context.Context, studentID uuid.UUI
 			return err
 		}
 
-		insert, update := models.MapResearchProjectToDomain(projects, worksStatus.WorksID)
-		err = s.scienceRepo.InsertResearchProjectsTx(ctx, tx, insert)
-		if err != nil {
-			return err
+		dProjectsInsert, dProjectsUpdate := models.MapResearchProjectToDomain(projects, worksStatus.WorksID)
+
+		if len(dProjectsInsert) != 0 {
+			err = s.scienceRepo.InsertResearchProjectsTx(ctx, tx, dProjectsInsert)
+			if err != nil {
+				return err
+			}
 		}
 
-		err = s.scienceRepo.UpdateResearchProjectsTx(ctx, tx, update)
-		if err != nil {
-			return err
+		if len(dProjectsUpdate) != 0 {
+			err = s.scienceRepo.UpdateResearchProjectsTx(ctx, tx, dProjectsUpdate)
+			if err != nil {
+				return err
+			}
 		}
 
 		err = s.scienceRepo.SetScientificWorkStatusTx(ctx, tx, student.StudentID, model.ApprovalStatus_InProgress, semester, nil)
@@ -243,7 +251,7 @@ func (s *Service) UpsertResearchProjects(ctx context.Context, studentID uuid.UUI
 	return nil
 }
 
-func (s *Service) DeletePublications(ctx context.Context, studentID uuid.UUID, semester int32, loads []uuid.UUID) error {
+func (s *Service) DeletePublications(ctx context.Context, studentID uuid.UUID, semester int32, ids []uuid.UUID) error {
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
 		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
 		if err != nil {
@@ -258,9 +266,11 @@ func (s *Service) DeletePublications(ctx context.Context, studentID uuid.UUID, s
 			return models.ErrNotActualSemester
 		}
 
-		err = s.scienceRepo.DeletePublicationsTx(ctx, tx, loads)
-		if err != nil {
-			return err
+		if len(ids) != 0 {
+			err = s.scienceRepo.DeletePublicationsTx(ctx, tx, ids)
+			if err != nil {
+				return err
+			}
 		}
 
 		err = s.scienceRepo.SetScientificWorkStatusTx(ctx, tx, student.StudentID, model.ApprovalStatus_InProgress, semester, nil)
@@ -278,7 +288,7 @@ func (s *Service) DeletePublications(ctx context.Context, studentID uuid.UUID, s
 	return nil
 }
 
-func (s *Service) DeleteConferences(ctx context.Context, studentID uuid.UUID, semester int32, loads []uuid.UUID) error {
+func (s *Service) DeleteConferences(ctx context.Context, studentID uuid.UUID, semester int32, ids []uuid.UUID) error {
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
 		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
 		if err != nil {
@@ -293,9 +303,11 @@ func (s *Service) DeleteConferences(ctx context.Context, studentID uuid.UUID, se
 			return models.ErrNotActualSemester
 		}
 
-		err = s.scienceRepo.DeleteConferencesTx(ctx, tx, loads)
-		if err != nil {
-			return err
+		if len(ids) != 0 {
+			err = s.scienceRepo.DeleteConferencesTx(ctx, tx, ids)
+			if err != nil {
+				return err
+			}
 		}
 
 		err = s.scienceRepo.SetScientificWorkStatusTx(ctx, tx, student.StudentID, model.ApprovalStatus_InProgress, semester, nil)
@@ -313,7 +325,7 @@ func (s *Service) DeleteConferences(ctx context.Context, studentID uuid.UUID, se
 	return nil
 }
 
-func (s *Service) DeleteResearchProjects(ctx context.Context, studentID uuid.UUID, semester int32, loads []uuid.UUID) error {
+func (s *Service) DeleteResearchProjects(ctx context.Context, studentID uuid.UUID, semester int32, ids []uuid.UUID) error {
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
 		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
 		if err != nil {
@@ -328,9 +340,11 @@ func (s *Service) DeleteResearchProjects(ctx context.Context, studentID uuid.UUI
 			return models.ErrNotActualSemester
 		}
 
-		err = s.scienceRepo.DeleteResearchProjectsTx(ctx, tx, loads)
-		if err != nil {
-			return err
+		if len(ids) != 0 {
+			err = s.scienceRepo.DeleteResearchProjectsTx(ctx, tx, ids)
+			if err != nil {
+				return err
+			}
 		}
 
 		err = s.scienceRepo.SetScientificWorkStatusTx(ctx, tx, student.StudentID, model.ApprovalStatus_InProgress, semester, nil)

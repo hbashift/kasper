@@ -38,6 +38,11 @@ func (h *StudentHandler) UpsertResearchProjects(ctx *gin.Context) {
 		return
 	}
 
+	if len(reqBody.Projects) == 0 {
+		ctx.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
 	err = h.scientific.UpsertResearchProjects(ctx, user.KasperID, reqBody.Semester, reqBody.Projects)
 	if err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)

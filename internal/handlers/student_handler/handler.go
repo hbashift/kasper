@@ -48,11 +48,11 @@ type (
 		// UpsertResearchProjects - добавляет или обновляет научные исследования
 		UpsertResearchProjects(ctx context.Context, studentID uuid.UUID, semester int32, projects []models.ResearchProject) error
 		// DeletePublications - удаляет научные публикации
-		DeletePublications(ctx context.Context, studentID uuid.UUID, semester int32, loads []uuid.UUID) error
+		DeletePublications(ctx context.Context, studentID uuid.UUID, semester int32, ids []uuid.UUID) error
 		// DeleteConferences - удаляет научные конференции
-		DeleteConferences(ctx context.Context, studentID uuid.UUID, semester int32, loads []uuid.UUID) error
+		DeleteConferences(ctx context.Context, studentID uuid.UUID, semester int32, ids []uuid.UUID) error
 		// DeleteResearchProjects - удаляет научные исследования
-		DeleteResearchProjects(ctx context.Context, studentID uuid.UUID, semester int32, loads []uuid.UUID) error
+		DeleteResearchProjects(ctx context.Context, studentID uuid.UUID, semester int32, ids []uuid.UUID) error
 	}
 
 	TeachingLoadService interface {

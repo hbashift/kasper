@@ -119,14 +119,18 @@ func (s *Service) UpsertClassroomLoad(ctx context.Context, studentID uuid.UUID, 
 			return err
 		}
 
-		err = s.loadRepo.InsertClassroomLoadsTx(ctx, tx, insert)
-		if err != nil {
-			return err
+		if len(insert) != 0 {
+			err = s.loadRepo.InsertClassroomLoadsTx(ctx, tx, insert)
+			if err != nil {
+				return err
+			}
 		}
 
-		err = s.loadRepo.UpdateClassroomLoadsTx(ctx, tx, update)
-		if err != nil {
-			return err
+		if len(update) != 0 {
+			err = s.loadRepo.UpdateClassroomLoadsTx(ctx, tx, update)
+			if err != nil {
+				return err
+			}
 		}
 
 		err = s.loadRepo.SetTeachingLoadStatusTx(ctx, tx, student.StudentID, model.ApprovalStatus_InProgress, semester, nil)
@@ -169,14 +173,18 @@ func (s *Service) UpsertIndividualLoad(ctx context.Context, studentID uuid.UUID,
 			return errors.Wrap(err, "UpsertIndividualLoad()")
 		}
 
-		err = s.loadRepo.InsertIndividualLoadsTx(ctx, tx, insert)
-		if err != nil {
-			return err
+		if len(insert) != 0 {
+			err = s.loadRepo.InsertIndividualLoadsTx(ctx, tx, insert)
+			if err != nil {
+				return err
+			}
 		}
 
-		err = s.loadRepo.UpdateIndividualLoadsTx(ctx, tx, update)
-		if err != nil {
-			return err
+		if len(update) != 0 {
+			err = s.loadRepo.UpdateIndividualLoadsTx(ctx, tx, update)
+			if err != nil {
+				return err
+			}
 		}
 
 		err = s.loadRepo.SetTeachingLoadStatusTx(ctx, tx, student.StudentID, model.ApprovalStatus_InProgress, semester, nil)
@@ -215,14 +223,19 @@ func (s *Service) UpsertAdditionalLoad(ctx context.Context, studentID uuid.UUID,
 		}
 
 		insert, update := models.MapAdditionalLoadToDomain(loads, loadsStatus.LoadsID)
-		err = s.loadRepo.InsertAdditionalLoadsTx(ctx, tx, insert)
-		if err != nil {
-			return err
+
+		if len(insert) != 0 {
+			err = s.loadRepo.InsertAdditionalLoadsTx(ctx, tx, insert)
+			if err != nil {
+				return err
+			}
 		}
 
-		err = s.loadRepo.UpdateAdditionalLoadsTx(ctx, tx, update)
-		if err != nil {
-			return err
+		if len(update) != 0 {
+			err = s.loadRepo.UpdateAdditionalLoadsTx(ctx, tx, update)
+			if err != nil {
+				return err
+			}
 		}
 
 		err = s.loadRepo.SetTeachingLoadStatusTx(ctx, tx, student.StudentID, model.ApprovalStatus_InProgress, semester, nil)
@@ -255,9 +268,11 @@ func (s *Service) DeleteClassroomLoad(ctx context.Context, studentID uuid.UUID, 
 			return models.ErrNotActualSemester
 		}
 
-		err = s.loadRepo.DeleteClassroomLoadsTx(ctx, tx, loads)
-		if err != nil {
-			return err
+		if len(loads) != 0 {
+			err = s.loadRepo.DeleteClassroomLoadsTx(ctx, tx, loads)
+			if err != nil {
+				return err
+			}
 		}
 
 		err = s.loadRepo.SetTeachingLoadStatusTx(ctx, tx, student.StudentID, model.ApprovalStatus_InProgress, semester, nil)
@@ -290,9 +305,11 @@ func (s *Service) DeleteIndividualLoad(ctx context.Context, studentID uuid.UUID,
 			return models.ErrNotActualSemester
 		}
 
-		err = s.loadRepo.DeleteIndividualStudentsLoadsTx(ctx, tx, loads)
-		if err != nil {
-			return err
+		if len(loads) != 0 {
+			err = s.loadRepo.DeleteIndividualStudentsLoadsTx(ctx, tx, loads)
+			if err != nil {
+				return err
+			}
 		}
 
 		err = s.loadRepo.SetTeachingLoadStatusTx(ctx, tx, student.StudentID, model.ApprovalStatus_InProgress, semester, nil)
@@ -325,9 +342,11 @@ func (s *Service) DeleteAdditionalLoad(ctx context.Context, studentID uuid.UUID,
 			return models.ErrNotActualSemester
 		}
 
-		err = s.loadRepo.DeleteAdditionalLoadsTx(ctx, tx, loads)
-		if err != nil {
-			return err
+		if len(loads) != 0 {
+			err = s.loadRepo.DeleteAdditionalLoadsTx(ctx, tx, loads)
+			if err != nil {
+				return err
+			}
 		}
 
 		err = s.loadRepo.SetTeachingLoadStatusTx(ctx, tx, student.StudentID, model.ApprovalStatus_InProgress, semester, nil)

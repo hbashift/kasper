@@ -38,6 +38,11 @@ func (h *StudentHandler) UpsertConferences(ctx *gin.Context) {
 		return
 	}
 
+	if len(reqBody.Conferences) == 0 {
+		ctx.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
 	err = h.scientific.UpsertConferences(ctx, user.KasperID, reqBody.Semester, reqBody.Conferences)
 	if err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)
