@@ -9,7 +9,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type GetSupervisorProfileResonse struct {
+type GetSupervisorProfileResponse struct {
 	// ID научного руководителя
 	SupervisorID uuid.UUID `db:"supervisor_id" json:"supervisor_id" format:"uuid"`
 	// Полное имя руководителя
@@ -25,7 +25,7 @@ type GetSupervisorProfileResonse struct {
 //	@Summary		Получение профиля научного руководителя
 //	@Tags			Supervisor
 //	@Description	Получение профиля научного руководителя
-//	@Success		200	{object}	models.Supervisor	"Данные"
+//	@Success		200	{object}	GetSupervisorProfileResponse	"Данные"
 //
 //	@Produce		json
 //	@Param			token	path		string	true	"Токен пользователя"
@@ -47,7 +47,7 @@ func (h *SupervisorHandler) GetSupervisorProfile(ctx *gin.Context) {
 		return
 	}
 
-	resp := GetSupervisorProfileResonse{
+	resp := GetSupervisorProfileResponse{
 		SupervisorID: super.SupervisorID,
 		FullName:     super.FullName,
 		Faculty:      super.Faculty,

@@ -45,6 +45,7 @@ type (
 
 		GetSupervisors(ctx *gin.Context)
 		UpdateProgressiveness(ctx *gin.Context)
+		GetStudentProfile(ctx *gin.Context)
 	}
 
 	SupervisorHandler interface {
@@ -156,6 +157,8 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 	r.GET("/student/supervisors/list/:token", h.student.GetSupervisors)
 
 	r.POST("/students/dissertation/progress/percent/:token", h.student.UpdateProgressiveness)
+
+	r.GET("/student/profile/:token", h.student.GetStudentProfile)
 
 	// SupervisorHandler init
 	r.GET("/supervisors/student/list/:token", h.supervisor.GetStudentsList)

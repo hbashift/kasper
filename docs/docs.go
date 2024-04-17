@@ -1056,6 +1056,62 @@ const docTemplate = `{
                 }
             }
         },
+        "/student/profile/{token}": {
+            "get": {
+                "description": "Получение списка всех групп",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Student"
+                ],
+                "summary": "Получение списка всех групп",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Данные",
+                        "schema": {
+                            "$ref": "#/definitions/student_handler.GetStudentProfileResponse"
+                        }
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/student/supervisors/list/{token}": {
             "get": {
                 "description": "Получения списка научных руководителей",
@@ -2636,7 +2692,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Данные",
                         "schema": {
-                            "$ref": "#/definitions/models.Supervisor"
+                            "$ref": "#/definitions/supervisor_handler.GetSupervisorProfileResponse"
                         }
                     },
                     "204": {
@@ -4354,6 +4410,99 @@ const docTemplate = `{
                 },
                 "semester": {
                     "type": "integer"
+                }
+            }
+        },
+        "student_handler.GetStudentProfileResponse": {
+            "type": "object",
+            "properties": {
+                "actual_semester": {
+                    "description": "Актуальный семестр",
+                    "type": "integer"
+                },
+                "can_edit": {
+                    "description": "Флаг о возможности редактировать всю информацию",
+                    "type": "boolean"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "description": "Полное имя",
+                    "type": "string"
+                },
+                "group_name": {
+                    "description": "Название группы",
+                    "type": "string"
+                },
+                "progress": {
+                    "description": "Процент выполнения диссертации",
+                    "type": "integer"
+                },
+                "specialization": {
+                    "description": "Специализация",
+                    "type": "string"
+                },
+                "start_date": {
+                    "description": "Дата начала обучения",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "Статус проверки и подтверждения",
+                    "type": "string",
+                    "enum": [
+                        "todo",
+                        "approved",
+                        "on review",
+                        "in progress",
+                        "empty",
+                        "failed"
+                    ]
+                },
+                "student_id": {
+                    "description": "ID студента",
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "studying_status": {
+                    "description": "Статус обучения",
+                    "type": "string",
+                    "enum": [
+                        "academic",
+                        "graduated",
+                        "studying",
+                        "expelled"
+                    ]
+                },
+                "years": {
+                    "description": "Количество лет обучения",
+                    "type": "integer"
+                }
+            }
+        },
+        "supervisor_handler.GetSupervisorProfileResponse": {
+            "type": "object",
+            "properties": {
+                "degree": {
+                    "type": "string"
+                },
+                "department": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "faculty": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "description": "Полное имя руководителя",
+                    "type": "string"
+                },
+                "supervisor_id": {
+                    "description": "ID научного руководителя",
+                    "type": "string",
+                    "format": "uuid"
                 }
             }
         }
