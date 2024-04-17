@@ -153,7 +153,7 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 	r.POST("/students/dissertation/progress/percent/:token", h.student.UpdateProgressiveness)
 
 	// SupervisorHandler init
-	r.PUT("/supervisors/student/list/:token", h.supervisor.GetStudentsList)
+	r.GET("/supervisors/student/list/:token", h.supervisor.GetStudentsList)
 
 	r.POST("/supervisors/student/review/:token", h.supervisor.AllToStatus)
 
