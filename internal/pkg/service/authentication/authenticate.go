@@ -174,3 +174,21 @@ func (s *Service) ChangePassword(ctx context.Context, userID uuid.UUID, request 
 
 	return nil
 }
+
+func (s *Service) GetUserProfile(ctx context.Context, userID uuid.UUID) (model.Users, error) {
+	var user model.Users
+
+	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
+		dUser, err := s.userRepo.GetUserTx(ctx, tx, userID)
+		if err != nil {
+			return errors.Wrap(err, "getting user info")
+		}
+		user = dUser
+
+		return nil
+	}); err != nil {
+		return model.Users{}, errors.Wrap(err, "GetUserProfile()")
+	}
+
+	return user, nil
+}

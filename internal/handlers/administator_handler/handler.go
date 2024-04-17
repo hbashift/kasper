@@ -8,6 +8,7 @@ import (
 	"uir_draft/internal/pkg/models"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 // GetStudentSupervisorPairs(ctx context.Context) ([]models.StudentSupervisorPair, error)
@@ -35,16 +36,21 @@ type (
 		InsertGroups(ctx context.Context, groups []models.Group) error
 		DeleteGroups(ctx context.Context, groupIDs []int32) error
 	}
+
+	SupervisorService interface {
+		GetSupervisorsStudents(ctx context.Context, supervisorID uuid.UUID) ([]models.Student, error)
+	}
 )
 
 type AdministratorHandler struct {
 	user          UserService
 	authenticator Authenticator
 	enum          EnumService
+	supervisor    SupervisorService
 }
 
-func NewHandler(user UserService, authenticator Authenticator, enum EnumService) *AdministratorHandler {
-	return &AdministratorHandler{user: user, authenticator: authenticator, enum: enum}
+func NewHandler(user UserService, authenticator Authenticator, enum EnumService, supervisor SupervisorService) *AdministratorHandler {
+	return &AdministratorHandler{user: user, authenticator: authenticator, enum: enum, supervisor: supervisor}
 }
 
 func (h *AdministratorHandler) authenticate(ctx *gin.Context) (*model.Users, error) {

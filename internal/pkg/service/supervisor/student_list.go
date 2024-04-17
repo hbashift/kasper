@@ -10,7 +10,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (s *Service) GetStudentList(ctx context.Context, supervisorID uuid.UUID) ([]models.Student, error) {
+func (s *Service) GetSupervisorsStudents(ctx context.Context, supervisorID uuid.UUID) ([]models.Student, error) {
 	response := make([]models.Student, 0)
 
 	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
@@ -22,7 +22,7 @@ func (s *Service) GetStudentList(ctx context.Context, supervisorID uuid.UUID) ([
 
 		return nil
 	}); err != nil {
-		return nil, errors.Wrap(err, "GetStudentList()")
+		return nil, errors.Wrap(err, "GetSupervisorsStudents()")
 	}
 
 	return response, nil

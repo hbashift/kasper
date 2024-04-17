@@ -2,6 +2,8 @@ package request_models
 
 import (
 	"uir_draft/internal/pkg/models"
+
+	"github.com/google/uuid"
 )
 
 type ChangeSupervisorRequest struct {
@@ -22,4 +24,8 @@ type AddSpecializationsRequest struct {
 
 type DeleteEnumRequest struct {
 	IDs []int32 `json:"ids"`
+}
+
+type GetSupervisorsStudents struct {
+	SupervisorID uuid.UUID `json:"supervisor_id"`
 }

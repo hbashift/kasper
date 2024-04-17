@@ -526,14 +526,14 @@ definitions:
     properties:
       can_edit:
         type: boolean
-      status:
+      student_id:
+        type: string
+      studying_status:
         enum:
         - academic
         - graduated
         - studying
         - expelled
-        type: string
-      student_id:
         type: string
     type: object
   models.Specialization:
@@ -757,6 +757,11 @@ definitions:
   request_models.GetByStudentID:
     properties:
       student_id:
+        type: string
+    type: object
+  request_models.GetSupervisorsStudents:
+    properties:
+      supervisor_id:
         type: string
     type: object
   request_models.SetStudentFlagsRequest:
@@ -1267,6 +1272,47 @@ paths:
           schema:
             type: string
       summary: Получение списка всех аспирантов
+      tags:
+      - Admin
+  /administrator/supervisor/students/{token}:
+    put:
+      consumes:
+      - application/json
+      description: Получение списка аспирантов научного руководителя
+      parameters:
+      - description: Данные
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.GetSupervisorsStudents'
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Данные
+          schema:
+            items:
+              $ref: '#/definitions/models.Student'
+            type: array
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Получение списка аспирантов научного руководителя
       tags:
       - Admin
   /administrator/supervisors/list/{token}:
@@ -2568,7 +2614,46 @@ paths:
       summary: Отправление на проверку научных работ
       tags:
       - Student.ScientificWorks
-  /supervisors/dissertation/file/{token}:
+  /supervisors/student/dissertation/{token}:
+    put:
+      consumes:
+      - application/json
+      description: Получение страницы информации для страницы диссертации аспиранта
+      parameters:
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      - description: Запрос
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.GetByStudentID'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Данные
+          schema:
+            $ref: '#/definitions/models.DissertationPageResponse'
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Получение страницы информации для страницы диссертации аспиранта
+      tags:
+      - Supervisor.Dissertation
+  /supervisors/student/dissertation/file/{token}:
     put:
       consumes:
       - application/json
@@ -2607,45 +2692,6 @@ paths:
           schema:
             type: string
       summary: Скачивание файла диссертации
-      tags:
-      - Supervisor.Dissertation
-  /supervisors/student/dissertation/{token}:
-    put:
-      consumes:
-      - application/json
-      description: Получение страницы информации для страницы диссертации аспиранта
-      parameters:
-      - description: Токен пользователя
-        in: path
-        name: token
-        required: true
-        type: string
-      - description: Запрос
-        in: body
-        name: input
-        required: true
-        schema:
-          $ref: '#/definitions/request_models.GetByStudentID'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Данные
-          schema:
-            $ref: '#/definitions/models.DissertationPageResponse'
-        "204":
-          description: Нет записей в БД
-          schema:
-            type: string
-        "401":
-          description: Токен протух
-          schema:
-            type: string
-        "500":
-          description: Ошибка на стороне сервера
-          schema:
-            type: string
-      summary: Получение страницы информации для страницы диссертации аспиранта
       tags:
       - Supervisor.Dissertation
   /supervisors/student/info/{token}:
@@ -2692,7 +2738,7 @@ paths:
       tags:
       - Supervisor
   /supervisors/student/list/{token}:
-    put:
+    get:
       description: Получение списка аспирантов научного руководителя
       parameters:
       - description: Токен пользователя

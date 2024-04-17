@@ -39,7 +39,7 @@ type (
 		// UpsertFeedback - обновляет или добавляет фидбэк от научного руководителя
 		UpsertFeedback(ctx context.Context, studentID uuid.UUID, request models.FeedbackRequest) error
 
-		GetStudentList(ctx context.Context, supervisorID uuid.UUID) ([]models.Student, error)
+		GetSupervisorsStudents(ctx context.Context, supervisorID uuid.UUID) ([]models.Student, error)
 	}
 
 	EmailService interface {

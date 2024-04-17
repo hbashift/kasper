@@ -591,6 +591,68 @@ const docTemplate = `{
                 }
             }
         },
+        "/administrator/supervisor/students/{token}": {
+            "put": {
+                "description": "Получение списка аспирантов научного руководителя",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Получение списка аспирантов научного руководителя",
+                "parameters": [
+                    {
+                        "description": "Данные",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.GetSupervisorsStudents"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Данные",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Student"
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/administrator/supervisors/list/{token}": {
             "get": {
                 "description": "Получения списка научных руководителей",
@@ -2551,7 +2613,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/supervisors/dissertation/file/{token}": {
+        "/supervisors/student/dissertation/file/{token}": {
             "put": {
                 "description": "Скачивание файла диссертации",
                 "consumes": [
@@ -2738,7 +2800,7 @@ const docTemplate = `{
             }
         },
         "/supervisors/student/list/{token}": {
-            "put": {
+            "get": {
                 "description": "Получение списка аспирантов научного руководителя",
                 "produces": [
                     "application/json"
@@ -3728,7 +3790,10 @@ const docTemplate = `{
                 "can_edit": {
                     "type": "boolean"
                 },
-                "status": {
+                "student_id": {
+                    "type": "string"
+                },
+                "studying_status": {
                     "type": "string",
                     "enum": [
                         "academic",
@@ -3736,9 +3801,6 @@ const docTemplate = `{
                         "studying",
                         "expelled"
                     ]
-                },
-                "student_id": {
-                    "type": "string"
                 }
             }
         },
@@ -4060,6 +4122,14 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "student_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "request_models.GetSupervisorsStudents": {
+            "type": "object",
+            "properties": {
+                "supervisor_id": {
                     "type": "string"
                 }
             }

@@ -75,6 +75,7 @@ type (
 		AddGroups(ctx *gin.Context)
 
 		GetStudents(ctx *gin.Context)
+		GetSupervisorsStudents(ctx *gin.Context)
 	}
 
 	AuthenticationHandler interface {
@@ -181,6 +182,8 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 	r.POST("/administrator/enum/groups/:token", h.administrator.AddGroups)
 
 	r.GET("/administrator/students/list/:token", h.administrator.GetStudents)
+
+	r.PUT("/administrator/supervisor/students/:token", h.administrator.GetSupervisorsStudents)
 
 	// AuthenticationHandler init
 	r.POST("/authorize", h.authentication.Authorize)

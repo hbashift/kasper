@@ -19,6 +19,7 @@ type (
 		Authenticate(ctx context.Context, token string) (*model.Users, error)
 		TokenCheck(ctx context.Context, token string) (*model.Users, error)
 		ChangePassword(ctx context.Context, userID uuid.UUID, request request_models.ChangePasswordRequest) error
+		GetUserProfile(ctx context.Context, userID uuid.UUID) (model.Users, error)
 	}
 
 	StudentService interface {

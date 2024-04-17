@@ -100,7 +100,7 @@ func (s *Service) GetStudentsList(ctx context.Context) ([]models.Student, error)
 
 		return nil
 	}); err != nil {
-		return nil, errors.Wrap(err, "GetStudentsList()")
+		return nil, errors.Wrap(err, "GetSupervisorsStudents()")
 	}
 
 	return students, nil
