@@ -1,8 +1,9 @@
-package student_handler
+package supervisor_handler
 
 import (
 	"net/http"
 
+	"uir_draft/internal/handlers/supervisor_handler/request_models"
 	"uir_draft/internal/pkg/models"
 
 	"github.com/gin-gonic/gin"
@@ -14,7 +15,7 @@ import (
 //
 //	@Description	Получение профиля студента
 //
-//	@Tags			Student
+//	@Tags			Supervisor
 //	@Accept			json
 //	@Produce		json
 //	@Success		200		{object}	models.StudentProfile	"Данные"
@@ -23,15 +24,21 @@ import (
 //	@Failure		401		{string}	string					"Токен протух"
 //	@Failure		204		{string}	string					"Нет записей в БД"
 //	@Failure		500		{string}	string					"Ошибка на стороне сервера"
-//	@Router			/student/profile/{token} [get]
-func (h *StudentHandler) GetStudentProfile(ctx *gin.Context) {
-	user, err := h.authenticate(ctx)
+//	@Router			/supervisor/student/profile/{token} [put]
+func (h *SupervisorHandler) GetStudentProfile(ctx *gin.Context) {
+	_, err := h.authenticate(ctx)
 	if err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)
 		return
 	}
 
-	student, err := h.student.GetStudentsProfile(ctx, user.KasperID)
+	reqBody := request_models.GetByStudentID{}
+	if err = ctx.ShouldBindJSON(&reqBody); err != nil {
+		ctx.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
+	student, err := h.student.GetStudentsProfile(ctx, reqBody.StudentID)
 	if err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)
 		return

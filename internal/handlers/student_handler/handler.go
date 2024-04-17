@@ -18,6 +18,7 @@ type (
 		// GetStudentStatus - возвращает статус студента
 		GetStudentStatus(ctx context.Context, studentID uuid.UUID) (models.Student, error)
 		UpdateStudentsProgressiveness(ctx context.Context, studentID uuid.UUID, progress int32) error
+		GetStudentsProfile(ctx context.Context, studentID uuid.UUID) (models.StudentProfile, error)
 	}
 
 	DissertationService interface {

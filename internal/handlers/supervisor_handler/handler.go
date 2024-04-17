@@ -41,7 +41,7 @@ type (
 
 		GetSupervisorsStudents(ctx context.Context, supervisorID uuid.UUID) ([]models.Student, error)
 
-		GetSupervisorProfile(ctx context.Context, supervisorID uuid.UUID) (models.Supervisor, error)
+		GetSupervisorProfile(ctx context.Context, supervisorID uuid.UUID) (models.SupervisorProfile, error)
 	}
 
 	EmailService interface {
@@ -50,6 +50,7 @@ type (
 
 	StudentService interface {
 		GetStudentStatus(ctx context.Context, studentID uuid.UUID) (models.Student, error)
+		GetStudentsProfile(ctx context.Context, studentID uuid.UUID) (models.StudentProfile, error)
 	}
 )
 

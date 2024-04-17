@@ -192,3 +192,22 @@ func (s *Service) InitStudent(ctx context.Context, user model.Users, req request
 
 	return nil
 }
+
+func (s *Service) GetStudentsProfile(ctx context.Context, studentID uuid.UUID) (models.StudentProfile, error) {
+	var student models.StudentProfile
+
+	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
+		var err error
+		student, err = s.studRepo.GetStudentProfile(ctx, tx, studentID)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+	if err != nil {
+		return models.StudentProfile{}, errors.Wrap(err, "GetStudentsProfile()")
+	}
+
+	return student, nil
+}

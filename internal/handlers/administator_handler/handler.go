@@ -39,7 +39,7 @@ type (
 
 	SupervisorService interface {
 		GetSupervisorsStudents(ctx context.Context, supervisorID uuid.UUID) ([]models.Student, error)
-		GetSupervisorProfile(ctx context.Context, supervisorID uuid.UUID) (models.Supervisor, error)
+		GetSupervisorProfile(ctx context.Context, supervisorID uuid.UUID) (models.SupervisorProfile, error)
 	}
 )
 

@@ -1,22 +1,4 @@
 definitions:
-  administator_handler.GetSupervisorProfileResponse:
-    properties:
-      degree:
-        type: string
-      department:
-        type: string
-      email:
-        type: string
-      faculty:
-        type: string
-      full_name:
-        description: Полное имя руководителя
-        type: string
-      supervisor_id:
-        description: ID научного руководителя
-        format: uuid
-        type: string
-    type: object
   authorization_handler.TokenCheckResponse:
     properties:
       registered:
@@ -610,6 +592,57 @@ definitions:
         description: Количество лет обучения
         type: integer
     type: object
+  models.StudentProfile:
+    properties:
+      actual_semester:
+        description: Актуальный семестр
+        type: integer
+      can_edit:
+        description: Флаг о возможности редактировать всю информацию
+        type: boolean
+      email:
+        type: string
+      full_name:
+        description: Полное имя
+        type: string
+      group_name:
+        description: Название группы
+        type: string
+      progress:
+        description: Процент выполнения диссертации
+        type: integer
+      specialization:
+        description: Специализация
+        type: string
+      start_date:
+        description: Дата начала обучения
+        type: string
+      status:
+        description: Статус проверки и подтверждения
+        enum:
+        - todo
+        - approved
+        - on review
+        - in progress
+        - empty
+        - failed
+        type: string
+      student_id:
+        description: ID студента
+        format: uuid
+        type: string
+      studying_status:
+        description: Статус обучения
+        enum:
+        - academic
+        - graduated
+        - studying
+        - expelled
+        type: string
+      years:
+        description: Количество лет обучения
+        type: integer
+    type: object
   models.StudentSupervisorPair:
     properties:
       student:
@@ -649,6 +682,24 @@ definitions:
       start_at:
         description: Дата начала
         format: date-time
+        type: string
+      supervisor_id:
+        description: ID научного руководителя
+        format: uuid
+        type: string
+    type: object
+  models.SupervisorProfile:
+    properties:
+      degree:
+        type: string
+      department:
+        type: string
+      email:
+        type: string
+      faculty:
+        type: string
+      full_name:
+        description: Полное имя руководителя
         type: string
       supervisor_id:
         description: ID научного руководителя
@@ -909,75 +960,6 @@ definitions:
         type: array
       semester:
         type: integer
-    type: object
-  student_handler.GetStudentProfileResponse:
-    properties:
-      actual_semester:
-        description: Актуальный семестр
-        type: integer
-      can_edit:
-        description: Флаг о возможности редактировать всю информацию
-        type: boolean
-      email:
-        type: string
-      full_name:
-        description: Полное имя
-        type: string
-      group_name:
-        description: Название группы
-        type: string
-      progress:
-        description: Процент выполнения диссертации
-        type: integer
-      specialization:
-        description: Специализация
-        type: string
-      start_date:
-        description: Дата начала обучения
-        type: string
-      status:
-        description: Статус проверки и подтверждения
-        enum:
-        - todo
-        - approved
-        - on review
-        - in progress
-        - empty
-        - failed
-        type: string
-      student_id:
-        description: ID студента
-        format: uuid
-        type: string
-      studying_status:
-        description: Статус обучения
-        enum:
-        - academic
-        - graduated
-        - studying
-        - expelled
-        type: string
-      years:
-        description: Количество лет обучения
-        type: integer
-    type: object
-  supervisor_handler.GetSupervisorProfileResponse:
-    properties:
-      degree:
-        type: string
-      department:
-        type: string
-      email:
-        type: string
-      faculty:
-        type: string
-      full_name:
-        description: Полное имя руководителя
-        type: string
-      supervisor_id:
-        description: ID научного руководителя
-        format: uuid
-        type: string
     type: object
 host: localhost:8080
 info:
@@ -1464,7 +1446,7 @@ paths:
         "200":
           description: Данные
           schema:
-            $ref: '#/definitions/administator_handler.GetSupervisorProfileResponse'
+            $ref: '#/definitions/models.SupervisorProfile'
         "204":
           description: Нет записей в БД
           schema:
@@ -1715,7 +1697,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Получение списка всех групп
+      description: Получение профиля студента
       parameters:
       - description: Токен пользователя
         in: path
@@ -1728,7 +1710,7 @@ paths:
         "200":
           description: Данные
           schema:
-            $ref: '#/definitions/student_handler.GetStudentProfileResponse'
+            $ref: '#/definitions/models.StudentProfile'
         "204":
           description: Нет записей в БД
           schema:
@@ -1745,7 +1727,7 @@ paths:
           description: Ошибка на стороне сервера
           schema:
             type: string
-      summary: Получение списка всех групп
+      summary: Получение профиля студента
       tags:
       - Student
   /student/supervisors/list/{token}:
@@ -2796,7 +2778,7 @@ paths:
         "200":
           description: Данные
           schema:
-            $ref: '#/definitions/supervisor_handler.GetSupervisorProfileResponse'
+            $ref: '#/definitions/models.SupervisorProfile'
         "204":
           description: Нет записей в БД
           schema:

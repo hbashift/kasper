@@ -62,6 +62,7 @@ type (
 
 		GetStudentStatus(ctx *gin.Context)
 		GetSupervisorProfile(ctx *gin.Context)
+		GetStudentProfile(ctx *gin.Context)
 	}
 
 	AdministratorHandler interface {
@@ -176,6 +177,8 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 
 	r.PUT("/supervisors/student/info/:token", h.supervisor.GetStudentStatus)
 	r.GET("/supervisors/profile/:token", h.supervisor.GetSupervisorProfile)
+
+	r.PUT("/supervisor/student/profile/:token", h.supervisor.GetStudentProfile)
 
 	// AdministratorHandler init
 	r.POST("/administrator/student/change/:token", h.administrator.ChangeSupervisor)

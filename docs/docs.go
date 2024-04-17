@@ -738,7 +738,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Данные",
                         "schema": {
-                            "$ref": "#/definitions/administator_handler.GetSupervisorProfileResponse"
+                            "$ref": "#/definitions/models.SupervisorProfile"
                         }
                     },
                     "204": {
@@ -1114,7 +1114,7 @@ const docTemplate = `{
         },
         "/student/profile/{token}": {
             "get": {
-                "description": "Получение списка всех групп",
+                "description": "Получение профиля студента",
                 "consumes": [
                     "application/json"
                 ],
@@ -1124,7 +1124,7 @@ const docTemplate = `{
                 "tags": [
                     "Student"
                 ],
-                "summary": "Получение списка всех групп",
+                "summary": "Получение профиля студента",
                 "parameters": [
                     {
                         "type": "string",
@@ -1138,7 +1138,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Данные",
                         "schema": {
-                            "$ref": "#/definitions/student_handler.GetStudentProfileResponse"
+                            "$ref": "#/definitions/models.StudentProfile"
                         }
                     },
                     "204": {
@@ -2748,7 +2748,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Данные",
                         "schema": {
-                            "$ref": "#/definitions/supervisor_handler.GetSupervisorProfileResponse"
+                            "$ref": "#/definitions/models.SupervisorProfile"
                         }
                     },
                     "204": {
@@ -3238,32 +3238,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "administator_handler.GetSupervisorProfileResponse": {
-            "type": "object",
-            "properties": {
-                "degree": {
-                    "type": "string"
-                },
-                "department": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "faculty": {
-                    "type": "string"
-                },
-                "full_name": {
-                    "description": "Полное имя руководителя",
-                    "type": "string"
-                },
-                "supervisor_id": {
-                    "description": "ID научного руководителя",
-                    "type": "string",
-                    "format": "uuid"
-                }
-            }
-        },
         "authorization_handler.TokenCheckResponse": {
             "type": "object",
             "properties": {
@@ -4064,6 +4038,73 @@ const docTemplate = `{
                 }
             }
         },
+        "models.StudentProfile": {
+            "type": "object",
+            "properties": {
+                "actual_semester": {
+                    "description": "Актуальный семестр",
+                    "type": "integer"
+                },
+                "can_edit": {
+                    "description": "Флаг о возможности редактировать всю информацию",
+                    "type": "boolean"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "description": "Полное имя",
+                    "type": "string"
+                },
+                "group_name": {
+                    "description": "Название группы",
+                    "type": "string"
+                },
+                "progress": {
+                    "description": "Процент выполнения диссертации",
+                    "type": "integer"
+                },
+                "specialization": {
+                    "description": "Специализация",
+                    "type": "string"
+                },
+                "start_date": {
+                    "description": "Дата начала обучения",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "Статус проверки и подтверждения",
+                    "type": "string",
+                    "enum": [
+                        "todo",
+                        "approved",
+                        "on review",
+                        "in progress",
+                        "empty",
+                        "failed"
+                    ]
+                },
+                "student_id": {
+                    "description": "ID студента",
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "studying_status": {
+                    "description": "Статус обучения",
+                    "type": "string",
+                    "enum": [
+                        "academic",
+                        "graduated",
+                        "studying",
+                        "expelled"
+                    ]
+                },
+                "years": {
+                    "description": "Количество лет обучения",
+                    "type": "integer"
+                }
+            }
+        },
         "models.StudentSupervisorPair": {
             "type": "object",
             "properties": {
@@ -4124,6 +4165,32 @@ const docTemplate = `{
                     "description": "Дата начала",
                     "type": "string",
                     "format": "date-time"
+                },
+                "supervisor_id": {
+                    "description": "ID научного руководителя",
+                    "type": "string",
+                    "format": "uuid"
+                }
+            }
+        },
+        "models.SupervisorProfile": {
+            "type": "object",
+            "properties": {
+                "degree": {
+                    "type": "string"
+                },
+                "department": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "faculty": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "description": "Полное имя руководителя",
+                    "type": "string"
                 },
                 "supervisor_id": {
                     "description": "ID научного руководителя",
@@ -4492,99 +4559,6 @@ const docTemplate = `{
                 },
                 "semester": {
                     "type": "integer"
-                }
-            }
-        },
-        "student_handler.GetStudentProfileResponse": {
-            "type": "object",
-            "properties": {
-                "actual_semester": {
-                    "description": "Актуальный семестр",
-                    "type": "integer"
-                },
-                "can_edit": {
-                    "description": "Флаг о возможности редактировать всю информацию",
-                    "type": "boolean"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "full_name": {
-                    "description": "Полное имя",
-                    "type": "string"
-                },
-                "group_name": {
-                    "description": "Название группы",
-                    "type": "string"
-                },
-                "progress": {
-                    "description": "Процент выполнения диссертации",
-                    "type": "integer"
-                },
-                "specialization": {
-                    "description": "Специализация",
-                    "type": "string"
-                },
-                "start_date": {
-                    "description": "Дата начала обучения",
-                    "type": "string"
-                },
-                "status": {
-                    "description": "Статус проверки и подтверждения",
-                    "type": "string",
-                    "enum": [
-                        "todo",
-                        "approved",
-                        "on review",
-                        "in progress",
-                        "empty",
-                        "failed"
-                    ]
-                },
-                "student_id": {
-                    "description": "ID студента",
-                    "type": "string",
-                    "format": "uuid"
-                },
-                "studying_status": {
-                    "description": "Статус обучения",
-                    "type": "string",
-                    "enum": [
-                        "academic",
-                        "graduated",
-                        "studying",
-                        "expelled"
-                    ]
-                },
-                "years": {
-                    "description": "Количество лет обучения",
-                    "type": "integer"
-                }
-            }
-        },
-        "supervisor_handler.GetSupervisorProfileResponse": {
-            "type": "object",
-            "properties": {
-                "degree": {
-                    "type": "string"
-                },
-                "department": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "faculty": {
-                    "type": "string"
-                },
-                "full_name": {
-                    "description": "Полное имя руководителя",
-                    "type": "string"
-                },
-                "supervisor_id": {
-                    "description": "ID научного руководителя",
-                    "type": "string",
-                    "format": "uuid"
                 }
             }
         }

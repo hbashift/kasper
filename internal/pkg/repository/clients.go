@@ -383,6 +383,81 @@ func (r *ClientRepository) UpdateStudentsProgressiveness(ctx context.Context, tx
 	return nil
 }
 
+func (r *ClientRepository) GetSupervisorProfile(ctx context.Context, tx pgx.Tx, supervisorID uuid.UUID) (models.SupervisorProfile, error) {
+	stmt, args := table.Supervisors.
+		SELECT(
+			table.Supervisors.AllColumns.Except(table.Supervisors.UserID),
+			table.Users.Email,
+		).
+		FROM(
+			table.Supervisors.INNER_JOIN(table.Users, table.Supervisors.SupervisorID.EQ(table.Users.KasperID)),
+		).
+		WHERE(table.Supervisors.SupervisorID.EQ(postgres.UUID(supervisorID))).
+		Sql()
+
+	row := tx.QueryRow(ctx, stmt, args...)
+	supervisor := models.SupervisorProfile{}
+	if err := scanSupervisorProfile(row, &supervisor); err != nil {
+		return models.SupervisorProfile{}, errors.Wrap(err, "GetSupervisorProfile()")
+	}
+
+	return supervisor, nil
+}
+
+func (r *ClientRepository) GetStudentProfile(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) (models.StudentProfile, error) {
+	stmt, args := table.Students.
+		SELECT(
+			table.Students.AllColumns.Except(table.Students.UserID, table.Students.SpecID, table.Students.GroupID),
+			table.Specializations.Title,
+			table.Groups.GroupName,
+			table.Users.Email,
+		).
+		FROM(table.Students.
+			INNER_JOIN(table.Groups, table.Students.GroupID.EQ(table.Groups.GroupID)).
+			INNER_JOIN(table.Specializations, table.Students.SpecID.EQ(table.Specializations.SpecID)).
+			INNER_JOIN(table.Users, table.Students.StudentID.EQ(table.Users.KasperID)),
+		).
+		WHERE(table.Students.StudentID.EQ(postgres.UUID(studentID))).
+		Sql()
+
+	row := tx.QueryRow(ctx, stmt, args...)
+	student := models.StudentProfile{}
+	if err := scanStudentProfile(row, &student); err != nil {
+		return models.StudentProfile{}, errors.Wrap(err, "GetStudentProfile()")
+	}
+
+	return student, nil
+}
+
+func scanSupervisorProfile(row pgx.Row, target *models.SupervisorProfile) error {
+	return row.Scan(
+		&target.SupervisorID,
+		&target.FullName,
+		&target.Faculty,
+		&target.Department,
+		&target.Degree,
+		&target.Email,
+	)
+}
+
+func scanStudentProfile(row pgx.Row, target *models.StudentProfile) error {
+	return row.Scan(
+		&target.StudentID,
+		&target.FullName,
+		//&target.Department,
+		&target.ActualSemester,
+		&target.Years,
+		&target.StartDate,
+		&target.StudyingStatus,
+		&target.Status,
+		&target.CanEdit,
+		&target.Progressiveness,
+		&target.Specialization,
+		&target.GroupName,
+		&target.Email,
+	)
+}
+
 func scanStudent(row pgx.Row, target *model.Students) error {
 	return row.Scan(
 		&target.StudentID,

@@ -34,6 +34,7 @@ type (
 		SetNewSupervisorTx(ctx context.Context, tx pgx.Tx, studentID, supervisorID uuid.UUID) error
 		GetAllStudentsSupervisors(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]models.SupervisorFull, error)
 		UpdateStudentsProgressiveness(ctx context.Context, tx pgx.Tx, studentID uuid.UUID, progress int32) error
+		GetStudentProfile(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) (models.StudentProfile, error)
 	}
 
 	DissertationRepository interface {
