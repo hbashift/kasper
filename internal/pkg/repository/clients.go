@@ -140,6 +140,26 @@ func (r *ClientRepository) SetStudentStatusTx(ctx context.Context, tx pgx.Tx, st
 	return nil
 }
 
+func (r *ClientRepository) SetStudentFlags(ctx context.Context, tx pgx.Tx, studyingStatus model.StudentStatus, canEdit bool, studentID uuid.UUID) error {
+	stmt, args := table.Students.
+		UPDATE(
+			table.Students.StudyingStatus,
+			table.Students.CanEdit,
+		).
+		SET(
+			studyingStatus,
+			canEdit,
+		).
+		WHERE(table.Students.StudentID.EQ(postgres.UUID(studentID))).
+		Sql()
+
+	if _, err := tx.Exec(ctx, stmt, args...); err != nil {
+		return errors.Wrap(err, "SetStudentFlags()")
+	}
+
+	return nil
+}
+
 func (r *ClientRepository) GetSupervisorsStudentsTx(ctx context.Context, tx pgx.Tx, supervisorID uuid.UUID) ([]models.Student, error) {
 	stmt, args := table.Students.
 		SELECT(

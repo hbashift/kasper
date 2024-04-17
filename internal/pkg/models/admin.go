@@ -8,3 +8,9 @@ type ChangeSupervisor struct {
 	StudentID    uuid.UUID `json:"student_id" binding:"required"`
 	SupervisorID uuid.UUID `json:"supervisor_id" binding:"required"`
 }
+
+type SetStudentsFlags struct {
+	StudentID      uuid.UUID `json:"student_id,omitempty"`
+	StudyingStatus string    `json:"studying_status,omitempty" enums:"academic,graduated,studying,expelled"`
+	CanEdit        bool      `json:"can_edit"`
+}

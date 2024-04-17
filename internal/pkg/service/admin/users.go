@@ -2,11 +2,11 @@ package admin
 
 import (
 	"context"
+	"strings"
 
 	"uir_draft/internal/generated/new_kasper/new_uir/public/model"
 	"uir_draft/internal/pkg/models"
 
-	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4"
 	"github.com/pkg/errors"
 )
@@ -47,25 +47,22 @@ func (s *Service) ChangeSupervisor(ctx context.Context, pairs []models.ChangeSup
 	return nil
 }
 
-func (s *Service) SetStudentStudyingStatus(ctx context.Context, studentID uuid.UUID, status string) error {
+func (s *Service) SetStudentFlags(ctx context.Context, students []models.SetStudentsFlags) error {
 	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
-		var dStatus model.StudentStatus
-		if err := dStatus.Scan(status); err != nil {
-			return err
-		}
+		for _, student := range students {
+			var dStatus model.StudentStatus
+			if err := dStatus.Scan(strings.TrimSpace(student.StudyingStatus)); err != nil {
+				return err
+			}
 
-		student, err := s.clientRepo.GetStudentTx(ctx, tx, studentID)
-		if err != nil {
-			return err
-		}
-
-		if err = s.clientRepo.SetStudentStatusTx(ctx, tx, student.Status, dStatus, studentID); err != nil {
-			return err
+			if err := s.clientRepo.SetStudentFlags(ctx, tx, dStatus, student.CanEdit, student.StudentID); err != nil {
+				return err
+			}
 		}
 
 		return nil
 	}); err != nil {
-		return errors.Wrap(err, "SetStudentStudyingStatus()")
+		return errors.Wrap(err, "SetStudentFlags()")
 	}
 
 	return nil

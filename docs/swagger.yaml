@@ -522,6 +522,20 @@ definitions:
         format: date-time
         type: string
     type: object
+  models.SetStudentsFlags:
+    properties:
+      can_edit:
+        type: boolean
+      status:
+        enum:
+        - academic
+        - graduated
+        - studying
+        - expelled
+        type: string
+      student_id:
+        type: string
+    type: object
   models.Specialization:
     properties:
       name:
@@ -745,17 +759,12 @@ definitions:
       student_id:
         type: string
     type: object
-  request_models.SetStudentStudyingStatusRequest:
+  request_models.SetStudentFlagsRequest:
     properties:
-      status:
-        enum:
-        - academic
-        - graduated
-        - studying
-        - expelled
-        type: string
-      student_id:
-        type: string
+      students:
+        items:
+          $ref: '#/definitions/models.SetStudentsFlags'
+        type: array
     type: object
   request_models.ToReviewRequest:
     properties:
@@ -1193,7 +1202,7 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/request_models.SetStudentStudyingStatusRequest'
+          $ref: '#/definitions/request_models.SetStudentFlagsRequest'
       - description: Токен пользователя
         in: path
         name: token

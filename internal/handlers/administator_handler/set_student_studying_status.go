@@ -17,7 +17,7 @@ import (
 //
 //	@Tags			Admin
 //	@Accept			json
-//	@Param			input body request_models.SetStudentStudyingStatusRequest true "Данные"
+//	@Param			input body request_models.SetStudentFlagsRequest true "Данные"
 //	@Success		200
 //	@Param			token	path		string	true	"Токен пользователя"
 //	@Failure		400		{string}	string	"Неверный формат данных"
@@ -32,13 +32,13 @@ func (h *AdministratorHandler) SetStudentStudyingStatus(ctx *gin.Context) {
 		return
 	}
 
-	reqBody := request_models.SetStudentStudyingStatusRequest{}
+	reqBody := request_models.SetStudentFlagsRequest{}
 	if err = ctx.ShouldBind(&reqBody); err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
-	if err = h.user.SetStudentStudyingStatus(ctx, reqBody.StudentID, reqBody.StudyingStatus); err != nil {
+	if err = h.user.SetStudentFlags(ctx, reqBody.Students); err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)
 		return
 	}

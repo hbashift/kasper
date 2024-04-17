@@ -8,7 +8,6 @@ import (
 	"uir_draft/internal/pkg/models"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
 // GetStudentSupervisorPairs(ctx context.Context) ([]models.StudentSupervisorPair, error)
@@ -17,7 +16,7 @@ type (
 	UserService interface {
 		GetStudentSupervisorPairs(ctx context.Context) ([]models.StudentSupervisorPair, error)
 		ChangeSupervisor(ctx context.Context, pairs []models.ChangeSupervisor) error
-		SetStudentStudyingStatus(ctx context.Context, studentID uuid.UUID, status string) error
+		SetStudentFlags(ctx context.Context, students []models.SetStudentsFlags) error
 		GetSupervisors(ctx context.Context) ([]models.Supervisor, error)
 		GetStudentsList(ctx context.Context) ([]models.Student, error)
 	}

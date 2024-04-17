@@ -490,7 +490,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request_models.SetStudentStudyingStatusRequest"
+                            "$ref": "#/definitions/request_models.SetStudentFlagsRequest"
                         }
                     },
                     {
@@ -3722,6 +3722,26 @@ const docTemplate = `{
                 }
             }
         },
+        "models.SetStudentsFlags": {
+            "type": "object",
+            "properties": {
+                "can_edit": {
+                    "type": "boolean"
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "academic",
+                        "graduated",
+                        "studying",
+                        "expelled"
+                    ]
+                },
+                "student_id": {
+                    "type": "string"
+                }
+            }
+        },
         "models.Specialization": {
             "type": "object",
             "properties": {
@@ -4044,20 +4064,14 @@ const docTemplate = `{
                 }
             }
         },
-        "request_models.SetStudentStudyingStatusRequest": {
+        "request_models.SetStudentFlagsRequest": {
             "type": "object",
             "properties": {
-                "status": {
-                    "type": "string",
-                    "enum": [
-                        "academic",
-                        "graduated",
-                        "studying",
-                        "expelled"
-                    ]
-                },
-                "student_id": {
-                    "type": "string"
+                "students": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.SetStudentsFlags"
+                    }
                 }
             }
         },

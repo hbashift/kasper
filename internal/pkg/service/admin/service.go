@@ -18,6 +18,7 @@ type UsersRepository interface {
 	GetStudentTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) (model.Students, error)
 	SetStudentStatusTx(ctx context.Context, tx pgx.Tx, status model.ApprovalStatus, studyingStatus model.StudentStatus, studentID uuid.UUID) error
 	GetStudentsList(ctx context.Context, tx pgx.Tx) ([]models.Student, error)
+	SetStudentFlags(ctx context.Context, tx pgx.Tx, studyingStatus model.StudentStatus, canEdit bool, studentID uuid.UUID) error
 }
 
 type Service struct {
