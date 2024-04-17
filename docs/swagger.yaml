@@ -605,6 +605,12 @@ definitions:
     type: object
   models.Supervisor:
     properties:
+      degree:
+        type: string
+      department:
+        type: string
+      faculty:
+        type: string
       full_name:
         description: Полное имя руководителя
         type: string
@@ -2614,6 +2620,37 @@ paths:
       summary: Отправление на проверку научных работ
       tags:
       - Student.ScientificWorks
+  /supervisors/profile/{token}:
+    get:
+      description: Получение профиля научного руководителя
+      parameters:
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Данные
+          schema:
+            $ref: '#/definitions/models.Supervisor'
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Получение профиля научного руководителя
+      tags:
+      - Supervisor
   /supervisors/student/dissertation/{token}:
     put:
       consumes:

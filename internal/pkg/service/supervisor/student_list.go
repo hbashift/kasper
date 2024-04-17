@@ -27,3 +27,21 @@ func (s *Service) GetSupervisorsStudents(ctx context.Context, supervisorID uuid.
 
 	return response, nil
 }
+
+func (s *Service) GetSupervisorProfile(ctx context.Context, supervisorID uuid.UUID) (models.Supervisor, error) {
+	var supervisor models.Supervisor
+
+	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
+		dSup, err := s.client.GetSupervisorTx(ctx, tx, supervisorID)
+		if err != nil {
+			return err
+		}
+
+		supervisor = dSup
+		return nil
+	}); err != nil {
+		return models.Supervisor{}, errors.Wrap(err, "GetSupervisorProfile()")
+	}
+
+	return supervisor, nil
+}

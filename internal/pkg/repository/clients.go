@@ -201,7 +201,8 @@ func (r *ClientRepository) GetStudentSupervisorPairsTx(ctx context.Context, tx p
 			table.Students.AllColumns.Except(table.Students.UserID, table.Students.SpecID, table.Students.GroupID),
 			table.Specializations.Title,
 			table.Groups.GroupName,
-			table.Supervisors.AllColumns.Except(table.Supervisors.UserID),
+			table.Supervisors.SupervisorID,
+			table.Supervisors.FullName,
 		).
 		FROM(table.Students.
 			LEFT_JOIN(table.StudentsSupervisors, table.StudentsSupervisors.StudentID.EQ(table.Students.StudentID)).
@@ -271,8 +272,7 @@ func (r *ClientRepository) SetNewSupervisorTx(ctx context.Context, tx pgx.Tx, st
 func (r *ClientRepository) GetSupervisorsTx(ctx context.Context, tx pgx.Tx) ([]models.Supervisor, error) {
 	stmt, args := table.Supervisors.
 		SELECT(
-			table.Supervisors.SupervisorID,
-			table.Supervisors.FullName,
+			table.Supervisors.AllColumns.Except(table.Supervisors.UserID),
 		).
 		Sql()
 
@@ -299,8 +299,7 @@ func (r *ClientRepository) GetSupervisorsTx(ctx context.Context, tx pgx.Tx) ([]m
 func (r *ClientRepository) GetStudentsActualSupervisorTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) (models.Supervisor, error) {
 	stmt, args := table.Supervisors.
 		SELECT(
-			table.Supervisors.SupervisorID,
-			table.Supervisors.FullName,
+			table.Supervisors.AllColumns.Except(table.Supervisors.UserID),
 		).
 		FROM(
 			table.StudentsSupervisors.
@@ -322,8 +321,7 @@ func (r *ClientRepository) GetStudentsActualSupervisorTx(ctx context.Context, tx
 func (r *ClientRepository) GetSupervisorTx(ctx context.Context, tx pgx.Tx, supervisorID uuid.UUID) (models.Supervisor, error) {
 	stmt, args := table.Supervisors.
 		SELECT(
-			table.Supervisors.SupervisorID,
-			table.Supervisors.FullName,
+			table.Supervisors.AllColumns.Except(table.Supervisors.UserID),
 		).
 		WHERE(table.Supervisors.SupervisorID.EQ(postgres.UUID(supervisorID))).
 		Sql()
@@ -443,6 +441,9 @@ func scanSupervisor(row pgx.Row, target *models.Supervisor) error {
 	return row.Scan(
 		&target.SupervisorID,
 		&target.FullName,
+		&target.Faculty,
+		&target.Department,
+		&target.Degree,
 	)
 }
 

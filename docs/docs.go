@@ -2613,6 +2613,53 @@ const docTemplate = `{
                 }
             }
         },
+        "/supervisors/profile/{token}": {
+            "get": {
+                "description": "Получение профиля научного руководителя",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Supervisor"
+                ],
+                "summary": "Получение профиля научного руководителя",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Данные",
+                        "schema": {
+                            "$ref": "#/definitions/models.Supervisor"
+                        }
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/supervisors/student/dissertation/file/{token}": {
             "put": {
                 "description": "Скачивание файла диссертации",
@@ -3903,6 +3950,15 @@ const docTemplate = `{
         "models.Supervisor": {
             "type": "object",
             "properties": {
+                "degree": {
+                    "type": "string"
+                },
+                "department": {
+                    "type": "string"
+                },
+                "faculty": {
+                    "type": "string"
+                },
                 "full_name": {
                     "description": "Полное имя руководителя",
                     "type": "string"

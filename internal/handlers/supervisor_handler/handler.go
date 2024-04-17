@@ -40,6 +40,8 @@ type (
 		UpsertFeedback(ctx context.Context, studentID uuid.UUID, request models.FeedbackRequest) error
 
 		GetSupervisorsStudents(ctx context.Context, supervisorID uuid.UUID) ([]models.Student, error)
+
+		GetSupervisorProfile(ctx context.Context, supervisorID uuid.UUID) (models.Supervisor, error)
 	}
 
 	EmailService interface {
