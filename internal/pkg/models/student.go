@@ -49,7 +49,7 @@ type SupervisorProfile struct {
 	Faculty    *string `db:"supervisors.faculty" json:"faculty"`
 	Department *string `db:"supervisors.department" json:"department"`
 	Degree     *string `db:"supervisors.degree" json:"degree"`
-	Email      string  `db:"users.email"`
+	Email      string  `db:"users.email" json:"email"`
 }
 
 type StudentProfile struct {
