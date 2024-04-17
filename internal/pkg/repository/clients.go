@@ -166,7 +166,7 @@ func (r *ClientRepository) GetSupervisorsStudentsTx(ctx context.Context, tx pgx.
 			table.Students.AllColumns.Except(table.Students.UserID, table.Students.SpecID, table.Students.GroupID),
 			table.Specializations.Title,
 			table.Groups.GroupName,
-		).
+		).DISTINCT(table.Students.StudentID).
 		FROM(table.Students.
 			INNER_JOIN(table.StudentsSupervisors, table.Students.StudentID.EQ(table.StudentsSupervisors.StudentID)).
 			INNER_JOIN(table.Groups, table.Students.GroupID.EQ(table.Groups.GroupID)).
