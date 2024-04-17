@@ -35,10 +35,10 @@ type Supervisor struct {
 	// ID научного руководителя
 	SupervisorID uuid.UUID `db:"supervisor_id" json:"supervisor_id" format:"uuid"`
 	// Полное имя руководителя
-	FullName   string `db:"full_name" json:"full_name"`
-	Faculty    string `db:"faculty" json:"faculty"`
-	Department string `db:"department" json:"department"`
-	Degree     string `db:"degree" json:"degree"`
+	FullName   *string `db:"full_name" json:"full_name"`
+	Faculty    *string `db:"faculty" json:"faculty"`
+	Department *string `db:"department" json:"department"`
+	Degree     *string `db:"degree" json:"degree"`
 }
 
 type SupervisorFull struct {
