@@ -60,6 +60,7 @@ type (
 		GetScientificWorks(ctx *gin.Context)
 
 		GetStudentStatus(ctx *gin.Context)
+		GetSupervisorProfile(ctx *gin.Context)
 	}
 
 	AdministratorHandler interface {
@@ -169,6 +170,7 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 	r.PUT("/supervisors/student/works/:token", h.supervisor.GetScientificWorks)
 
 	r.PUT("/supervisors/student/info/:token", h.supervisor.GetStudentStatus)
+	r.GET("/supervisors/profile/:token", h.supervisor.GetSupervisorProfile)
 
 	// AdministratorHandler init
 	r.POST("/administrator/student/change/:token", h.administrator.ChangeSupervisor)
