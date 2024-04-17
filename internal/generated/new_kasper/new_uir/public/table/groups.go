@@ -19,6 +19,7 @@ type groupsTable struct {
 	//Columns
 	GroupID   postgres.ColumnInteger
 	GroupName postgres.ColumnString
+	Archived  postgres.ColumnBool
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -51,8 +52,9 @@ func newGroupsTableImpl(schemaName, tableName, alias string) groupsTable {
 	var (
 		GroupIDColumn   = postgres.IntegerColumn("group_id")
 		GroupNameColumn = postgres.StringColumn("group_name")
-		allColumns      = postgres.ColumnList{GroupIDColumn, GroupNameColumn}
-		mutableColumns  = postgres.ColumnList{GroupNameColumn}
+		ArchivedColumn  = postgres.BoolColumn("archived")
+		allColumns      = postgres.ColumnList{GroupIDColumn, GroupNameColumn, ArchivedColumn}
+		mutableColumns  = postgres.ColumnList{GroupNameColumn, ArchivedColumn}
 	)
 
 	return groupsTable{
@@ -61,6 +63,7 @@ func newGroupsTableImpl(schemaName, tableName, alias string) groupsTable {
 		//Columns
 		GroupID:   GroupIDColumn,
 		GroupName: GroupNameColumn,
+		Archived:  ArchivedColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,

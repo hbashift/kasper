@@ -8,6 +8,7 @@
 package model
 
 type Specializations struct {
-	SpecID int32 `sql:"primary_key"`
-	Title  string
+	SpecID   int32 `sql:"primary_key"`
+	Title    string
+	Archived bool
 }

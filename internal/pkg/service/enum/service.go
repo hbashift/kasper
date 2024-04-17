@@ -16,7 +16,7 @@ type (
 		GetSpecializationsTx(ctx context.Context, tx pgx.Tx) ([]model.Specializations, error)
 		InsertSpecializationsTx(ctx context.Context, tx pgx.Tx, specs []model.Specializations) error
 		UpdateSpecializationTx(ctx context.Context, tx pgx.Tx, spec model.Specializations) error
-		DeleteSpecializationsTx(ctx context.Context, tx pgx.Tx, specsIDs []int32) error
+		ArchiveSpecializations(ctx context.Context, tx pgx.Tx, specsIDs []int32) error
 
 		GetGroupsTx(ctx context.Context, tx pgx.Tx) ([]model.Groups, error)
 		InsertGroupsTx(ctx context.Context, tx pgx.Tx, groups []model.Groups) error
@@ -144,7 +144,7 @@ func (s *Service) DeleteGroups(ctx context.Context, groupIDs []int32) error {
 
 func (s *Service) DeleteSpecializations(ctx context.Context, specIDs []int32) error {
 	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
-		return s.repo.DeleteSpecializationsTx(ctx, tx, specIDs)
+		return s.repo.ArchiveSpecializations(ctx, tx, specIDs)
 	}); err != nil {
 		return errors.Wrap(err, "DeleteSpecializations()")
 	}

@@ -17,8 +17,9 @@ type specializationsTable struct {
 	postgres.Table
 
 	//Columns
-	SpecID postgres.ColumnInteger
-	Title  postgres.ColumnString
+	SpecID   postgres.ColumnInteger
+	Title    postgres.ColumnString
+	Archived postgres.ColumnBool
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -51,16 +52,18 @@ func newSpecializationsTableImpl(schemaName, tableName, alias string) specializa
 	var (
 		SpecIDColumn   = postgres.IntegerColumn("spec_id")
 		TitleColumn    = postgres.StringColumn("title")
-		allColumns     = postgres.ColumnList{SpecIDColumn, TitleColumn}
-		mutableColumns = postgres.ColumnList{TitleColumn}
+		ArchivedColumn = postgres.BoolColumn("archived")
+		allColumns     = postgres.ColumnList{SpecIDColumn, TitleColumn, ArchivedColumn}
+		mutableColumns = postgres.ColumnList{TitleColumn, ArchivedColumn}
 	)
 
 	return specializationsTable{
 		Table: postgres.NewTable(schemaName, tableName, alias, allColumns...),
 
 		//Columns
-		SpecID: SpecIDColumn,
-		Title:  TitleColumn,
+		SpecID:   SpecIDColumn,
+		Title:    TitleColumn,
+		Archived: ArchivedColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,

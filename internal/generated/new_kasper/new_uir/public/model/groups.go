@@ -10,4 +10,5 @@ package model
 type Groups struct {
 	GroupID   int32 `sql:"primary_key"`
 	GroupName string
+	Archived  bool
 }

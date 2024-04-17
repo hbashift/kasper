@@ -33,6 +33,7 @@ func (r *EnumRepository) InsertSpecializationsTx(ctx context.Context, tx pgx.Tx,
 func (r *EnumRepository) GetSpecializationsTx(ctx context.Context, tx pgx.Tx) ([]model.Specializations, error) {
 	stmt, args := table.Specializations.
 		SELECT(table.Specializations.AllColumns).
+		WHERE(table.Specializations.Archived.EQ(postgres.Bool(false))).
 		Sql()
 
 	rows, err := tx.Query(ctx, stmt, args...)
@@ -70,7 +71,7 @@ func (r *EnumRepository) UpdateSpecializationTx(ctx context.Context, tx pgx.Tx, 
 	return nil
 }
 
-func (r *EnumRepository) DeleteSpecializationsTx(ctx context.Context, tx pgx.Tx, specsIDs []int32) error {
+func (r *EnumRepository) ArchiveSpecializations(ctx context.Context, tx pgx.Tx, specsIDs []int32) error {
 	expressions := make([]postgres.Expression, 0)
 
 	for _, id := range specsIDs {
@@ -80,12 +81,13 @@ func (r *EnumRepository) DeleteSpecializationsTx(ctx context.Context, tx pgx.Tx,
 	}
 
 	stmt, args := table.Specializations.
-		DELETE().
+		UPDATE(table.Specializations.Archived).
+		SET(true).
 		WHERE(table.Specializations.SpecID.IN(expressions...)).
 		Sql()
 
 	if _, err := tx.Exec(ctx, stmt, args...); err != nil {
-		return errors.Wrap(err, "DeleteSpecializationsTx()")
+		return errors.Wrap(err, "ArchiveSpecializations()")
 	}
 
 	return nil
@@ -109,6 +111,7 @@ func (r *EnumRepository) InsertGroupsTx(ctx context.Context, tx pgx.Tx, groups [
 func (r *EnumRepository) GetGroupsTx(ctx context.Context, tx pgx.Tx) ([]model.Groups, error) {
 	stmt, args := table.Groups.
 		SELECT(table.Groups.AllColumns).
+		WHERE(table.Groups.Archived.EQ(postgres.Bool(false))).
 		Sql()
 
 	rows, err := tx.Query(ctx, stmt, args...)
@@ -155,7 +158,8 @@ func (r *EnumRepository) DeleteGroupsTx(ctx context.Context, tx pgx.Tx, groupsID
 	}
 
 	stmt, args := table.Groups.
-		DELETE().
+		UPDATE(table.Groups.Archived).
+		SET(true).
 		WHERE(table.Groups.GroupID.IN(expressions...)).
 		Sql()
 
