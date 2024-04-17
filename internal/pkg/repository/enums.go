@@ -32,7 +32,7 @@ func (r *EnumRepository) InsertSpecializationsTx(ctx context.Context, tx pgx.Tx,
 
 func (r *EnumRepository) GetSpecializationsTx(ctx context.Context, tx pgx.Tx) ([]model.Specializations, error) {
 	stmt, args := table.Specializations.
-		SELECT(table.Specializations.AllColumns).
+		SELECT(table.Specializations.AllColumns.Except(table.Specializations.Archived)).
 		WHERE(table.Specializations.Archived.EQ(postgres.Bool(false))).
 		Sql()
 
@@ -110,7 +110,7 @@ func (r *EnumRepository) InsertGroupsTx(ctx context.Context, tx pgx.Tx, groups [
 
 func (r *EnumRepository) GetGroupsTx(ctx context.Context, tx pgx.Tx) ([]model.Groups, error) {
 	stmt, args := table.Groups.
-		SELECT(table.Groups.AllColumns).
+		SELECT(table.Groups.AllColumns.Except(table.Groups.Archived)).
 		WHERE(table.Groups.Archived.EQ(postgres.Bool(false))).
 		Sql()
 
