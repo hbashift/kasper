@@ -96,7 +96,6 @@ func (s *Service) InsertGroups(ctx context.Context, groups []models.Group) error
 	domainGroups := make([]model.Groups, 0, len(groups))
 	for _, group := range groups {
 		dGroup := model.Groups{
-			GroupID:   group.GroupID,
 			GroupName: group.Name,
 		}
 

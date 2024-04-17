@@ -19,7 +19,7 @@ func NewEnumRepository() *EnumRepository {
 
 func (r *EnumRepository) InsertSpecializationsTx(ctx context.Context, tx pgx.Tx, specs []model.Specializations) error {
 	stmt, args := table.Specializations.
-		INSERT(table.Specializations.MutableColumns).
+		INSERT(table.Specializations.Title).
 		MODELS(specs).
 		Sql()
 
@@ -97,7 +97,7 @@ func (r *EnumRepository) ArchiveSpecializations(ctx context.Context, tx pgx.Tx, 
 
 func (r *EnumRepository) InsertGroupsTx(ctx context.Context, tx pgx.Tx, groups []model.Groups) error {
 	stmt, args := table.Groups.
-		INSERT(table.Groups.MutableColumns).
+		INSERT(table.Groups.GroupName).
 		MODELS(groups).
 		Sql()
 
