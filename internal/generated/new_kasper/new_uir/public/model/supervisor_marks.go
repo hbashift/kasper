@@ -11,12 +11,10 @@ import (
 	"github.com/google/uuid"
 )
 
-type Supervisors struct {
-	SupervisorID uuid.UUID `sql:"primary_key"`
-	UserID       uuid.UUID
-	FullName     *string
-	Phone        string
-	Faculty      *string
-	Department   *string
-	Degree       *string
+type SupervisorMarks struct {
+	MarkID       uuid.UUID `sql:"primary_key"`
+	StudentID    uuid.UUID
+	Mark         int32
+	Semester     int32
+	SupervisorID uuid.UUID
 }

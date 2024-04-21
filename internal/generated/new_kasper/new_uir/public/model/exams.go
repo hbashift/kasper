@@ -9,14 +9,14 @@ package model
 
 import (
 	"github.com/google/uuid"
+	"time"
 )
 
-type Supervisors struct {
-	SupervisorID uuid.UUID `sql:"primary_key"`
-	UserID       uuid.UUID
-	FullName     *string
-	Phone        string
-	Faculty      *string
-	Department   *string
-	Degree       *string
+type Exams struct {
+	ExamID    uuid.UUID `sql:"primary_key"`
+	StudentID uuid.UUID
+	ExamType  int32
+	Semester  int32
+	Mark      int32
+	SetAt     *time.Time
 }

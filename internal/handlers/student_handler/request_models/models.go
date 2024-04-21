@@ -78,11 +78,20 @@ type ToReviewRequest struct {
 }
 
 type UpsertDissertationTitleRequest struct {
-	Title          string `json:"title,omitempty"`
-	ResearchObject string `json:"research_object"`
-	ResearchOrder  string `json:"research_order"`
+	Title           string `json:"title,omitempty"`
+	ResearchObject  string `json:"research_object"`
+	ResearchSubject string `json:"research_subject"`
 }
 
 type UpdateProgressivenessRequest struct {
 	Progress int32 `json:"progress"`
+}
+
+type AllToReviewRequest struct {
+	Commentary *string `json:"commentary"`
+}
+
+type UpsertReportCommentsRequest struct {
+	DissertationComment models.DissertationCommentRequest `json:"dissertation_comment"`
+	DissertationPlan    models.DissertationPlanRequest    `json:"dissertation_plan"`
 }

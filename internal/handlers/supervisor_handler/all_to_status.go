@@ -36,7 +36,7 @@ func (h *SupervisorHandler) AllToStatus(ctx *gin.Context) {
 		return
 	}
 
-	err = h.dissertation.AllToStatus(ctx, reqBody.StudentID, reqBody.Status)
+	err = h.dissertation.AllToStatus(ctx, reqBody.StudentID, nil, reqBody.Status)
 	if err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)
 		return

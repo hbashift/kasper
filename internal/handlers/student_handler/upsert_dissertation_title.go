@@ -43,7 +43,7 @@ func (h *StudentHandler) UpsertDissertationTitle(ctx *gin.Context) {
 		user.KasperID,
 		reqBody.Title,
 		reqBody.ResearchObject,
-		reqBody.ResearchOrder,
+		reqBody.ResearchSubject,
 	); err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)
 		return

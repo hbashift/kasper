@@ -6,6 +6,7 @@ import (
 	"uir_draft/internal/generated/new_kasper/new_uir/public/model"
 	"uir_draft/internal/pkg/helpers"
 	"uir_draft/internal/pkg/models"
+	"uir_draft/internal/pkg/service/student"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -13,7 +14,7 @@ import (
 
 type (
 	DissertationService interface {
-		AllToStatus(ctx context.Context, studentID uuid.UUID, status string) error
+		AllToStatus(ctx context.Context, studentID uuid.UUID, comment *string, status string) error
 		// GetDissertationPage - возвращает всю информацию для отрисовки страницы диссертации
 		GetDissertationPage(ctx context.Context, studentID uuid.UUID) (models.DissertationPageResponse, error)
 		// GetDissertationData - возвращает данные для скачивания файла
@@ -28,6 +29,10 @@ type (
 	TeachingLoadService interface {
 		// GetTeachingLoad - возвращает всю педагогическую нагрузку студента
 		GetTeachingLoad(ctx context.Context, studentID uuid.UUID) ([]models.TeachingLoad, error)
+	}
+
+	ReportService interface {
+		GetReportComments(ctx context.Context, studentID uuid.UUID) (models.ReportComments, error)
 	}
 
 	Authenticator interface {
@@ -62,10 +67,11 @@ type SupervisorHandler struct {
 	supervisor    SupervisorService
 	student       StudentService
 	email         EmailService
+	report        ReportService
 }
 
-func NewHandler(dissertation DissertationService, scientific ScientificWorksService, load TeachingLoadService, authenticator Authenticator, supervisor SupervisorService, student StudentService, email EmailService) *SupervisorHandler {
-	return &SupervisorHandler{dissertation: dissertation, scientific: scientific, load: load, authenticator: authenticator, supervisor: supervisor, student: student, email: email}
+func NewHandler(dissertation *student.Service, authenticator Authenticator, supervisor SupervisorService, student StudentService, email EmailService) *SupervisorHandler {
+	return &SupervisorHandler{dissertation: dissertation, scientific: dissertation, load: dissertation, authenticator: authenticator, supervisor: supervisor, student: student, email: email}
 }
 
 func (h *SupervisorHandler) authenticate(ctx *gin.Context) (*model.Users, error) {

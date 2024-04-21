@@ -17,15 +17,15 @@ type dissertationTitlesTable struct {
 	postgres.Table
 
 	//Columns
-	TitleID        postgres.ColumnString
-	StudentID      postgres.ColumnString
-	Title          postgres.ColumnString
-	CreatedAt      postgres.ColumnTimestampz
-	Status         postgres.ColumnString
-	AcceptedAt     postgres.ColumnTimestampz
-	Semester       postgres.ColumnInteger
-	ResearchObject postgres.ColumnString
-	ResearchOrder  postgres.ColumnString
+	TitleID         postgres.ColumnString
+	StudentID       postgres.ColumnString
+	Title           postgres.ColumnString
+	CreatedAt       postgres.ColumnTimestampz
+	Status          postgres.ColumnString
+	AcceptedAt      postgres.ColumnTimestampz
+	Semester        postgres.ColumnInteger
+	ResearchObject  postgres.ColumnString
+	ResearchSubject postgres.ColumnString
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -56,32 +56,32 @@ func newDissertationTitlesTable(schemaName, tableName, alias string) *Dissertati
 
 func newDissertationTitlesTableImpl(schemaName, tableName, alias string) dissertationTitlesTable {
 	var (
-		TitleIDColumn        = postgres.StringColumn("title_id")
-		StudentIDColumn      = postgres.StringColumn("student_id")
-		TitleColumn          = postgres.StringColumn("title")
-		CreatedAtColumn      = postgres.TimestampzColumn("created_at")
-		StatusColumn         = postgres.StringColumn("status")
-		AcceptedAtColumn     = postgres.TimestampzColumn("accepted_at")
-		SemesterColumn       = postgres.IntegerColumn("semester")
-		ResearchObjectColumn = postgres.StringColumn("research_object")
-		ResearchOrderColumn  = postgres.StringColumn("research_order")
-		allColumns           = postgres.ColumnList{TitleIDColumn, StudentIDColumn, TitleColumn, CreatedAtColumn, StatusColumn, AcceptedAtColumn, SemesterColumn, ResearchObjectColumn, ResearchOrderColumn}
-		mutableColumns       = postgres.ColumnList{StudentIDColumn, TitleColumn, CreatedAtColumn, StatusColumn, AcceptedAtColumn, SemesterColumn, ResearchObjectColumn, ResearchOrderColumn}
+		TitleIDColumn         = postgres.StringColumn("title_id")
+		StudentIDColumn       = postgres.StringColumn("student_id")
+		TitleColumn           = postgres.StringColumn("title")
+		CreatedAtColumn       = postgres.TimestampzColumn("created_at")
+		StatusColumn          = postgres.StringColumn("status")
+		AcceptedAtColumn      = postgres.TimestampzColumn("accepted_at")
+		SemesterColumn        = postgres.IntegerColumn("semester")
+		ResearchObjectColumn  = postgres.StringColumn("research_object")
+		ResearchSubjectColumn = postgres.StringColumn("research_subject")
+		allColumns            = postgres.ColumnList{TitleIDColumn, StudentIDColumn, TitleColumn, CreatedAtColumn, StatusColumn, AcceptedAtColumn, SemesterColumn, ResearchObjectColumn, ResearchSubjectColumn}
+		mutableColumns        = postgres.ColumnList{StudentIDColumn, TitleColumn, CreatedAtColumn, StatusColumn, AcceptedAtColumn, SemesterColumn, ResearchObjectColumn, ResearchSubjectColumn}
 	)
 
 	return dissertationTitlesTable{
 		Table: postgres.NewTable(schemaName, tableName, alias, allColumns...),
 
 		//Columns
-		TitleID:        TitleIDColumn,
-		StudentID:      StudentIDColumn,
-		Title:          TitleColumn,
-		CreatedAt:      CreatedAtColumn,
-		Status:         StatusColumn,
-		AcceptedAt:     AcceptedAtColumn,
-		Semester:       SemesterColumn,
-		ResearchObject: ResearchObjectColumn,
-		ResearchOrder:  ResearchOrderColumn,
+		TitleID:         TitleIDColumn,
+		StudentID:       StudentIDColumn,
+		Title:           TitleColumn,
+		CreatedAt:       CreatedAtColumn,
+		Status:          StatusColumn,
+		AcceptedAt:      AcceptedAtColumn,
+		Semester:        SemesterColumn,
+		ResearchObject:  ResearchObjectColumn,
+		ResearchSubject: ResearchSubjectColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,

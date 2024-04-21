@@ -13,6 +13,9 @@ type FirstStudentRegistry struct {
 	StartDate        string     `json:"start_date,omitempty"`
 	GroupID          int32      `json:"group_number,omitempty"`
 	SupervisorID     *uuid.UUID `json:"supervisor_id"`
+	Phone            string     `json:"phone"`
+	// Бюджетное или платное обучение
+	Category string `json:"studying_category"`
 }
 
 type ChangePasswordRequest struct {

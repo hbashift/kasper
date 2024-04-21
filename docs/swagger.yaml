@@ -127,6 +127,24 @@ definitions:
         description: Индекс WoS
         type: boolean
     type: object
+  models.DissertationComment:
+    properties:
+      commentary:
+        type: string
+      commentary_id:
+        type: string
+      semester:
+        type: integer
+      student_id:
+        type: string
+    type: object
+  models.DissertationCommentRequest:
+    properties:
+      commentary:
+        type: string
+      semester:
+        type: integer
+    type: object
   models.DissertationPageResponse:
     properties:
       dissertation_titles:
@@ -157,12 +175,37 @@ definitions:
         allOf:
         - $ref: '#/definitions/models.Student'
         description: Информация о студенте
+      students_comments:
+        description: Сопроводительные комментарии студента научному руководителю за
+          каждый семестр
+        items:
+          $ref: '#/definitions/models.StudentComment'
+          format: array
+        type: array
       supervisors:
         description: Список научных руководителей
         items:
           $ref: '#/definitions/models.SupervisorFull'
           format: array
         type: array
+    type: object
+  models.DissertationPlan:
+    properties:
+      plan_id:
+        type: string
+      plan_text:
+        type: string
+      semester:
+        type: integer
+      student_id:
+        type: string
+    type: object
+  models.DissertationPlanRequest:
+    properties:
+      plan_text:
+        type: string
+      semester:
+        type: integer
     type: object
   models.DissertationTitlesResponse:
     properties:
@@ -177,8 +220,8 @@ definitions:
       research_object:
         description: Объект исследования
         type: string
-      research_order:
-        description: Приказ исследования
+      research_subject:
+        description: Предмет исследования
         type: string
       semester:
         description: Семестр
@@ -348,6 +391,17 @@ definitions:
       wos:
         description: Индекс WoS
         type: boolean
+    type: object
+  models.ReportComments:
+    properties:
+      dissertation_comments:
+        items:
+          $ref: '#/definitions/models.DissertationComment'
+        type: array
+      dissertation_plans:
+        items:
+          $ref: '#/definitions/models.DissertationPlan'
+        type: array
     type: object
   models.ResearchProject:
     properties:
@@ -551,11 +605,18 @@ definitions:
       can_edit:
         description: Флаг о возможности редактировать всю информацию
         type: boolean
+      category:
+        description: Бюджетное или платное обучение
+        type: string
+      end_date:
+        type: string
       full_name:
         description: Полное имя
         type: string
       group_name:
         description: Название группы
+        type: string
+      phone:
         type: string
       progress:
         description: Процент выполнения диссертации
@@ -592,6 +653,19 @@ definitions:
         description: Количество лет обучения
         type: integer
     type: object
+  models.StudentComment:
+    properties:
+      commentary:
+        type: string
+      commentary_id:
+        type: string
+      commented_at:
+        type: string
+      semester:
+        type: integer
+      student_id:
+        type: string
+    type: object
   models.StudentProfile:
     properties:
       actual_semester:
@@ -600,13 +674,20 @@ definitions:
       can_edit:
         description: Флаг о возможности редактировать всю информацию
         type: boolean
+      category:
+        description: Бюджетное или платное обучение
+        type: string
       email:
+        type: string
+      end_date:
         type: string
       full_name:
         description: Полное имя
         type: string
       group_name:
         description: Название группы
+        type: string
+      phone:
         type: string
       progress:
         description: Процент выполнения диссертации
@@ -665,6 +746,8 @@ definitions:
       full_name:
         description: Полное имя руководителя
         type: string
+      phone:
+        type: string
       supervisor_id:
         description: ID научного руководителя
         format: uuid
@@ -678,6 +761,8 @@ definitions:
         type: string
       full_name:
         description: Полное имя руководителя
+        type: string
+      phone:
         type: string
       start_at:
         description: Дата начала
@@ -700,6 +785,8 @@ definitions:
         type: string
       full_name:
         description: Полное имя руководителя
+        type: string
+      phone:
         type: string
       supervisor_id:
         description: ID научного руководителя
@@ -821,10 +908,15 @@ definitions:
         type: integer
       number_of_years:
         type: integer
+      phone:
+        type: string
       specialization_id:
         description: Department       string     `json:"department,omitempty"`
         type: integer
       start_date:
+        type: string
+      studying_category:
+        description: Бюджетное или платное обучение
         type: string
       supervisor_id:
         type: string
@@ -906,7 +998,7 @@ definitions:
     properties:
       research_object:
         type: string
-      research_order:
+      research_subject:
         type: string
       title:
         type: string
@@ -948,6 +1040,13 @@ definitions:
         type: array
       semester:
         type: integer
+    type: object
+  request_models.UpsertReportCommentsRequest:
+    properties:
+      dissertation_comment:
+        $ref: '#/definitions/models.DissertationCommentRequest'
+      dissertation_plan:
+        $ref: '#/definitions/models.DissertationPlanRequest'
     type: object
   request_models.UpsertResearchProjectsRequest:
     properties:
@@ -2426,6 +2525,73 @@ paths:
       summary: Отправление на проверку пед нагрузки
       tags:
       - Student.TeachingLoad
+  /students/report/comments/{token}:
+    get:
+      consumes:
+      - application/json
+      description: Получение комментариев к диссертации аспиранта
+      parameters:
+      - description: Токе пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Данные
+          schema:
+            $ref: '#/definitions/models.ReportComments'
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Получение комментариев к диссертации аспиранта
+      tags:
+      - NEW
+    post:
+      consumes:
+      - application/json
+      description: Внесение комментариев для диссертации аспиранта
+      parameters:
+      - description: Токе пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      - description: Запрос
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.UpsertReportCommentsRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Внесение комментариев для диссертации аспиранта
+      tags:
+      - NEW
   /students/review/{token}:
     post:
       description: Переводит научные работы, пед нагрузку и диссертацию в статус 'in_review',
@@ -2763,6 +2929,43 @@ paths:
       summary: Отправление на проверку научных работ
       tags:
       - Student.ScientificWorks
+  /supervisor/student/profile/{token}:
+    put:
+      consumes:
+      - application/json
+      description: Получение профиля студента
+      parameters:
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Данные
+          schema:
+            $ref: '#/definitions/models.StudentProfile'
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Получение профиля студента
+      tags:
+      - Supervisor
   /supervisors/profile/{token}:
     get:
       description: Получение профиля научного руководителя
@@ -2794,6 +2997,45 @@ paths:
       summary: Получение профиля научного руководителя
       tags:
       - Supervisor
+  /supervisors/report/comments/{token}:
+    put:
+      consumes:
+      - application/json
+      description: Получение комментариев к диссертации аспиранта (от лица научника)
+      parameters:
+      - description: Токе пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      - description: Запрос
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.GetByStudentID'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Данные
+          schema:
+            $ref: '#/definitions/models.ReportComments'
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Получение комментариев к диссертации аспиранта (от лица научника)
+      tags:
+      - NEW
   /supervisors/student/dissertation/{token}:
     put:
       consumes:

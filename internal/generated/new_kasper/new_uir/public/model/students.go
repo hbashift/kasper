@@ -25,4 +25,7 @@ type Students struct {
 	Status          ApprovalStatus
 	CanEdit         bool
 	Progressiveness int32
+	Phone           string
+	Category        string
+	EndDate         time.Time
 }

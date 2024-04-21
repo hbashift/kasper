@@ -110,6 +110,9 @@ func (r *ClientRepository) InsertStudentTx(ctx context.Context, tx pgx.Tx, stude
 			student.Years,
 			student.StartDate,
 			student.GroupID,
+			student.Phone,
+			student.Category,
+			student.EndDate,
 		).
 		Sql()
 
@@ -433,6 +436,7 @@ func scanSupervisorProfile(row pgx.Row, target *models.SupervisorProfile) error 
 	return row.Scan(
 		&target.SupervisorID,
 		&target.FullName,
+		&target.Phone,
 		&target.Faculty,
 		&target.Department,
 		&target.Degree,
@@ -452,6 +456,9 @@ func scanStudentProfile(row pgx.Row, target *models.StudentProfile) error {
 		&target.Status,
 		&target.CanEdit,
 		&target.Progressiveness,
+		&target.Phone,
+		&target.Category,
+		&target.EndDate,
 		&target.Specialization,
 		&target.GroupName,
 		&target.Email,
@@ -473,6 +480,9 @@ func scanStudent(row pgx.Row, target *model.Students) error {
 		&target.Status,
 		&target.CanEdit,
 		&target.Progressiveness,
+		&target.Phone,
+		&target.Category,
+		&target.EndDate,
 	)
 }
 
@@ -488,6 +498,9 @@ func scanStudentStatus(row pgx.Row, target *models.Student) error {
 		&target.Status,
 		&target.CanEdit,
 		&target.Progressiveness,
+		&target.Phone,
+		&target.Category,
+		&target.EndDate,
 		&target.Specialization,
 		&target.GroupName,
 	)
@@ -505,6 +518,9 @@ func scanStudentSupervisorPair(row pgx.Row, target *models.StudentSupervisorPair
 		&target.Student.Status,
 		&target.Student.CanEdit,
 		&target.Student.Progressiveness,
+		&target.Student.Phone,
+		&target.Student.Category,
+		&target.Student.EndDate,
 		&target.Student.Specialization,
 		&target.Student.GroupName,
 		&target.Supervisor.SupervisorID,
@@ -516,6 +532,7 @@ func scanSupervisor(row pgx.Row, target *models.Supervisor) error {
 	return row.Scan(
 		&target.SupervisorID,
 		&target.FullName,
+		&target.Phone,
 		&target.Faculty,
 		&target.Department,
 		&target.Degree,

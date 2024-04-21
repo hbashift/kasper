@@ -29,6 +29,9 @@ type studentsTable struct {
 	Status          postgres.ColumnString
 	CanEdit         postgres.ColumnBool
 	Progressiveness postgres.ColumnInteger
+	Phone           postgres.ColumnString
+	Category        postgres.ColumnString
+	EndDate         postgres.ColumnTimestampz
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -71,8 +74,11 @@ func newStudentsTableImpl(schemaName, tableName, alias string) studentsTable {
 		StatusColumn          = postgres.StringColumn("status")
 		CanEditColumn         = postgres.BoolColumn("can_edit")
 		ProgressivenessColumn = postgres.IntegerColumn("progressiveness")
-		allColumns            = postgres.ColumnList{StudentIDColumn, UserIDColumn, FullNameColumn, SpecIDColumn, ActualSemesterColumn, YearsColumn, StartDateColumn, StudyingStatusColumn, GroupIDColumn, StatusColumn, CanEditColumn, ProgressivenessColumn}
-		mutableColumns        = postgres.ColumnList{UserIDColumn, FullNameColumn, SpecIDColumn, ActualSemesterColumn, YearsColumn, StartDateColumn, StudyingStatusColumn, GroupIDColumn, StatusColumn, CanEditColumn, ProgressivenessColumn}
+		PhoneColumn           = postgres.StringColumn("phone")
+		CategoryColumn        = postgres.StringColumn("category")
+		EndDateColumn         = postgres.TimestampzColumn("end_date")
+		allColumns            = postgres.ColumnList{StudentIDColumn, UserIDColumn, FullNameColumn, SpecIDColumn, ActualSemesterColumn, YearsColumn, StartDateColumn, StudyingStatusColumn, GroupIDColumn, StatusColumn, CanEditColumn, ProgressivenessColumn, PhoneColumn, CategoryColumn, EndDateColumn}
+		mutableColumns        = postgres.ColumnList{UserIDColumn, FullNameColumn, SpecIDColumn, ActualSemesterColumn, YearsColumn, StartDateColumn, StudyingStatusColumn, GroupIDColumn, StatusColumn, CanEditColumn, ProgressivenessColumn, PhoneColumn, CategoryColumn, EndDateColumn}
 	)
 
 	return studentsTable{
@@ -91,6 +97,9 @@ func newStudentsTableImpl(schemaName, tableName, alias string) studentsTable {
 		Status:          StatusColumn,
 		CanEdit:         CanEditColumn,
 		Progressiveness: ProgressivenessColumn,
+		Phone:           PhoneColumn,
+		Category:        CategoryColumn,
+		EndDate:         EndDateColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,

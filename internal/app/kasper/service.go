@@ -46,6 +46,9 @@ type (
 		GetSupervisors(ctx *gin.Context)
 		UpdateProgressiveness(ctx *gin.Context)
 		GetStudentProfile(ctx *gin.Context)
+
+		GetReportComments(ctx *gin.Context)
+		UpsertReportComments(ctx *gin.Context)
 	}
 
 	SupervisorHandler interface {
@@ -63,6 +66,8 @@ type (
 		GetStudentStatus(ctx *gin.Context)
 		GetSupervisorProfile(ctx *gin.Context)
 		GetStudentProfile(ctx *gin.Context)
+
+		GetStudentsReportComments(ctx *gin.Context)
 	}
 
 	AdministratorHandler interface {
@@ -133,9 +138,9 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 	r.POST("/students/dissertation/progress/:token", h.student.UpsertSemesterProgress)
 	r.PUT("/students/dissertation/file/:token", h.student.DownloadDissertation)
 	r.POST("/students/dissertation/file/:token", h.student.UploadDissertation)
-	r.POST("/students/dissertation_title/review/:token", h.student.DissertationTitleToReview)
+	//r.POST("/students/dissertation_title/review/:token", h.student.DissertationTitleToReview)
 	r.POST("/students/dissertation_title/:token", h.student.UpsertDissertationTitle)
-	r.POST("/students/dissertation/review/:token", h.student.DissertationToReview)
+	//r.POST("/students/dissertation/review/:token", h.student.DissertationToReview)
 
 	r.GET("/students/load/:token", h.student.GetTeachingLoad)
 	r.POST("/students/load/classroom/:token", h.student.UpsertClassroomLoads)
@@ -144,7 +149,7 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 	r.PUT("/students/load/individual/:token", h.student.DeleteIndividualLoads)
 	r.POST("/students/load/additional/:token", h.student.UpsertAdditionalLoads)
 	r.PUT("/students/load/additional/:token", h.student.DeleteAdditionalLoads)
-	r.POST("/student/load/review/:token", h.student.TeachingLoadToReview)
+	//r.POST("/student/load/review/:token", h.student.TeachingLoadToReview)
 
 	r.GET("/students/works/:token", h.student.GetScientificWorks)
 	r.POST("/students/works/publications/:token", h.student.UpsertPublications)
@@ -153,7 +158,7 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 	r.PUT("/students/works/conferences/:token", h.student.DeleteConferences)
 	r.POST("/students/works/projects/:token", h.student.UpsertResearchProjects)
 	r.PUT("/students/works/projects/:token", h.student.DeleteProjects)
-	r.POST("/students/works/review/:token", h.student.ScientificWorksToReview)
+	//r.POST("/students/works/review/:token", h.student.ScientificWorksToReview)
 
 	r.GET("/student/enum/specializations/:token", h.student.GetSpecializations)
 	r.GET("/student/enum/groups/:token", h.student.GetGroups)
@@ -162,6 +167,9 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 	r.POST("/students/dissertation/progress/percent/:token", h.student.UpdateProgressiveness)
 
 	r.GET("/student/profile/:token", h.student.GetStudentProfile)
+
+	r.GET("/students/report/comments/:token", h.student.GetReportComments)
+	r.POST("/students/report/comments/:token", h.student.UpsertReportComments)
 
 	// SupervisorHandler init
 	r.GET("/supervisors/student/list/:token", h.supervisor.GetStudentsList)
@@ -179,6 +187,8 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 	r.GET("/supervisors/profile/:token", h.supervisor.GetSupervisorProfile)
 
 	r.PUT("/supervisor/student/profile/:token", h.supervisor.GetStudentProfile)
+
+	r.PUT("/supervisors/report/comments/:token", h.supervisor.GetStudentsReportComments)
 
 	// AdministratorHandler init
 	r.POST("/administrator/student/change/:token", h.administrator.ChangeSupervisor)

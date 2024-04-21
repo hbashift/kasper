@@ -345,7 +345,7 @@ func scanDissertationTitle(row pgx.Row, target *model.DissertationTitles) error 
 		&target.AcceptedAt,
 		&target.Semester,
 		&target.ResearchObject,
-		&target.ResearchOrder,
+		&target.ResearchSubject,
 	)
 }
 

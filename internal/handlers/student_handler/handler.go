@@ -4,8 +4,10 @@ import (
 	"context"
 
 	"uir_draft/internal/generated/new_kasper/new_uir/public/model"
+	"uir_draft/internal/handlers/student_handler/request_models"
 	"uir_draft/internal/pkg/helpers"
 	"uir_draft/internal/pkg/models"
+	"uir_draft/internal/pkg/service/student"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -25,7 +27,7 @@ type (
 		// DissertationToStatus - проставляет статус для диссертации
 		DissertationToStatus(ctx context.Context, studentID uuid.UUID, status model.ApprovalStatus, semester int32) error
 		// AllToStatus - проставляет статус для всего
-		AllToStatus(ctx context.Context, studentID uuid.UUID, status string) error
+		AllToStatus(ctx context.Context, studentID uuid.UUID, comment *string, status string) error
 		// GetDissertationPage - возвращает всю информацию для отрисовки страницы диссертации
 		GetDissertationPage(ctx context.Context, studentID uuid.UUID) (models.DissertationPageResponse, error)
 		// UpsertSemesterProgress - обновляет план подготовки диссертации
@@ -75,6 +77,11 @@ type (
 		DeleteAdditionalLoad(ctx context.Context, studentID uuid.UUID, semester int32, loads []uuid.UUID) error
 	}
 
+	ReportService interface {
+		GetReportComments(ctx context.Context, studentID uuid.UUID) (models.ReportComments, error)
+		UpsertReportComments(ctx context.Context, studentID uuid.UUID, req request_models.UpsertReportCommentsRequest) error
+	}
+
 	Authenticator interface {
 		// Authenticate - проводит аутентификацию пользователя
 		AuthenticateWithUserType(ctx context.Context, token, userType string) (*model.Users, error)
@@ -103,10 +110,11 @@ type StudentHandler struct {
 	email         EmailService
 	enum          EnumService
 	admin         AdminService
+	report        ReportService
 }
 
-func NewHandler(student StudentService, dissertation DissertationService, scientific ScientificWorksService, load TeachingLoadService, authenticator Authenticator, email EmailService, enum EnumService, admin AdminService) *StudentHandler {
-	return &StudentHandler{student: student, dissertation: dissertation, scientific: scientific, load: load, authenticator: authenticator, email: email, enum: enum, admin: admin}
+func NewHandler(student *student.Service, authenticator Authenticator, email EmailService, enum EnumService, admin AdminService) *StudentHandler {
+	return &StudentHandler{student: student, dissertation: student, scientific: student, load: student, authenticator: authenticator, email: email, enum: enum, admin: admin}
 }
 
 func (h *StudentHandler) authenticate(ctx *gin.Context) (*model.Users, error) {

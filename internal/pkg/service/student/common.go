@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"uir_draft/internal/generated/new_kasper/new_uir/public/model"
-	"uir_draft/internal/handlers/authorization_handler/request_models"
+	auth_req "uir_draft/internal/handlers/authorization_handler/request_models"
 	"uir_draft/internal/pkg/models"
 
 	"github.com/google/uuid"
@@ -14,7 +14,7 @@ import (
 	"github.com/samber/lo"
 )
 
-func (s *Service) AllToStatus(ctx context.Context, studentID uuid.UUID, status string) error {
+func (s *Service) AllToStatus(ctx context.Context, studentID uuid.UUID, comment *string, status string) error {
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
 		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
 		if err != nil {
@@ -35,6 +35,19 @@ func (s *Service) AllToStatus(ctx context.Context, studentID uuid.UUID, status s
 		//if err != nil {
 		//	return err
 		//}
+
+		if comment != nil {
+			err = s.commentRepo.UpsertStudentsComment(ctx, tx, model.StudentsCommentary{
+				CommentaryID: uuid.New(),
+				StudentID:    studentID,
+				Semester:     student.ActualSemester,
+				Commentary:   comment,
+			})
+
+			if err != nil {
+				return err
+			}
+		}
 
 		err = s.dissertationRepo.SetSemesterProgressStatusTx(ctx, tx, student.StudentID, dStatus, nil)
 		if err != nil {
@@ -103,7 +116,7 @@ func (s *Service) SetStudentStatus(ctx context.Context, studentID uuid.UUID, sta
 	return nil
 }
 
-func (s *Service) InitStudent(ctx context.Context, user model.Users, req request_models.FirstStudentRegistry) error {
+func (s *Service) InitStudent(ctx context.Context, user model.Users, req auth_req.FirstStudentRegistry) error {
 	startDate, err := time.Parse(time.DateOnly, req.StartDate)
 	if err != nil {
 		return errors.Wrap(err, "InitStudent()")
@@ -119,6 +132,9 @@ func (s *Service) InitStudent(ctx context.Context, user model.Users, req request
 		Years:          req.NumberOfYears,
 		StartDate:      startDate,
 		GroupID:        req.GroupID,
+		Category:       req.Category,
+		Phone:          req.Phone,
+		EndDate:        startDate.AddDate(4, 0, 0),
 	}
 
 	var progresses []model.SemesterProgress

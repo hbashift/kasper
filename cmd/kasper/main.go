@@ -47,22 +47,19 @@ func main() {
 
 	clientRepo := repository.NewClientRepository()
 	dissertationRepo := repository.NewDissertationRepository()
-	marksRepo := repository.NewMarksRepository()
-	scienceRepo := repository.NewScientificRepository()
-	loadRepo := repository.NewTeachingLoadRepository()
 	enumRepo := repository.NewEnumRepository()
 	usersRepo := repository.NewUsersRepository()
 	tokenRepo := repository.NewTokenRepository()
 
-	studentService := student.NewService(dissertationRepo, loadRepo, scienceRepo, marksRepo, clientRepo, tokenRepo, usersRepo, db)
+	studentService := student.NewService(db)
 	adminService := admin.NewService(clientRepo, db)
 	supervisorService := supervisor.NewService(dissertationRepo, tokenRepo, usersRepo, clientRepo, db)
 	authenticationService := authentication.NewService(tokenRepo, usersRepo, db)
 	emailService := email.NewService("SENDER", "PASSWORD", "smtp.gmail.com", db, usersRepo, clientRepo)
 	enumService := enum.NewService(enumRepo, db)
 
-	studentHandler := student_handler.NewHandler(studentService, studentService, studentService, studentService, authenticationService, emailService, enumService, adminService)
-	supervisorHandler := supervisor_handler.NewHandler(studentService, studentService, studentService, authenticationService, supervisorService, studentService, emailService)
+	studentHandler := student_handler.NewHandler(studentService, authenticationService, emailService, enumService, adminService)
+	supervisorHandler := supervisor_handler.NewHandler(studentService, authenticationService, supervisorService, studentService, emailService)
 	adminHandler := administator_handler.NewHandler(adminService, authenticationService, enumService, supervisorService)
 	authenticationHandler := authorization_handler.NewHandler(authenticationService, studentService)
 

@@ -31,7 +31,7 @@ type (
 	}
 
 	MarksRepository interface {
-		UpsertMarkTx(ctx context.Context, tx pgx.Tx, model model.Marks) error
+		UpsertAttestationMarkTx(ctx context.Context, tx pgx.Tx, model model.Marks) error
 	}
 )
 

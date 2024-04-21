@@ -11,7 +11,13 @@ import (
 	"github.com/samber/lo"
 )
 
-func MapDissertationPageFromDomain(dProgresses []model.SemesterProgress, dDissertations []model.Dissertations, dTitles []model.DissertationTitles, dFeedbacks []model.Feedback) DissertationPageResponse {
+func MapDissertationPageFromDomain(
+	dProgresses []model.SemesterProgress,
+	dDissertations []model.Dissertations,
+	dTitles []model.DissertationTitles,
+	dFeedbacks []model.Feedback,
+	dComments []model.StudentsCommentary,
+) DissertationPageResponse {
 	progresses := make([]SemesterProgressResponse, 0, len(dProgresses))
 	for _, dProgress := range dProgresses {
 		progress := SemesterProgressResponse{}
@@ -44,11 +50,20 @@ func MapDissertationPageFromDomain(dProgresses []model.SemesterProgress, dDisser
 		feedbacks = append(feedbacks, feedback)
 	}
 
+	comments := make([]StudentComment, 0, len(dComments))
+	for _, dComment := range dComments {
+		comment := StudentComment{}
+		comment.SetDomainData(dComment)
+
+		comments = append(comments, comment)
+	}
+
 	return DissertationPageResponse{
 		SemesterProgress:      progresses,
 		DissertationsStatuses: dissertations,
 		DissertationTitles:    titles,
 		Feedback:              feedbacks,
+		StudentsComments:      comments,
 	}
 }
 

@@ -6,6 +6,7 @@ import (
 
 	"uir_draft/internal/generated/new_kasper/new_uir/public/model"
 	"uir_draft/internal/pkg/models"
+	"uir_draft/internal/pkg/repository"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4"
@@ -23,7 +24,7 @@ type (
 	}
 
 	MarksRepository interface {
-		GetStudentMarksTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]model.Marks, error)
+		GetStudentsAttestationMarksTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]model.Marks, error)
 	}
 
 	StudentRepository interface {
@@ -106,6 +107,17 @@ type (
 		GetIndividualLoadsTx(ctx context.Context, tx pgx.Tx, loadsIDs []uuid.UUID) ([]model.IndividualStudentsLoad, error)
 		GetTeachingLoadStatusIDs(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]uuid.UUID, error)
 	}
+
+	CommentRepository interface {
+		UpsertStudentsComment(ctx context.Context, tx pgx.Tx, comment model.StudentsCommentary) error
+		GetStudentsCommentaries(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]model.StudentsCommentary, error)
+
+		UpsertDissertationComment(ctx context.Context, tx pgx.Tx, comment model.DissertationCommentary) error
+		GetDissertationComments(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]model.DissertationCommentary, error)
+
+		UpsertPlanComment(ctx context.Context, tx pgx.Tx, plan model.DissertationPlans) error
+		GetPlanComments(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]model.DissertationPlans, error)
+	}
 )
 
 type Service struct {
@@ -116,9 +128,20 @@ type Service struct {
 	studRepo         StudentRepository
 	tokenRepo        TokenRepository
 	userRepo         UsersRepository
+	commentRepo      CommentRepository
 	db               *pgxpool.Pool
 }
 
-func NewService(dissertationRepo DissertationRepository, loadRepo TeachingLoadRepository, scienceRepo ScientificRepository, marksRepo MarksRepository, studRepo StudentRepository, tokenRepo TokenRepository, userRepo UsersRepository, db *pgxpool.Pool) *Service {
-	return &Service{dissertationRepo: dissertationRepo, loadRepo: loadRepo, scienceRepo: scienceRepo, marksRepo: marksRepo, studRepo: studRepo, tokenRepo: tokenRepo, userRepo: userRepo, db: db}
+func NewService(db *pgxpool.Pool) *Service {
+	return &Service{
+		dissertationRepo: repository.NewDissertationRepository(),
+		loadRepo:         repository.NewTeachingLoadRepository(),
+		scienceRepo:      repository.NewScientificRepository(),
+		marksRepo:        repository.NewMarksRepository(),
+		studRepo:         repository.NewClientRepository(),
+		tokenRepo:        repository.NewTokenRepository(),
+		userRepo:         repository.NewUsersRepository(),
+		commentRepo:      repository.NewCommentaryRepository(),
+		db:               db,
+	}
 }

@@ -123,6 +123,24 @@ type DissertationPageResponse struct {
 	Feedback []FeedbackResponse `json:"feedback,omitempty" format:"array"`
 	// Список научных руководителей
 	Supervisors []SupervisorFull `json:"supervisors,omitempty" format:"array"`
+	// Сопроводительные комментарии студента научному руководителю за каждый семестр
+	StudentsComments []StudentComment `json:"students_comments" format:"array"`
+}
+
+type StudentComment struct {
+	CommentaryID uuid.UUID `json:"commentary_id,omitempty"`
+	StudentID    uuid.UUID `json:"student_id,omitempty"`
+	Semester     int32     `json:"semester,omitempty"`
+	Commentary   *string   `json:"commentary,omitempty"`
+	CommentedAt  time.Time `json:"commented_at"`
+}
+
+func (s *StudentComment) SetDomainData(data model.StudentsCommentary) {
+	s.CommentaryID = data.CommentaryID
+	s.StudentID = data.StudentID
+	s.Semester = data.Semester
+	s.Commentary = data.Commentary
+	s.CommentedAt = data.CommentedAt
 }
 
 type SemesterProgressResponse struct {
@@ -236,8 +254,8 @@ type DissertationTitlesResponse struct {
 	Semester int32 `json:"semester,omitempty"`
 	// Объект исследования
 	ResearchObject string `json:"research_object"`
-	// Приказ исследования
-	ResearchOrder string `json:"research_order"`
+	// Предмет исследования
+	ResearchSubject string `json:"research_subject"`
 }
 
 func (d *DissertationTitlesResponse) SetDomainData(titles model.DissertationTitles) {
@@ -249,7 +267,7 @@ func (d *DissertationTitlesResponse) SetDomainData(titles model.DissertationTitl
 	d.AcceptedAt = titles.AcceptedAt
 	d.Semester = titles.Semester
 	d.ResearchObject = titles.ResearchObject
-	d.ResearchOrder = titles.ResearchOrder
+	d.ResearchSubject = titles.ResearchSubject
 }
 
 //func (d *DissertationTitlesResponse) ToDomain() model.DissertationTitles {

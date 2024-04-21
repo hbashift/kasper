@@ -28,7 +28,11 @@ type Student struct {
 	// Флаг о возможности редактировать всю информацию
 	CanEdit bool `db:"students.can_edit" json:"can_edit,omitempty"`
 	// Процент выполнения диссертации
-	Progressiveness int32 `db:"students.progressiveness" json:"progress"`
+	Progressiveness int32  `db:"students.progressiveness" json:"progress"`
+	Phone           string `db:"students.phone" json:"phone"`
+	// Бюджетное или платное обучение
+	Category string    `db:"students.category" json:"category"`
+	EndDate  time.Time `db:"students.end_date" json:"end_date"`
 }
 
 type Supervisor struct {
@@ -39,6 +43,7 @@ type Supervisor struct {
 	Faculty    *string `db:"faculty" json:"faculty"`
 	Department *string `db:"department" json:"department"`
 	Degree     *string `db:"degree" json:"degree"`
+	Phone      string  `db:"phone" json:"phone"`
 }
 
 type SupervisorProfile struct {
@@ -50,6 +55,7 @@ type SupervisorProfile struct {
 	Department *string `db:"supervisors.department" json:"department"`
 	Degree     *string `db:"supervisors.degree" json:"degree"`
 	Email      string  `db:"users.email" json:"email"`
+	Phone      string  `db:"supervisors.phone" json:"phone"`
 }
 
 type StudentProfile struct {
@@ -76,6 +82,10 @@ type StudentProfile struct {
 	// Процент выполнения диссертации
 	Progressiveness int32  `db:"students.progressiveness" json:"progress"`
 	Email           string `db:"users.email" json:"email"`
+	Phone           string `db:"students.phone" json:"phone"`
+	// Бюджетное или платное обучение
+	Category string    `db:"students.category" json:"category"`
+	EndDate  time.Time `db:"students.end_date" json:"end_date"`
 }
 
 type SupervisorFull struct {
@@ -83,6 +93,7 @@ type SupervisorFull struct {
 	SupervisorID uuid.UUID `db:"supervisor_id" json:"supervisor_id" format:"uuid"`
 	// Полное имя руководителя
 	FullName string `db:"full_name" json:"full_name"`
+	Phone    string `db:"phone" json:"phone"`
 	// Дата начала
 	StartAt time.Time `db:"start_at" json:"start_at" format:"date-time"`
 	// Дата окончания (пустое, если руководитель актуальный)

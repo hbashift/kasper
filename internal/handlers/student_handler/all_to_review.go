@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"uir_draft/internal/generated/new_kasper/new_uir/public/model"
+	"uir_draft/internal/handlers/student_handler/request_models"
 	"uir_draft/internal/pkg/models"
 
 	"github.com/gin-gonic/gin"
@@ -27,7 +28,13 @@ func (h *StudentHandler) AllToReview(ctx *gin.Context) {
 		return
 	}
 
-	err = h.dissertation.AllToStatus(ctx, user.KasperID, model.ApprovalStatus_OnReview.String())
+	reqBody := request_models.AllToReviewRequest{}
+	if err = ctx.ShouldBindJSON(&reqBody); err != nil {
+		ctx.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
+	err = h.dissertation.AllToStatus(ctx, user.KasperID, reqBody.Commentary, model.ApprovalStatus_OnReview.String())
 	if err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)
 		return

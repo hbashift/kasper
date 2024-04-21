@@ -2218,6 +2218,107 @@ const docTemplate = `{
                 }
             }
         },
+        "/students/report/comments/{token}": {
+            "get": {
+                "description": "Получение комментариев к диссертации аспиранта",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "NEW"
+                ],
+                "summary": "Получение комментариев к диссертации аспиранта",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Токе пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Данные",
+                        "schema": {
+                            "$ref": "#/definitions/models.ReportComments"
+                        }
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Внесение комментариев для диссертации аспиранта",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "NEW"
+                ],
+                "summary": "Внесение комментариев для диссертации аспиранта",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Токе пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Запрос",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.UpsertReportCommentsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/students/review/{token}": {
             "post": {
                 "description": "Переводит научные работы, пед нагрузку и диссертацию в статус 'in_review', который является блокирующим",
@@ -2725,6 +2826,62 @@ const docTemplate = `{
                 }
             }
         },
+        "/supervisor/student/profile/{token}": {
+            "put": {
+                "description": "Получение профиля студента",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Supervisor"
+                ],
+                "summary": "Получение профиля студента",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Данные",
+                        "schema": {
+                            "$ref": "#/definitions/models.StudentProfile"
+                        }
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/supervisors/profile/{token}": {
             "get": {
                 "description": "Получение профиля научного руководителя",
@@ -2749,6 +2906,65 @@ const docTemplate = `{
                         "description": "Данные",
                         "schema": {
                             "$ref": "#/definitions/models.SupervisorProfile"
+                        }
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/supervisors/report/comments/{token}": {
+            "put": {
+                "description": "Получение комментариев к диссертации аспиранта (от лица научника)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "NEW"
+                ],
+                "summary": "Получение комментариев к диссертации аспиранта (от лица научника)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Токе пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Запрос",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.GetByStudentID"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Данные",
+                        "schema": {
+                            "$ref": "#/definitions/models.ReportComments"
                         }
                     },
                     "204": {
@@ -3416,6 +3632,34 @@ const docTemplate = `{
                 }
             }
         },
+        "models.DissertationComment": {
+            "type": "object",
+            "properties": {
+                "commentary": {
+                    "type": "string"
+                },
+                "commentary_id": {
+                    "type": "string"
+                },
+                "semester": {
+                    "type": "integer"
+                },
+                "student_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.DissertationCommentRequest": {
+            "type": "object",
+            "properties": {
+                "commentary": {
+                    "type": "string"
+                },
+                "semester": {
+                    "type": "integer"
+                }
+            }
+        },
         "models.DissertationPageResponse": {
             "type": "object",
             "properties": {
@@ -3459,6 +3703,14 @@ const docTemplate = `{
                         }
                     ]
                 },
+                "students_comments": {
+                    "description": "Сопроводительные комментарии студента научному руководителю за каждый семестр",
+                    "type": "array",
+                    "items": {
+                        "format": "array",
+                        "$ref": "#/definitions/models.StudentComment"
+                    }
+                },
                 "supervisors": {
                     "description": "Список научных руководителей",
                     "type": "array",
@@ -3466,6 +3718,34 @@ const docTemplate = `{
                         "format": "array",
                         "$ref": "#/definitions/models.SupervisorFull"
                     }
+                }
+            }
+        },
+        "models.DissertationPlan": {
+            "type": "object",
+            "properties": {
+                "plan_id": {
+                    "type": "string"
+                },
+                "plan_text": {
+                    "type": "string"
+                },
+                "semester": {
+                    "type": "integer"
+                },
+                "student_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.DissertationPlanRequest": {
+            "type": "object",
+            "properties": {
+                "plan_text": {
+                    "type": "string"
+                },
+                "semester": {
+                    "type": "integer"
                 }
             }
         },
@@ -3486,8 +3766,8 @@ const docTemplate = `{
                     "description": "Объект исследования",
                     "type": "string"
                 },
-                "research_order": {
-                    "description": "Приказ исследования",
+                "research_subject": {
+                    "description": "Предмет исследования",
                     "type": "string"
                 },
                 "semester": {
@@ -3713,6 +3993,23 @@ const docTemplate = `{
                 "wos": {
                     "description": "Индекс WoS",
                     "type": "boolean"
+                }
+            }
+        },
+        "models.ReportComments": {
+            "type": "object",
+            "properties": {
+                "dissertation_comments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.DissertationComment"
+                    }
+                },
+                "dissertation_plans": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.DissertationPlan"
+                    }
                 }
             }
         },
@@ -3985,12 +4282,22 @@ const docTemplate = `{
                     "description": "Флаг о возможности редактировать всю информацию",
                     "type": "boolean"
                 },
+                "category": {
+                    "description": "Бюджетное или платное обучение",
+                    "type": "string"
+                },
+                "end_date": {
+                    "type": "string"
+                },
                 "full_name": {
                     "description": "Полное имя",
                     "type": "string"
                 },
                 "group_name": {
                     "description": "Название группы",
+                    "type": "string"
+                },
+                "phone": {
                     "type": "string"
                 },
                 "progress": {
@@ -4038,6 +4345,26 @@ const docTemplate = `{
                 }
             }
         },
+        "models.StudentComment": {
+            "type": "object",
+            "properties": {
+                "commentary": {
+                    "type": "string"
+                },
+                "commentary_id": {
+                    "type": "string"
+                },
+                "commented_at": {
+                    "type": "string"
+                },
+                "semester": {
+                    "type": "integer"
+                },
+                "student_id": {
+                    "type": "string"
+                }
+            }
+        },
         "models.StudentProfile": {
             "type": "object",
             "properties": {
@@ -4049,7 +4376,14 @@ const docTemplate = `{
                     "description": "Флаг о возможности редактировать всю информацию",
                     "type": "boolean"
                 },
+                "category": {
+                    "description": "Бюджетное или платное обучение",
+                    "type": "string"
+                },
                 "email": {
+                    "type": "string"
+                },
+                "end_date": {
                     "type": "string"
                 },
                 "full_name": {
@@ -4058,6 +4392,9 @@ const docTemplate = `{
                 },
                 "group_name": {
                     "description": "Название группы",
+                    "type": "string"
+                },
+                "phone": {
                     "type": "string"
                 },
                 "progress": {
@@ -4142,6 +4479,9 @@ const docTemplate = `{
                     "description": "Полное имя руководителя",
                     "type": "string"
                 },
+                "phone": {
+                    "type": "string"
+                },
                 "supervisor_id": {
                     "description": "ID научного руководителя",
                     "type": "string",
@@ -4159,6 +4499,9 @@ const docTemplate = `{
                 },
                 "full_name": {
                     "description": "Полное имя руководителя",
+                    "type": "string"
+                },
+                "phone": {
                     "type": "string"
                 },
                 "start_at": {
@@ -4190,6 +4533,9 @@ const docTemplate = `{
                 },
                 "full_name": {
                     "description": "Полное имя руководителя",
+                    "type": "string"
+                },
+                "phone": {
                     "type": "string"
                 },
                 "supervisor_id": {
@@ -4367,11 +4713,18 @@ const docTemplate = `{
                 "number_of_years": {
                     "type": "integer"
                 },
+                "phone": {
+                    "type": "string"
+                },
                 "specialization_id": {
                     "description": "Department       string     ` + "`" + `json:\"department,omitempty\"` + "`" + `",
                     "type": "integer"
                 },
                 "start_date": {
+                    "type": "string"
+                },
+                "studying_category": {
+                    "description": "Бюджетное или платное обучение",
                     "type": "string"
                 },
                 "supervisor_id": {
@@ -4487,7 +4840,7 @@ const docTemplate = `{
                 "research_object": {
                     "type": "string"
                 },
-                "research_order": {
+                "research_subject": {
                     "type": "string"
                 },
                 "title": {
@@ -4544,6 +4897,17 @@ const docTemplate = `{
                 },
                 "semester": {
                     "type": "integer"
+                }
+            }
+        },
+        "request_models.UpsertReportCommentsRequest": {
+            "type": "object",
+            "properties": {
+                "dissertation_comment": {
+                    "$ref": "#/definitions/models.DissertationCommentRequest"
+                },
+                "dissertation_plan": {
+                    "$ref": "#/definitions/models.DissertationPlanRequest"
                 }
             }
         },
