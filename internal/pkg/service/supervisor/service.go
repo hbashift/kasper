@@ -5,6 +5,7 @@ import (
 
 	"uir_draft/internal/generated/new_kasper/new_uir/public/model"
 	"uir_draft/internal/pkg/models"
+	"uir_draft/internal/pkg/repository"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4"
@@ -31,7 +32,10 @@ type (
 	}
 
 	MarksRepository interface {
-		UpsertAttestationMarkTx(ctx context.Context, tx pgx.Tx, model model.Marks) error
+		GetStudentsAttestationMarksTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]model.Marks, error)
+		GetStudentsExamResults(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]model.Exams, error)
+		GetStudentsSupervisorMarks(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]model.SupervisorMarks, error)
+		UpsertStudentsSupervisorMark(ctx context.Context, tx pgx.Tx, model model.SupervisorMarks) error
 	}
 )
 
@@ -40,9 +44,17 @@ type Service struct {
 	tokenRepo        TokenRepository
 	userRepo         UsersRepository
 	client           ClientRepository
+	marksRepo        MarksRepository
 	db               *pgxpool.Pool
 }
 
-func NewService(dissertationRepo FeedbackRepository, tokenRepo TokenRepository, userRepo UsersRepository, client ClientRepository, db *pgxpool.Pool) *Service {
-	return &Service{dissertationRepo: dissertationRepo, tokenRepo: tokenRepo, userRepo: userRepo, client: client, db: db}
+func NewService(db *pgxpool.Pool) *Service {
+	return &Service{
+		dissertationRepo: repository.NewDissertationRepository(),
+		tokenRepo:        repository.NewTokenRepository(),
+		userRepo:         repository.NewUsersRepository(),
+		client:           repository.NewClientRepository(),
+		marksRepo:        repository.NewMarksRepository(),
+		db:               db,
+	}
 }

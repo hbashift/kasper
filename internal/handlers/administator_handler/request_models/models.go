@@ -29,3 +29,7 @@ type DeleteEnumRequest struct {
 type GetBySupervisorID struct {
 	SupervisorID uuid.UUID `json:"supervisor_id"`
 }
+
+type UpsertAttestationMarksRequest struct {
+	AttestationMarks []models.AttestationMarkRequest `json:"attestation_marks"`
+}

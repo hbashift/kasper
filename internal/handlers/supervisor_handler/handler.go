@@ -47,6 +47,8 @@ type (
 		GetSupervisorsStudents(ctx context.Context, supervisorID uuid.UUID) ([]models.Student, error)
 
 		GetSupervisorProfile(ctx context.Context, supervisorID uuid.UUID) (models.SupervisorProfile, error)
+
+		UpsertSupervisorMark(ctx context.Context, studentID, supervisorID uuid.UUID, semester, mark int32) error
 	}
 
 	EmailService interface {
@@ -56,6 +58,7 @@ type (
 	StudentService interface {
 		GetStudentStatus(ctx context.Context, studentID uuid.UUID) (models.Student, error)
 		GetStudentsProfile(ctx context.Context, studentID uuid.UUID) (models.StudentProfile, error)
+		GetAllMarks(ctx context.Context, studentID uuid.UUID) (models.AllMarks, error)
 	}
 )
 
@@ -70,8 +73,8 @@ type SupervisorHandler struct {
 	report        ReportService
 }
 
-func NewHandler(dissertation *student.Service, authenticator Authenticator, supervisor SupervisorService, student StudentService, email EmailService) *SupervisorHandler {
-	return &SupervisorHandler{dissertation: dissertation, scientific: dissertation, load: dissertation, authenticator: authenticator, supervisor: supervisor, student: student, email: email}
+func NewHandler(dissertation *student.Service, authenticator Authenticator, supervisor SupervisorService, email EmailService) *SupervisorHandler {
+	return &SupervisorHandler{dissertation: dissertation, scientific: dissertation, load: dissertation, authenticator: authenticator, supervisor: supervisor, student: dissertation, email: email}
 }
 
 func (h *SupervisorHandler) authenticate(ctx *gin.Context) (*model.Users, error) {

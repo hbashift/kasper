@@ -29,6 +29,39 @@ definitions:
         description: Объем
         type: string
     type: object
+  models.AllMarks:
+    properties:
+      attestation_marks:
+        items:
+          $ref: '#/definitions/models.AttestationMark'
+        type: array
+      exams:
+        items:
+          $ref: '#/definitions/models.Exam'
+        type: array
+      supervisor_marks:
+        items:
+          $ref: '#/definitions/models.SupervisorMark'
+        type: array
+    type: object
+  models.AttestationMark:
+    properties:
+      mark:
+        type: integer
+      semester:
+        type: integer
+      student_id:
+        type: string
+    type: object
+  models.AttestationMarkRequest:
+    properties:
+      mark:
+        type: integer
+      semester:
+        type: integer
+      student_id:
+        type: string
+    type: object
   models.AuthorizeRequest:
     properties:
       email:
@@ -277,6 +310,30 @@ definitions:
       updated_at:
         description: Дата последнего обновления
         type: string
+    type: object
+  models.Exam:
+    properties:
+      exam_id:
+        type: string
+      exam_type:
+        type: integer
+      mark:
+        type: integer
+      semester:
+        type: integer
+      set_at:
+        type: string
+      student_id:
+        type: string
+    type: object
+  models.ExamRequest:
+    properties:
+      exam_type:
+        type: integer
+      mark:
+        type: integer
+      semester:
+        type: integer
     type: object
   models.FeedbackRequest:
     properties:
@@ -773,6 +830,19 @@ definitions:
         format: uuid
         type: string
     type: object
+  models.SupervisorMark:
+    properties:
+      mark:
+        type: integer
+      mark_id:
+        type: string
+      semester:
+        type: integer
+      student_id:
+        type: string
+      supervisor_id:
+        type: string
+    type: object
   models.SupervisorProfile:
     properties:
       degree:
@@ -968,6 +1038,13 @@ definitions:
         description: Семестр
         type: integer
     type: object
+  request_models.UpsertAttestationMarksRequest:
+    properties:
+      attestation_marks:
+        items:
+          $ref: '#/definitions/models.AttestationMarkRequest'
+        type: array
+    type: object
   request_models.UpsertClassroomLoadRequest:
     properties:
       loads:
@@ -1002,6 +1079,13 @@ definitions:
         type: string
       title:
         type: string
+    type: object
+  request_models.UpsertExamResultsRequest:
+    properties:
+      marks:
+        items:
+          $ref: '#/definitions/models.ExamRequest'
+        type: array
     type: object
   request_models.UpsertFeedbackRequest:
     properties:
@@ -1059,6 +1143,15 @@ definitions:
         type: array
       semester:
         type: integer
+    type: object
+  request_models.UpsertSupervisorMarkRequest:
+    properties:
+      mark:
+        type: integer
+      semester:
+        type: integer
+      student_id:
+        type: string
     type: object
 host: localhost:8080
 info:
@@ -1331,6 +1424,45 @@ paths:
       summary: Получение пар аспирант/руководитель
       tags:
       - Admin
+  /administrator/student/attestation/marks/{token}:
+    post:
+      consumes:
+      - application/json
+      description: Апсерт оценок за аттестацию (от комиссии)
+      parameters:
+      - description: Данные
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.UpsertAttestationMarksRequest'
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Апсерт оценок за аттестацию (от комиссии)
+      tags:
+      - NEW
   /administrator/student/change/{token}:
     post:
       consumes:
@@ -2179,6 +2311,45 @@ paths:
       summary: Отправление на проверку названия диссертации
       tags:
       - Student.Dissertation
+  /students/exams/{token}:
+    post:
+      consumes:
+      - application/json
+      description: Внесение оценок за кандидатские экзамены
+      parameters:
+      - description: Данные
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.UpsertExamResultsRequest'
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Внесение оценок за кандидатские экзамены
+      tags:
+      - NEW
   /students/info/{token}:
     get:
       consumes:
@@ -2525,6 +2696,43 @@ paths:
       summary: Отправление на проверку пед нагрузки
       tags:
       - Student.TeachingLoad
+  /students/marks/{token}:
+    get:
+      consumes:
+      - application/json
+      description: Получение всех оценок
+      parameters:
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Данные
+          schema:
+            $ref: '#/definitions/models.AllMarks'
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Получение всех оценок
+      tags:
+      - NEW
   /students/report/comments/{token}:
     get:
       consumes:
@@ -3269,6 +3477,79 @@ paths:
       summary: Получение страницы информации для страницы научных работ аспиранта
       tags:
       - Supervisor.TeachingLoad
+  /supervisors/student/marks/{token}:
+    post:
+      consumes:
+      - application/json
+      description: Проставление оценки научником
+      parameters:
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      - description: Запрос
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.UpsertSupervisorMarkRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Проставление оценки научником
+      tags:
+      - NEW
+    put:
+      consumes:
+      - application/json
+      description: Получение всех оценок
+      parameters:
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Данные
+          schema:
+            $ref: '#/definitions/models.AllMarks'
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Получение всех оценок
+      tags:
+      - NEW
   /supervisors/student/review/{token}:
     post:
       description: Проставление статуса для всего для аспиранта

@@ -26,3 +26,9 @@ type DownloadDissertationRequestSup struct {
 	// Семестр
 	Semester int32 `json:"semester,omitempty"`
 }
+
+type UpsertSupervisorMarkRequest struct {
+	StudentID uuid.UUID `json:"student_id,omitempty"`
+	Semester  int32     `json:"semester,omitempty"`
+	Mark      int32     `json:"mark,omitempty"`
+}

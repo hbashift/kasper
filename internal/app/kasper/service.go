@@ -49,6 +49,9 @@ type (
 
 		GetReportComments(ctx *gin.Context)
 		UpsertReportComments(ctx *gin.Context)
+
+		GetAllMarks(ctx *gin.Context)
+		UpsertExamResults(ctx *gin.Context)
 	}
 
 	SupervisorHandler interface {
@@ -68,6 +71,9 @@ type (
 		GetStudentProfile(ctx *gin.Context)
 
 		GetStudentsReportComments(ctx *gin.Context)
+
+		GetAllMarks(ctx *gin.Context)
+		UpsertSupervisorMark(ctx *gin.Context)
 	}
 
 	AdministratorHandler interface {
@@ -89,6 +95,8 @@ type (
 		DeleteSpecializations(ctx *gin.Context)
 
 		GetSupervisorProfile(ctx *gin.Context)
+
+		UpsertAttestationMarks(ctx *gin.Context)
 	}
 
 	AuthenticationHandler interface {
@@ -171,6 +179,9 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 	r.GET("/students/report/comments/:token", h.student.GetReportComments)
 	r.POST("/students/report/comments/:token", h.student.UpsertReportComments)
 
+	r.GET("/students/marks/:token", h.student.GetAllMarks)
+	r.POST("/students/exams/:token", h.student.UpsertExamResults)
+
 	// SupervisorHandler init
 	r.GET("/supervisors/student/list/:token", h.supervisor.GetStudentsList)
 
@@ -189,6 +200,9 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 	r.PUT("/supervisor/student/profile/:token", h.supervisor.GetStudentProfile)
 
 	r.PUT("/supervisors/report/comments/:token", h.supervisor.GetStudentsReportComments)
+
+	r.PUT("/supervisors/student/marks/:token", h.supervisor.GetAllMarks)
+	r.POST("/supervisors/student/marks/:token", h.supervisor.UpsertSupervisorMark)
 
 	// AdministratorHandler init
 	r.POST("/administrator/student/change/:token", h.administrator.ChangeSupervisor)
@@ -212,6 +226,8 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 	r.PUT("/administrator/enum/groups/:token", h.administrator.DeleteGroups)
 
 	r.PUT("/administrator/supervisors/profile/:token", h.administrator.GetSupervisorProfile)
+
+	r.POST("/administrator/student/attestation/marks/:token", h.administrator.UpsertAttestationMarks)
 
 	// AuthenticationHandler init
 	r.POST("/authorize", h.authentication.Authorize)

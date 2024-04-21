@@ -25,6 +25,9 @@ type (
 
 	MarksRepository interface {
 		GetStudentsAttestationMarksTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]model.Marks, error)
+		GetStudentsExamResults(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]model.Exams, error)
+		UpsertExamResults(ctx context.Context, tx pgx.Tx, models []model.Exams) error
+		GetStudentsSupervisorMarks(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]model.SupervisorMarks, error)
 	}
 
 	StudentRepository interface {

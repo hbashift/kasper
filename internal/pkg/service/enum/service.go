@@ -5,6 +5,7 @@ import (
 
 	"uir_draft/internal/generated/new_kasper/new_uir/public/model"
 	"uir_draft/internal/pkg/models"
+	"uir_draft/internal/pkg/repository"
 
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -30,8 +31,8 @@ type Service struct {
 	db   *pgxpool.Pool
 }
 
-func NewService(repo EnumRepository, db *pgxpool.Pool) *Service {
-	return &Service{repo: repo, db: db}
+func NewService(db *pgxpool.Pool) *Service {
+	return &Service{repo: repository.NewEnumRepository(), db: db}
 }
 
 func (s *Service) GetSpecializations(ctx context.Context) ([]models.Specialization, error) {

@@ -20,10 +20,11 @@ type (
 		SetStudentFlags(ctx context.Context, students []models.SetStudentsFlags) error
 		GetSupervisors(ctx context.Context) ([]models.Supervisor, error)
 		GetStudentsList(ctx context.Context) ([]models.Student, error)
+		UpsertAttestationMarks(ctx context.Context, marks []models.AttestationMarkRequest) error
 	}
 
 	Authenticator interface {
-		// Authenticate - проводит аутентификацию пользователя
+		// AuthenticateWithUserType - проводит аутентификацию пользователя
 		AuthenticateWithUserType(ctx context.Context, token, userType string) (*model.Users, error)
 	}
 

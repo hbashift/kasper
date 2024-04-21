@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"uir_draft/internal/generated/new_kasper/new_uir/public/model"
+	"uir_draft/internal/pkg/repository"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4"
@@ -29,6 +30,10 @@ type Service struct {
 	db        *pgxpool.Pool
 }
 
-func NewService(tokenRepo TokenRepository, userRepo UsersRepository, db *pgxpool.Pool) *Service {
-	return &Service{tokenRepo: tokenRepo, userRepo: userRepo, db: db}
+func NewService(db *pgxpool.Pool) *Service {
+	return &Service{
+		tokenRepo: repository.NewTokenRepository(),
+		userRepo:  repository.NewUsersRepository(),
+		db:        db,
+	}
 }

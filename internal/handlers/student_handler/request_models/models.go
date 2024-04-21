@@ -95,3 +95,7 @@ type UpsertReportCommentsRequest struct {
 	DissertationComment models.DissertationCommentRequest `json:"dissertation_comment"`
 	DissertationPlan    models.DissertationPlanRequest    `json:"dissertation_plan"`
 }
+
+type UpsertExamResultsRequest struct {
+	Marks []models.ExamRequest `json:"marks,omitempty"`
+}

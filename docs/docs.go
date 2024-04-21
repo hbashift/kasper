@@ -414,6 +414,65 @@ const docTemplate = `{
                 }
             }
         },
+        "/administrator/student/attestation/marks/{token}": {
+            "post": {
+                "description": "Апсерт оценок за аттестацию (от комиссии)",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "NEW"
+                ],
+                "summary": "Апсерт оценок за аттестацию (от комиссии)",
+                "parameters": [
+                    {
+                        "description": "Данные",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.UpsertAttestationMarksRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/administrator/student/change/{token}": {
             "post": {
                 "description": "Изменение научного руководителя у студента",
@@ -1696,6 +1755,65 @@ const docTemplate = `{
                 }
             }
         },
+        "/students/exams/{token}": {
+            "post": {
+                "description": "Внесение оценок за кандидатские экзамены",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "NEW"
+                ],
+                "summary": "Внесение оценок за кандидатские экзамены",
+                "parameters": [
+                    {
+                        "description": "Данные",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.UpsertExamResultsRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/students/info/{token}": {
             "get": {
                 "description": "Получение данных о студенте (статус студента)",
@@ -2189,6 +2307,62 @@ const docTemplate = `{
                             "items": {
                                 "$ref": "#/definitions/models.TeachingLoad"
                             }
+                        }
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/students/marks/{token}": {
+            "get": {
+                "description": "Получение всех оценок",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "NEW"
+                ],
+                "summary": "Получение всех оценок",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Данные",
+                        "schema": {
+                            "$ref": "#/definitions/models.AllMarks"
                         }
                     },
                     "204": {
@@ -3340,6 +3514,116 @@ const docTemplate = `{
                 }
             }
         },
+        "/supervisors/student/marks/{token}": {
+            "put": {
+                "description": "Получение всех оценок",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "NEW"
+                ],
+                "summary": "Получение всех оценок",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Данные",
+                        "schema": {
+                            "$ref": "#/definitions/models.AllMarks"
+                        }
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Проставление оценки научником",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "NEW"
+                ],
+                "summary": "Проставление оценки научником",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Запрос",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.UpsertSupervisorMarkRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/supervisors/student/review/{token}": {
             "post": {
                 "description": "Проставление статуса для всего для аспиранта",
@@ -3492,6 +3776,57 @@ const docTemplate = `{
                 },
                 "volume": {
                     "description": "Объем",
+                    "type": "string"
+                }
+            }
+        },
+        "models.AllMarks": {
+            "type": "object",
+            "properties": {
+                "attestation_marks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.AttestationMark"
+                    }
+                },
+                "exams": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Exam"
+                    }
+                },
+                "supervisor_marks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.SupervisorMark"
+                    }
+                }
+            }
+        },
+        "models.AttestationMark": {
+            "type": "object",
+            "properties": {
+                "mark": {
+                    "type": "integer"
+                },
+                "semester": {
+                    "type": "integer"
+                },
+                "student_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.AttestationMarkRequest": {
+            "type": "object",
+            "properties": {
+                "mark": {
+                    "type": "integer"
+                },
+                "semester": {
+                    "type": "integer"
+                },
+                "student_id": {
                     "type": "string"
                 }
             }
@@ -3838,6 +4173,43 @@ const docTemplate = `{
                 "updated_at": {
                     "description": "Дата последнего обновления",
                     "type": "string"
+                }
+            }
+        },
+        "models.Exam": {
+            "type": "object",
+            "properties": {
+                "exam_id": {
+                    "type": "string"
+                },
+                "exam_type": {
+                    "type": "integer"
+                },
+                "mark": {
+                    "type": "integer"
+                },
+                "semester": {
+                    "type": "integer"
+                },
+                "set_at": {
+                    "type": "string"
+                },
+                "student_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.ExamRequest": {
+            "type": "object",
+            "properties": {
+                "exam_type": {
+                    "type": "integer"
+                },
+                "mark": {
+                    "type": "integer"
+                },
+                "semester": {
+                    "type": "integer"
                 }
             }
         },
@@ -4516,6 +4888,26 @@ const docTemplate = `{
                 }
             }
         },
+        "models.SupervisorMark": {
+            "type": "object",
+            "properties": {
+                "mark": {
+                    "type": "integer"
+                },
+                "mark_id": {
+                    "type": "string"
+                },
+                "semester": {
+                    "type": "integer"
+                },
+                "student_id": {
+                    "type": "string"
+                },
+                "supervisor_id": {
+                    "type": "string"
+                }
+            }
+        },
         "models.SupervisorProfile": {
             "type": "object",
             "properties": {
@@ -4802,6 +5194,17 @@ const docTemplate = `{
                 }
             }
         },
+        "request_models.UpsertAttestationMarksRequest": {
+            "type": "object",
+            "properties": {
+                "attestation_marks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.AttestationMarkRequest"
+                    }
+                }
+            }
+        },
         "request_models.UpsertClassroomLoadRequest": {
             "type": "object",
             "properties": {
@@ -4845,6 +5248,17 @@ const docTemplate = `{
                 },
                 "title": {
                     "type": "string"
+                }
+            }
+        },
+        "request_models.UpsertExamResultsRequest": {
+            "type": "object",
+            "properties": {
+                "marks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ExamRequest"
+                    }
                 }
             }
         },
@@ -4923,6 +5337,20 @@ const docTemplate = `{
                 },
                 "semester": {
                     "type": "integer"
+                }
+            }
+        },
+        "request_models.UpsertSupervisorMarkRequest": {
+            "type": "object",
+            "properties": {
+                "mark": {
+                    "type": "integer"
+                },
+                "semester": {
+                    "type": "integer"
+                },
+                "student_id": {
+                    "type": "string"
                 }
             }
         }

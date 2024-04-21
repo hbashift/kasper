@@ -105,3 +105,32 @@ func (s *Service) GetStudentsList(ctx context.Context) ([]models.Student, error)
 
 	return students, nil
 }
+
+func (s *Service) UpsertAttestationMarks(ctx context.Context, marks []models.AttestationMarkRequest) error {
+	dMarks := make([]model.Marks, 0, len(marks))
+	for _, mark := range marks {
+		if mark.Mark < 0 {
+			return errors.Wrap(models.ErrInvalidValue, "UpsertAttestationMarks()")
+		}
+
+		dMark := model.Marks{
+			StudentID: mark.StudentID,
+			Mark:      mark.Mark,
+			Semester:  mark.Semester,
+		}
+
+		dMarks = append(dMarks, dMark)
+	}
+
+	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
+		if err := s.marksRepo.UpsertAttestationMarksTx(ctx, tx, dMarks); err != nil {
+			return err
+		}
+
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "UpsertAttestationMarks()")
+	}
+
+	return nil
+}

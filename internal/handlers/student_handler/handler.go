@@ -99,13 +99,20 @@ type (
 	AdminService interface {
 		GetSupervisors(ctx context.Context) ([]models.Supervisor, error)
 	}
+
+	MarksService interface {
+		GetAllMarks(ctx context.Context, studentID uuid.UUID) (models.AllMarks, error)
+		UpsertExamResults(ctx context.Context, studentID uuid.UUID, exams []models.ExamRequest) error
+	}
 )
 
 type StudentHandler struct {
-	student       StudentService
-	dissertation  DissertationService
-	scientific    ScientificWorksService
-	load          TeachingLoadService
+	student      StudentService
+	dissertation DissertationService
+	scientific   ScientificWorksService
+	load         TeachingLoadService
+	mark         MarksService
+
 	authenticator Authenticator
 	email         EmailService
 	enum          EnumService
@@ -113,8 +120,23 @@ type StudentHandler struct {
 	report        ReportService
 }
 
-func NewHandler(student *student.Service, authenticator Authenticator, email EmailService, enum EnumService, admin AdminService) *StudentHandler {
-	return &StudentHandler{student: student, dissertation: student, scientific: student, load: student, authenticator: authenticator, email: email, enum: enum, admin: admin}
+func NewHandler(
+	student *student.Service,
+	authenticator Authenticator,
+	email EmailService,
+	enum EnumService,
+	admin AdminService,
+) *StudentHandler {
+	return &StudentHandler{
+		student:       student,
+		dissertation:  student,
+		scientific:    student,
+		load:          student,
+		authenticator: authenticator,
+		mark:          student,
+		email:         email,
+		enum:          enum,
+		admin:         admin}
 }
 
 func (h *StudentHandler) authenticate(ctx *gin.Context) (*model.Users, error) {
