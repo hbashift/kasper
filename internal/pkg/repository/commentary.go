@@ -134,7 +134,7 @@ func (r *CommentaryRepository) GetDissertationComments(ctx context.Context, tx p
 func (r *CommentaryRepository) UpsertPlanComment(ctx context.Context, tx pgx.Tx, plan model.DissertationPlans) error {
 	sql := table.DissertationPlans.
 		INSERT().
-		MODELS(plan)
+		MODEL(plan)
 
 	if plan.PlanText != nil {
 		sql = sql.
