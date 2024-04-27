@@ -73,8 +73,22 @@ type SupervisorHandler struct {
 	report        ReportService
 }
 
-func NewHandler(dissertation *student.Service, authenticator Authenticator, supervisor SupervisorService, email EmailService) *SupervisorHandler {
-	return &SupervisorHandler{dissertation: dissertation, scientific: dissertation, load: dissertation, authenticator: authenticator, supervisor: supervisor, student: dissertation, email: email}
+func NewHandler(
+	dissertation *student.Service,
+	authenticator Authenticator,
+	supervisor SupervisorService,
+	email EmailService,
+) *SupervisorHandler {
+	return &SupervisorHandler{
+		dissertation:  dissertation,
+		scientific:    dissertation,
+		load:          dissertation,
+		authenticator: authenticator,
+		supervisor:    supervisor,
+		student:       dissertation,
+		email:         email,
+		report:        dissertation,
+	}
 }
 
 func (h *SupervisorHandler) authenticate(ctx *gin.Context) (*model.Users, error) {

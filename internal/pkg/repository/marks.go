@@ -181,6 +181,7 @@ func scanExams(row pgx.Row, target *model.Exams) error {
 		&target.ExamID,
 		&target.StudentID,
 		&target.ExamType,
+		&target.Semester,
 		&target.Mark,
 		&target.SetAt,
 	)
