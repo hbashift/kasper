@@ -80,7 +80,7 @@ func (r *CommentaryRepository) GetStudentsCommentaries(ctx context.Context, tx p
 func (r *CommentaryRepository) UpsertDissertationComment(ctx context.Context, tx pgx.Tx, comment model.DissertationCommentary) error {
 	sql := table.DissertationCommentary.
 		INSERT().
-		MODELS(comment)
+		MODEL(comment)
 
 	if comment.Commentary != nil {
 		sql = sql.
