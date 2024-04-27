@@ -22,3 +22,11 @@ type ChangePasswordRequest struct {
 	OldPassword string
 	NewPassword string
 }
+
+type FirstSupervisorRegistry struct {
+	FullName   string `json:"full_name,omitempty"`
+	Phone      string `json:"phone,omitempty"`
+	Faculty    string `json:"faculty,omitempty"`
+	Department string `json:"department,omitempty"`
+	Degree     string `json:"degree,omitempty"`
+}

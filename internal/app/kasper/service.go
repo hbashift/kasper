@@ -97,11 +97,15 @@ type (
 		GetSupervisorProfile(ctx *gin.Context)
 
 		UpsertAttestationMarks(ctx *gin.Context)
+
+		AddStudents(ctx *gin.Context)
+		AddSupervisors(ctx *gin.Context)
 	}
 
 	AuthenticationHandler interface {
 		Authorize(ctx *gin.Context)
 		FirstStudentRegistry(ctx *gin.Context)
+		FirstSupervisorRegistry(ctx *gin.Context)
 		ChangePassword(ctx *gin.Context)
 		TokenCheck(ctx *gin.Context)
 	}
@@ -229,10 +233,14 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 
 	r.POST("/administrator/student/attestation/marks/:token", h.administrator.UpsertAttestationMarks)
 
+	r.POST("/administrator/users/students/:token", h.administrator.AddStudents)
+	r.POST("/administrator/users/supervisors/:token", h.administrator.AddSupervisors)
+
 	// AuthenticationHandler init
 	r.POST("/authorize", h.authentication.Authorize)
 
 	r.POST("/authorize/registration/student/:token", h.authentication.FirstStudentRegistry)
+	r.POST("/authorize/registration/supervisor/:token", h.authentication.FirstSupervisorRegistry)
 
 	r.POST("/authorize/password/change/:token", h.authentication.ChangePassword)
 	r.GET("/authorize/token/check/:token", h.authentication.TokenCheck)

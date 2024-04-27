@@ -1,6 +1,7 @@
 package authorization_handler
 
 import (
+	"log"
 	"net/http"
 
 	"uir_draft/internal/handlers/authorization_handler/request_models"
@@ -9,13 +10,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// FirstStudentRegistry
+// FirstSupervisorRegistry
 //
-//	@Summary		Первичная регистрация студента
+//	@Summary		Первичная регистрация научного руководителя
 //
-//	@Description	Первичная регистрация студента
+//	@Description	Первичная регистрация научного руководителя
 //
-//	@Tags			Authorization
+//	@Tags			NEW
 //	@Accept			json
 //
 //	@Produce		json
@@ -27,26 +28,23 @@ import (
 //	@Failure		401		{string}	string								"Токен протух"
 //	@Failure		204		{string}	string								"Нет записей в БД"
 //	@Failure		500		{string}	string								"Ошибка на стороне сервера"
-//	@Router			/authorize/registration/student/{token} [post]
-func (h *AuthorizationHandler) FirstStudentRegistry(ctx *gin.Context) {
+//	@Router			/authorize/registration/supervisor/{token} [post]
+func (h *AuthorizationHandler) FirstSupervisorRegistry(ctx *gin.Context) {
 	user, err := h.authenticateStudent(ctx)
 	if err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)
 		return
 	}
 
-	reqBody := request_models.FirstStudentRegistry{}
+	reqBody := request_models.FirstSupervisorRegistry{}
 	if err = ctx.ShouldBindJSON(&reqBody); err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
-	if reqBody.SupervisorID == nil {
-		ctx.AbortWithStatus(http.StatusBadRequest)
-		return
-	}
+	log.Printf("first_student_registry request body: %v", reqBody)
 
-	if err = h.student.InitStudent(ctx, *user, reqBody); err != nil {
+	if err = h.supervisor.InitSupervisor(ctx, *user, reqBody); err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)
 		return
 	}

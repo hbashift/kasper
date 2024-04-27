@@ -14,3 +14,8 @@ type SetStudentsFlags struct {
 	StudyingStatus string    `json:"studying_status,omitempty" enums:"academic,graduated,studying,expelled"`
 	CanEdit        bool      `json:"can_edit"`
 }
+
+type UsersCredentials struct {
+	Email    string
+	Password string
+}

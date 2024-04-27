@@ -304,6 +304,57 @@ func (r *DissertationRepository) UpsertFeedbackTx(ctx context.Context, tx pgx.Tx
 	return nil
 }
 
+func (r *DissertationRepository) GetStudentsProgressiveness(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]model.Progressiveness, error) {
+	stmt, args := table.Progressiveness.
+		SELECT(table.Progressiveness.AllColumns).
+		WHERE(table.Progressiveness.StudentID.EQ(postgres.UUID(studentID))).
+		Sql()
+
+	rows, err := tx.Query(ctx, stmt, args...)
+	if err != nil {
+		return nil, errors.Wrap(err, "GetStudentsProgressiveness()")
+	}
+
+	progresses := make([]model.Progressiveness, 0)
+	for rows.Next() {
+		progress := model.Progressiveness{}
+		if err := scanProgressiveness(rows, &progress); err != nil {
+			return nil, errors.Wrap(err, "GetStudentsProgressiveness(): scanning row")
+		}
+
+		progresses = append(progresses, progress)
+	}
+
+	return progresses, nil
+}
+
+func (r *DissertationRepository) UpsertStudentsProgressiveness(ctx context.Context, tx pgx.Tx, progress model.Progressiveness) error {
+	stmt, args := table.Progressiveness.
+		INSERT().
+		MODEL(progress).
+		ON_CONFLICT(table.Progressiveness.StudentID, table.Progressiveness.Semester).
+		DO_UPDATE(postgres.
+			SET(table.Progressiveness.Progressiveness.SET(postgres.Int32(progress.Progressiveness))),
+		).
+		Sql()
+
+	_, err := tx.Exec(ctx, stmt, args...)
+	if err != nil {
+		return errors.Wrap(err, "UpsertStudentsProgressiveness()")
+	}
+
+	return nil
+}
+
+func scanProgressiveness(row pgx.Row, target *model.Progressiveness) error {
+	return row.Scan(
+		&target.ProgressID,
+		&target.StudentID,
+		&target.Semester,
+		&target.Progressiveness,
+	)
+}
+
 func scanSemesterProgress(row pgx.Row, target *model.SemesterProgress) error {
 	return row.Scan(
 		&target.ProgressID,

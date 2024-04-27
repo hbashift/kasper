@@ -12,18 +12,19 @@ import (
 )
 
 func MapDissertationPageFromDomain(
-	dProgresses []model.SemesterProgress,
+	dSemesterProgresses []model.SemesterProgress,
 	dDissertations []model.Dissertations,
 	dTitles []model.DissertationTitles,
 	dFeedbacks []model.Feedback,
 	dComments []model.StudentsCommentary,
+	dProgresses []model.Progressiveness,
 ) DissertationPageResponse {
-	progresses := make([]SemesterProgressResponse, 0, len(dProgresses))
-	for _, dProgress := range dProgresses {
-		progress := SemesterProgressResponse{}
-		progress.SetDomainData(dProgress)
+	semesterProgresses := make([]SemesterProgressResponse, 0, len(dSemesterProgresses))
+	for _, dSemesterProgress := range dSemesterProgresses {
+		semesterProgress := SemesterProgressResponse{}
+		semesterProgress.SetDomainData(dSemesterProgress)
 
-		progresses = append(progresses, progress)
+		semesterProgresses = append(semesterProgresses, semesterProgress)
 	}
 
 	dissertations := make([]DissertationsResponse, 0, len(dDissertations))
@@ -58,12 +59,21 @@ func MapDissertationPageFromDomain(
 		comments = append(comments, comment)
 	}
 
+	progresses := make([]Progressiveness, 0, len(dProgresses))
+	for _, dProgress := range dProgresses {
+		progress := Progressiveness{}
+		progress.SetDomainData(dProgress)
+
+		progresses = append(progresses, progress)
+	}
+
 	return DissertationPageResponse{
-		SemesterProgress:      progresses,
+		SemesterProgress:      semesterProgresses,
 		DissertationsStatuses: dissertations,
 		DissertationTitles:    titles,
 		Feedback:              feedbacks,
 		StudentsComments:      comments,
+		Progresses:            progresses,
 	}
 }
 

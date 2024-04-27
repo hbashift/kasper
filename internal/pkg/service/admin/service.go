@@ -23,21 +23,27 @@ type (
 		SetStudentFlags(ctx context.Context, tx pgx.Tx, studyingStatus model.StudentStatus, canEdit bool, studentID uuid.UUID) error
 	}
 
+	ClientsRepository interface {
+		InsertUsersTx(ctx context.Context, tx pgx.Tx, users []model.Users) error
+	}
+
 	MarksRepository interface {
 		UpsertAttestationMarksTx(ctx context.Context, tx pgx.Tx, models []model.Marks) error
 	}
 )
 
 type Service struct {
-	clientRepo UsersRepository
+	usersRepo  UsersRepository
 	marksRepo  MarksRepository
+	clientRepo ClientsRepository
 	db         *pgxpool.Pool
 }
 
 func NewService(db *pgxpool.Pool) *Service {
 	return &Service{
-		clientRepo: repository.NewClientRepository(),
+		usersRepo:  repository.NewClientRepository(),
 		marksRepo:  repository.NewMarksRepository(),
+		clientRepo: repository.NewUsersRepository(),
 		db:         db,
 	}
 }

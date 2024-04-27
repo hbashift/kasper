@@ -16,6 +16,7 @@ type Supervisors struct {
 	UserID       uuid.UUID
 	FullName     *string
 	Phone        string
+	Archived     bool
 	Faculty      *string
 	Department   *string
 	Degree       *string

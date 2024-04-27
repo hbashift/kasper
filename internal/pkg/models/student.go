@@ -26,10 +26,8 @@ type Student struct {
 	// Название группы
 	GroupName string `db:"groups.group_name" json:"group_name,omitempty"`
 	// Флаг о возможности редактировать всю информацию
-	CanEdit bool `db:"students.can_edit" json:"can_edit,omitempty"`
-	// Процент выполнения диссертации
-	Progressiveness int32  `db:"students.progressiveness" json:"progress"`
-	Phone           string `db:"students.phone" json:"phone"`
+	CanEdit bool   `db:"students.can_edit" json:"can_edit,omitempty"`
+	Phone   string `db:"students.phone" json:"phone"`
 	// Бюджетное или платное обучение
 	Category string    `db:"students.category" json:"category"`
 	EndDate  time.Time `db:"students.end_date" json:"end_date"`
@@ -44,6 +42,7 @@ type Supervisor struct {
 	Department *string `db:"department" json:"department"`
 	Degree     *string `db:"degree" json:"degree"`
 	Phone      string  `db:"phone" json:"phone"`
+	Archived   bool    `db:"archived" json:"archived"`
 }
 
 type SupervisorProfile struct {
@@ -56,6 +55,7 @@ type SupervisorProfile struct {
 	Degree     *string `db:"supervisors.degree" json:"degree"`
 	Email      string  `db:"users.email" json:"email"`
 	Phone      string  `db:"supervisors.phone" json:"phone"`
+	Archived   bool    `db:"archived" json:"archived"`
 }
 
 type StudentProfile struct {
@@ -78,11 +78,9 @@ type StudentProfile struct {
 	// Название группы
 	GroupName string `db:"groups.group_name" json:"group_name,omitempty"`
 	// Флаг о возможности редактировать всю информацию
-	CanEdit bool `db:"students.can_edit" json:"can_edit,omitempty"`
-	// Процент выполнения диссертации
-	Progressiveness int32  `db:"students.progressiveness" json:"progress"`
-	Email           string `db:"users.email" json:"email"`
-	Phone           string `db:"students.phone" json:"phone"`
+	CanEdit bool   `db:"students.can_edit" json:"can_edit,omitempty"`
+	Email   string `db:"users.email" json:"email"`
+	Phone   string `db:"students.phone" json:"phone"`
 	// Бюджетное или платное обучение
 	Category string    `db:"students.category" json:"category"`
 	EndDate  time.Time `db:"students.end_date" json:"end_date"`

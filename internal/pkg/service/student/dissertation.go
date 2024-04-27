@@ -52,7 +52,19 @@ func (s *Service) GetDissertationPage(ctx context.Context, studentID uuid.UUID) 
 			return err
 		}
 
-		page = models.MapDissertationPageFromDomain(semesterProgress, dissertationsStatuses, disTitles, feedback, comments)
+		progresses, err := s.dissertationRepo.GetStudentsProgressiveness(ctx, tx, studentID)
+		if err != nil {
+			return err
+		}
+
+		page = models.MapDissertationPageFromDomain(
+			semesterProgress,
+			dissertationsStatuses,
+			disTitles,
+			feedback,
+			comments,
+			progresses,
+		)
 		page.Supervisors = supervisors
 		page.StudentStatus = student
 
@@ -230,7 +242,23 @@ func (s *Service) UpdateStudentsProgressiveness(ctx context.Context, studentID u
 			return err
 		}
 
-		if student.Progressiveness > progress {
+		if student.Status == model.ApprovalStatus_OnReview || student.Status == model.ApprovalStatus_Approved {
+			return models.ErrNonMutableStatus
+		}
+
+		progressiveness, err := s.dissertationRepo.GetStudentsProgressiveness(ctx, tx, studentID)
+		if err != nil {
+			return err
+		}
+
+		var beforeProgress int32
+		for _, pr := range progressiveness {
+			if pr.Semester == student.ActualSemester {
+				beforeProgress = pr.Progressiveness
+			}
+		}
+
+		if beforeProgress > progress {
 			return models.ErrHigherValueExpected
 		}
 
@@ -238,7 +266,12 @@ func (s *Service) UpdateStudentsProgressiveness(ctx context.Context, studentID u
 			return models.ErrNonMutableStatus
 		}
 
-		err = s.studRepo.UpdateStudentsProgressiveness(ctx, tx, studentID, progress)
+		err = s.dissertationRepo.UpsertStudentsProgressiveness(ctx, tx, model.Progressiveness{
+			ProgressID:      uuid.New(),
+			StudentID:       studentID,
+			Semester:        student.ActualSemester,
+			Progressiveness: progress,
+		})
 		if err != nil {
 			return err
 		}

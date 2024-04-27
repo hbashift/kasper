@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"uir_draft/internal/generated/new_kasper/new_uir/public/model"
+	"uir_draft/internal/handlers/administator_handler/request_models"
 	"uir_draft/internal/pkg/helpers"
 	"uir_draft/internal/pkg/models"
 
@@ -21,6 +22,7 @@ type (
 		GetSupervisors(ctx context.Context) ([]models.Supervisor, error)
 		GetStudentsList(ctx context.Context) ([]models.Student, error)
 		UpsertAttestationMarks(ctx context.Context, marks []models.AttestationMarkRequest) error
+		AddUsers(ctx context.Context, users request_models.AddUsersRequest, userType model.UserType) ([]models.UsersCredentials, error)
 	}
 
 	Authenticator interface {
@@ -42,6 +44,10 @@ type (
 		GetSupervisorsStudents(ctx context.Context, supervisorID uuid.UUID) ([]models.Student, error)
 		GetSupervisorProfile(ctx context.Context, supervisorID uuid.UUID) (models.SupervisorProfile, error)
 	}
+
+	EmailService interface {
+		SendInviteEmails(ctx context.Context, credentials []models.UsersCredentials, templatePath string) error
+	}
 )
 
 type AdministratorHandler struct {
@@ -49,10 +55,23 @@ type AdministratorHandler struct {
 	authenticator Authenticator
 	enum          EnumService
 	supervisor    SupervisorService
+	email         EmailService
 }
 
-func NewHandler(user UserService, authenticator Authenticator, enum EnumService, supervisor SupervisorService) *AdministratorHandler {
-	return &AdministratorHandler{user: user, authenticator: authenticator, enum: enum, supervisor: supervisor}
+func NewHandler(
+	user UserService,
+	authenticator Authenticator,
+	enum EnumService,
+	supervisor SupervisorService,
+	email EmailService,
+) *AdministratorHandler {
+	return &AdministratorHandler{
+		user:          user,
+		authenticator: authenticator,
+		enum:          enum,
+		supervisor:    supervisor,
+		email:         email,
+	}
 }
 
 func (h *AdministratorHandler) authenticate(ctx *gin.Context) (*model.Users, error) {

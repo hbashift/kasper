@@ -57,8 +57,8 @@ func main() {
 
 	studentHandler := student_handler.NewHandler(studentService, authenticationService, emailService, enumService, adminService)
 	supervisorHandler := supervisor_handler.NewHandler(studentService, authenticationService, supervisorService, emailService)
-	adminHandler := administator_handler.NewHandler(adminService, authenticationService, enumService, supervisorService)
-	authenticationHandler := authorization_handler.NewHandler(authenticationService, studentService)
+	adminHandler := administator_handler.NewHandler(adminService, authenticationService, enumService, supervisorService, emailService)
+	authenticationHandler := authorization_handler.NewHandler(authenticationService, studentService, supervisorService)
 
 	server := kasper.NewHTTPServer(studentHandler, supervisorHandler, adminHandler, authenticationHandler)
 	r := server.InitRouter()

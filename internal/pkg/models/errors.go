@@ -17,6 +17,7 @@ var (
 	ErrWrongPassword         = errors.New("wrong password")
 	ErrHigherValueExpected   = errors.New("expected higher value")
 	ErrInvalidValue          = errors.New("invalid value")
+	ErrInvalidFormat         = errors.New("invalid format")
 )
 
 func MapErrorToCode(err error) int {

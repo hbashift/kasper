@@ -2,20 +2,25 @@ package admin
 
 import (
 	"context"
+	"math/rand"
+	"net/mail"
 	"strings"
 
 	"uir_draft/internal/generated/new_kasper/new_uir/public/model"
+	"uir_draft/internal/handlers/administator_handler/request_models"
 	"uir_draft/internal/pkg/models"
 
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4"
 	"github.com/pkg/errors"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func (s *Service) GetStudentSupervisorPairs(ctx context.Context) ([]models.StudentSupervisorPair, error) {
 	pairs := make([]models.StudentSupervisorPair, 0)
 
 	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
-		dPairs, err := s.clientRepo.GetStudentSupervisorPairsTx(ctx, tx)
+		dPairs, err := s.usersRepo.GetStudentSupervisorPairsTx(ctx, tx)
 		if err != nil {
 			return err
 		}
@@ -33,7 +38,7 @@ func (s *Service) GetStudentSupervisorPairs(ctx context.Context) ([]models.Stude
 func (s *Service) ChangeSupervisor(ctx context.Context, pairs []models.ChangeSupervisor) error {
 	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
 		for _, pair := range pairs {
-			err := s.clientRepo.SetNewSupervisorTx(ctx, tx, pair.StudentID, pair.SupervisorID)
+			err := s.usersRepo.SetNewSupervisorTx(ctx, tx, pair.StudentID, pair.SupervisorID)
 			if err != nil {
 				return err
 			}
@@ -55,7 +60,7 @@ func (s *Service) SetStudentFlags(ctx context.Context, students []models.SetStud
 				return err
 			}
 
-			if err := s.clientRepo.SetStudentFlags(ctx, tx, dStatus, student.CanEdit, student.StudentID); err != nil {
+			if err := s.usersRepo.SetStudentFlags(ctx, tx, dStatus, student.CanEdit, student.StudentID); err != nil {
 				return err
 			}
 		}
@@ -72,7 +77,7 @@ func (s *Service) GetSupervisors(ctx context.Context) ([]models.Supervisor, erro
 	sups := make([]models.Supervisor, 0)
 
 	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
-		dSups, err := s.clientRepo.GetSupervisorsTx(ctx, tx)
+		dSups, err := s.usersRepo.GetSupervisorsTx(ctx, tx)
 		if err != nil {
 			return err
 		}
@@ -91,7 +96,7 @@ func (s *Service) GetStudentsList(ctx context.Context) ([]models.Student, error)
 	students := make([]models.Student, 0)
 
 	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
-		dStudents, err := s.clientRepo.GetStudentsList(ctx, tx)
+		dStudents, err := s.usersRepo.GetStudentsList(ctx, tx)
 		if err != nil {
 			return err
 		}
@@ -133,4 +138,66 @@ func (s *Service) UpsertAttestationMarks(ctx context.Context, marks []models.Att
 	}
 
 	return nil
+}
+
+func (s *Service) AddUsers(ctx context.Context, users request_models.AddUsersRequest, userType model.UserType) ([]models.UsersCredentials, error) {
+	strEmails := users.UsersString
+
+	if strings.ContainsAny(strEmails, ",") || strings.ContainsAny(strEmails, "\n") {
+		return nil, errors.Wrap(models.ErrInvalidFormat, "AddUsers()")
+	}
+
+	emails := strings.Split(strEmails, ";")
+	userCreds := make([]models.UsersCredentials, len(emails))
+	domainUsers := make([]model.Users, len(emails))
+	for i := 0; i < len(emails); i++ {
+		_, err := mail.ParseAddress(emails[i])
+		if err != nil {
+			return nil, errors.Wrap(err, "AddUsers()")
+		}
+
+		email := emails[i]
+		password := randPassword(passwordLength)
+
+		userCred := models.UsersCredentials{
+			Email:    email,
+			Password: password,
+		}
+
+		userCreds = append(userCreds, userCred)
+
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+
+		domainUser := model.Users{
+			UserID:     uuid.New(),
+			Email:      email,
+			Password:   string(hashedPassword),
+			KasperID:   uuid.New(),
+			UserType:   userType,
+			Registered: false,
+		}
+
+		domainUsers = append(domainUsers, domainUser)
+	}
+
+	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
+		err := s.clientRepo.InsertUsersTx(ctx, tx, domainUsers)
+
+		return err
+	}); err != nil {
+		return nil, errors.Wrap(err, "AddUsers()")
+	}
+
+	return userCreds, nil
+}
+
+const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+const passwordLength = 10
+
+func randPassword(passwordLength int) string {
+	b := make([]byte, passwordLength)
+	for i := range b {
+		b[i] = letterBytes[rand.Int63()%int64(len(letterBytes))]
+	}
+	return string(b)
 }

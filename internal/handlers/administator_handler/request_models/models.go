@@ -33,3 +33,7 @@ type GetBySupervisorID struct {
 type UpsertAttestationMarksRequest struct {
 	AttestationMarks []models.AttestationMarkRequest `json:"attestation_marks"`
 }
+
+type AddUsersRequest struct {
+	UsersString string `json:"users"`
+}

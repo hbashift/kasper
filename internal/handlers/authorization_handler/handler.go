@@ -25,15 +25,28 @@ type (
 	StudentService interface {
 		InitStudent(ctx context.Context, user model.Users, req request_models.FirstStudentRegistry) error
 	}
+
+	SupervisorService interface {
+		InitSupervisor(ctx context.Context, user model.Users, registry request_models.FirstSupervisorRegistry) error
+	}
 )
 
 type AuthorizationHandler struct {
 	authenticator Authenticator
 	student       StudentService
+	supervisor    SupervisorService
 }
 
-func NewHandler(authenticator Authenticator, student StudentService) *AuthorizationHandler {
-	return &AuthorizationHandler{authenticator: authenticator, student: student}
+func NewHandler(
+	authenticator Authenticator,
+	student StudentService,
+	supervisor SupervisorService,
+) *AuthorizationHandler {
+	return &AuthorizationHandler{
+		authenticator: authenticator,
+		student:       student,
+		supervisor:    supervisor,
+	}
 }
 
 func (h *AuthorizationHandler) authenticateStudent(ctx *gin.Context) (*model.Users, error) {

@@ -54,6 +54,41 @@ type StudentData struct {
 	Type           string
 }
 
+type InviteData struct {
+	Email    string
+	Password string
+}
+
+func (s *Service) SendInviteEmails(_ context.Context, credentials []models.UsersCredentials, templatePath string) error {
+	for _, cred := range credentials {
+		var body bytes.Buffer
+		data := InviteData{
+			Email:    cred.Email,
+			Password: cred.Password,
+		}
+		t, err := template.ParseFiles(templatePath)
+		if err != nil {
+			return errors.Wrap(err, "parsing template")
+		}
+
+		err = t.Execute(&body, data)
+
+		m := gomail.NewMessage()
+		m.SetHeader("From", s.sender)
+		m.SetHeader("To", cred.Email)
+		m.SetHeader("Subject", "Приглашение на регистрацию в системе учета деятельности аспирантов")
+		m.SetBody("text/html", body.String())
+
+		d := gomail.NewDialer(s.host, 587, s.sender, s.password)
+
+		if err = d.DialAndSend(m); err != nil {
+			return errors.Wrap(err, "sending email")
+		}
+	}
+
+	return nil
+}
+
 func (s *Service) SendSupervisorEmail(ctx context.Context, studentID, supervisorID uuid.UUID, templatePath, tt, status string) error {
 	var data SupervisorData
 	var (

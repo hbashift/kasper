@@ -198,6 +198,11 @@ definitions:
           $ref: '#/definitions/models.FeedbackResponse'
           format: array
         type: array
+      progresses:
+        description: Прогресс написания диссертации по семестрам
+        items:
+          $ref: '#/definitions/models.Progressiveness'
+        type: array
       semester_progress:
         description: Прогресс написания диссертации
         items:
@@ -401,6 +406,17 @@ definitions:
         type: integer
       t_load_id:
         description: ID совокупности нагрузок за семестр
+        type: string
+    type: object
+  models.Progressiveness:
+    properties:
+      progress_id:
+        type: string
+      progressiveness:
+        type: integer
+      semester:
+        type: integer
+      student_id:
         type: string
     type: object
   models.Publication:
@@ -675,9 +691,6 @@ definitions:
         type: string
       phone:
         type: string
-      progress:
-        description: Процент выполнения диссертации
-        type: integer
       specialization:
         description: Специализация
         type: string
@@ -746,9 +759,6 @@ definitions:
         type: string
       phone:
         type: string
-      progress:
-        description: Процент выполнения диссертации
-        type: integer
       specialization:
         description: Специализация
         type: string
@@ -794,6 +804,8 @@ definitions:
     type: object
   models.Supervisor:
     properties:
+      archived:
+        type: boolean
       degree:
         type: string
       department:
@@ -845,6 +857,8 @@ definitions:
     type: object
   models.SupervisorProfile:
     properties:
+      archived:
+        type: boolean
       degree:
         type: string
       department:
@@ -920,6 +934,11 @@ definitions:
         items:
           $ref: '#/definitions/models.Specialization'
         type: array
+    type: object
+  request_models.AddUsersRequest:
+    properties:
+      users:
+        type: string
     type: object
   request_models.ChangePasswordRequest:
     properties:
@@ -1693,6 +1712,84 @@ paths:
       summary: Получение профиля научного руководителя
       tags:
       - Admin
+  /administrator/users/students/{token}:
+    post:
+      consumes:
+      - application/json
+      description: Добавление студентов
+      parameters:
+      - description: Данные
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.AddUsersRequest'
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Добавление студентов
+      tags:
+      - NEW
+  /administrator/users/supervisors/{token}:
+    post:
+      consumes:
+      - application/json
+      description: Добавление научных руководителей
+      parameters:
+      - description: Данные
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.AddUsersRequest'
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Добавление научных руководителей
+      tags:
+      - NEW
   /authorize:
     post:
       consumes:
@@ -1811,6 +1908,47 @@ paths:
       summary: Первичная регистрация студента
       tags:
       - Authorization
+  /authorize/registration/supervisor/{token}:
+    post:
+      consumes:
+      - application/json
+      description: Первичная регистрация научного руководителя
+      parameters:
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      - description: Данные
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.FirstStudentRegistry'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Первичная регистрация научного руководителя
+      tags:
+      - NEW
   /authorize/token/check/{token}:
     get:
       description: Проверка токена пользователя

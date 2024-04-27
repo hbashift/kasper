@@ -20,7 +20,7 @@ func NewUsersRepository() *UsersRepository {
 
 func (r *UsersRepository) InsertUsersTx(ctx context.Context, tx pgx.Tx, users []model.Users) error {
 	stmt, args := table.Users.
-		INSERT().
+		INSERT(table.Users.AllColumns.Except(table.Users.Registered)).
 		MODELS(users).
 		Sql()
 

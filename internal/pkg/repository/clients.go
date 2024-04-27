@@ -97,7 +97,6 @@ func (r *ClientRepository) InsertStudentTx(ctx context.Context, tx pgx.Tx, stude
 					table.Students.StudyingStatus,
 					table.Students.Status,
 					table.Students.CanEdit,
-					table.Students.Progressiveness,
 				),
 		).
 		VALUES(
@@ -166,7 +165,13 @@ func (r *ClientRepository) SetStudentFlags(ctx context.Context, tx pgx.Tx, study
 func (r *ClientRepository) GetSupervisorsStudentsTx(ctx context.Context, tx pgx.Tx, supervisorID uuid.UUID) ([]models.Student, error) {
 	stmt, args := table.Students.
 		SELECT(
-			table.Students.AllColumns.Except(table.Students.UserID, table.Students.SpecID, table.Students.GroupID),
+			table.Students.AllColumns.
+				Except(
+					table.Students.UserID,
+					table.Students.SpecID,
+					table.Students.GroupID,
+					table.Supervisors.Archived,
+				),
 			table.Specializations.Title,
 			table.Groups.GroupName,
 		).DISTINCT(table.Students.StudentID).
@@ -201,7 +206,13 @@ func (r *ClientRepository) GetSupervisorsStudentsTx(ctx context.Context, tx pgx.
 func (r *ClientRepository) GetStudentSupervisorPairsTx(ctx context.Context, tx pgx.Tx) ([]models.StudentSupervisorPair, error) {
 	stmt, args := table.Students.
 		SELECT(
-			table.Students.AllColumns.Except(table.Students.UserID, table.Students.SpecID, table.Students.GroupID),
+			table.Students.AllColumns.
+				Except(
+					table.Students.UserID,
+					table.Students.SpecID,
+					table.Students.GroupID,
+					table.Supervisors.Archived,
+				),
 			table.Specializations.Title,
 			table.Groups.GroupName,
 			table.Supervisors.SupervisorID,
@@ -371,21 +382,6 @@ func (r *ClientRepository) GetAllStudentsSupervisors(ctx context.Context, tx pgx
 	return supervisors, nil
 }
 
-func (r *ClientRepository) UpdateStudentsProgressiveness(ctx context.Context, tx pgx.Tx, studentID uuid.UUID, progress int32) error {
-	stmt, args := table.Students.
-		UPDATE(table.Students.Progressiveness).
-		SET(progress).
-		WHERE(table.Students.StudentID.EQ(postgres.UUID(studentID))).
-		Sql()
-
-	_, err := tx.Exec(ctx, stmt, args...)
-	if err != nil {
-		return errors.Wrap(err, "UpdateStudentsProgressiveness()")
-	}
-
-	return nil
-}
-
 func (r *ClientRepository) GetSupervisorProfile(ctx context.Context, tx pgx.Tx, supervisorID uuid.UUID) (models.SupervisorProfile, error) {
 	stmt, args := table.Supervisors.
 		SELECT(
@@ -432,6 +428,20 @@ func (r *ClientRepository) GetStudentProfile(ctx context.Context, tx pgx.Tx, stu
 	return student, nil
 }
 
+func (r *ClientRepository) InsertSupervisor(ctx context.Context, tx pgx.Tx, supervisor model.Supervisors) error {
+	stmt, args := table.Supervisors.
+		INSERT(table.Supervisors.AllColumns.Except(table.Supervisors.Archived)).
+		MODEL(supervisor).
+		Sql()
+
+	_, err := tx.Exec(ctx, stmt, args...)
+	if err != nil {
+		return errors.Wrap(err, "InsertSupervisor()")
+	}
+
+	return nil
+}
+
 func scanSupervisorProfile(row pgx.Row, target *models.SupervisorProfile) error {
 	return row.Scan(
 		&target.SupervisorID,
@@ -440,6 +450,7 @@ func scanSupervisorProfile(row pgx.Row, target *models.SupervisorProfile) error 
 		&target.Faculty,
 		&target.Department,
 		&target.Degree,
+		&target.Archived,
 		&target.Email,
 	)
 }
@@ -455,7 +466,6 @@ func scanStudentProfile(row pgx.Row, target *models.StudentProfile) error {
 		&target.StudyingStatus,
 		&target.Status,
 		&target.CanEdit,
-		&target.Progressiveness,
 		&target.Phone,
 		&target.Category,
 		&target.EndDate,
@@ -479,7 +489,6 @@ func scanStudent(row pgx.Row, target *model.Students) error {
 		&target.GroupID,
 		&target.Status,
 		&target.CanEdit,
-		&target.Progressiveness,
 		&target.Phone,
 		&target.Category,
 		&target.EndDate,
@@ -497,7 +506,6 @@ func scanStudentStatus(row pgx.Row, target *models.Student) error {
 		&target.StudyingStatus,
 		&target.Status,
 		&target.CanEdit,
-		&target.Progressiveness,
 		&target.Phone,
 		&target.Category,
 		&target.EndDate,
@@ -517,7 +525,6 @@ func scanStudentSupervisorPair(row pgx.Row, target *models.StudentSupervisorPair
 		&target.Student.StudyingStatus,
 		&target.Student.Status,
 		&target.Student.CanEdit,
-		&target.Student.Progressiveness,
 		&target.Student.Phone,
 		&target.Student.Category,
 		&target.Student.EndDate,
@@ -536,6 +543,7 @@ func scanSupervisor(row pgx.Row, target *models.Supervisor) error {
 		&target.Faculty,
 		&target.Department,
 		&target.Degree,
+		&target.Archived,
 	)
 }
 

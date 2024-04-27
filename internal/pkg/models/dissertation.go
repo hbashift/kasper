@@ -125,6 +125,22 @@ type DissertationPageResponse struct {
 	Supervisors []SupervisorFull `json:"supervisors,omitempty" format:"array"`
 	// Сопроводительные комментарии студента научному руководителю за каждый семестр
 	StudentsComments []StudentComment `json:"students_comments" format:"array"`
+	// Прогресс написания диссертации по семестрам
+	Progresses []Progressiveness `json:"progresses"`
+}
+
+type Progressiveness struct {
+	ProgressID      uuid.UUID `json:"progress_id,omitempty"`
+	StudentID       uuid.UUID `json:"student_id,omitempty"`
+	Semester        int32     `json:"semester,omitempty"`
+	Progressiveness int32     `json:"progressiveness,omitempty"`
+}
+
+func (p *Progressiveness) SetDomainData(data model.Progressiveness) {
+	p.ProgressID = data.ProgressID
+	p.StudentID = data.StudentID
+	p.Semester = data.Semester
+	p.Progressiveness = data.Progressiveness
 }
 
 type StudentComment struct {

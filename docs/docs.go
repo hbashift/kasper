@@ -821,6 +821,124 @@ const docTemplate = `{
                 }
             }
         },
+        "/administrator/users/students/{token}": {
+            "post": {
+                "description": "Добавление студентов",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "NEW"
+                ],
+                "summary": "Добавление студентов",
+                "parameters": [
+                    {
+                        "description": "Данные",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.AddUsersRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/administrator/users/supervisors/{token}": {
+            "post": {
+                "description": "Добавление научных руководителей",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "NEW"
+                ],
+                "summary": "Добавление научных руководителей",
+                "parameters": [
+                    {
+                        "description": "Данные",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.AddUsersRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/authorize": {
             "post": {
                 "description": "Авторизация в сервисе",
@@ -951,6 +1069,68 @@ const docTemplate = `{
                     "Authorization"
                 ],
                 "summary": "Первичная регистрация студента",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Данные",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.FirstStudentRegistry"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/authorize/registration/supervisor/{token}": {
+            "post": {
+                "description": "Первичная регистрация научного руководителя",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "NEW"
+                ],
+                "summary": "Первичная регистрация научного руководителя",
                 "parameters": [
                     {
                         "type": "string",
@@ -4022,6 +4202,13 @@ const docTemplate = `{
                         "$ref": "#/definitions/models.FeedbackResponse"
                     }
                 },
+                "progresses": {
+                    "description": "Прогресс написания диссертации по семестрам",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Progressiveness"
+                    }
+                },
                 "semester_progress": {
                     "description": "Прогресс написания диссертации",
                     "type": "array",
@@ -4303,6 +4490,23 @@ const docTemplate = `{
                 },
                 "t_load_id": {
                     "description": "ID совокупности нагрузок за семестр",
+                    "type": "string"
+                }
+            }
+        },
+        "models.Progressiveness": {
+            "type": "object",
+            "properties": {
+                "progress_id": {
+                    "type": "string"
+                },
+                "progressiveness": {
+                    "type": "integer"
+                },
+                "semester": {
+                    "type": "integer"
+                },
+                "student_id": {
                     "type": "string"
                 }
             }
@@ -4672,10 +4876,6 @@ const docTemplate = `{
                 "phone": {
                     "type": "string"
                 },
-                "progress": {
-                    "description": "Процент выполнения диссертации",
-                    "type": "integer"
-                },
                 "specialization": {
                     "description": "Специализация",
                     "type": "string"
@@ -4769,10 +4969,6 @@ const docTemplate = `{
                 "phone": {
                     "type": "string"
                 },
-                "progress": {
-                    "description": "Процент выполнения диссертации",
-                    "type": "integer"
-                },
                 "specialization": {
                     "description": "Специализация",
                     "type": "string"
@@ -4838,6 +5034,9 @@ const docTemplate = `{
         "models.Supervisor": {
             "type": "object",
             "properties": {
+                "archived": {
+                    "type": "boolean"
+                },
                 "degree": {
                     "type": "string"
                 },
@@ -4911,6 +5110,9 @@ const docTemplate = `{
         "models.SupervisorProfile": {
             "type": "object",
             "properties": {
+                "archived": {
+                    "type": "boolean"
+                },
                 "degree": {
                     "type": "string"
                 },
@@ -5015,6 +5217,14 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/models.Specialization"
                     }
+                }
+            }
+        },
+        "request_models.AddUsersRequest": {
+            "type": "object",
+            "properties": {
+                "users": {
+                    "type": "string"
                 }
             }
         },
