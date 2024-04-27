@@ -136,7 +136,9 @@ func NewHandler(
 		mark:          student,
 		email:         email,
 		enum:          enum,
-		admin:         admin}
+		admin:         admin,
+		report:        student,
+	}
 }
 
 func (h *StudentHandler) authenticate(ctx *gin.Context) (*model.Users, error) {
