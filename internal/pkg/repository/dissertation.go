@@ -215,7 +215,7 @@ func (r *DissertationRepository) InsertDissertationTitleTx(ctx context.Context, 
 
 	deleteStmt, args := table.DissertationTitles.
 		DELETE().
-		WHERE(table.DissertationTitles.Status.NOT_EQ(postgres.String(model.ApprovalStatus_Approved.String())).
+		WHERE(table.DissertationTitles.Status.NOT_EQ(postgres.NewEnumValue(model.ApprovalStatus_Approved.String())).
 			AND(table.DissertationTitles.StudentID.EQ(postgres.UUID(title.StudentID)))).
 		Sql()
 

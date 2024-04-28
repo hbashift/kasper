@@ -157,7 +157,7 @@ func (s *Service) AddUsers(ctx context.Context, users request_models.AddUsersReq
 		}
 
 		email := emails[i]
-		password := randPassword(passwordLength)
+		password := "123"
 
 		userCred := models.UsersCredentials{
 			Email:    email,
