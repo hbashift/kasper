@@ -208,23 +208,23 @@ func (r *DissertationRepository) GetDissertationDataBySemester(ctx context.Conte
 }
 
 func (r *DissertationRepository) InsertDissertationTitleTx(ctx context.Context, tx pgx.Tx, title model.DissertationTitles) error {
-	stmt, args := table.DissertationTitles.
+	insertStmt, insertArgs := table.DissertationTitles.
 		INSERT().
 		MODEL(title).
 		Sql()
 
-	deleteStmt, args := table.DissertationTitles.
+	deleteStmt, deleteArgs := table.DissertationTitles.
 		DELETE().
 		WHERE(table.DissertationTitles.Status.NOT_EQ(postgres.NewEnumValue(model.ApprovalStatus_Approved.String())).
 			AND(table.DissertationTitles.StudentID.EQ(postgres.UUID(title.StudentID)))).
 		Sql()
 
-	_, err := tx.Exec(ctx, deleteStmt, args...)
+	_, err := tx.Exec(ctx, deleteStmt, deleteArgs...)
 	if err != nil {
 		return errors.Wrap(err, "InsertDissertationTitleTx(): delete")
 	}
 
-	_, err = tx.Exec(ctx, stmt, args...)
+	_, err = tx.Exec(ctx, insertStmt, insertArgs...)
 	if err != nil {
 		return errors.Wrap(err, "InsertDissertationTitleTx(): insert")
 	}
