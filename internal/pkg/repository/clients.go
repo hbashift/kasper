@@ -540,10 +540,10 @@ func scanSupervisor(row pgx.Row, target *models.Supervisor) error {
 		&target.SupervisorID,
 		&target.FullName,
 		&target.Phone,
+		&target.Archived,
 		&target.Faculty,
 		&target.Department,
 		&target.Degree,
-		&target.Archived,
 	)
 }
 
