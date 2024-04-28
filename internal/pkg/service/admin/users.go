@@ -149,7 +149,7 @@ func (s *Service) AddUsers(ctx context.Context, users request_models.AddUsersReq
 
 	emails := strings.Split(strEmails, ";")
 	userCreds := make([]models.UsersCredentials, len(emails))
-	domainUsers := make([]model.Users, len(emails))
+	domainUsers := make([]model.Users, 0, len(emails))
 	for i := 0; i < len(emails); i++ {
 		_, err := mail.ParseAddress(emails[i])
 		if err != nil {
