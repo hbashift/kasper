@@ -7,6 +7,7 @@ import (
 	"uir_draft/internal/generated/new_kasper/new_uir/public/table"
 
 	"github.com/go-jet/jet/v2/postgres"
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4"
 	"github.com/pkg/errors"
 )
@@ -168,6 +169,59 @@ func (r *EnumRepository) DeleteGroupsTx(ctx context.Context, tx pgx.Tx, groupsID
 	}
 
 	return nil
+}
+
+func (r *EnumRepository) GetAmountOfSemesters(ctx context.Context, tx pgx.Tx) ([]model.SemesterCount, error) {
+	stmt, args := table.SemesterCount.
+		SELECT(table.SemesterCount.AllColumns).
+		Sql()
+
+	rows, err := tx.Query(ctx, stmt, args...)
+	if err != nil {
+		return nil, errors.Wrap(err, "GetAmountOfSemesters()")
+	}
+
+	counts := make([]model.SemesterCount, 0)
+
+	for rows.Next() {
+		count := model.SemesterCount{}
+		if err := scanSemesterCount(rows, &count); err != nil {
+			return nil, errors.Wrap(err, "GetAmountOfSemesters()")
+		}
+
+		counts = append(counts, count)
+	}
+
+	return counts, nil
+}
+
+func (r *EnumRepository) DeleteAmountOfSemesters(ctx context.Context, tx pgx.Tx, ids []uuid.UUID) error {
+	expressions := make([]postgres.Expression, 0)
+
+	for _, id := range ids {
+		exp := postgres.Expression(postgres.UUID(id))
+
+		expressions = append(expressions, exp)
+	}
+
+	stmt, args := table.SemesterCount.
+		DELETE().
+		WHERE(table.SemesterCount.CountID.IN(expressions...)).
+		Sql()
+
+	_, err := tx.Exec(ctx, stmt, args...)
+	if err != nil {
+		return errors.Wrap(err, "DeleteAmountOfSemesters()")
+	}
+
+	return nil
+}
+
+func scanSemesterCount(row pgx.Row, target *model.SemesterCount) error {
+	return row.Scan(
+		&target.CountID,
+		&target.Amount,
+	)
 }
 
 func scanSpecialization(row pgx.Row, target *model.Specializations) error {

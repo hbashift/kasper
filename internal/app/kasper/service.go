@@ -52,6 +52,8 @@ type (
 
 		GetAllMarks(ctx *gin.Context)
 		UpsertExamResults(ctx *gin.Context)
+
+		GetSemesterAmounts(ctx *gin.Context)
 	}
 
 	SupervisorHandler interface {
@@ -99,6 +101,11 @@ type (
 
 		AddStudents(ctx *gin.Context)
 		AddSupervisors(ctx *gin.Context)
+
+		DeleteSemesterAmounts(ctx *gin.Context)
+		GetSemesterAmounts(ctx *gin.Context)
+
+		ArchiveSupervisor(ctx *gin.Context)
 	}
 
 	AuthenticationHandler interface {
@@ -185,6 +192,8 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 	r.GET("/students/marks/:token", h.student.GetAllMarks)
 	r.POST("/students/exams/:token", h.student.UpsertExamResults)
 
+	r.GET("/students/enum/amounts/:token", h.student.GetSemesterAmounts)
+
 	// SupervisorHandler init
 	r.GET("/supervisors/student/list/:token", h.supervisor.GetStudentsList)
 
@@ -234,6 +243,10 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 
 	r.POST("/administrator/users/students/:token", h.administrator.AddStudents)
 	r.POST("/administrator/users/supervisors/:token", h.administrator.AddSupervisors)
+	r.GET("/administrator/enum/amounts/:token", h.administrator.GetSemesterAmounts)
+	r.PUT("/administrator/enum/amounts/:token", h.administrator.DeleteSemesterAmounts)
+
+	r.PUT("/administrator/supervisor/:token", h.administrator.ArchiveSupervisor)
 
 	// AuthenticationHandler init
 	r.POST("/authorize", h.authentication.Authorize)

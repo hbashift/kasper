@@ -191,6 +191,16 @@ func (s *Service) AddUsers(ctx context.Context, users request_models.AddUsersReq
 	return userCreds, nil
 }
 
+func (s *Service) ArchiveSupervisor(ctx context.Context, supervisorIDs []uuid.UUID) error {
+	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
+		return s.usersRepo.ArchiveSupervisor(ctx, tx, supervisorIDs)
+	}); err != nil {
+		return errors.Wrap(err, "GetSupervisorsStudents()")
+	}
+
+	return nil
+}
+
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 const passwordLength = 10
 

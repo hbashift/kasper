@@ -23,6 +23,7 @@ type (
 		GetStudentsList(ctx context.Context) ([]models.Student, error)
 		UpsertAttestationMarks(ctx context.Context, marks []models.AttestationMarkRequest) error
 		AddUsers(ctx context.Context, users request_models.AddUsersRequest, userType model.UserType) ([]models.UsersCredentials, error)
+		ArchiveSupervisor(ctx context.Context, supervisorIDs []uuid.UUID) error
 	}
 
 	Authenticator interface {
@@ -38,6 +39,9 @@ type (
 		GetGroups(ctx context.Context) ([]models.Group, error)
 		InsertGroups(ctx context.Context, groups []models.Group) error
 		DeleteGroups(ctx context.Context, groupIDs []int32) error
+
+		GetSemestersAmount(ctx context.Context) ([]models.SemesterAmount, error)
+		DeleteSemesterAmounts(ctx context.Context, ids []uuid.UUID) error
 	}
 
 	SupervisorService interface {

@@ -94,6 +94,7 @@ type (
 	EnumService interface {
 		GetSpecializations(ctx context.Context) ([]models.Specialization, error)
 		GetGroups(ctx context.Context) ([]models.Group, error)
+		GetSemestersAmount(ctx context.Context) ([]models.SemesterAmount, error)
 	}
 
 	AdminService interface {

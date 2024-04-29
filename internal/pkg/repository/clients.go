@@ -442,6 +442,29 @@ func (r *ClientRepository) InsertSupervisor(ctx context.Context, tx pgx.Tx, supe
 	return nil
 }
 
+func (r *ClientRepository) ArchiveSupervisor(ctx context.Context, tx pgx.Tx, supervisorIDs []uuid.UUID) error {
+	expressions := make([]postgres.Expression, 0)
+
+	for _, id := range supervisorIDs {
+		exp := postgres.Expression(postgres.UUID(id))
+
+		expressions = append(expressions, exp)
+	}
+
+	stmt, args := table.Supervisors.
+		UPDATE(table.Supervisors.Archived).
+		SET(true).
+		WHERE(table.Supervisors.SupervisorID.IN(expressions...)).
+		Sql()
+
+	_, err := tx.Exec(ctx, stmt, args...)
+	if err != nil {
+		return errors.Wrap(err, "ArchiveSupervisor()")
+	}
+
+	return nil
+}
+
 func scanSupervisorProfile(row pgx.Row, target *models.SupervisorProfile) error {
 	return row.Scan(
 		&target.SupervisorID,

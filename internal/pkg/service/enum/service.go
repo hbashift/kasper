@@ -7,6 +7,7 @@ import (
 	"uir_draft/internal/pkg/models"
 	"uir_draft/internal/pkg/repository"
 
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/pkg/errors"
@@ -23,6 +24,8 @@ type (
 		InsertGroupsTx(ctx context.Context, tx pgx.Tx, groups []model.Groups) error
 		UpdateGroupTx(ctx context.Context, tx pgx.Tx, group model.Groups) error
 		DeleteGroupsTx(ctx context.Context, tx pgx.Tx, groupsIDs []int32) error
+		GetAmountOfSemesters(ctx context.Context, tx pgx.Tx) ([]model.SemesterCount, error)
+		DeleteAmountOfSemesters(ctx context.Context, tx pgx.Tx, ids []uuid.UUID) error
 	}
 )
 
@@ -147,6 +150,42 @@ func (s *Service) DeleteSpecializations(ctx context.Context, specIDs []int32) er
 		return s.repo.ArchiveSpecializations(ctx, tx, specIDs)
 	}); err != nil {
 		return errors.Wrap(err, "DeleteSpecializations()")
+	}
+
+	return nil
+}
+
+func (s *Service) GetSemestersAmount(ctx context.Context) ([]models.SemesterAmount, error) {
+	amounts := make([]models.SemesterAmount, 0)
+
+	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
+		dAmounts, err := s.repo.GetAmountOfSemesters(ctx, tx)
+		if err != nil {
+			return err
+		}
+
+		for _, dAmount := range dAmounts {
+			amount := models.SemesterAmount{
+				AmountID: dAmount.CountID,
+				Amount:   dAmount.Amount,
+			}
+
+			amounts = append(amounts, amount)
+		}
+
+		return nil
+	}); err != nil {
+		return nil, errors.Wrap(err, "GetSemestersAmount()")
+	}
+
+	return amounts, nil
+}
+
+func (s *Service) DeleteSemesterAmounts(ctx context.Context, ids []uuid.UUID) error {
+	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
+		return s.repo.DeleteAmountOfSemesters(ctx, tx, ids)
+	}); err != nil {
+		return errors.Wrap(err, "DeleteSemesterAmounts()")
 	}
 
 	return nil

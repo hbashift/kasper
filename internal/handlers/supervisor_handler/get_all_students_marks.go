@@ -18,7 +18,7 @@ import (
 //	@Tags			NEW
 //	@Accept			json
 //	@Produce		json
-//	@Success		200		{object}	models.AllMarks	"Данные"
+//	@Success		200		{object}	request_models.GetByStudentID	"Данные"
 //	@Param			token	path		string			true	"Токен пользователя"
 //	@Failure		400		{string}	string			"Неверный формат данных"
 //	@Failure		401		{string}	string			"Токен протух"

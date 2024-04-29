@@ -549,6 +549,13 @@ definitions:
         - failed
         type: string
     type: object
+  models.SemesterAmount:
+    properties:
+      amount:
+        type: integer
+      amount_id:
+        type: string
+    type: object
   models.SemesterProgressRequest:
     properties:
       eighth:
@@ -961,6 +968,13 @@ definitions:
     required:
     - pairs
     type: object
+  request_models.DeleteByUUIDRequest:
+    properties:
+      ids:
+        items:
+          type: string
+        type: array
+    type: object
   request_models.DeleteEnumRequest:
     properties:
       ids:
@@ -1174,6 +1188,83 @@ info:
   title: Сервис Kasper
   version: 0.1.2
 paths:
+  /administrator/enum/amounts/{token}:
+    get:
+      consumes:
+      - application/json
+      description: Добавление количеств семестров
+      parameters:
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Данные
+          schema:
+            items:
+              $ref: '#/definitions/models.SemesterAmount'
+            type: array
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Добавление количеств семестров
+      tags:
+      - NEW
+    put:
+      consumes:
+      - application/json
+      description: Удаление количеств семестров
+      parameters:
+      - description: Данные
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.DeleteByUUIDRequest'
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Удаление количеств семестров
+      tags:
+      - NEW
   /administrator/enum/groups/{token}:
     get:
       consumes:
@@ -1595,6 +1686,45 @@ paths:
       summary: Получение списка всех аспирантов
       tags:
       - Admin
+  /administrator/supervisor/{token}:
+    put:
+      consumes:
+      - application/json
+      description: Архивирование научных руководителей
+      parameters:
+      - description: Данные
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.DeleteByUUIDRequest'
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Архивирование научных руководителей
+      tags:
+      - NEW
   /administrator/supervisor/students/{token}:
     put:
       consumes:
@@ -2445,6 +2575,45 @@ paths:
       summary: Отправление на проверку названия диссертации
       tags:
       - Student.Dissertation
+  /students/enum/amounts/{token}:
+    get:
+      consumes:
+      - application/json
+      description: Добавление количеств семестров
+      parameters:
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Данные
+          schema:
+            items:
+              $ref: '#/definitions/models.SemesterAmount'
+            type: array
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Добавление количеств семестров
+      tags:
+      - NEW
   /students/exams/{token}:
     post:
       consumes:
@@ -3635,7 +3804,7 @@ paths:
         "200":
           description: Данные
           schema:
-            $ref: '#/definitions/models.AllMarks'
+            $ref: '#/definitions/request_models.GetByStudentID'
         "204":
           description: Нет записей в БД
           schema:
