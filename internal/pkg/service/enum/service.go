@@ -26,6 +26,7 @@ type (
 		DeleteGroupsTx(ctx context.Context, tx pgx.Tx, groupsIDs []int32) error
 		GetAmountOfSemesters(ctx context.Context, tx pgx.Tx) ([]model.SemesterCount, error)
 		DeleteAmountOfSemesters(ctx context.Context, tx pgx.Tx, ids []uuid.UUID) error
+		InsertAmountsOfSemesters(ctx context.Context, tx pgx.Tx, amount []model.SemesterCount) error
 	}
 )
 
@@ -186,6 +187,27 @@ func (s *Service) DeleteSemesterAmounts(ctx context.Context, ids []uuid.UUID) er
 		return s.repo.DeleteAmountOfSemesters(ctx, tx, ids)
 	}); err != nil {
 		return errors.Wrap(err, "DeleteSemesterAmounts()")
+	}
+
+	return nil
+}
+
+func (s *Service) InsertSemesterAmount(ctx context.Context, amounts []models.SemesterAmount) error {
+	dAmounts := make([]model.SemesterCount, 0, len(amounts))
+
+	for _, amount := range amounts {
+		dAmount := model.SemesterCount{
+			CountID: uuid.New(),
+			Amount:  amount.Amount,
+		}
+
+		dAmounts = append(dAmounts, dAmount)
+	}
+
+	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
+		return s.repo.InsertAmountsOfSemesters(ctx, tx, dAmounts)
+	}); err != nil {
+		return errors.Wrap(err, "InsertSemesterAmount()")
 	}
 
 	return nil

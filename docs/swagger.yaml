@@ -928,6 +928,13 @@ definitions:
         format: date-time
         type: string
     type: object
+  request_models.AddAmountsRequest:
+    properties:
+      amounts:
+        items:
+          $ref: '#/definitions/models.SemesterAmount'
+        type: array
+    type: object
   request_models.AddGroupsRequest:
     properties:
       groups:
@@ -1225,6 +1232,44 @@ paths:
           schema:
             type: string
       summary: Добавление количеств семестров
+      tags:
+      - NEW
+    post:
+      consumes:
+      - application/json
+      description: Добавление вариантов семестров
+      parameters:
+      - description: Данные
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.AddAmountsRequest'
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Добавление вариантов семестров
       tags:
       - NEW
     put:

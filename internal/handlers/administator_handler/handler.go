@@ -42,6 +42,8 @@ type (
 
 		GetSemestersAmount(ctx context.Context) ([]models.SemesterAmount, error)
 		DeleteSemesterAmounts(ctx context.Context, ids []uuid.UUID) error
+
+		InsertSemesterAmount(ctx context.Context, amounts []models.SemesterAmount) error
 	}
 
 	SupervisorService interface {

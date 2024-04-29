@@ -171,6 +171,20 @@ func (r *EnumRepository) DeleteGroupsTx(ctx context.Context, tx pgx.Tx, groupsID
 	return nil
 }
 
+func (r *EnumRepository) InsertAmountsOfSemesters(ctx context.Context, tx pgx.Tx, amount []model.SemesterCount) error {
+	stmt, args := table.SemesterCount.
+		INSERT().
+		MODELS(amount).
+		Sql()
+
+	_, err := tx.Exec(ctx, stmt, args...)
+	if err != nil {
+		return errors.Wrap(err, "InsertAmountsOfSemesters()")
+	}
+
+	return nil
+}
+
 func (r *EnumRepository) GetAmountOfSemesters(ctx context.Context, tx pgx.Tx) ([]model.SemesterCount, error) {
 	stmt, args := table.SemesterCount.
 		SELECT(table.SemesterCount.AllColumns).

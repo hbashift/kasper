@@ -104,6 +104,7 @@ type (
 
 		DeleteSemesterAmounts(ctx *gin.Context)
 		GetSemesterAmounts(ctx *gin.Context)
+		AddAmounts(ctx *gin.Context)
 
 		ArchiveSupervisor(ctx *gin.Context)
 	}
@@ -247,6 +248,7 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 	r.PUT("/administrator/enum/amounts/:token", h.administrator.DeleteSemesterAmounts)
 
 	r.PUT("/administrator/supervisor/:token", h.administrator.ArchiveSupervisor)
+	r.POST("/administrator/enum/amounts/:token", h.administrator.AddAmounts)
 
 	// AuthenticationHandler init
 	r.POST("/authorize", h.authentication.Authorize)

@@ -18,6 +18,10 @@ type AddGroupsRequest struct {
 	Groups []models.Group `json:"groups,omitempty"`
 }
 
+type AddAmountsRequest struct {
+	Amounts []models.SemesterAmount `json:"amounts"`
+}
+
 type AddSpecializationsRequest struct {
 	Specs []models.Specialization `json:"specs,omitempty"`
 }
