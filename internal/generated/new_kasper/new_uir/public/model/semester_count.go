@@ -12,7 +12,6 @@ import (
 )
 
 type SemesterCount struct {
-	CountID  uuid.UUID `sql:"primary_key"`
-	Amount   int32
-	Archived bool
+	CountID uuid.UUID `sql:"primary_key"`
+	Amount  int32
 }

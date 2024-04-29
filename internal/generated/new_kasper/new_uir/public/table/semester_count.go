@@ -17,9 +17,8 @@ type semesterCountTable struct {
 	postgres.Table
 
 	//Columns
-	CountID  postgres.ColumnString
-	Amount   postgres.ColumnInteger
-	Archived postgres.ColumnBool
+	CountID postgres.ColumnString
+	Amount  postgres.ColumnInteger
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -52,18 +51,16 @@ func newSemesterCountTableImpl(schemaName, tableName, alias string) semesterCoun
 	var (
 		CountIDColumn  = postgres.StringColumn("count_id")
 		AmountColumn   = postgres.IntegerColumn("amount")
-		ArchivedColumn = postgres.BoolColumn("archived")
-		allColumns     = postgres.ColumnList{CountIDColumn, AmountColumn, ArchivedColumn}
-		mutableColumns = postgres.ColumnList{AmountColumn, ArchivedColumn}
+		allColumns     = postgres.ColumnList{CountIDColumn, AmountColumn}
+		mutableColumns = postgres.ColumnList{AmountColumn}
 	)
 
 	return semesterCountTable{
 		Table: postgres.NewTable(schemaName, tableName, alias, allColumns...),
 
 		//Columns
-		CountID:  CountIDColumn,
-		Amount:   AmountColumn,
-		Archived: ArchivedColumn,
+		CountID: CountIDColumn,
+		Amount:  AmountColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,
