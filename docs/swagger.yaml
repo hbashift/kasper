@@ -3466,6 +3466,43 @@ paths:
       summary: Скачивание файла диссертации
       tags:
       - Supervisor.Dissertation
+  /supervisors/student/feedback/{token}:
+    post:
+      consumes:
+      - application/json
+      description: Отправка комментария и оценки от научника
+      parameters:
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      - description: Запрос
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.UpsertFeedbackRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Отправка комментария и оценки от научника
+      tags:
+      - Supervisor.Dissertation
   /supervisors/student/info/{token}:
     put:
       consumes:
@@ -3543,42 +3580,6 @@ paths:
       tags:
       - Supervisor
   /supervisors/student/load/{token}:
-    post:
-      consumes:
-      - application/json
-      description: Получение страницы информации для страницы научных работ аспиранта
-      parameters:
-      - description: Токен пользователя
-        in: path
-        name: token
-        required: true
-        type: string
-      - description: Запрос
-        in: body
-        name: input
-        required: true
-        schema:
-          $ref: '#/definitions/request_models.UpsertFeedbackRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-        "204":
-          description: Нет записей в БД
-          schema:
-            type: string
-        "401":
-          description: Токен протух
-          schema:
-            type: string
-        "500":
-          description: Ошибка на стороне сервера
-          schema:
-            type: string
-      summary: Получение страницы информации для страницы научных работ аспиранта
-      tags:
-      - Supervisor.Dissertation
     put:
       consumes:
       - application/json

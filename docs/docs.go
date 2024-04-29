@@ -3472,6 +3472,62 @@ const docTemplate = `{
                 }
             }
         },
+        "/supervisors/student/feedback/{token}": {
+            "post": {
+                "description": "Отправка комментария и оценки от научника",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Supervisor.Dissertation"
+                ],
+                "summary": "Отправка комментария и оценки от научника",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Запрос",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.UpsertFeedbackRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/supervisors/student/info/{token}": {
             "put": {
                 "description": "Получение данных о студенте (статус студента)",
@@ -3627,60 +3683,6 @@ const docTemplate = `{
                                 "$ref": "#/definitions/models.TeachingLoad"
                             }
                         }
-                    },
-                    "204": {
-                        "description": "Нет записей в БД",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "401": {
-                        "description": "Токен протух",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Ошибка на стороне сервера",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "Получение страницы информации для страницы научных работ аспиранта",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Supervisor.Dissertation"
-                ],
-                "summary": "Получение страницы информации для страницы научных работ аспиранта",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Токен пользователя",
-                        "name": "token",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Запрос",
-                        "name": "input",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request_models.UpsertFeedbackRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
                     },
                     "204": {
                         "description": "Нет записей в БД",

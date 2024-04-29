@@ -11,9 +11,9 @@ import (
 
 // UpsertFeedback
 //
-//	@Summary		Получение страницы информации для страницы научных работ аспиранта
+//	@Summary		Отправка комментария и оценки от научника
 //	@Tags			Supervisor.Dissertation
-//	@Description	Получение страницы информации для страницы научных работ аспиранта
+//	@Description	Отправка комментария и оценки от научника
 //	@Success		200
 //	@Param			token	path	string	true	"Токен пользователя"
 //	@Accept			json
@@ -25,7 +25,7 @@ import (
 //	@Failure		401		{string}	string									"Токен протух"
 //	@Failure		204		{string}	string									"Нет записей в БД"
 //	@Failure		500		{string}	string									"Ошибка на стороне сервера"
-//	@Router			/supervisors/student/load/{token} [post]
+//	@Router			/supervisors/student/feedback/{token} [post]
 func (h *SupervisorHandler) UpsertFeedback(ctx *gin.Context) {
 	user, err := h.authenticate(ctx)
 	if err != nil {

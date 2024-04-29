@@ -73,7 +73,6 @@ type (
 		GetStudentsReportComments(ctx *gin.Context)
 
 		GetAllMarks(ctx *gin.Context)
-		UpsertSupervisorMark(ctx *gin.Context)
 	}
 
 	AdministratorHandler interface {
@@ -192,7 +191,7 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 	r.POST("/supervisors/student/review/:token", h.supervisor.AllToStatus)
 
 	r.PUT("/supervisors/student/dissertation/:token", h.supervisor.GetDissertationPage)
-	r.POST("/supervisors/student/dissertation/feedback/:token", h.supervisor.UpsertFeedback)
+	r.POST("/supervisors/student/feedback/:token", h.supervisor.UpsertFeedback)
 	r.PUT("/supervisors/student/dissertation/file/:token", h.supervisor.DownloadDissertation)
 
 	r.PUT("/supervisors/student/load/:token", h.supervisor.GetTeachingLoad)
@@ -206,7 +205,7 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 	r.PUT("/supervisors/report/comments/:token", h.supervisor.GetStudentsReportComments)
 
 	r.PUT("/supervisors/student/marks/:token", h.supervisor.GetAllMarks)
-	r.POST("/supervisors/student/marks/:token", h.supervisor.UpsertSupervisorMark)
+	//r.POST("/supervisors/student/marks/:token", h.supervisor.UpsertSupervisorMark)
 
 	// AdministratorHandler init
 	r.POST("/administrator/student/change/:token", h.administrator.ChangeSupervisor)
