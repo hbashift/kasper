@@ -342,8 +342,6 @@ definitions:
     type: object
   models.FeedbackRequest:
     properties:
-      dissertation_id:
-        type: string
       feedback:
         type: string
       mark:

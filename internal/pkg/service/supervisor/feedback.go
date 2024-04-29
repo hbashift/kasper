@@ -13,9 +13,13 @@ import (
 
 func (s *Service) UpsertFeedback(ctx context.Context, studentID, supervisorID uuid.UUID, request models.FeedbackRequest) error {
 	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
-		feedback := models.MapFeedbackToDomain(request, studentID)
+		dissertation, err := s.dissertationRepo.GetDissertationDataBySemester(ctx, tx, studentID, request.Semester)
+		if err != nil {
+			return err
+		}
+		feedback := models.MapFeedbackToDomain(request, studentID, dissertation.DissertationID)
 
-		err := s.dissertationRepo.UpsertFeedbackTx(ctx, tx, feedback)
+		err = s.dissertationRepo.UpsertFeedbackTx(ctx, tx, feedback)
 		if err != nil {
 			return err
 		}

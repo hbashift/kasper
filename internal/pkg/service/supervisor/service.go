@@ -24,8 +24,9 @@ type (
 		GetUserTx(ctx context.Context, tx pgx.Tx, userID uuid.UUID) (model.Users, error)
 	}
 
-	FeedbackRepository interface {
+	DissertationRepository interface {
 		UpsertFeedbackTx(ctx context.Context, tx pgx.Tx, feedback model.Feedback) error
+		GetDissertationDataBySemester(ctx context.Context, tx pgx.Tx, studentID uuid.UUID, semester int32) (model.Dissertations, error)
 	}
 
 	ClientRepository interface {
@@ -44,7 +45,7 @@ type (
 )
 
 type Service struct {
-	dissertationRepo FeedbackRepository
+	dissertationRepo DissertationRepository
 	tokenRepo        TokenRepository
 	userRepo         UsersRepository
 	client           ClientRepository

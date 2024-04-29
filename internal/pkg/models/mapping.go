@@ -268,11 +268,11 @@ func MapAdditionalLoadToDomain(loads []AdditionalLoad, tLoadID uuid.UUID) (dLoad
 	return dLoadInsert, dLoadUpdate
 }
 
-func MapFeedbackToDomain(request FeedbackRequest, studentID uuid.UUID) model.Feedback {
+func MapFeedbackToDomain(request FeedbackRequest, studentID, dissertationID uuid.UUID) model.Feedback {
 	return model.Feedback{
 		FeedbackID:     uuid.New(),
 		StudentID:      studentID,
-		DissertationID: request.DissertationID,
+		DissertationID: dissertationID,
 		Feedback:       request.Feedback,
 		Semester:       request.Semester,
 		CreatedAt:      time.Now(),

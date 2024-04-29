@@ -91,24 +91,9 @@ func (d *DissertationTitlesRequest) ToDomain() model.DissertationTitles {
 }
 
 type FeedbackRequest struct {
-	DissertationID uuid.UUID `json:"dissertation_id,omitempty"`
-	Feedback       *string   `json:"feedback,omitempty"`
-	Semester       int32     `json:"semester,omitempty"`
-	Mark           int32     `json:"mark,omitempty"`
-}
-
-//func (f *FeedbackRequest) SetDomainData(feedback model.Feedback) {
-//	f.DissertationID = feedback.DissertationID
-//	f.Feedback = feedback.Feedback
-//	f.Semester = feedback.Semester
-//}
-
-func (f *FeedbackRequest) ToDomain() model.Feedback {
-	return model.Feedback{
-		DissertationID: f.DissertationID,
-		Feedback:       f.Feedback,
-		Semester:       f.Semester,
-	}
+	Feedback *string `json:"feedback,omitempty"`
+	Semester int32   `json:"semester,omitempty"`
+	Mark     int32   `json:"mark,omitempty"`
 }
 
 type DissertationPageResponse struct {

@@ -4360,9 +4360,6 @@ const docTemplate = `{
         "models.FeedbackRequest": {
             "type": "object",
             "properties": {
-                "dissertation_id": {
-                    "type": "string"
-                },
                 "feedback": {
                     "type": "string"
                 },
