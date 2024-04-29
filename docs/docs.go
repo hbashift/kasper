@@ -2682,6 +2682,15 @@ const docTemplate = `{
                 "summary": "Отправка на проверку",
                 "parameters": [
                     {
+                        "description": "Данные",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.AllToReviewRequest"
+                        }
+                    },
+                    {
                         "type": "string",
                         "description": "Токен пользователя",
                         "name": "token",
@@ -5224,6 +5233,14 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "users": {
+                    "type": "string"
+                }
+            }
+        },
+        "request_models.AllToReviewRequest": {
+            "type": "object",
+            "properties": {
+                "commentary": {
                     "type": "string"
                 }
             }

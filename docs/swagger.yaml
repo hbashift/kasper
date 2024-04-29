@@ -940,6 +940,11 @@ definitions:
       users:
         type: string
     type: object
+  request_models.AllToReviewRequest:
+    properties:
+      commentary:
+        type: string
+    type: object
   request_models.ChangePasswordRequest:
     properties:
       newPassword:
@@ -2943,6 +2948,12 @@ paths:
       description: Переводит научные работы, пед нагрузку и диссертацию в статус 'in_review',
         который является блокирующим
       parameters:
+      - description: Данные
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.AllToReviewRequest'
       - description: Токен пользователя
         in: path
         name: token

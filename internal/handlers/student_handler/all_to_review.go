@@ -15,6 +15,7 @@ import (
 //	@Summary		Отправка на проверку
 //	@Tags			Student
 //	@Description	Переводит научные работы, пед нагрузку и диссертацию в статус 'in_review', который является блокирующим
+//	@Param			input	body	request_models.AllToReviewRequest	true	"Данные"
 //	@Success		200
 //	@Param			token	path		string	true	"Токен пользователя"
 //	@Failure		401		{string}	string	"Токен протух"
