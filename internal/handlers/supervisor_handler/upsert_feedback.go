@@ -27,7 +27,7 @@ import (
 //	@Failure		500		{string}	string									"Ошибка на стороне сервера"
 //	@Router			/supervisors/student/load/{token} [post]
 func (h *SupervisorHandler) UpsertFeedback(ctx *gin.Context) {
-	_, err := h.authenticate(ctx)
+	user, err := h.authenticate(ctx)
 	if err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)
 		return
@@ -39,7 +39,7 @@ func (h *SupervisorHandler) UpsertFeedback(ctx *gin.Context) {
 		return
 	}
 
-	err = h.supervisor.UpsertFeedback(ctx, reqBody.StudentID, reqBody.Feedback)
+	err = h.supervisor.UpsertFeedback(ctx, reqBody.StudentID, user.KasperID, reqBody.Feedback)
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return

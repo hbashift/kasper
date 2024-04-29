@@ -94,6 +94,7 @@ type FeedbackRequest struct {
 	DissertationID uuid.UUID `json:"dissertation_id,omitempty"`
 	Feedback       *string   `json:"feedback,omitempty"`
 	Semester       int32     `json:"semester,omitempty"`
+	Mark           int32     `json:"mark,omitempty"`
 }
 
 //func (f *FeedbackRequest) SetDomainData(feedback model.Feedback) {

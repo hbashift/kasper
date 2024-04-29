@@ -3757,60 +3757,6 @@ const docTemplate = `{
                         }
                     }
                 }
-            },
-            "post": {
-                "description": "Проставление оценки научником",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "NEW"
-                ],
-                "summary": "Проставление оценки научником",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Токен пользователя",
-                        "name": "token",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Запрос",
-                        "name": "input",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request_models.UpsertSupervisorMarkRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "204": {
-                        "description": "Нет записей в БД",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "401": {
-                        "description": "Токен протух",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Ошибка на стороне сервера",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
             }
         },
         "/supervisors/student/review/{token}": {
@@ -4417,6 +4363,9 @@ const docTemplate = `{
                 },
                 "feedback": {
                     "type": "string"
+                },
+                "mark": {
+                    "type": "integer"
                 },
                 "semester": {
                     "type": "integer"
@@ -5564,20 +5513,6 @@ const docTemplate = `{
                 },
                 "semester": {
                     "type": "integer"
-                }
-            }
-        },
-        "request_models.UpsertSupervisorMarkRequest": {
-            "type": "object",
-            "properties": {
-                "mark": {
-                    "type": "integer"
-                },
-                "semester": {
-                    "type": "integer"
-                },
-                "student_id": {
-                    "type": "string"
                 }
             }
         }

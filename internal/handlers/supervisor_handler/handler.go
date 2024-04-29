@@ -42,7 +42,7 @@ type (
 
 	SupervisorService interface {
 		// UpsertFeedback - обновляет или добавляет фидбэк от научного руководителя
-		UpsertFeedback(ctx context.Context, studentID uuid.UUID, request models.FeedbackRequest) error
+		UpsertFeedback(ctx context.Context, studentID, supervisorID uuid.UUID, request models.FeedbackRequest) error
 
 		GetSupervisorsStudents(ctx context.Context, supervisorID uuid.UUID) ([]models.Student, error)
 
