@@ -153,6 +153,7 @@ func (r *DissertationRepository) UpsertDissertationTx(ctx context.Context, tx pg
 			SET(
 				table.Dissertations.Status.SET(postgres.NewEnumValue(model.Status.String())),
 				table.Dissertations.UpdatedAt.SET(postgres.NOW()),
+				table.Dissertations.FileName.SET(postgres.String(lo.FromPtr(model.FileName))),
 			),
 		).
 		Sql()
