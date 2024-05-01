@@ -60,6 +60,17 @@ func (h *AuthorizationHandler) authenticateStudent(ctx *gin.Context) (*model.Use
 	return user, nil
 }
 
+func (h *AuthorizationHandler) authenticateSupervisor(ctx *gin.Context) (*model.Users, error) {
+	token := helpers.GetToken(ctx)
+
+	user, err := h.authenticator.AuthenticateWithUserType(ctx, token, model.UserType_Supervisor.String())
+	if err != nil {
+		return user, err
+	}
+
+	return user, nil
+}
+
 func (h *AuthorizationHandler) authenticate(ctx *gin.Context) (*model.Users, error) {
 	token := helpers.GetToken(ctx)
 

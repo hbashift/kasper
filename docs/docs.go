@@ -1377,7 +1377,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request_models.FirstStudentRegistry"
+                            "$ref": "#/definitions/request_models.FirstSupervisorRegistry"
                         }
                     }
                 ],
@@ -5619,6 +5619,26 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "supervisor_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "request_models.FirstSupervisorRegistry": {
+            "type": "object",
+            "properties": {
+                "degree": {
+                    "type": "string"
+                },
+                "department": {
+                    "type": "string"
+                },
+                "faculty": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "type": "string"
+                },
+                "phone": {
                     "type": "string"
                 }
             }

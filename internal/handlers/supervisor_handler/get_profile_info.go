@@ -31,7 +31,7 @@ func (h *SupervisorHandler) GetSupervisorProfile(ctx *gin.Context) {
 
 	super, err := h.supervisor.GetSupervisorProfile(ctx, user.KasperID)
 	if err != nil {
-		ctx.AbortWithError(http.StatusBadRequest, err)
+		ctx.AbortWithError(models.MapErrorToCode(err), err)
 		return
 	}
 

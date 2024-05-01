@@ -1036,6 +1036,19 @@ definitions:
       supervisor_id:
         type: string
     type: object
+  request_models.FirstSupervisorRegistry:
+    properties:
+      degree:
+        type: string
+      department:
+        type: string
+      faculty:
+        type: string
+      full_name:
+        type: string
+      phone:
+        type: string
+    type: object
   request_models.GetByStudentID:
     properties:
       student_id:
@@ -2095,7 +2108,7 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/request_models.FirstStudentRegistry'
+          $ref: '#/definitions/request_models.FirstSupervisorRegistry'
       produces:
       - application/json
       responses:
