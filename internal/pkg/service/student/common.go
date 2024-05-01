@@ -42,6 +42,7 @@ func (s *Service) AllToStatus(ctx context.Context, studentID uuid.UUID, comment 
 				StudentID:    studentID,
 				Semester:     student.ActualSemester,
 				Commentary:   comment,
+				CommentedAt:  time.Now(),
 			})
 
 			if err != nil {

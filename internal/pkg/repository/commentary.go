@@ -33,8 +33,8 @@ func (r *CommentaryRepository) UpsertStudentsComment(
 			ON_CONFLICT(table.StudentsCommentary.StudentID, table.StudentsCommentary.Semester).
 			DO_UPDATE(postgres.
 				SET(
-					table.StudentsCommentary.Commentary.
-						SET(postgres.String(lo.FromPtr(comment.Commentary))),
+					table.StudentsCommentary.Commentary.SET(postgres.String(lo.FromPtr(comment.Commentary))),
+					table.StudentsCommentary.CommentedAt.SET(postgres.NOW()),
 				),
 			)
 	} else {
