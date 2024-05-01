@@ -2,6 +2,7 @@ package supervisor
 
 import (
 	"context"
+	"log"
 
 	"uir_draft/internal/generated/new_kasper/new_uir/public/model"
 	"uir_draft/internal/pkg/models"
@@ -31,6 +32,8 @@ func (s *Service) UpsertFeedback(ctx context.Context, studentID, supervisorID uu
 			Semester:     request.Semester,
 			SupervisorID: supervisorID,
 		}
+
+		log.Printf("СЮДА БЛЯТЬ СМОТРИ: %v", supMark)
 
 		if err := s.marksRepo.UpsertStudentsSupervisorMark(ctx, tx, supMark); err != nil {
 			return err
