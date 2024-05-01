@@ -104,6 +104,7 @@ func (r *MarksRepository) UpsertExamResults(ctx context.Context, tx pgx.Tx, mode
 	for _, exam := range models {
 		assignments := []postgres.ColumnAssigment{
 			table.Exams.Mark.SET(postgres.Int32(exam.Mark)),
+			table.Exams.ExamType.SET(postgres.Int32(exam.ExamType)),
 		}
 
 		if exam.SetAt != nil {
