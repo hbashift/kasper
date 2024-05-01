@@ -1,13 +1,20 @@
 version: "3.7"
 services:
   server:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: "jackblack178/kasper-back:0.1.2"
     ports:
       - "8080:8080"
     restart: always
     volumes:
       - ./dissertations:/usr/src/app/dissertations
     extra_hosts:
-      - "database:HOST_ADDRESS"
+      - "database:95.163.231.174"
+  front:
+    image: "jackblack178/kasper-front:0.1.4"
+    ports:
+      - "80:5173"
+    restart: always
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - server
