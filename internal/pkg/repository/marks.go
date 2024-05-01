@@ -115,7 +115,7 @@ func (r *MarksRepository) UpsertExamResults(ctx context.Context, tx pgx.Tx, mode
 		stmt, args := table.Exams.
 			INSERT().
 			MODEL(exam).
-			ON_CONFLICT(table.Exams.StudentID, table.Exams.Semester).
+			ON_CONFLICT(table.Exams.StudentID, table.Exams.Semester, table.Exams.ExamType).
 			DO_UPDATE(postgres.
 				SET(assignments...)).
 			Sql()

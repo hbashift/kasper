@@ -321,7 +321,7 @@ func (s *Service) DeleteIndividualLoad(ctx context.Context, studentID uuid.UUID,
 		return err
 	})
 	if err != nil {
-		return errors.Wrap(err, "UpsertAdditionalLoad()")
+		return errors.Wrap(err, "DeleteIndividualLoad()")
 	}
 
 	return nil
