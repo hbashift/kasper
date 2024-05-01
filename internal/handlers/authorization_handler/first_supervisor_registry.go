@@ -30,7 +30,7 @@ import (
 //	@Failure		500		{string}	string								"Ошибка на стороне сервера"
 //	@Router			/authorize/registration/supervisor/{token} [post]
 func (h *AuthorizationHandler) FirstSupervisorRegistry(ctx *gin.Context) {
-	user, err := h.authenticateStudent(ctx)
+	user, err := h.authenticateSupervisor(ctx)
 	if err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)
 		return
