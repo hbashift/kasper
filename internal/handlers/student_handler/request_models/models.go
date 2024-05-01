@@ -94,6 +94,7 @@ type AllToReviewRequest struct {
 type UpsertReportCommentsRequest struct {
 	DissertationComment models.DissertationCommentRequest `json:"dissertation_comment"`
 	DissertationPlan    models.DissertationPlanRequest    `json:"dissertation_plan"`
+	Semester            int32                             `json:"semester"`
 }
 
 type UpsertExamResultsRequest struct {

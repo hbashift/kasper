@@ -79,7 +79,7 @@ func (s *Service) UpsertReportComments(ctx context.Context, studentID uuid.UUID,
 		if err := s.commentRepo.UpsertDissertationComment(ctx, tx, model.DissertationCommentary{
 			CommentaryID: uuid.New(),
 			StudentID:    studentID,
-			Semester:     student.ActualSemester,
+			Semester:     req.Semester,
 			Commentary:   req.DissertationComment.Commentary,
 		}); err != nil {
 			return err
@@ -88,7 +88,7 @@ func (s *Service) UpsertReportComments(ctx context.Context, studentID uuid.UUID,
 		if err := s.commentRepo.UpsertPlanComment(ctx, tx, model.DissertationPlans{
 			PlanID:    uuid.New(),
 			StudentID: studentID,
-			Semester:  student.ActualSemester,
+			Semester:  req.Semester,
 			PlanText:  req.DissertationPlan.PlanText,
 		}); err != nil {
 			return err

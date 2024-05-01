@@ -5841,6 +5841,9 @@ const docTemplate = `{
                 },
                 "dissertation_plan": {
                     "$ref": "#/definitions/models.DissertationPlanRequest"
+                },
+                "semester": {
+                    "type": "integer"
                 }
             }
         },
