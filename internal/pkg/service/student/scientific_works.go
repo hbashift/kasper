@@ -17,6 +17,7 @@ func (s *Service) GetScientificWorks(ctx context.Context, studentID uuid.UUID) (
 		publications []models.Publication
 		conferences  []models.Conference
 		projects     []models.ResearchProject
+		patents      []models.Patent
 	)
 
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
@@ -44,10 +45,15 @@ func (s *Service) GetScientificWorks(ctx context.Context, studentID uuid.UUID) (
 		if err != nil {
 			return err
 		}
+		dPatents, err := s.scienceRepo.GetPatents(ctx, tx, worksIDs)
+		if err != nil {
+			return err
+		}
 
 		publications = models.MapPublicationsFromDomain(dPublications)
 		conferences = models.MapConferencesFromDomain(dConferences)
 		projects = models.MapResearchProjectFromDomain(dProjects)
+		patents = models.MapPatentsFromDomain(dPatents)
 
 		return nil
 	})
@@ -55,7 +61,7 @@ func (s *Service) GetScientificWorks(ctx context.Context, studentID uuid.UUID) (
 		return nil, errors.Wrap(err, "GetScientificWorks()")
 	}
 
-	scientificWorks := models.ConvertScientificWorksToResponse(studentID, dWorks, publications, conferences, projects)
+	scientificWorks := models.ConvertScientificWorksToResponse(studentID, dWorks, publications, conferences, projects, patents)
 
 	return scientificWorks, nil
 }
@@ -251,6 +257,60 @@ func (s *Service) UpsertResearchProjects(ctx context.Context, studentID uuid.UUI
 	return nil
 }
 
+func (s *Service) UpsertPatents(ctx context.Context, studentID uuid.UUID, semester int32, patents []models.Patent) error {
+	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
+		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
+		if err != nil {
+			return err
+		}
+
+		if student.Status == model.ApprovalStatus_OnReview || student.Status == model.ApprovalStatus_Approved {
+			return models.ErrNonMutableStatus
+		}
+
+		if student.ActualSemester != semester && !student.CanEdit {
+			return models.ErrNotActualSemester
+		}
+
+		worksStatus, err := s.scienceRepo.GetScientificWorksStatusBySemesterTx(ctx, tx, studentID, semester)
+		if err != nil {
+			return err
+		}
+
+		dPatentsInsert, dPatentsUpdate, err := models.MapPatentsToDomain(patents, worksStatus.WorksID)
+		if err != nil {
+			return errors.Wrap(err, "mapping patents to domain")
+		}
+
+		if len(dPatentsInsert) != 0 {
+			err = s.scienceRepo.InsertPatents(ctx, tx, dPatentsInsert)
+			if err != nil {
+				return err
+			}
+		}
+
+		if len(dPatentsUpdate) != 0 {
+			err = s.scienceRepo.UpdatePatents(ctx, tx, dPatentsUpdate)
+			if err != nil {
+				return err
+			}
+		}
+
+		err = s.scienceRepo.SetScientificWorkStatusTx(ctx, tx, student.StudentID, model.ApprovalStatus_InProgress, semester, nil)
+		if err != nil {
+			return err
+		}
+
+		err = s.studRepo.SetStudentStatusTx(ctx, tx, model.ApprovalStatus_InProgress, student.StudyingStatus, student.StudentID)
+		return err
+	})
+	if err != nil {
+		return errors.Wrap(err, "UpsertPatents()")
+	}
+
+	return nil
+}
+
 func (s *Service) DeletePublications(ctx context.Context, studentID uuid.UUID, semester int32, ids []uuid.UUID) error {
 	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
 		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
@@ -357,6 +417,43 @@ func (s *Service) DeleteResearchProjects(ctx context.Context, studentID uuid.UUI
 	})
 	if err != nil {
 		return errors.Wrap(err, "DeleteResearchProjects()")
+	}
+
+	return nil
+}
+
+func (s *Service) DeletePatents(ctx context.Context, studentID uuid.UUID, semester int32, ids []uuid.UUID) error {
+	err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
+		student, err := s.studRepo.GetStudentTx(ctx, tx, studentID)
+		if err != nil {
+			return err
+		}
+
+		if student.Status == model.ApprovalStatus_OnReview || student.Status == model.ApprovalStatus_Approved {
+			return models.ErrNonMutableStatus
+		}
+
+		if student.ActualSemester != semester && !student.CanEdit {
+			return models.ErrNotActualSemester
+		}
+
+		if len(ids) != 0 {
+			err = s.scienceRepo.DeletePatents(ctx, tx, ids)
+			if err != nil {
+				return err
+			}
+		}
+
+		err = s.scienceRepo.SetScientificWorkStatusTx(ctx, tx, student.StudentID, model.ApprovalStatus_InProgress, semester, nil)
+		if err != nil {
+			return err
+		}
+
+		err = s.studRepo.SetStudentStatusTx(ctx, tx, model.ApprovalStatus_InProgress, student.StudyingStatus, student.StudentID)
+		return err
+	})
+	if err != nil {
+		return errors.Wrap(err, "DeletePatents()")
 	}
 
 	return nil

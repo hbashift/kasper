@@ -180,11 +180,11 @@ func (s *Service) InitStudent(ctx context.Context, user model.Users, req auth_re
 			return err
 		}
 
-		if err = s.scienceRepo.InitScientificWorkStatusTx(ctx, tx, student.StudentID); err != nil {
+		if err = s.scienceRepo.InitScientificWorkStatusTx(ctx, tx, student.StudentID, student.Years); err != nil {
 			return err
 		}
 
-		if err = s.loadRepo.InitTeachingLoadsStatusTx(ctx, tx, student.StudentID); err != nil {
+		if err = s.loadRepo.InitTeachingLoadsStatusTx(ctx, tx, student.StudentID, student.Years); err != nil {
 			return err
 		}
 

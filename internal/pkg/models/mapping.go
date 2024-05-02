@@ -194,6 +194,33 @@ func MapResearchProjectToDomain(projects []ResearchProject, worksID uuid.UUID) (
 	return dResearchInsert, dResearchUpdate
 }
 
+func MapPatentsToDomain(patents []Patent, worksID uuid.UUID) (dPatentsInsert, dPatentsUpdate []model.Patents, err error) {
+	for _, patent := range patents {
+		var patentType model.PatentType = ""
+		if err := patentType.Scan(strings.TrimSpace(patent.Type)); err != nil {
+			return nil, nil, errors.Wrap(err, ErrInvalidEnumValue.Error())
+		}
+
+		dPatent := model.Patents{
+			WorksID:          worksID,
+			Name:             patent.Name,
+			RegistrationDate: patent.RegistrationDate,
+			Type:             patentType,
+			AddInfo:          patent.AddInfo,
+		}
+
+		if lo.FromPtr(patent.PatentID) == uuid.Nil {
+			dPatent.PatentID = uuid.New()
+			dPatentsInsert = append(dPatentsInsert, dPatent)
+		} else {
+			dPatent.PatentID = lo.FromPtr(patent.PatentID)
+			dPatentsUpdate = append(dPatentsUpdate, dPatent)
+		}
+	}
+
+	return dPatentsInsert, dPatentsUpdate, nil
+}
+
 func MapClassroomLoadToDomain(loads []ClassroomLoad, tLoadID uuid.UUID) (dLoadInsert, dLoadUpdate []model.ClassroomLoad, err error) {
 	for _, load := range loads {
 		var loadType model.ClassroomLoadType
@@ -370,6 +397,25 @@ func MapResearchProjectFromDomain(dProjects []model.ResearchProjects) []Research
 	return projects
 }
 
+func MapPatentsFromDomain(dPatents []model.Patents) []Patent {
+	patents := make([]Patent, 0, len(dPatents))
+
+	for _, dPatent := range dPatents {
+		patent := Patent{
+			WorksID:          dPatent.WorksID,
+			PatentID:         lo.ToPtr(dPatent.PatentID),
+			Name:             dPatent.Name,
+			RegistrationDate: dPatent.RegistrationDate,
+			Type:             dPatent.Type.String(),
+			AddInfo:          dPatent.AddInfo,
+		}
+
+		patents = append(patents, patent)
+	}
+
+	return patents
+}
+
 func MapClassroomLoadFromDomain(dLoads []model.ClassroomLoad) []ClassroomLoad {
 	loads := make([]ClassroomLoad, 0, len(dLoads))
 
@@ -432,6 +478,7 @@ func ConvertScientificWorksToResponse(
 	publications []Publication,
 	conferences []Conference,
 	projects []ResearchProject,
+	patents []Patent,
 ) []ScientificWork {
 	scientificWorks := make([]ScientificWork, 0, len(dWorks))
 
@@ -463,6 +510,12 @@ func ConvertScientificWorksToResponse(
 		for _, project := range projects {
 			if project.WorksID == work.WorksID {
 				scientificWorks[i].ResearchProjects = append(scientificWorks[i].ResearchProjects, project)
+			}
+		}
+
+		for _, patent := range patents {
+			if patent.WorksID == work.WorksID {
+				scientificWorks[i].Patents = append(scientificWorks[i].Patents, patent)
 			}
 		}
 	}

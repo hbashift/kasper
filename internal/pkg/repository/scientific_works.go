@@ -19,10 +19,10 @@ func NewScientificRepository() *ScientificRepository {
 	return &ScientificRepository{}
 }
 
-func (r *ScientificRepository) InitScientificWorkStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) error {
+func (r *ScientificRepository) InitScientificWorkStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID, years int32) error {
 	works := make([]model.ScientificWorksStatus, 0, 8)
 
-	for i := 1; i < 9; i++ {
+	for i := 1; i < int(years*2+1); i++ {
 		work := model.ScientificWorksStatus{
 			WorksID:    uuid.New(),
 			StudentID:  studentID,
@@ -523,4 +523,107 @@ func (r *ScientificRepository) GetScientificWorksStatusIDs(ctx context.Context, 
 	}
 
 	return ids, nil
+}
+
+func (r *ScientificRepository) InsertPatents(ctx context.Context, tx pgx.Tx, patents []model.Patents) error {
+	stmt, args := table.Patents.
+		INSERT().
+		MODELS(patents).
+		Sql()
+
+	if _, err := tx.Exec(ctx, stmt, args...); err != nil {
+		return errors.Wrap(err, "InsertPatents()")
+	}
+
+	return nil
+}
+
+func (r *ScientificRepository) GetPatents(ctx context.Context, tx pgx.Tx, worksIDs []uuid.UUID) ([]model.Patents, error) {
+	idExpressions := make([]postgres.Expression, 0, len(worksIDs))
+
+	for _, id := range worksIDs {
+		idExp := postgres.UUID(id)
+
+		idExpressions = append(idExpressions, idExp)
+	}
+
+	stmt, args := table.Patents.
+		SELECT(table.Patents.AllColumns).
+		WHERE(table.Patents.WorksID.IN(idExpressions...)).
+		Sql()
+
+	rows, err := tx.Query(ctx, stmt, args...)
+	if err != nil {
+		return nil, errors.Wrap(err, "GetPatents()")
+	}
+
+	patents := make([]model.Patents, 0)
+
+	for rows.Next() {
+		patent := model.Patents{}
+		if err := scanPatent(rows, &patent); err != nil {
+			return nil, errors.Wrap(err, "GetPatents()")
+		}
+
+		patents = append(patents, patent)
+	}
+
+	return patents, nil
+}
+
+func (r *ScientificRepository) UpdatePatents(ctx context.Context, tx pgx.Tx, patents []model.Patents) error {
+	for _, patent := range patents {
+		stmt, args := table.Patents.
+			UPDATE(
+				table.Patents.Name,
+				table.Patents.RegistrationDate,
+				table.Patents.Type,
+				table.Patents.AddInfo,
+			).
+			SET(
+				patent.Name,
+				patent.RegistrationDate,
+				patent.Type,
+				patent.AddInfo,
+			).
+			WHERE(table.Patents.PatentID.EQ(postgres.UUID(patent.PatentID))).
+			Sql()
+
+		if _, err := tx.Exec(ctx, stmt, args...); err != nil {
+			return errors.Wrap(err, "UpdatePatents()")
+		}
+	}
+
+	return nil
+}
+
+func (r *ScientificRepository) DeletePatents(ctx context.Context, tx pgx.Tx, patentIDs []uuid.UUID) error {
+	var exps []postgres.Expression
+	for _, id := range patentIDs {
+		exp := postgres.Expression(postgres.UUID(id))
+
+		exps = append(exps, exp)
+	}
+
+	stmt, args := table.Patents.
+		DELETE().
+		WHERE(table.Patents.PatentID.IN(exps...)).
+		Sql()
+
+	if _, err := tx.Exec(ctx, stmt, args...); err != nil {
+		return errors.Wrap(err, "DeletePatents()")
+	}
+
+	return nil
+}
+
+func scanPatent(row pgx.Row, target *model.Patents) error {
+	return row.Scan(
+		&target.PatentID,
+		&target.WorksID,
+		&target.Name,
+		&target.RegistrationDate,
+		&target.Type,
+		&target.AddInfo,
+	)
 }

@@ -408,6 +408,30 @@ definitions:
         description: ID совокупности нагрузок за семестр
         type: string
     type: object
+  models.Patent:
+    properties:
+      add_info:
+        description: Дополнительная информация
+        type: string
+      date:
+        description: Дата регистрации патента
+        type: string
+      patent_id:
+        description: ID патента
+        type: string
+      patent_name:
+        description: Название патента
+        type: string
+      patent_type:
+        description: Тип патента
+        enum:
+        - software
+        - database
+        type: string
+      works_id:
+        description: ID Совокупности научных работ за семестр
+        type: string
+    type: object
   models.Progressiveness:
     properties:
       progress_id:
@@ -514,6 +538,11 @@ definitions:
         description: Объект, описывающий научную конференцию
         items:
           $ref: '#/definitions/models.Conference'
+        type: array
+      patents:
+        description: Объект, описывающий патент
+        items:
+          $ref: '#/definitions/models.Patent'
         type: array
       publications:
         description: Объект, описывающий научную публикацию
@@ -1160,6 +1189,18 @@ definitions:
           ID индивидуальной нагрузки (load_id) не заполнять (делать null), в противном случае - иначе
         items:
           $ref: '#/definitions/models.IndividualStudentsLoad'
+        type: array
+      semester:
+        type: integer
+    type: object
+  request_models.UpsertPatentsRequest:
+    properties:
+      patents:
+        description: |-
+          Патенты, которые нужно добавить/изменить. Если запрос на добавление, то
+          ID патента (patent_id) не заполнять (делать null), в противном случае - иначе
+        items:
+          $ref: '#/definitions/models.Patent'
         type: array
       semester:
         type: integer
@@ -3313,6 +3354,83 @@ paths:
       summary: Удаление научных конференций
       tags:
       - Student.ScientificWorks
+  /students/works/patents/{token}:
+    post:
+      consumes:
+      - application/json
+      description: Добавление или обновление патентов
+      parameters:
+      - description: Данные
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.UpsertPatentsRequest'
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Добавление или обновление патентов
+      tags:
+      - NEW
+    put:
+      consumes:
+      - application/json
+      description: Удаление патентов по ID этих патентов
+      parameters:
+      - description: ID работ и семестр
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.DeleteIDs'
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Удаление патентов
+      tags:
+      - NEW
   /students/works/projects/{token}:
     post:
       consumes:

@@ -54,6 +54,9 @@ type (
 		UpsertExamResults(ctx *gin.Context)
 
 		GetSemesterAmounts(ctx *gin.Context)
+
+		UpsertPatents(ctx *gin.Context)
+		DeletePatents(ctx *gin.Context)
 	}
 
 	SupervisorHandler interface {
@@ -178,6 +181,8 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 	r.POST("/students/works/projects/:token", h.student.UpsertResearchProjects)
 	r.PUT("/students/works/projects/:token", h.student.DeleteProjects)
 	//r.POST("/students/works/review/:token", h.student.ScientificWorksToReview)
+	r.POST("/students/works/patents/:token", h.student.UpsertPatents)
+	r.PUT("/students/works/patents/:token", h.student.DeletePatents)
 
 	r.GET("/student/enum/specializations/:token", h.student.GetSpecializations)
 	r.GET("/student/enum/groups/:token", h.student.GetGroups)

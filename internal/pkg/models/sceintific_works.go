@@ -75,6 +75,21 @@ type ResearchProject struct {
 	Grantee *string `json:"grantee,omitempty" db:"research_projects.grantee"`
 }
 
+type Patent struct {
+	// ID Совокупности научных работ за семестр
+	WorksID uuid.UUID `json:"works_id,omitempty"`
+	// ID патента
+	PatentID *uuid.UUID `json:"patent_id,omitempty"`
+	// Название патента
+	Name string `json:"patent_name,omitempty"`
+	// Дата регистрации патента
+	RegistrationDate time.Time `json:"date"`
+	// Тип патента
+	Type string `json:"patent_type,omitempty" enums:"software,database"`
+	// Дополнительная информация
+	AddInfo *string `json:"add_info,omitempty"`
+}
+
 type ScientificWork struct {
 	WorksID uuid.UUID `json:"works_id" db:"scientific_works_status.works_id"`
 	// Семестр, за который присылаются научные работы
@@ -93,4 +108,6 @@ type ScientificWork struct {
 	Conferences []Conference `json:"conferences"`
 	// Объект, описывающий научно-исследовательский проект
 	ResearchProjects []ResearchProject `json:"research_projects"`
+	// Объект, описывающий патент
+	Patents []Patent `json:"patents"`
 }

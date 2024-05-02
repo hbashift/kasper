@@ -22,12 +22,12 @@ import (
 //	@Produce		json
 //
 //	@Success		200
-//	@Param			token	path		string								true	"Токен пользователя"
+//	@Param			token	path		string									true	"Токен пользователя"
 //	@Param			input	body		request_models.FirstSupervisorRegistry	true	"Данные"
-//	@Failure		400		{string}	string								"Неверный формат данных"
-//	@Failure		401		{string}	string								"Токен протух"
-//	@Failure		204		{string}	string								"Нет записей в БД"
-//	@Failure		500		{string}	string								"Ошибка на стороне сервера"
+//	@Failure		400		{string}	string									"Неверный формат данных"
+//	@Failure		401		{string}	string									"Токен протух"
+//	@Failure		204		{string}	string									"Нет записей в БД"
+//	@Failure		500		{string}	string									"Ошибка на стороне сервера"
 //	@Router			/authorize/registration/supervisor/{token} [post]
 func (h *AuthorizationHandler) FirstSupervisorRegistry(ctx *gin.Context) {
 	user, err := h.authenticateSupervisor(ctx)

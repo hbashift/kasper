@@ -78,13 +78,18 @@ type (
 		UpdateResearchProjectsTx(ctx context.Context, tx pgx.Tx, projects []model.ResearchProjects) error
 		DeleteResearchProjectsTx(ctx context.Context, tx pgx.Tx, projectsIDs []uuid.UUID) error
 
-		InitScientificWorkStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) error
+		InitScientificWorkStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID, years int32) error
 		GetScientificWorksStatusBySemesterTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID, semester int32) (model.ScientificWorksStatus, error)
 
 		GetPublicationsTx(ctx context.Context, tx pgx.Tx, worksIDs []uuid.UUID) ([]model.Publications, error)
 		GetConferencesTx(ctx context.Context, tx pgx.Tx, worksIDs []uuid.UUID) ([]model.Conferences, error)
 		GetResearchProjectsTx(ctx context.Context, tx pgx.Tx, worksIDs []uuid.UUID) ([]model.ResearchProjects, error)
 		GetScientificWorksStatusIDs(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]uuid.UUID, error)
+
+		InsertPatents(ctx context.Context, tx pgx.Tx, patents []model.Patents) error
+		GetPatents(ctx context.Context, tx pgx.Tx, worksIDs []uuid.UUID) ([]model.Patents, error)
+		UpdatePatents(ctx context.Context, tx pgx.Tx, patents []model.Patents) error
+		DeletePatents(ctx context.Context, tx pgx.Tx, patentIDs []uuid.UUID) error
 	}
 
 	TeachingLoadRepository interface {
@@ -104,7 +109,7 @@ type (
 		UpdateAdditionalLoadsTx(ctx context.Context, tx pgx.Tx, loads []model.AdditionalLoad) error
 		DeleteAdditionalLoadsTx(ctx context.Context, tx pgx.Tx, additionalIDs []uuid.UUID) error
 
-		InitTeachingLoadsStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) error
+		InitTeachingLoadsStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID, years int32) error
 		GetTeachingLoadStatusBySemesterTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID, semester int32) (model.TeachingLoadStatus, error)
 
 		GetClassroomLoadsTx(ctx context.Context, tx pgx.Tx, loadsIDs []uuid.UUID) ([]model.ClassroomLoad, error)

@@ -51,6 +51,13 @@ type UpsertPublicationsRequest struct {
 	Semester     int32                `json:"semester,omitempty"`
 }
 
+type UpsertPatentsRequest struct {
+	// Патенты, которые нужно добавить/изменить. Если запрос на добавление, то
+	// ID патента (patent_id) не заполнять (делать null), в противном случае - иначе
+	Patents  []models.Patent `json:"patents,omitempty"`
+	Semester int32           `json:"semester,omitempty"`
+}
+
 type UpsertResearchProjectsRequest struct {
 	// Научные проекты, которые нужно добавить/изменить. Если запрос на добавление, то
 	// ID проекта (project_id) не заполнять (делать null), в противном случае - иначе

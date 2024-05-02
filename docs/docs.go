@@ -3130,6 +3130,122 @@ const docTemplate = `{
                 }
             }
         },
+        "/students/works/patents/{token}": {
+            "put": {
+                "description": "Удаление патентов по ID этих патентов",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "NEW"
+                ],
+                "summary": "Удаление патентов",
+                "parameters": [
+                    {
+                        "description": "ID работ и семестр",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.DeleteIDs"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Добавление или обновление патентов",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "NEW"
+                ],
+                "summary": "Добавление или обновление патентов",
+                "parameters": [
+                    {
+                        "description": "Данные",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.UpsertPatentsRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/students/works/projects/{token}": {
             "put": {
                 "description": "Удаление научных исследований по ID этих исследований",
@@ -4742,6 +4858,39 @@ const docTemplate = `{
                 }
             }
         },
+        "models.Patent": {
+            "type": "object",
+            "properties": {
+                "add_info": {
+                    "description": "Дополнительная информация",
+                    "type": "string"
+                },
+                "date": {
+                    "description": "Дата регистрации патента",
+                    "type": "string"
+                },
+                "patent_id": {
+                    "description": "ID патента",
+                    "type": "string"
+                },
+                "patent_name": {
+                    "description": "Название патента",
+                    "type": "string"
+                },
+                "patent_type": {
+                    "description": "Тип патента",
+                    "type": "string",
+                    "enum": [
+                        "software",
+                        "database"
+                    ]
+                },
+                "works_id": {
+                    "description": "ID Совокупности научных работ за семестр",
+                    "type": "string"
+                }
+            }
+        },
         "models.Progressiveness": {
             "type": "object",
             "properties": {
@@ -4887,6 +5036,13 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/models.Conference"
+                    }
+                },
+                "patents": {
+                    "description": "Объект, описывающий патент",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Patent"
                     }
                 },
                 "publications": {
@@ -5800,6 +5956,21 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/models.IndividualStudentsLoad"
+                    }
+                },
+                "semester": {
+                    "type": "integer"
+                }
+            }
+        },
+        "request_models.UpsertPatentsRequest": {
+            "type": "object",
+            "properties": {
+                "patents": {
+                    "description": "Патенты, которые нужно добавить/изменить. Если запрос на добавление, то\nID патента (patent_id) не заполнять (делать null), в противном случае - иначе",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Patent"
                     }
                 },
                 "semester": {

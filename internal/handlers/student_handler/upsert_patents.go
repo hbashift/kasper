@@ -9,41 +9,41 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// UpsertAdditionalLoads
+// UpsertPatents
 //
-//	@Summary		Добавление или обновление дополнительной нагрузки
+//	@Summary		Добавление или обновление патентов
 //
-//	@Description	Добавление или обновление дополнительной нагрузки
+//	@Description	Добавление или обновление патентов
 //
-//	@Tags			Student.TeachingLoad
+//	@Tags			NEW
 //	@Accept			json
-//	@Param			input body request_models.UpsertAdditionalLoadRequest true "Данные"
+//	@Param			input body request_models.UpsertPatentsRequest true "Данные"
 //	@Success		200
 //	@Param			token	path		string	true	"Токен пользователя"
 //	@Failure		400		{string}	string	"Неверный формат данных"
 //	@Failure		401		{string}	string	"Токен протух"
 //	@Failure		204		{string}	string	"Нет записей в БД"
 //	@Failure		500		{string}	string	"Ошибка на стороне сервера"
-//	@Router			/students/load/additional/{token} [post]
-func (h *StudentHandler) UpsertAdditionalLoads(ctx *gin.Context) {
+//	@Router			/students/works/patents/{token} [post]
+func (h *StudentHandler) UpsertPatents(ctx *gin.Context) {
 	user, err := h.authenticate(ctx)
 	if err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)
 		return
 	}
 
-	reqBody := request_models.UpsertAdditionalLoadRequest{}
+	reqBody := request_models.UpsertPatentsRequest{}
 	if err = ctx.ShouldBindJSON(&reqBody); err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
-	if len(reqBody.Loads) == 0 {
+	if len(reqBody.Patents) == 0 {
 		ctx.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
 
-	err = h.load.UpsertAdditionalLoad(ctx, user.KasperID, reqBody.Semester, reqBody.Loads)
+	err = h.scientific.UpsertPatents(ctx, user.KasperID, reqBody.Semester, reqBody.Patents)
 	if err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)
 		return

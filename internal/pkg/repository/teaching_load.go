@@ -19,10 +19,10 @@ func NewTeachingLoadRepository() *TeachingLoadRepository {
 	return &TeachingLoadRepository{}
 }
 
-func (r *TeachingLoadRepository) InitTeachingLoadsStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) error {
+func (r *TeachingLoadRepository) InitTeachingLoadsStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID, years int32) error {
 	loads := make([]model.TeachingLoadStatus, 0, 8)
 
-	for i := 1; i < 9; i++ {
+	for i := 1; i < int(years*2+1); i++ {
 		load := model.TeachingLoadStatus{
 			LoadsID:    uuid.New(),
 			StudentID:  studentID,
