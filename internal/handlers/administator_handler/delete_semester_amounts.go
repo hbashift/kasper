@@ -38,6 +38,11 @@ func (h *AdministratorHandler) DeleteSemesterAmounts(ctx *gin.Context) {
 		return
 	}
 
+	if len(reqBody.IDs) == 0 {
+		ctx.AbortWithStatus(http.StatusCreated)
+		return
+	}
+
 	if err = h.enum.DeleteSemesterAmounts(ctx, reqBody.IDs); err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)
 		return

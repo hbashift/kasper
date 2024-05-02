@@ -41,7 +41,7 @@ func (h *StudentHandler) DeletePublications(ctx *gin.Context) {
 	}
 
 	if len(reqBody.IDs) == 0 {
-		ctx.AbortWithStatus(http.StatusBadRequest)
+		ctx.AbortWithStatus(http.StatusCreated)
 		return
 	}
 

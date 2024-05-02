@@ -38,6 +38,11 @@ func (h *AdministratorHandler) DeleteGroups(ctx *gin.Context) {
 		return
 	}
 
+	if len(reqBody.IDs) == 0 {
+		ctx.AbortWithStatus(http.StatusCreated)
+		return
+	}
+
 	if err = h.enum.DeleteGroups(ctx, reqBody.IDs); err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)
 		return
