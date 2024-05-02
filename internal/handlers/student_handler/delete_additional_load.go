@@ -43,7 +43,7 @@ func (h *StudentHandler) DeleteAdditionalLoads(ctx *gin.Context) {
 	}
 
 	if len(reqBody.IDs) == 0 {
-		ctx.AbortWithStatus(http.StatusCreated)
+		ctx.AbortWithStatus(http.StatusAccepted)
 		return
 	}
 

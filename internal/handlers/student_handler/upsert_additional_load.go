@@ -39,7 +39,7 @@ func (h *StudentHandler) UpsertAdditionalLoads(ctx *gin.Context) {
 	}
 
 	if len(reqBody.Loads) == 0 {
-		ctx.AbortWithStatus(http.StatusCreated)
+		ctx.AbortWithStatus(http.StatusAccepted)
 		return
 	}
 
