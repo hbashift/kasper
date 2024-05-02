@@ -1,3 +1,5 @@
 /.idea/
 
-docker-compose.yaml
+/docker-compose.yaml
+
+/Dockerfile
