@@ -92,7 +92,7 @@ type (
 	}
 
 	EmailService interface {
-		SendStudentEmail(ctx context.Context, studentID uuid.UUID, templatePath, tt string) error
+		SendMailToSupervisor(ctx context.Context, studentID uuid.UUID, templatePath, tt string) error
 	}
 
 	EnumService interface {

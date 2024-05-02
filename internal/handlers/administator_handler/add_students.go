@@ -39,16 +39,16 @@ func (h *AdministratorHandler) AddStudents(ctx *gin.Context) {
 		return
 	}
 
-	_, err = h.user.AddUsers(ctx, reqBody, model.UserType_Student)
+	credentials, err := h.user.AddUsers(ctx, reqBody, model.UserType_Student)
 	if err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)
 		return
 	}
 
-	//if err := h.email.SendInviteEmails(ctx, credentials, "internal/templates/invite.html"); err != nil {
-	//	ctx.AbortWithError(models.MapErrorToCode(err), err)
-	//	return
-	//}
+	if err := h.email.SendInviteEmails(ctx, credentials, "internal/templates/invite.html"); err != nil {
+		ctx.AbortWithError(models.MapErrorToCode(err), err)
+		return
+	}
 
 	ctx.Status(http.StatusOK)
 }

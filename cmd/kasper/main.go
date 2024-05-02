@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"os"
 
 	"uir_draft/internal/app/kasper"
 	"uir_draft/internal/handlers/administator_handler"
@@ -52,7 +53,8 @@ func main() {
 	adminService := admin.NewService(db)
 	supervisorService := supervisor.NewService(db)
 	authenticationService := authentication.NewService(db)
-	emailService := email.NewService("SENDER", "PASSWORD", "smtp.gmail.com", db, usersRepo, clientRepo)
+
+	emailService := email.NewService("kasper-mephi@yandex.ru", os.Getenv("MAIL_PASSWORD"), "smtp.yandex.ru", db, usersRepo, clientRepo)
 	enumService := enum.NewService(db)
 
 	studentHandler := student_handler.NewHandler(studentService, authenticationService, emailService, enumService, adminService)

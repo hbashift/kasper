@@ -44,7 +44,7 @@ func (h *StudentHandler) ScientificWorksToReview(ctx *gin.Context) {
 		return
 	}
 
-	//err = h.email.SendStudentEmail(ctx, user.KasperID, "path", "Научные работы")
+	//err = h.email.SendMailToSupervisor(ctx, user.KasperID, "path", "Научные работы")
 	//if err != nil {
 	//	ctx.AbortWithError(models.MapErrorToCode(err), err)
 	//	return

@@ -10,8 +10,10 @@ services:
     extra_hosts:
       - "database:95.163.231.174"
     container_name: "kasper-back"
+    environment:
+      - MAIL_PASSWORD="ymkdqxqamtgvcovh"
   front:
-    image: "jackblack178/kasper-front:0.1.4"
+    image: "jackblack178/kasper-front:localhost"
     ports:
       - "80:5173"
     restart: always

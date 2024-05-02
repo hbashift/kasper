@@ -44,7 +44,7 @@ func (h *StudentHandler) DissertationTitleToReview(ctx *gin.Context) {
 		return
 	}
 	//
-	//err = h.email.SendStudentEmail(ctx, user.KasperID, "path", "Название научной диссертации")
+	//err = h.email.SendMailToSupervisor(ctx, user.KasperID, "path", "Название научной диссертации")
 	//if err != nil {
 	//	ctx.AbortWithError(models.MapErrorToCode(err), err)
 	//	return

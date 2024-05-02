@@ -52,7 +52,7 @@ type (
 	}
 
 	EmailService interface {
-		SendSupervisorEmail(ctx context.Context, studentID, supervisorID uuid.UUID, templatePath, tt, status string) error
+		SendMailToStudent(ctx context.Context, studentID, supervisorID uuid.UUID, templatePath, tt, status string) error
 	}
 
 	StudentService interface {
