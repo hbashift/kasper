@@ -39,7 +39,7 @@ func (h *StudentHandler) UpsertPatents(ctx *gin.Context) {
 	}
 
 	if len(reqBody.Patents) == 0 {
-		ctx.AbortWithStatus(http.StatusBadRequest)
+		ctx.AbortWithStatus(http.StatusCreated)
 		return
 	}
 

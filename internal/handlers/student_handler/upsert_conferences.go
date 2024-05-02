@@ -39,7 +39,7 @@ func (h *StudentHandler) UpsertConferences(ctx *gin.Context) {
 	}
 
 	if len(reqBody.Conferences) == 0 {
-		ctx.AbortWithStatus(http.StatusBadRequest)
+		ctx.AbortWithStatus(http.StatusCreated)
 		return
 	}
 

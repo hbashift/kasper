@@ -39,7 +39,7 @@ func (h *StudentHandler) UpsertIndividualLoads(ctx *gin.Context) {
 	}
 
 	if len(reqBody.Loads) == 0 {
-		ctx.AbortWithStatus(http.StatusBadRequest)
+		ctx.AbortWithStatus(http.StatusCreated)
 		return
 	}
 

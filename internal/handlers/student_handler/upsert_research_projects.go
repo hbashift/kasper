@@ -39,7 +39,7 @@ func (h *StudentHandler) UpsertResearchProjects(ctx *gin.Context) {
 	}
 
 	if len(reqBody.Projects) == 0 {
-		ctx.AbortWithStatus(http.StatusBadRequest)
+		ctx.AbortWithStatus(http.StatusCreated)
 		return
 	}
 

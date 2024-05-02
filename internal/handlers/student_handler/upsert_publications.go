@@ -39,7 +39,7 @@ func (h *StudentHandler) UpsertPublications(ctx *gin.Context) {
 	}
 
 	if len(reqBody.Publications) == 0 {
-		ctx.AbortWithStatus(http.StatusBadRequest)
+		ctx.AbortWithStatus(http.StatusCreated)
 		return
 	}
 
