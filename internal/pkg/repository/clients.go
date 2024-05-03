@@ -180,7 +180,8 @@ func (r *ClientRepository) GetSupervisorsStudentsTx(ctx context.Context, tx pgx.
 			INNER_JOIN(table.Groups, table.Students.GroupID.EQ(table.Groups.GroupID)).
 			INNER_JOIN(table.Specializations, table.Students.SpecID.EQ(table.Specializations.SpecID)),
 		).
-		WHERE(table.StudentsSupervisors.SupervisorID.EQ(postgres.UUID(supervisorID))).
+		WHERE(table.StudentsSupervisors.SupervisorID.EQ(postgres.UUID(supervisorID)).
+			AND(table.StudentsSupervisors.EndAt.IS_NULL())).
 		Sql()
 
 	rows, err := tx.Query(ctx, stmt, args...)

@@ -22,7 +22,7 @@ func NewScientificRepository() *ScientificRepository {
 func (r *ScientificRepository) InitScientificWorkStatusTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID, years int32) error {
 	works := make([]model.ScientificWorksStatus, 0, 8)
 
-	for i := 1; i < int(years*2+1); i++ {
+	for i := 1; i < int(years+1); i++ {
 		work := model.ScientificWorksStatus{
 			WorksID:    uuid.New(),
 			StudentID:  studentID,

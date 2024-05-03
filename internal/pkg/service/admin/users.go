@@ -163,7 +163,7 @@ func (s *Service) AddUsers(ctx context.Context, users request_models.AddUsersReq
 			return nil, errors.Wrap(err, "AddUsers()")
 		}
 
-		password := "123"
+		password := randPassword(passwordLength)
 
 		userCred := models.UsersCredentials{
 			Email:    email,
