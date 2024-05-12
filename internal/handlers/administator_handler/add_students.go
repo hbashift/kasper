@@ -45,7 +45,7 @@ func (h *AdministratorHandler) AddStudents(ctx *gin.Context) {
 		return
 	}
 
-	if err := h.email.SendInviteEmails(ctx, credentials, "internal/templates/invite.html"); err != nil {
+	if err := h.email.SendInviteEmails(ctx, credentials, "internal/templates/invite_students.html"); err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)
 		return
 	}

@@ -21,6 +21,7 @@ type (
 	UsersRepository interface {
 		GetUserTx(ctx context.Context, tx pgx.Tx, userID uuid.UUID) (model.Users, error)
 		SetUserRegisteredTx(ctx context.Context, tx pgx.Tx, userID uuid.UUID) error
+		ChangeUsersEmail(ctx context.Context, tx pgx.Tx, userID uuid.UUID, email string) error
 	}
 
 	MarksRepository interface {
@@ -38,6 +39,7 @@ type (
 		SetNewSupervisorTx(ctx context.Context, tx pgx.Tx, studentID, supervisorID uuid.UUID) error
 		GetAllStudentsSupervisors(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]models.SupervisorFull, error)
 		GetStudentProfile(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) (models.StudentProfile, error)
+		UpdateStudent(ctx context.Context, tx pgx.Tx, student model.Students) error
 	}
 
 	DissertationRepository interface {

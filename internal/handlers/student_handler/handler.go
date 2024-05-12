@@ -21,6 +21,8 @@ type (
 		GetStudentStatus(ctx context.Context, studentID uuid.UUID) (models.Student, error)
 		UpdateStudentsProgressiveness(ctx context.Context, studentID uuid.UUID, progress int32) error
 		GetStudentsProfile(ctx context.Context, studentID uuid.UUID) (models.StudentProfile, error)
+
+		UpdateStudentsProfile(ctx context.Context, userID, studentID uuid.UUID, studentInfo models.UpdateProfile) error
 	}
 
 	DissertationService interface {

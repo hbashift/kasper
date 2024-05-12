@@ -957,6 +957,24 @@ definitions:
         format: date-time
         type: string
     type: object
+  models.UpdateProfile:
+    properties:
+      category:
+        type: string
+      email:
+        type: string
+      full_name:
+        description: Полное имя
+        type: string
+      group_name:
+        type: integer
+      phone:
+        type: string
+      start_date:
+        type: string
+      years:
+        type: integer
+    type: object
   request_models.AddAmountsRequest:
     properties:
       amounts:
@@ -1046,6 +1064,9 @@ definitions:
     properties:
       actual_semester:
         type: integer
+      category:
+        description: Бюджетное или платное обучение
+        type: string
       full_name:
         type: string
       group_number:
@@ -1058,9 +1079,6 @@ definitions:
         description: Department       string     `json:"department,omitempty"`
         type: integer
       start_date:
-        type: string
-      studying_category:
-        description: Бюджетное или платное обучение
         type: string
       supervisor_id:
         type: string
@@ -3135,6 +3153,45 @@ paths:
           schema:
             type: string
       summary: Получение всех оценок
+      tags:
+      - NEW
+  /students/profile/{token}:
+    post:
+      consumes:
+      - application/json
+      description: Обновление прогресса написания диссертации
+      parameters:
+      - description: Данные
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateProfile'
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Обновление прогресса написания диссертации
       tags:
       - NEW
   /students/report/comments/{token}:

@@ -57,6 +57,8 @@ type (
 
 		UpsertPatents(ctx *gin.Context)
 		DeletePatents(ctx *gin.Context)
+
+		UpdateProfile(ctx *gin.Context)
 	}
 
 	SupervisorHandler interface {
@@ -200,6 +202,7 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 
 	r.GET("/students/enum/amounts/:token", h.student.GetSemesterAmounts)
 
+	r.POST("/students/profile/:token", h.student.UpdateProfile)
 	// SupervisorHandler init
 	r.GET("/supervisors/student/list/:token", h.supervisor.GetStudentsList)
 

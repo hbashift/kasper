@@ -120,6 +120,20 @@ func (r *UsersRepository) GetUserByKasperIDTx(ctx context.Context, tx pgx.Tx, ka
 	return user, nil
 }
 
+func (r *UsersRepository) ChangeUsersEmail(ctx context.Context, tx pgx.Tx, userID uuid.UUID, email string) error {
+	stmt, args := table.Users.
+		UPDATE(table.Users.Email).
+		SET(email).
+		WHERE(table.Users.UserID.EQ(postgres.UUID(userID))).
+		Sql()
+
+	if _, err := tx.Exec(ctx, stmt, args...); err != nil {
+		return errors.Wrap(err, "ChangeUsersEmail()")
+	}
+
+	return nil
+}
+
 func scanUser(row pgx.Row, target *model.Users) error {
 	return row.Scan(
 		&target.UserID,

@@ -2863,6 +2863,65 @@ const docTemplate = `{
                 }
             }
         },
+        "/students/profile/{token}": {
+            "post": {
+                "description": "Обновление прогресса написания диссертации",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "NEW"
+                ],
+                "summary": "Обновление прогресса написания диссертации",
+                "parameters": [
+                    {
+                        "description": "Данные",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UpdateProfile"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/students/report/comments/{token}": {
             "get": {
                 "description": "Получение комментариев к диссертации аспиранта",
@@ -5613,6 +5672,33 @@ const docTemplate = `{
                 }
             }
         },
+        "models.UpdateProfile": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "description": "Полное имя",
+                    "type": "string"
+                },
+                "group_name": {
+                    "type": "integer"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "start_date": {
+                    "type": "string"
+                },
+                "years": {
+                    "type": "integer"
+                }
+            }
+        },
         "request_models.AddAmountsRequest": {
             "type": "object",
             "properties": {
@@ -5751,6 +5837,10 @@ const docTemplate = `{
                 "actual_semester": {
                     "type": "integer"
                 },
+                "category": {
+                    "description": "Бюджетное или платное обучение",
+                    "type": "string"
+                },
                 "full_name": {
                     "type": "string"
                 },
@@ -5768,10 +5858,6 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "start_date": {
-                    "type": "string"
-                },
-                "studying_category": {
-                    "description": "Бюджетное или платное обучение",
                     "type": "string"
                 },
                 "supervisor_id": {

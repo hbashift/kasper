@@ -8,6 +8,7 @@ import (
 	"uir_draft/internal/pkg/models"
 
 	"github.com/gin-gonic/gin"
+	"github.com/samber/lo"
 )
 
 // FirstSupervisorRegistry
@@ -43,7 +44,7 @@ func (h *AuthorizationHandler) FirstSupervisorRegistry(ctx *gin.Context) {
 	}
 
 	log.Printf("first_student_registry request body: %v", reqBody)
-
+	log.Printf("email value: %v", lo.FromPtr(reqBody.Email))
 	if err = h.supervisor.InitSupervisor(ctx, *user, reqBody); err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)
 		return

@@ -104,3 +104,14 @@ type StudentSupervisorPair struct {
 	// Информация о научном руководителе в паре
 	Supervisor Supervisor `json:"supervisor"`
 }
+
+type UpdateProfile struct {
+	// Полное имя
+	FullName  string    `db:"students.full_name" json:"full_name,omitempty"`
+	Email     string    `db:"users.email" json:"email"`
+	GroupID   int32     `db:"groups.group_name" json:"group_id,omitempty"`
+	Phone     string    `db:"students.phone" json:"phone"`
+	Category  string    `db:"students.category" json:"category"`
+	StartDate time.Time `db:"students.start_date" json:"date"`
+	Years     int32     `db:"students.years" json:"years,omitempty"`
+}

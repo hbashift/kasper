@@ -1,7 +1,9 @@
 version: "3.7"
+
 services:
   server:
-    image: "jackblack178/kasper-back:0.1.2"
+    build:
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"
     restart: always
@@ -9,9 +11,9 @@ services:
       - ./dissertations:/usr/src/app/dissertations
     extra_hosts:
       - "database:95.163.231.174"
-    container_name: "kasper-back"
     environment:
-      - MAIL_PASSWORD="ymkdqxqamtgvcovh"
+      MAIL_PASSWORD: "vVtVASLsViAdwF6"
+    container_name: "kasper-back"
   front:
     image: "jackblack178/kasper-front:localhost"
     ports:
@@ -22,3 +24,10 @@ services:
     depends_on:
       - server
     container_name: "kasper-front"
+
+networks:
+  default:
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: 1450
+    name: kasper-test

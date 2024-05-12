@@ -15,7 +15,7 @@ type FirstStudentRegistry struct {
 	SupervisorID     *uuid.UUID `json:"supervisor_id"`
 	Phone            string     `json:"phone"`
 	// Бюджетное или платное обучение
-	Category string `json:"studying_category"`
+	Category string `json:"category"`
 }
 
 type ChangePasswordRequest struct {
@@ -24,9 +24,10 @@ type ChangePasswordRequest struct {
 }
 
 type FirstSupervisorRegistry struct {
-	FullName   string `json:"full_name,omitempty"`
-	Phone      string `json:"phone,omitempty"`
-	Faculty    string `json:"faculty,omitempty"`
-	Department string `json:"department,omitempty"`
-	Degree     string `json:"degree,omitempty"`
+	FullName   string  `json:"full_name,omitempty"`
+	Phone      string  `json:"phone,omitempty"`
+	Faculty    string  `json:"faculty,omitempty"`
+	Department string  `json:"department,omitempty"`
+	Degree     string  `json:"degree,omitempty"`
+	Email      *string `json:"email"`
 }

@@ -54,7 +54,7 @@ func main() {
 	supervisorService := supervisor.NewService(db)
 	authenticationService := authentication.NewService(db)
 
-	emailService := email.NewService("kasper-mephi@yandex.ru", os.Getenv("MAIL_PASSWORD"), "smtp.yandex.ru", db, usersRepo, clientRepo)
+	emailService := email.NewService("info@kasper-mephi.ru", os.Getenv("MAIL_PASSWORD"), "mail.hosting.reg.ru", db, usersRepo, clientRepo)
 	enumService := enum.NewService(db)
 
 	studentHandler := student_handler.NewHandler(studentService, authenticationService, emailService, enumService, adminService)

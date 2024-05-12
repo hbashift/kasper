@@ -228,3 +228,36 @@ func (s *Service) GetStudentsProfile(ctx context.Context, studentID uuid.UUID) (
 
 	return student, nil
 }
+
+func (s *Service) UpdateStudentsProfile(ctx context.Context, userID, studentID uuid.UUID, studentInfo models.UpdateProfile) error {
+	//groupID, err := strconv.ParseInt(studentInfo.GroupID, 10, 32)
+	//if err != nil {
+	//	return errors.Wrap(err, "UpdateStudentsProfile()")
+	//}
+
+	student := model.Students{
+		StudentID: studentID,
+		FullName:  studentInfo.FullName,
+		Years:     studentInfo.Years,
+		StartDate: studentInfo.StartDate,
+		GroupID:   studentInfo.GroupID,
+		Phone:     studentInfo.Phone,
+		Category:  studentInfo.Category,
+	}
+
+	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
+		if err := s.studRepo.UpdateStudent(ctx, tx, student); err != nil {
+			return err
+		}
+
+		if err := s.userRepo.ChangeUsersEmail(ctx, tx, userID, studentInfo.Email); err != nil {
+			return err
+		}
+
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "UpdateStudentsProfile()")
+	}
+
+	return nil
+}

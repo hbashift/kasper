@@ -22,6 +22,8 @@ type (
 
 	UsersRepository interface {
 		GetUserTx(ctx context.Context, tx pgx.Tx, userID uuid.UUID) (model.Users, error)
+		SetUserRegisteredTx(ctx context.Context, tx pgx.Tx, userID uuid.UUID) error
+		ChangeUsersEmail(ctx context.Context, tx pgx.Tx, userID uuid.UUID, email string) error
 	}
 
 	DissertationRepository interface {
@@ -33,7 +35,7 @@ type (
 		GetSupervisorsStudentsTx(ctx context.Context, tx pgx.Tx, supervisorID uuid.UUID) ([]models.Student, error)
 		GetSupervisorTx(ctx context.Context, tx pgx.Tx, supervisorID uuid.UUID) (models.Supervisor, error)
 		GetSupervisorProfile(ctx context.Context, tx pgx.Tx, supervisorID uuid.UUID) (models.SupervisorProfile, error)
-		InsertSupervisor(ctx context.Context, tx pgx.Tx, supervisor model.Supervisors) error
+		UpsertSupervisor(ctx context.Context, tx pgx.Tx, supervisor model.Supervisors) error
 	}
 
 	MarksRepository interface {
@@ -76,7 +78,18 @@ func (s *Service) InitSupervisor(ctx context.Context, user model.Users, registry
 	}
 
 	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
-		return s.client.InsertSupervisor(ctx, tx, supervisor)
+		err := s.client.UpsertSupervisor(ctx, tx, supervisor)
+		if err != nil {
+			return err
+		}
+
+		if registry.Email != nil {
+			if err := s.userRepo.ChangeUsersEmail(ctx, tx, user.UserID, lo.FromPtr(registry.Email)); err != nil {
+				return err
+			}
+		}
+
+		return s.userRepo.SetUserRegisteredTx(ctx, tx, user.UserID)
 	}); err != nil {
 		return errors.Wrap(err, "InitSupervisor()")
 	}

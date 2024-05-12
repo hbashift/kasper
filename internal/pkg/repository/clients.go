@@ -12,6 +12,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4"
 	"github.com/pkg/errors"
+	"github.com/samber/lo"
 )
 
 type ClientRepository struct{}
@@ -429,15 +430,53 @@ func (r *ClientRepository) GetStudentProfile(ctx context.Context, tx pgx.Tx, stu
 	return student, nil
 }
 
-func (r *ClientRepository) InsertSupervisor(ctx context.Context, tx pgx.Tx, supervisor model.Supervisors) error {
+func (r *ClientRepository) UpsertSupervisor(ctx context.Context, tx pgx.Tx, supervisor model.Supervisors) error {
 	stmt, args := table.Supervisors.
 		INSERT(table.Supervisors.AllColumns.Except(table.Supervisors.Archived)).
 		MODEL(supervisor).
+		ON_CONFLICT(table.Supervisors.SupervisorID).
+		DO_UPDATE(postgres.
+			SET(
+				table.Supervisors.Degree.SET(postgres.String(lo.FromPtr(supervisor.Degree))),
+				table.Supervisors.Faculty.SET(postgres.String(lo.FromPtr(supervisor.Faculty))),
+				table.Supervisors.Department.SET(postgres.String(lo.FromPtr(supervisor.Department))),
+				table.Supervisors.FullName.SET(postgres.String(lo.FromPtr(supervisor.FullName))),
+				table.Supervisors.Phone.SET(postgres.String(supervisor.Phone)),
+			),
+		).
 		Sql()
 
 	_, err := tx.Exec(ctx, stmt, args...)
 	if err != nil {
-		return errors.Wrap(err, "InsertSupervisor()")
+		return errors.Wrap(err, "UpsertSupervisor()")
+	}
+
+	return nil
+}
+
+func (r *ClientRepository) UpdateStudent(ctx context.Context, tx pgx.Tx, student model.Students) error {
+	stmt, args := table.Students.
+		UPDATE(
+			table.Students.Phone,
+			table.Students.FullName,
+			table.Students.Years,
+			table.Students.Category,
+			table.Students.StartDate,
+			table.Students.GroupID,
+		).
+		SET(
+			student.Phone,
+			student.FullName,
+			student.Years,
+			student.Category,
+			student.StartDate,
+			student.GroupID,
+		).
+		WHERE(table.Students.StudentID.EQ(postgres.UUID(student.StudentID))).
+		Sql()
+
+	if _, err := tx.Exec(ctx, stmt, args...); err != nil {
+		return errors.Wrap(err, "UpdateStudent()")
 	}
 
 	return nil
