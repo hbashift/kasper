@@ -114,3 +114,13 @@ func (s *Service) UpsertExamResults(ctx context.Context, studentID uuid.UUID, ex
 
 	return nil
 }
+
+func (s *Service) DeleteExamMarks(ctx context.Context, semester int32, ids []uuid.UUID) error {
+	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
+		return s.marksRepo.DeleteExamMark(ctx, tx, semester, ids)
+	}); err != nil {
+		return errors.Wrap(err, "DeleteExamMarks()")
+	}
+
+	return nil
+}

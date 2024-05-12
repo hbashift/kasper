@@ -34,6 +34,10 @@ type DeleteByUUIDRequest struct {
 	IDs []uuid.UUID `json:"ids"`
 }
 
+type ChangeSupervisorStatusRequest struct {
+	Supervisors []models.SupervisorStatus `json:"ids"`
+}
+
 type GetBySupervisorID struct {
 	SupervisorID uuid.UUID `json:"supervisor_id"`
 }

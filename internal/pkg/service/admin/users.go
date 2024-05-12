@@ -197,9 +197,9 @@ func (s *Service) AddUsers(ctx context.Context, users request_models.AddUsersReq
 	return userCreds, nil
 }
 
-func (s *Service) ArchiveSupervisor(ctx context.Context, supervisorIDs []uuid.UUID) error {
+func (s *Service) ArchiveSupervisor(ctx context.Context, supervisors []models.SupervisorStatus) error {
 	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
-		return s.usersRepo.ArchiveSupervisor(ctx, tx, supervisorIDs)
+		return s.usersRepo.ArchiveSupervisor(ctx, tx, supervisors)
 	}); err != nil {
 		return errors.Wrap(err, "GetSupervisorsStudents()")
 	}

@@ -29,6 +29,7 @@ type (
 		GetStudentsExamResults(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]model.Exams, error)
 		UpsertExamResults(ctx context.Context, tx pgx.Tx, models []model.Exams) error
 		GetStudentsSupervisorMarks(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]model.SupervisorMarks, error)
+		DeleteExamMark(ctx context.Context, tx pgx.Tx, semester int32, ids []uuid.UUID) error
 	}
 
 	StudentRepository interface {

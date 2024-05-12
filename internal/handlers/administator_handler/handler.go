@@ -23,7 +23,7 @@ type (
 		GetStudentsList(ctx context.Context) ([]models.Student, error)
 		UpsertAttestationMarks(ctx context.Context, marks []models.AttestationMarkRequest) error
 		AddUsers(ctx context.Context, users request_models.AddUsersRequest, userType model.UserType) ([]models.UsersCredentials, error)
-		ArchiveSupervisor(ctx context.Context, supervisorIDs []uuid.UUID) error
+		ArchiveSupervisor(ctx context.Context, supervisors []models.SupervisorStatus) error
 	}
 
 	Authenticator interface {

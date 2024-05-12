@@ -129,6 +129,27 @@ func (r *MarksRepository) UpsertExamResults(ctx context.Context, tx pgx.Tx, mode
 	return nil
 }
 
+func (r *MarksRepository) DeleteExamMark(ctx context.Context, tx pgx.Tx, semester int32, ids []uuid.UUID) error {
+	expressions := make([]postgres.Expression, 0)
+
+	for _, id := range ids {
+		exp := postgres.Expression(postgres.UUID(id))
+
+		expressions = append(expressions, exp)
+	}
+
+	stmt, args := table.Exams.
+		DELETE().
+		WHERE(table.Exams.ExamID.IN(expressions...).AND(table.Exams.Semester.EQ(postgres.Int32(semester)))).
+		Sql()
+
+	if _, err := tx.Exec(ctx, stmt, args...); err != nil {
+		return errors.Wrap(err, "DeleteExamMark()")
+	}
+
+	return nil
+}
+
 func (r *MarksRepository) GetStudentsSupervisorMarks(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) ([]model.SupervisorMarks, error) {
 	stmt, args := table.SupervisorMarks.
 		SELECT(table.SupervisorMarks.AllColumns).

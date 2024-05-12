@@ -1,44 +1,52 @@
-package administator_handler
+package student_handler
 
 import (
 	"net/http"
 
-	"uir_draft/internal/handlers/administator_handler/request_models"
+	"uir_draft/internal/handlers/student_handler/request_models"
 	"uir_draft/internal/pkg/models"
 
 	"github.com/gin-gonic/gin"
 )
 
-// ArchiveSupervisor
+// DeleteMarks
 //
-//	@Summary		Архивирование научных руководителей
+//	@Summary		Удаление кандидатских экзаменов
 //
-//	@Description	Архивирование научных руководителей
+//	@Description	Удаление кандидатских экзаменов
 //
 //	@Tags			NEW
 //	@Accept			json
-//	@Param			input body request_models.DeleteByUUIDRequest true "Данные"
+//
+//	@Param			input	body	request_models.DeleteIDs	true	"ID нагрузок и семестр"
+//
 //	@Success		200
 //	@Param			token	path		string	true	"Токен пользователя"
 //	@Failure		400		{string}	string	"Неверный формат данных"
 //	@Failure		401		{string}	string	"Токен протух"
 //	@Failure		204		{string}	string	"Нет записей в БД"
 //	@Failure		500		{string}	string	"Ошибка на стороне сервера"
-//	@Router			/administrator/supervisor/{token} [put]
-func (h *AdministratorHandler) ArchiveSupervisor(ctx *gin.Context) {
+//	@Router			/students/marks/{token} [put]
+func (h *StudentHandler) DeleteMarks(ctx *gin.Context) {
 	_, err := h.authenticate(ctx)
 	if err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)
 		return
 	}
 
-	reqBody := request_models.ChangeSupervisorStatusRequest{}
+	reqBody := request_models.DeleteIDs{}
 	if err = ctx.ShouldBindJSON(&reqBody); err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
-	if err = h.user.ArchiveSupervisor(ctx, reqBody.Supervisors); err != nil {
+	if len(reqBody.IDs) == 0 {
+		ctx.AbortWithStatus(http.StatusCreated)
+		return
+	}
+
+	err = h.mark.DeleteExamMarks(ctx, reqBody.Semester, reqBody.IDs)
+	if err != nil {
 		ctx.AbortWithError(models.MapErrorToCode(err), err)
 		return
 	}

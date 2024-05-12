@@ -110,6 +110,7 @@ type (
 	MarksService interface {
 		GetAllMarks(ctx context.Context, studentID uuid.UUID) (models.AllMarks, error)
 		UpsertExamResults(ctx context.Context, studentID uuid.UUID, exams []models.ExamRequest) error
+		DeleteExamMarks(ctx context.Context, semester int32, ids []uuid.UUID) error
 	}
 )
 

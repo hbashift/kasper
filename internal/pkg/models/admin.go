@@ -19,3 +19,8 @@ type UsersCredentials struct {
 	Email    string
 	Password string
 }
+
+type SupervisorStatus struct {
+	SupervisorID uuid.UUID `json:"supervisor_id,omitempty"`
+	Archived     bool      `json:"archived,omitempty"`
+}
