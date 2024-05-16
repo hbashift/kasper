@@ -113,6 +113,9 @@ type (
 		AddAmounts(ctx *gin.Context)
 
 		ArchiveSupervisor(ctx *gin.Context)
+
+		GetNotRegisteredUsers(ctx *gin.Context)
+		DeleteNotRegisteredUsers(ctx *gin.Context)
 	}
 
 	AuthenticationHandler interface {
@@ -261,6 +264,9 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 
 	r.PUT("/administrator/supervisor/:token", h.administrator.ArchiveSupervisor)
 	r.POST("/administrator/enum/amounts/:token", h.administrator.AddAmounts)
+
+	r.GET("/administrator/users/not_registered/:token", h.administrator.GetNotRegisteredUsers)
+	r.PUT("/administrator/users/not_registered/:token", h.administrator.DeleteNotRegisteredUsers)
 
 	// AuthenticationHandler init
 	r.POST("/authorize", h.authentication.Authorize)

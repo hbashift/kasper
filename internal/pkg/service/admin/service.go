@@ -26,6 +26,8 @@ type (
 
 	ClientsRepository interface {
 		InsertUsersTx(ctx context.Context, tx pgx.Tx, users []model.Users) error
+		GetNotRegisteredUsers(ctx context.Context, tx pgx.Tx) ([]models.UserInfo, error)
+		DeleteNotRegisteredUsers(ctx context.Context, tx pgx.Tx, userIDs []uuid.UUID) error
 	}
 
 	MarksRepository interface {

@@ -5,6 +5,7 @@ import (
 
 	"uir_draft/internal/generated/new_kasper/new_uir/public/model"
 	"uir_draft/internal/generated/new_kasper/new_uir/public/table"
+	"uir_draft/internal/pkg/models"
 
 	"github.com/go-jet/jet/v2/postgres"
 	"github.com/google/uuid"
@@ -132,6 +133,62 @@ func (r *UsersRepository) ChangeUsersEmail(ctx context.Context, tx pgx.Tx, userI
 	}
 
 	return nil
+}
+
+func (r *UsersRepository) GetNotRegisteredUsers(ctx context.Context, tx pgx.Tx) ([]models.UserInfo, error) {
+	stmt, args := table.Users.
+		SELECT(table.Users.UserID, table.Users.Email, table.Users.Registered, table.Users.UserType).
+		WHERE(table.Users.Registered.EQ(postgres.Bool(false))).
+		Sql()
+
+	rows, err := tx.Query(ctx, stmt, args...)
+	if err != nil {
+		return nil, errors.Wrap(err, "GetNotRegisteredUsers()")
+	}
+
+	users := make([]models.UserInfo, 0)
+
+	for rows.Next() {
+		user := models.UserInfo{}
+		if err := scanUserInfo(rows, &user); err != nil {
+			return nil, errors.Wrap(err, "GetNotRegisteredUsers(): scanning row")
+		}
+
+		users = append(users, user)
+	}
+
+	return users, nil
+}
+
+func (r *UsersRepository) DeleteNotRegisteredUsers(ctx context.Context, tx pgx.Tx, userIDs []uuid.UUID) error {
+	idExpressions := make([]postgres.Expression, 0, len(userIDs))
+
+	for _, id := range userIDs {
+		idExp := postgres.UUID(id)
+
+		idExpressions = append(idExpressions, idExp)
+	}
+
+	stmt, args := table.Users.
+		DELETE().
+		WHERE(table.Users.UserID.IN(idExpressions...).AND(table.Users.Registered.EQ(postgres.Bool(false)))).
+		Sql()
+
+	_, err := tx.Exec(ctx, stmt, args...)
+	if err != nil {
+		return errors.Wrap(err, "DeleteNotRegisteredUsers()")
+	}
+
+	return nil
+}
+
+func scanUserInfo(row pgx.Row, target *models.UserInfo) error {
+	return row.Scan(
+		&target.UserID,
+		&target.Email,
+		&target.Registered,
+		&target.UserType,
+	)
 }
 
 func scanUser(row pgx.Row, target *model.Users) error {

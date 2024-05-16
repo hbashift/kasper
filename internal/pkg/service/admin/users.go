@@ -207,6 +207,31 @@ func (s *Service) ArchiveSupervisor(ctx context.Context, supervisors []models.Su
 	return nil
 }
 
+func (s *Service) GetNotRegisteredUsers(ctx context.Context) ([]models.UserInfo, error) {
+	users := make([]models.UserInfo, 0)
+	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
+		var err error
+		users, err = s.clientRepo.GetNotRegisteredUsers(ctx, tx)
+		return err
+	}); err != nil {
+		return nil, errors.Wrap(err, "GetNotRegisteredUsers()")
+	}
+
+	return users, nil
+}
+
+func (s *Service) DeleteNotRegisteredUsers(ctx context.Context, userIDs []uuid.UUID) error {
+	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
+		err := s.clientRepo.DeleteNotRegisteredUsers(ctx, tx, userIDs)
+
+		return err
+	}); err != nil {
+		return errors.Wrap(err, "DeleteNotRegisteredUsers()")
+	}
+
+	return nil
+}
+
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 const passwordLength = 10
 

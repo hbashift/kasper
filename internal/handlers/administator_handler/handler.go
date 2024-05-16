@@ -24,6 +24,8 @@ type (
 		UpsertAttestationMarks(ctx context.Context, marks []models.AttestationMarkRequest) error
 		AddUsers(ctx context.Context, users request_models.AddUsersRequest, userType model.UserType) ([]models.UsersCredentials, error)
 		ArchiveSupervisor(ctx context.Context, supervisors []models.SupervisorStatus) error
+		GetNotRegisteredUsers(ctx context.Context) ([]models.UserInfo, error)
+		DeleteNotRegisteredUsers(ctx context.Context, userIDs []uuid.UUID) error
 	}
 
 	Authenticator interface {

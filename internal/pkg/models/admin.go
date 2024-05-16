@@ -24,3 +24,10 @@ type SupervisorStatus struct {
 	SupervisorID uuid.UUID `json:"supervisor_id,omitempty"`
 	Archived     bool      `json:"archived,omitempty"`
 }
+
+type UserInfo struct {
+	UserID     uuid.UUID `json:"user_id,omitempty" db:"user_id"`
+	Email      string    `json:"email,omitempty" db:"email"`
+	Registered bool      `json:"registered,omitempty" db:"registered"`
+	UserType   string    `json:"user_type" db:"user_type"`
+}
