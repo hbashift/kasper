@@ -141,9 +141,9 @@ func NewHTTPServer(studentHandler StudentHandler, supervisorHandler SupervisorHa
 }
 
 func (h *HTTPServer) InitRouter() *gin.Engine {
-	r := gin.Default()
+	router := gin.Default()
 
-	r.Use(cors.New(cors.Config{
+	router.Use(cors.New(cors.Config{
 		AllowMethods:     []string{"PUT", "PATCH", "POST", "GET", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Authorization", "Content-Type", "Accept-Encoding", "StudentID"},
 		ExposeHeaders:    []string{"Content-Length", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials", "Access-Control-Allow-Headers", "Access-Control-Allow-Methods", "Content-Disposition"},
@@ -152,6 +152,7 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 		MaxAge:           12 * time.Hour,
 	}))
 
+	r := router.Group("/api")
 	// Swagger documentation
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
@@ -270,5 +271,5 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 	r.POST("/authorize/password/change/:token", h.authentication.ChangePassword)
 	r.GET("/authorize/token/check/:token", h.authentication.TokenCheck)
 
-	return r
+	return router
 }

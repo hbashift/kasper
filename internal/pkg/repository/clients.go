@@ -214,6 +214,8 @@ func (r *ClientRepository) GetStudentSupervisorPairsTx(ctx context.Context, tx p
 					table.Students.SpecID,
 					table.Students.GroupID,
 					table.Supervisors.Archived,
+					table.Supervisors.Rank,
+					table.Supervisors.Position,
 				),
 			table.Specializations.Title,
 			table.Groups.GroupName,
@@ -442,6 +444,8 @@ func (r *ClientRepository) UpsertSupervisor(ctx context.Context, tx pgx.Tx, supe
 				table.Supervisors.Department.SET(postgres.String(lo.FromPtr(supervisor.Department))),
 				table.Supervisors.FullName.SET(postgres.String(lo.FromPtr(supervisor.FullName))),
 				table.Supervisors.Phone.SET(postgres.String(supervisor.Phone)),
+				table.Supervisors.Rank.SET(postgres.String(lo.FromPtr(supervisor.Rank))),
+				table.Supervisors.Position.SET(postgres.String(lo.FromPtr(supervisor.Position))),
 			),
 		).
 		Sql()
@@ -508,6 +512,8 @@ func scanSupervisorProfile(row pgx.Row, target *models.SupervisorProfile) error 
 		&target.Faculty,
 		&target.Department,
 		&target.Degree,
+		&target.Rank,
+		&target.Position,
 		&target.Email,
 	)
 }
@@ -601,6 +607,8 @@ func scanSupervisor(row pgx.Row, target *models.Supervisor) error {
 		&target.Faculty,
 		&target.Department,
 		&target.Degree,
+		&target.Rank,
+		&target.Position,
 	)
 }
 

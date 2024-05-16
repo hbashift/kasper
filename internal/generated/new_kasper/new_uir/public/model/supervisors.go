@@ -20,4 +20,6 @@ type Supervisors struct {
 	Faculty      *string
 	Department   *string
 	Degree       *string
+	Rank         *string
+	Position     *string
 }

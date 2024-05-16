@@ -75,6 +75,8 @@ func (s *Service) InitSupervisor(ctx context.Context, user model.Users, registry
 		Faculty:      lo.ToPtr(registry.Faculty),
 		Department:   lo.ToPtr(registry.Department),
 		Degree:       lo.ToPtr(registry.Degree),
+		Rank:         registry.Rank,
+		Position:     registry.Position,
 	}
 
 	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {

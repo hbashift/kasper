@@ -25,6 +25,8 @@ type supervisorsTable struct {
 	Faculty      postgres.ColumnString
 	Department   postgres.ColumnString
 	Degree       postgres.ColumnString
+	Rank         postgres.ColumnString
+	Position     postgres.ColumnString
 
 	AllColumns     postgres.ColumnList
 	MutableColumns postgres.ColumnList
@@ -63,8 +65,10 @@ func newSupervisorsTableImpl(schemaName, tableName, alias string) supervisorsTab
 		FacultyColumn      = postgres.StringColumn("faculty")
 		DepartmentColumn   = postgres.StringColumn("department")
 		DegreeColumn       = postgres.StringColumn("degree")
-		allColumns         = postgres.ColumnList{SupervisorIDColumn, UserIDColumn, FullNameColumn, PhoneColumn, ArchivedColumn, FacultyColumn, DepartmentColumn, DegreeColumn}
-		mutableColumns     = postgres.ColumnList{UserIDColumn, FullNameColumn, PhoneColumn, ArchivedColumn, FacultyColumn, DepartmentColumn, DegreeColumn}
+		RankColumn         = postgres.StringColumn("rank")
+		PositionColumn     = postgres.StringColumn("position")
+		allColumns         = postgres.ColumnList{SupervisorIDColumn, UserIDColumn, FullNameColumn, PhoneColumn, ArchivedColumn, FacultyColumn, DepartmentColumn, DegreeColumn, RankColumn, PositionColumn}
+		mutableColumns     = postgres.ColumnList{UserIDColumn, FullNameColumn, PhoneColumn, ArchivedColumn, FacultyColumn, DepartmentColumn, DegreeColumn, RankColumn, PositionColumn}
 	)
 
 	return supervisorsTable{
@@ -79,6 +83,8 @@ func newSupervisorsTableImpl(schemaName, tableName, alias string) supervisorsTab
 		Faculty:      FacultyColumn,
 		Department:   DepartmentColumn,
 		Degree:       DegreeColumn,
+		Rank:         RankColumn,
+		Position:     PositionColumn,
 
 		AllColumns:     allColumns,
 		MutableColumns: mutableColumns,

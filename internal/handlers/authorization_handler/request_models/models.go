@@ -30,4 +30,6 @@ type FirstSupervisorRegistry struct {
 	Department string  `json:"department,omitempty"`
 	Degree     string  `json:"degree,omitempty"`
 	Email      *string `json:"email"`
+	Rank       *string `json:"rank"`
+	Position   *string `json:"position"`
 }

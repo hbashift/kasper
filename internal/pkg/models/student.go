@@ -43,6 +43,8 @@ type Supervisor struct {
 	Degree     *string `db:"degree" json:"degree"`
 	Phone      string  `db:"phone" json:"phone"`
 	Archived   bool    `db:"archived" json:"archived"`
+	Rank       *string `db:"rank" json:"rank"`
+	Position   *string `db:"position" json:"position"`
 }
 
 type SupervisorProfile struct {
@@ -56,6 +58,8 @@ type SupervisorProfile struct {
 	Email      string  `db:"users.email" json:"email"`
 	Phone      string  `db:"supervisors.phone" json:"phone"`
 	Archived   bool    `db:"archived" json:"archived"`
+	Rank       *string `db:"rank" json:"rank"`
+	Position   *string `db:"position" json:"position"`
 }
 
 type StudentProfile struct {
