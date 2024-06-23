@@ -77,6 +77,7 @@ func (r *ClientRepository) GetStudentsList(ctx context.Context, tx pgx.Tx) ([]mo
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 	students := make([]models.Student, 0)
 	for rows.Next() {
 		student := models.Student{}
@@ -330,6 +331,9 @@ func (r *ClientRepository) GetStudentsActualSupervisorTx(ctx context.Context, tx
 	row := tx.QueryRow(ctx, stmt, args...)
 	supervisor := models.Supervisor{}
 	if err := scanSupervisor(row, &supervisor); err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return supervisor, nil
+		}
 		return models.Supervisor{}, errors.Wrap(err, "GetStudentsActualSupervisorTx()")
 	}
 
@@ -501,6 +505,227 @@ func (r *ClientRepository) ArchiveSupervisor(ctx context.Context, tx pgx.Tx, sup
 	}
 
 	return nil
+}
+
+func (r *ClientRepository) UpdateStudentsSemester(ctx context.Context, tx pgx.Tx, students []model.Students) error {
+	for _, student := range students {
+		stmt, args := table.Students.
+			UPDATE(
+				table.Students.StudyingStatus,
+				table.Students.ActualSemester,
+			).
+			SET(
+				student.StudyingStatus,
+				student.ActualSemester,
+			).
+			WHERE(table.Students.StudentID.EQ(postgres.UUID(student.StudentID))).
+			Sql()
+
+		_, err := tx.Exec(ctx, stmt, args...)
+		if err != nil {
+			return errors.Wrap(err, "UpdateStudentsSemester()")
+		}
+	}
+
+	return nil
+}
+
+func (r *ClientRepository) GetStudentsByStudentsIDs(ctx context.Context, tx pgx.Tx, studentIDs []uuid.UUID) ([]model.Students, error) {
+	expressions := make([]postgres.Expression, 0)
+
+	for _, id := range studentIDs {
+		exp := postgres.Expression(postgres.UUID(id))
+
+		expressions = append(expressions, exp)
+	}
+
+	stmt, args := table.Students.
+		SELECT(table.Students.AllColumns).
+		WHERE(table.Students.StudentID.IN(expressions...)).
+		Sql()
+
+	rows, err := tx.Query(ctx, stmt, args...)
+	if err != nil {
+		return nil, errors.Wrap(err, "GetStudentsByStudentsIDs()")
+	}
+	defer rows.Close()
+
+	students := make([]model.Students, 0)
+	for rows.Next() {
+		student := model.Students{}
+		if err := scanStudent(rows, &student); err != nil {
+			return nil, errors.Wrap(err, "GetStudentsByStudentsIDs(): scanning rows")
+		}
+
+		students = append(students, student)
+	}
+
+	return students, nil
+}
+
+func (r *ClientRepository) GetAllStudentIDs(ctx context.Context, tx pgx.Tx) ([]uuid.UUID, error) {
+	stmt, args := table.Students.
+		SELECT(table.Students.StudentID).
+		WHERE(table.Students.StudyingStatus.EQ(postgres.NewEnumValue(model.StudentStatus_Studying.String()))).
+		Sql()
+
+	rows, err := tx.Query(ctx, stmt, args...)
+	if err != nil {
+		return nil, errors.Wrap(err, "GetAllStudentIDs()")
+	}
+	defer rows.Close()
+
+	studentIDs := make([]uuid.UUID, 0)
+	for rows.Next() {
+		studentID := uuid.UUID{}
+		if err = rows.Scan(&studentID); err != nil {
+			return nil, errors.Wrap(err, "GetAllStudentIDs(): scanning rows")
+		}
+
+		studentIDs = append(studentIDs, studentID)
+	}
+
+	return studentIDs, nil
+}
+
+func (r *ClientRepository) GetDataForReportOne(ctx context.Context, tx pgx.Tx, studentIDs []uuid.UUID) ([]models.StudentInfoForReportOne, error) {
+	info := make([]models.StudentInfoForReportOne, 0)
+
+	for _, studentID := range studentIDs {
+		student, err := r.GetStudentTx(ctx, tx, studentID)
+		if err != nil {
+			return nil, errors.Wrap(err, "GetDataForReportOne()")
+		}
+
+		disRepo := DissertationRepository{}
+		progressiveness, err := disRepo.GetActualProgressiveness(ctx, tx, student)
+		if err != nil {
+			if errors.Is(err, pgx.ErrNoRows) {
+				continue
+			}
+			return nil, errors.Wrap(err, "GetDataForReportOne()")
+		}
+		markRepo := MarksRepository{}
+		mark, err := markRepo.GetStudentsActualAttestationMarksTx(ctx, tx, student)
+		if err != nil {
+			if errors.Is(err, pgx.ErrNoRows) {
+				continue
+			}
+			return nil, errors.Wrap(err, "GetDataForReportOne()")
+		}
+
+		scienceRepo := ScientificRepository{}
+		worksIDs, err := scienceRepo.GetActualScientificWorksStatusIDs(ctx, tx, student)
+		if err != nil {
+			if errors.Is(err, pgx.ErrNoRows) {
+				continue
+			}
+			return nil, errors.Wrap(err, "GetDataForReportOne()")
+		}
+
+		dPublications, err := scienceRepo.GetPublicationsTx(ctx, tx, worksIDs)
+		if err != nil {
+			if errors.Is(err, pgx.ErrNoRows) {
+				continue
+			}
+			return nil, errors.Wrap(err, "GetDataForReportOne()")
+		}
+
+		dConferences, err := scienceRepo.GetConferencesTx(ctx, tx, worksIDs)
+		if err != nil {
+			if errors.Is(err, pgx.ErrNoRows) {
+				continue
+			}
+			return nil, errors.Wrap(err, "GetDataForReportOne()")
+		}
+
+		supervisor, err := r.GetStudentsActualSupervisorTx(ctx, tx, studentID)
+		if err != nil {
+			if errors.Is(err, pgx.ErrNoRows) {
+				continue
+			}
+			return nil, errors.Wrap(err, "GetDataForReportOne()")
+		}
+
+		infoForReport := models.StudentInfoForReportOne{
+			Student:         student,
+			SupervisorName:  supervisor.FullName,
+			AttestationMark: mark.Mark,
+			Progressiveness: progressiveness.Progressiveness,
+			Conferences:     dConferences,
+			Publications:    dPublications,
+		}
+		info = append(info, infoForReport)
+	}
+
+	return info, nil
+}
+
+func (r *ClientRepository) GetDataForReportTwo(ctx context.Context, tx pgx.Tx, studentIDs []uuid.UUID) ([]models.StudentInfoForReportTwo, error) {
+	info := make([]models.StudentInfoForReportTwo, 0)
+
+	for _, studentID := range studentIDs {
+		student, err := r.GetStudentTx(ctx, tx, studentID)
+		if err != nil {
+			return nil, errors.Wrap(err, "GetDataForReportOne()")
+		}
+
+		supervisor, err := r.GetStudentsActualSupervisorTx(ctx, tx, studentID)
+		if err != nil {
+			return nil, errors.Wrap(err, "GetDataForReportOne()")
+		}
+
+		disRepo := DissertationRepository{}
+		progressiveness, err := disRepo.GetActualProgressiveness(ctx, tx, student)
+		if err != nil {
+			return nil, errors.Wrap(err, "GetDataForReportOne()")
+		}
+		markRepo := MarksRepository{}
+		mark, err := markRepo.GetStudentsActualSupervisorMarks(ctx, tx, student)
+		if err != nil {
+			return nil, errors.Wrap(err, "GetDataForReportOne()")
+		}
+
+		scienceRepo := ScientificRepository{}
+		worksIDs, err := scienceRepo.GetActualScientificWorksStatusIDs(ctx, tx, student)
+		if err != nil {
+			return nil, errors.Wrap(err, "GetDataForReportOne()")
+		}
+
+		dPublications, err := scienceRepo.GetPublicationsTx(ctx, tx, worksIDs)
+		if err != nil {
+			return nil, errors.Wrap(err, "GetDataForReportOne()")
+		}
+
+		loadRepo := TeachingLoadRepository{}
+		loadsIDs, err := loadRepo.GetTeachingLoadStatusIDs(ctx, tx, studentID)
+		if err != nil {
+			return nil, errors.Wrap(err, "GetDataForReportOne()")
+		}
+
+		dClassroom, err := loadRepo.GetClassroomLoadsTx(ctx, tx, loadsIDs)
+		if err != nil {
+			return nil, errors.Wrap(err, "GetDataForReportOne()")
+		}
+
+		title, err := disRepo.GetActualDissertationTitlesTx(ctx, tx, student)
+		if err != nil {
+			return nil, errors.Wrap(err, "GetDataForReportOne()")
+		}
+
+		infoForReport := models.StudentInfoForReportTwo{
+			Student:           student,
+			SupervisorName:    supervisor.FullName,
+			SupervisorMark:    mark.Mark,
+			Progressiveness:   progressiveness.Progressiveness,
+			Publications:      dPublications,
+			ClassroomLoad:     dClassroom,
+			DissertationTitle: title,
+		}
+		info = append(info, infoForReport)
+	}
+
+	return info, nil
 }
 
 func scanSupervisorProfile(row pgx.Row, target *models.SupervisorProfile) error {

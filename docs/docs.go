@@ -15,6 +15,112 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/administrator/download/report-one/{token}": {
+            "get": {
+                "description": "Скачивание отчета 1",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "NEW 2"
+                ],
+                "summary": "Скачивание отчета 1",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Файл"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/administrator/download/report-two/{token}": {
+            "get": {
+                "description": "Скачивание отчета 2",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "NEW 2"
+                ],
+                "summary": "Скачивание отчета 2",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Файл"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/administrator/enum/amounts/{token}": {
             "get": {
                 "description": "Добавление количеств семестров",
@@ -534,6 +640,112 @@ const docTemplate = `{
                 }
             }
         },
+        "/administrator/generate/report-one/{token}": {
+            "get": {
+                "description": "Сгенерировать отчет 1",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Сгенерировать отчет 1",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/administrator/generate/report-two/{token}": {
+            "get": {
+                "description": "Сгенерировать отчет 2",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Сгенерировать отчет 2",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/administrator/pairs/{token}": {
             "get": {
                 "description": "Ручка для получения пар аспирант/руководитель",
@@ -664,6 +876,65 @@ const docTemplate = `{
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/request_models.ChangeSupervisorRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/administrator/student/new-semester/{token}": {
+            "post": {
+                "description": "Отправление студентов на следующий семестр",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "NEW 2"
+                ],
+                "summary": "Отправление студентов на следующий семестр",
+                "parameters": [
+                    {
+                        "description": "Данные",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.DeleteByUUIDRequest"
                         }
                     },
                     {
@@ -2835,6 +3106,63 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/models.AllMarks"
                         }
+                    },
+                    "204": {
+                        "description": "Нет записей в БД",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Токен протух",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Удаление кандидатских экзаменов",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "NEW"
+                ],
+                "summary": "Удаление кандидатских экзаменов",
+                "parameters": [
+                    {
+                        "description": "ID нагрузок и семестр",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request_models.DeleteIDs"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Токен пользователя",
+                        "name": "token",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
                     },
                     "204": {
                         "description": "Нет записей в БД",
@@ -5527,6 +5855,12 @@ const docTemplate = `{
                 "phone": {
                     "type": "string"
                 },
+                "position": {
+                    "type": "string"
+                },
+                "rank": {
+                    "type": "string"
+                },
                 "supervisor_id": {
                     "description": "ID научного руководителя",
                     "type": "string",
@@ -5606,6 +5940,12 @@ const docTemplate = `{
                 "phone": {
                     "type": "string"
                 },
+                "position": {
+                    "type": "string"
+                },
+                "rank": {
+                    "type": "string"
+                },
                 "supervisor_id": {
                     "description": "ID научного руководителя",
                     "type": "string",
@@ -5678,6 +6018,9 @@ const docTemplate = `{
                 "category": {
                     "type": "string"
                 },
+                "date": {
+                    "type": "string"
+                },
                 "email": {
                     "type": "string"
                 },
@@ -5685,13 +6028,10 @@ const docTemplate = `{
                     "description": "Полное имя",
                     "type": "string"
                 },
-                "group_name": {
+                "group_id": {
                     "type": "integer"
                 },
                 "phone": {
-                    "type": "string"
-                },
-                "start_date": {
                     "type": "string"
                 },
                 "years": {
@@ -5874,6 +6214,9 @@ const docTemplate = `{
                 "department": {
                     "type": "string"
                 },
+                "email": {
+                    "type": "string"
+                },
                 "faculty": {
                     "type": "string"
                 },
@@ -5881,6 +6224,12 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "phone": {
+                    "type": "string"
+                },
+                "position": {
+                    "type": "string"
+                },
+                "rank": {
                     "type": "string"
                 }
             }

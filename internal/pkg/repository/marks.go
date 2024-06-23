@@ -86,6 +86,7 @@ func (r *MarksRepository) GetStudentsExamResults(ctx context.Context, tx pgx.Tx,
 	if err != nil {
 		return nil, errors.Wrap(err, "GetStudentsExamResults()")
 	}
+	defer rows.Close()
 
 	exams := make([]model.Exams, 0)
 	for rows.Next() {
@@ -160,6 +161,7 @@ func (r *MarksRepository) GetStudentsSupervisorMarks(ctx context.Context, tx pgx
 	if err != nil {
 		return nil, errors.Wrap(err, "GetStudentsSupervisorMarks()")
 	}
+	defer rows.Close()
 
 	supervisorMarks := make([]model.SupervisorMarks, 0)
 	for rows.Next() {
@@ -180,7 +182,10 @@ func (r *MarksRepository) UpsertStudentsSupervisorMark(ctx context.Context, tx p
 		MODEL(model).
 		ON_CONFLICT(table.SupervisorMarks.StudentID, table.SupervisorMarks.Semester).
 		DO_UPDATE(postgres.
-			SET(table.SupervisorMarks.Mark.SET(postgres.Int32(model.Mark)))).
+			SET(
+				table.SupervisorMarks.Mark.SET(postgres.Int32(model.Mark)),
+				table.SupervisorMarks.SupervisorID.SET(postgres.UUID(model.SupervisorID)),
+			)).
 		Sql()
 
 	if _, err := tx.Exec(ctx, stmt, args...); err != nil {
@@ -188,6 +193,50 @@ func (r *MarksRepository) UpsertStudentsSupervisorMark(ctx context.Context, tx p
 	}
 
 	return nil
+}
+
+func (r *MarksRepository) GetStudentsActualAttestationMarksTx(ctx context.Context, tx pgx.Tx, student model.Students) (model.Marks, error) {
+	stmt, args := table.Marks.
+		SELECT(table.Marks.AllColumns).
+		WHERE(
+			table.Marks.StudentID.EQ(postgres.UUID(student.StudentID)).
+				AND(table.Marks.Semester.EQ(postgres.Int32(student.ActualSemester))),
+		).
+		Sql()
+
+	row := tx.QueryRow(ctx, stmt, args...)
+
+	mark := model.Marks{}
+	if err := scanMarks(row, &mark); err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return mark, nil
+		}
+		return mark, errors.Wrap(err, "GetStudentsAttestationMarksTx(): scanning row")
+	}
+
+	return mark, nil
+}
+
+func (r *MarksRepository) GetStudentsActualSupervisorMarks(ctx context.Context, tx pgx.Tx, student model.Students) (model.SupervisorMarks, error) {
+	stmt, args := table.SupervisorMarks.
+		SELECT(table.SupervisorMarks.AllColumns).
+		WHERE(
+			table.SupervisorMarks.StudentID.EQ(postgres.UUID(student.StudentID)).
+				AND(table.SupervisorMarks.Semester.EQ(postgres.Int32(student.ActualSemester))),
+		).
+		Sql()
+
+	rows := tx.QueryRow(ctx, stmt, args...)
+
+	exam := model.SupervisorMarks{}
+	if err := scanSupervisorMarks(rows, &exam); err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return exam, nil
+		}
+		return exam, errors.Wrap(err, "GetStudentsSupervisorMarks(): scanning rows")
+	}
+
+	return exam, nil
 }
 
 func scanMarks(row pgx.Row, target *model.Marks) error {

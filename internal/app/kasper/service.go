@@ -116,6 +116,13 @@ type (
 
 		GetNotRegisteredUsers(ctx *gin.Context)
 		DeleteNotRegisteredUsers(ctx *gin.Context)
+
+		GenerateReportOne(ctx *gin.Context)
+		GenerateReportTwo(ctx *gin.Context)
+
+		DownloadReportOne(ctx *gin.Context)
+		DownloadReportTwo(ctx *gin.Context)
+		StudentsToNewSemester(ctx *gin.Context)
 	}
 
 	AuthenticationHandler interface {
@@ -267,6 +274,14 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 
 	r.GET("/administrator/users/not_registered/:token", h.administrator.GetNotRegisteredUsers)
 	r.PUT("/administrator/users/not_registered/:token", h.administrator.DeleteNotRegisteredUsers)
+
+	r.GET("/administrator/generate/report-one/:token", h.administrator.GenerateReportOne)
+	r.GET("/administrator/generate/report-two/:token", h.administrator.GenerateReportTwo)
+
+	r.GET("/administrator/download/report-one/:token", h.administrator.DownloadReportOne)
+	r.GET("/administrator/download/report-two/:token", h.administrator.DownloadReportTwo)
+
+	r.POST("/administrator/student/new-semester/:token", h.administrator.StudentsToNewSemester)
 
 	// AuthenticationHandler init
 	r.POST("/authorize", h.authentication.Authorize)

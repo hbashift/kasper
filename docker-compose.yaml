@@ -4,26 +4,24 @@ services:
   server:
     build:
       dockerfile: Dockerfile
+    #image: "hbashift/kasper-back:v0.1.2"
     ports:
       - "8080:8080"
     restart: always
     volumes:
       - ./dissertations:/usr/src/app/dissertations
+      - ./reports:/usr/src/app/reports
     extra_hosts:
       - "database:95.163.231.174"
     environment:
       MAIL_PASSWORD: "vVtVASLsViAdwF6"
-    container_name: "kasper-back"
-  front:
-    image: "jackblack178/kasper-front:localhost"
-    ports:
-      - "80:5173"
-    restart: always
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    depends_on:
-      - server
-    container_name: "kasper-front"
+#  front:
+#    image: "hbashift/kasper-front:v0.1.5"
+#    ports:
+#      - "5173:5173"
+#    restart: always
+#    depends_on:
+#      - server
 
 networks:
   default:

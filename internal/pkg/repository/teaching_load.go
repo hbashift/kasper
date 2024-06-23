@@ -348,6 +348,9 @@ func (r *TeachingLoadRepository) GetClassroomLoadsTx(ctx context.Context, tx pgx
 	for rows.Next() {
 		load := model.ClassroomLoad{}
 		if err := scanClassroomLoad(rows, &load); err != nil {
+			if errors.Is(err, pgx.ErrNoRows) {
+				return []model.ClassroomLoad{}, nil
+			}
 			return nil, errors.Wrap(err, "GetClassroomLoadsTx()")
 		}
 
@@ -439,6 +442,9 @@ func (r *TeachingLoadRepository) GetTeachingLoadStatusIDs(ctx context.Context, t
 	for rows.Next() {
 		id := uuid.UUID{}
 		if err := rows.Scan(&id); err != nil {
+			if errors.Is(err, pgx.ErrNoRows) {
+				return []uuid.UUID{}, nil
+			}
 			return nil, errors.Wrap(err, "GetTeachingLoadStatusIDs(): scanning row")
 		}
 

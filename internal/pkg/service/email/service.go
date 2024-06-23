@@ -233,7 +233,7 @@ func (s *Service) SendMailToSupervisor(ctx context.Context, studentID uuid.UUID,
 	mail := gomail.NewMessage()
 	mail.SetHeader("From", s.sender)
 	mail.SetHeader("To", receiver)
-	mail.SetHeader("Subject", fmt.Sprintf("Уведомление от Студента %s", data.StudentName))
+	mail.SetHeader("Subject", fmt.Sprintf("Уведомление от Студента(ки) %s", data.StudentName))
 	mail.SetBody("text/html", body.String())
 
 	d := gomail.NewDialer(s.host, 587, s.sender, s.password)

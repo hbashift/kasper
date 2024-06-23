@@ -20,7 +20,7 @@ func (s *Service) GetStudentSupervisorPairs(ctx context.Context) ([]models.Stude
 	pairs := make([]models.StudentSupervisorPair, 0)
 
 	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
-		dPairs, err := s.usersRepo.GetStudentSupervisorPairsTx(ctx, tx)
+		dPairs, err := s.clientRepo.GetStudentSupervisorPairsTx(ctx, tx)
 		if err != nil {
 			return err
 		}
@@ -38,7 +38,7 @@ func (s *Service) GetStudentSupervisorPairs(ctx context.Context) ([]models.Stude
 func (s *Service) ChangeSupervisor(ctx context.Context, pairs []models.ChangeSupervisor) error {
 	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
 		for _, pair := range pairs {
-			err := s.usersRepo.SetNewSupervisorTx(ctx, tx, pair.StudentID, pair.SupervisorID)
+			err := s.clientRepo.SetNewSupervisorTx(ctx, tx, pair.StudentID, pair.SupervisorID)
 			if err != nil {
 				return err
 			}
@@ -60,7 +60,7 @@ func (s *Service) SetStudentFlags(ctx context.Context, students []models.SetStud
 				return err
 			}
 
-			if err := s.usersRepo.SetStudentFlags(ctx, tx, dStatus, student.CanEdit, student.StudentID); err != nil {
+			if err := s.clientRepo.SetStudentFlags(ctx, tx, dStatus, student.CanEdit, student.StudentID); err != nil {
 				return err
 			}
 		}
@@ -77,7 +77,7 @@ func (s *Service) GetSupervisors(ctx context.Context) ([]models.Supervisor, erro
 	sups := make([]models.Supervisor, 0)
 
 	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
-		dSups, err := s.usersRepo.GetSupervisorsTx(ctx, tx)
+		dSups, err := s.clientRepo.GetSupervisorsTx(ctx, tx)
 		if err != nil {
 			return err
 		}
@@ -96,7 +96,7 @@ func (s *Service) GetStudentsList(ctx context.Context) ([]models.Student, error)
 	students := make([]models.Student, 0)
 
 	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
-		dStudents, err := s.usersRepo.GetStudentsList(ctx, tx)
+		dStudents, err := s.clientRepo.GetStudentsList(ctx, tx)
 		if err != nil {
 			return err
 		}
@@ -116,6 +116,10 @@ func (s *Service) UpsertAttestationMarks(ctx context.Context, marks []models.Att
 	for _, mark := range marks {
 		if mark.Mark < 0 {
 			return errors.Wrap(models.ErrInvalidValue, "UpsertAttestationMarks()")
+		}
+
+		if mark.Mark == 0 {
+			continue
 		}
 
 		dMark := model.Marks{
@@ -187,7 +191,7 @@ func (s *Service) AddUsers(ctx context.Context, users request_models.AddUsersReq
 	}
 
 	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
-		err := s.clientRepo.InsertUsersTx(ctx, tx, domainUsers)
+		err := s.userRepo.InsertUsersTx(ctx, tx, domainUsers)
 
 		return err
 	}); err != nil {
@@ -199,7 +203,7 @@ func (s *Service) AddUsers(ctx context.Context, users request_models.AddUsersReq
 
 func (s *Service) ArchiveSupervisor(ctx context.Context, supervisors []models.SupervisorStatus) error {
 	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
-		return s.usersRepo.ArchiveSupervisor(ctx, tx, supervisors)
+		return s.clientRepo.ArchiveSupervisor(ctx, tx, supervisors)
 	}); err != nil {
 		return errors.Wrap(err, "GetSupervisorsStudents()")
 	}
@@ -211,7 +215,7 @@ func (s *Service) GetNotRegisteredUsers(ctx context.Context) ([]models.UserInfo,
 	users := make([]models.UserInfo, 0)
 	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
 		var err error
-		users, err = s.clientRepo.GetNotRegisteredUsers(ctx, tx)
+		users, err = s.userRepo.GetNotRegisteredUsers(ctx, tx)
 		return err
 	}); err != nil {
 		return nil, errors.Wrap(err, "GetNotRegisteredUsers()")
@@ -222,11 +226,43 @@ func (s *Service) GetNotRegisteredUsers(ctx context.Context) ([]models.UserInfo,
 
 func (s *Service) DeleteNotRegisteredUsers(ctx context.Context, userIDs []uuid.UUID) error {
 	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
-		err := s.clientRepo.DeleteNotRegisteredUsers(ctx, tx, userIDs)
+		err := s.userRepo.DeleteNotRegisteredUsers(ctx, tx, userIDs)
 
 		return err
 	}); err != nil {
 		return errors.Wrap(err, "DeleteNotRegisteredUsers()")
+	}
+
+	return nil
+}
+
+func (s *Service) StudentsToNewSemester(ctx context.Context, students []request_models.StudentsToNewSemester) error {
+	studentIDs := make([]uuid.UUID, 0, len(students))
+
+	for _, student := range students {
+		if student.AttestationMark > 2 {
+			studentIDs = append(studentIDs, student.StudentID)
+		}
+	}
+
+	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
+		domainStudents, err := s.clientRepo.GetStudentsByStudentsIDs(ctx, tx, studentIDs)
+		if err != nil {
+			return err
+		}
+
+		for _, student := range domainStudents {
+			if student.ActualSemester+1 > student.Years {
+				student.StudyingStatus = model.StudentStatus_Graduated
+			} else {
+				student.ActualSemester += 1
+			}
+		}
+
+		err = s.clientRepo.UpdateStudentsSemester(ctx, tx, domainStudents)
+		return err
+	}); err != nil {
+		return errors.Wrap(err, "StudentsToNewSemester()")
 	}
 
 	return nil

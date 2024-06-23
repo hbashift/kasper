@@ -3,6 +3,7 @@ package models
 import (
 	"errors"
 	"net/http"
+	"os"
 
 	"github.com/jackc/pgx/v4"
 )
@@ -24,7 +25,7 @@ func MapErrorToCode(err error) int {
 	switch {
 	case errors.Is(err, ErrTokenExpired) || errors.Is(err, ErrWrongUserType):
 		return http.StatusUnauthorized
-	case errors.Is(err, pgx.ErrNoRows):
+	case errors.Is(err, pgx.ErrNoRows) || errors.Is(err, os.ErrNotExist):
 		return http.StatusNoContent
 	case errors.Is(err, ErrNotActualSemester) ||
 		errors.Is(err, ErrHigherValueExpected) ||

@@ -425,6 +425,9 @@ func (r *ScientificRepository) GetPublicationsTx(ctx context.Context, tx pgx.Tx,
 	for rows.Next() {
 		publication := model.Publications{}
 		if err := scanPublication(rows, &publication); err != nil {
+			if errors.Is(err, pgx.ErrNoRows) {
+				return []model.Publications{}, nil
+			}
 			return nil, errors.Wrap(err, "GetPublicationsTx()")
 		}
 
@@ -458,6 +461,9 @@ func (r *ScientificRepository) GetConferencesTx(ctx context.Context, tx pgx.Tx, 
 	for rows.Next() {
 		conference := model.Conferences{}
 		if err := scanConference(rows, &conference); err != nil {
+			if errors.Is(err, pgx.ErrNoRows) {
+				return []model.Conferences{}, nil
+			}
 			return nil, errors.Wrap(err, "GetConferencesTx()")
 		}
 
@@ -615,6 +621,37 @@ func (r *ScientificRepository) DeletePatents(ctx context.Context, tx pgx.Tx, pat
 	}
 
 	return nil
+}
+
+func (r *ScientificRepository) GetActualScientificWorksStatusIDs(ctx context.Context, tx pgx.Tx, student model.Students) ([]uuid.UUID, error) {
+	stmt, args := table.ScientificWorksStatus.
+		SELECT(table.ScientificWorksStatus.WorksID).
+		WHERE(
+			table.ScientificWorksStatus.StudentID.EQ(postgres.UUID(student.StudentID)).
+				AND(table.ScientificWorksStatus.Semester.EQ(postgres.Int32(student.ActualSemester))),
+		).
+		Sql()
+
+	rows, err := tx.Query(ctx, stmt, args...)
+	if err != nil {
+		return nil, errors.Wrap(err, "GetScientificWorksStatusIDs()")
+	}
+
+	ids := make([]uuid.UUID, 0, 8)
+
+	for rows.Next() {
+		id := uuid.UUID{}
+		if err := rows.Scan(&id); err != nil {
+			if errors.Is(err, pgx.ErrNoRows) {
+				return ids, nil
+			}
+			return nil, errors.Wrap(err, "GetScientificWorksStatusIDs(): scanning row")
+		}
+
+		ids = append(ids, id)
+	}
+
+	return ids, nil
 }
 
 func scanPatent(row pgx.Row, target *model.Patents) error {

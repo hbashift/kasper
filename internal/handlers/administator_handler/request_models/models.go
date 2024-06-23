@@ -49,3 +49,8 @@ type UpsertAttestationMarksRequest struct {
 type AddUsersRequest struct {
 	UsersString string `json:"users"`
 }
+
+type StudentsToNewSemester struct {
+	StudentID       uuid.UUID `json:"student_id,omitempty"`
+	AttestationMark int32     `json:"mark,omitempty"`
+}

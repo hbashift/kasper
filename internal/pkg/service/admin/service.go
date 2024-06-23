@@ -13,7 +13,7 @@ import (
 )
 
 type (
-	UsersRepository interface {
+	ClientRepository interface {
 		GetSupervisorsTx(ctx context.Context, tx pgx.Tx) ([]models.Supervisor, error)
 		SetNewSupervisorTx(ctx context.Context, tx pgx.Tx, studentID, supervisorID uuid.UUID) error
 		GetStudentSupervisorPairsTx(ctx context.Context, tx pgx.Tx) ([]models.StudentSupervisorPair, error)
@@ -22,9 +22,14 @@ type (
 		GetStudentsList(ctx context.Context, tx pgx.Tx) ([]models.Student, error)
 		SetStudentFlags(ctx context.Context, tx pgx.Tx, studyingStatus model.StudentStatus, canEdit bool, studentID uuid.UUID) error
 		ArchiveSupervisor(ctx context.Context, tx pgx.Tx, supervisors []models.SupervisorStatus) error
+		UpdateStudentsSemester(ctx context.Context, tx pgx.Tx, students []model.Students) error
+		GetStudentsByStudentsIDs(ctx context.Context, tx pgx.Tx, studentIDs []uuid.UUID) ([]model.Students, error)
+		GetAllStudentIDs(ctx context.Context, tx pgx.Tx) ([]uuid.UUID, error)
+		GetDataForReportOne(ctx context.Context, tx pgx.Tx, studentIDs []uuid.UUID) ([]models.StudentInfoForReportOne, error)
+		GetDataForReportTwo(ctx context.Context, tx pgx.Tx, studentIDs []uuid.UUID) ([]models.StudentInfoForReportTwo, error)
 	}
 
-	ClientsRepository interface {
+	UsersRepository interface {
 		InsertUsersTx(ctx context.Context, tx pgx.Tx, users []model.Users) error
 		GetNotRegisteredUsers(ctx context.Context, tx pgx.Tx) ([]models.UserInfo, error)
 		DeleteNotRegisteredUsers(ctx context.Context, tx pgx.Tx, userIDs []uuid.UUID) error
@@ -36,17 +41,17 @@ type (
 )
 
 type Service struct {
-	usersRepo  UsersRepository
+	clientRepo ClientRepository
 	marksRepo  MarksRepository
-	clientRepo ClientsRepository
+	userRepo   UsersRepository
 	db         *pgxpool.Pool
 }
 
 func NewService(db *pgxpool.Pool) *Service {
 	return &Service{
-		usersRepo:  repository.NewClientRepository(),
+		clientRepo: repository.NewClientRepository(),
 		marksRepo:  repository.NewMarksRepository(),
-		clientRepo: repository.NewUsersRepository(),
+		userRepo:   repository.NewUsersRepository(),
 		db:         db,
 	}
 }

@@ -853,6 +853,10 @@ definitions:
         type: string
       phone:
         type: string
+      position:
+        type: string
+      rank:
+        type: string
       supervisor_id:
         description: ID научного руководителя
         format: uuid
@@ -908,6 +912,10 @@ definitions:
         type: string
       phone:
         type: string
+      position:
+        type: string
+      rank:
+        type: string
       supervisor_id:
         description: ID научного руководителя
         format: uuid
@@ -961,16 +969,16 @@ definitions:
     properties:
       category:
         type: string
+      date:
+        type: string
       email:
         type: string
       full_name:
         description: Полное имя
         type: string
-      group_name:
+      group_id:
         type: integer
       phone:
-        type: string
-      start_date:
         type: string
       years:
         type: integer
@@ -1089,11 +1097,17 @@ definitions:
         type: string
       department:
         type: string
+      email:
+        type: string
       faculty:
         type: string
       full_name:
         type: string
       phone:
+        type: string
+      position:
+        type: string
+      rank:
         type: string
     type: object
   request_models.GetByStudentID:
@@ -1269,6 +1283,76 @@ info:
   title: Сервис Kasper
   version: 0.1.2
 paths:
+  /administrator/download/report-one/{token}:
+    get:
+      consumes:
+      - application/json
+      description: Скачивание отчета 1
+      parameters:
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Файл
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Скачивание отчета 1
+      tags:
+      - NEW 2
+  /administrator/download/report-two/{token}:
+    get:
+      consumes:
+      - application/json
+      description: Скачивание отчета 2
+      parameters:
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Файл
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Скачивание отчета 2
+      tags:
+      - NEW 2
   /administrator/enum/amounts/{token}:
     get:
       consumes:
@@ -1614,6 +1698,76 @@ paths:
       summary: Удаление специализаций
       tags:
       - Admin
+  /administrator/generate/report-one/{token}:
+    get:
+      consumes:
+      - application/json
+      description: Сгенерировать отчет 1
+      parameters:
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Сгенерировать отчет 1
+      tags:
+      - Admin
+  /administrator/generate/report-two/{token}:
+    get:
+      consumes:
+      - application/json
+      description: Сгенерировать отчет 2
+      parameters:
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Сгенерировать отчет 2
+      tags:
+      - Admin
   /administrator/pairs/{token}:
     get:
       description: Ручка для получения пар аспирант/руководитель
@@ -1727,6 +1881,45 @@ paths:
       summary: Изменение научного руководителя у студента
       tags:
       - Admin
+  /administrator/student/new-semester/{token}:
+    post:
+      consumes:
+      - application/json
+      description: Отправление студентов на следующий семестр
+      parameters:
+      - description: Данные
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.DeleteByUUIDRequest'
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Отправление студентов на следующий семестр
+      tags:
+      - NEW 2
   /administrator/student/status/{token}:
     post:
       consumes:
@@ -3153,6 +3346,44 @@ paths:
           schema:
             type: string
       summary: Получение всех оценок
+      tags:
+      - NEW
+    put:
+      consumes:
+      - application/json
+      description: Удаление кандидатских экзаменов
+      parameters:
+      - description: ID нагрузок и семестр
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/request_models.DeleteIDs'
+      - description: Токен пользователя
+        in: path
+        name: token
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+        "204":
+          description: Нет записей в БД
+          schema:
+            type: string
+        "400":
+          description: Неверный формат данных
+          schema:
+            type: string
+        "401":
+          description: Токен протух
+          schema:
+            type: string
+        "500":
+          description: Ошибка на стороне сервера
+          schema:
+            type: string
+      summary: Удаление кандидатских экзаменов
       tags:
       - NEW
   /students/profile/{token}:

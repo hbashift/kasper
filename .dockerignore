@@ -1,0 +1,10 @@
+.git
+
+# Ignore Dockerfile and .dockerignore to avoid recursion issues
+Dockerfile
+.dockerignore
+
+# Ignore temporary files
+*~
+
+venv

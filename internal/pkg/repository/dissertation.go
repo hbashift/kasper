@@ -315,11 +315,15 @@ func (r *DissertationRepository) GetStudentsProgressiveness(ctx context.Context,
 	if err != nil {
 		return nil, errors.Wrap(err, "GetStudentsProgressiveness()")
 	}
+	defer rows.Close()
 
 	progresses := make([]model.Progressiveness, 0)
 	for rows.Next() {
 		progress := model.Progressiveness{}
 		if err := scanProgressiveness(rows, &progress); err != nil {
+			if errors.Is(err, pgx.ErrNoRows) {
+				return []model.Progressiveness{}, nil
+			}
 			return nil, errors.Wrap(err, "GetStudentsProgressiveness(): scanning row")
 		}
 
@@ -345,6 +349,50 @@ func (r *DissertationRepository) UpsertStudentsProgressiveness(ctx context.Conte
 	}
 
 	return nil
+}
+
+func (r *DissertationRepository) GetActualProgressiveness(ctx context.Context, tx pgx.Tx, student model.Students) (model.Progressiveness, error) {
+	stmt, args := table.Progressiveness.
+		SELECT(table.Progressiveness.AllColumns).
+		WHERE(
+			table.Progressiveness.StudentID.EQ(postgres.UUID(student.StudentID)).
+				AND(table.Progressiveness.Semester.EQ(postgres.Int32(student.ActualSemester))),
+		).
+		Sql()
+
+	row := tx.QueryRow(ctx, stmt, args...)
+
+	progress := model.Progressiveness{}
+	if err := scanProgressiveness(row, &progress); err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return progress, nil
+		}
+		return model.Progressiveness{}, errors.Wrap(err, "GetStudentsProgressiveness(): scanning row")
+	}
+
+	return progress, nil
+}
+
+func (r *DissertationRepository) GetActualDissertationTitlesTx(ctx context.Context, tx pgx.Tx, student model.Students) (model.DissertationTitles, error) {
+	stmt, args := table.DissertationTitles.
+		SELECT(table.DissertationTitles.AllColumns).
+		WHERE(
+			table.DissertationTitles.StudentID.EQ(postgres.UUID(student.StudentID)).
+				AND(table.DissertationTitles.Semester.EQ(postgres.Int32(student.ActualSemester))),
+		).
+		Sql()
+
+	row := tx.QueryRow(ctx, stmt, args...)
+	title := model.DissertationTitles{}
+
+	if err := scanDissertationTitle(row, &title); err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return model.DissertationTitles{}, nil
+		}
+		return title, errors.Wrap(err, "GetDissertationTitlesTx()")
+	}
+
+	return title, nil
 }
 
 func scanProgressiveness(row pgx.Row, target *model.Progressiveness) error {

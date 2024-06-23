@@ -26,6 +26,9 @@ type (
 		ArchiveSupervisor(ctx context.Context, supervisors []models.SupervisorStatus) error
 		GetNotRegisteredUsers(ctx context.Context) ([]models.UserInfo, error)
 		DeleteNotRegisteredUsers(ctx context.Context, userIDs []uuid.UUID) error
+		StudentsToNewSemester(ctx context.Context, studentIDs []request_models.StudentsToNewSemester) error
+		GenerateReportOne(ctx context.Context) ([]models.ReportOne, error)
+		GenerateReportTwo(ctx context.Context) ([]models.ReportTwo, error)
 	}
 
 	Authenticator interface {
