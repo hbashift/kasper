@@ -27,6 +27,7 @@ type (
 		GetAllStudentIDs(ctx context.Context, tx pgx.Tx) ([]uuid.UUID, error)
 		GetDataForReportOne(ctx context.Context, tx pgx.Tx, studentIDs []uuid.UUID) ([]models.StudentInfoForReportOne, error)
 		GetDataForReportTwo(ctx context.Context, tx pgx.Tx, studentIDs []uuid.UUID) ([]models.StudentInfoForReportTwo, error)
+		GetStudentsActualSupervisorTx(ctx context.Context, tx pgx.Tx, studentID uuid.UUID) (models.Supervisor, error)
 	}
 
 	UsersRepository interface {

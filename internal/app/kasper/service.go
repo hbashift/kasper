@@ -164,7 +164,7 @@ func (h *HTTPServer) InitRouter() *gin.Engine {
 
 	r := router.Group("/api")
 	// Swagger documentation
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	r.GET("/swagger", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// StudentHandlers init
 	r.POST("/students/review/:token", h.student.AllToReview)

@@ -2,9 +2,7 @@ version: "3.7"
 
 services:
   server:
-    build:
-      dockerfile: Dockerfile
-    #image: "hbashift/kasper-back:v0.1.2"
+    image: "hbashift/kasper-back:v0.1.2"
     ports:
       - "8080:8080"
     restart: always
@@ -12,16 +10,9 @@ services:
       - ./dissertations:/usr/src/app/dissertations
       - ./reports:/usr/src/app/reports
     extra_hosts:
-      - "database:95.163.231.174"
+      - ""
     environment:
-      MAIL_PASSWORD: "vVtVASLsViAdwF6"
-#  front:
-#    image: "hbashift/kasper-front:v0.1.5"
-#    ports:
-#      - "5173:5173"
-#    restart: always
-#    depends_on:
-#      - server
+      MAIL_PASSWORD: ""
 
 networks:
   default:

@@ -29,7 +29,7 @@ func (r *DissertationRepository) SetSemesterProgressStatusTx(ctx context.Context
 		).
 		SET(
 			status,
-			time.Now(),
+			postgres.NOW(),
 			acceptedAt,
 		).
 		WHERE(table.SemesterProgress.StudentID.EQ(postgres.UUID(studentID))).
@@ -118,6 +118,8 @@ func (r *DissertationRepository) UpsertSemesterProgressTx(ctx context.Context, t
 			table.SemesterProgress.Status.SET(postgres.NewEnumValue(semester.Status.String())),
 		}
 
+		st := table.SemesterProgress.UPDATE().MODEL(semester).SET()
+
 		if semester.Status == model.ApprovalStatus_Approved {
 			assignments = append(assignments,
 				table.SemesterProgress.AcceptedAt.SET(postgres.TimestampzT(lo.FromPtr(semester.AcceptedAt))))
@@ -157,7 +159,7 @@ func (r *DissertationRepository) UpsertDissertationTx(ctx context.Context, tx pg
 			),
 		).
 		Sql()
-
+›
 	_, err := tx.Exec(ctx, stmt, args...)
 	if err != nil {
 		return errors.Wrap(err, "UpsertDissertationTx()")

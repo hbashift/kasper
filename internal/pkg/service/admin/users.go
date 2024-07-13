@@ -37,8 +37,18 @@ func (s *Service) GetStudentSupervisorPairs(ctx context.Context) ([]models.Stude
 
 func (s *Service) ChangeSupervisor(ctx context.Context, pairs []models.ChangeSupervisor) error {
 	if err := s.db.BeginFunc(ctx, func(tx pgx.Tx) error {
+
 		for _, pair := range pairs {
-			err := s.clientRepo.SetNewSupervisorTx(ctx, tx, pair.StudentID, pair.SupervisorID)
+			currSup, err := s.clientRepo.GetStudentsActualSupervisorTx(ctx, tx, pair.StudentID)
+			if err != nil {
+				return err
+			}
+
+			if currSup.SupervisorID == pair.SupervisorID {
+				continue
+			}
+
+			err = s.clientRepo.SetNewSupervisorTx(ctx, tx, pair.StudentID, pair.SupervisorID)
 			if err != nil {
 				return err
 			}
